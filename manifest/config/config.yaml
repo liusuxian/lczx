@@ -46,28 +46,6 @@ server:
   graceful: false                                   # 是否开启平滑重启特性，开启时将会在本地增加10000的本地TCP端口用于进程间通信。默认false
   gracefulTimeout: 2                                # 父进程在平滑重启后多少秒退出，默认2秒。若请求耗时大于该值，可能会导致请求中断
 
-# 数据库连接配置
-database:
-  logger:
-    path: "log/sql"
-    level: "all"
-    stdout: true
-    ctxKeys: [ "RequestId" ]
-  default:
-    link: "mysql:root:Lsx19890329!@#$%@tcp(127.0.0.1:3306)/lczx"
-    maxIdle: "10"
-    maxOpen: "100"
-    maxLifetime: "30s"
-    debug: true
-
-# Redis 配置
-redis:
-  default:
-    address: 127.0.0.1:6379
-    db: 0
-    pass: ""
-    idleTimeout: 600
-
 logger:
   access:
     path: "log/lczx"                                # 日志文件路径。默认为空，表示关闭，仅输出到终端
@@ -101,6 +79,28 @@ logger:
     rotateCheckInterval: "24h"                      # 滚动切分的时间检测间隔，一般不需要设置。默认为1小时
     stdoutColorDisabled: false                      # 关闭终端的颜色打印。默认开启
     writerColorEnable: false                        # 日志文件是否带上颜色。默认false，表示不带颜色
+
+# 数据库连接配置
+database:
+  logger:
+    path: "log/sql"
+    level: "all"
+    stdout: true
+    ctxKeys: [ "RequestId" ]
+  default:
+    link: "mysql:root:Lsx19890329!@#$%@tcp(127.0.0.1:3306)/lczx"
+    maxIdle: "10"
+    maxOpen: "100"
+    maxLifetime: "30s"
+    debug: true
+
+# Redis 配置
+redis:
+  default:
+    address: 127.0.0.1:6379
+    db: 0
+    pass: ""
+    idleTimeout: 600
 
 gToken:
   ServerName: "lczx"                                # 服务名。默认为空
