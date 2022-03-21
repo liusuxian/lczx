@@ -1,2 +1,1 @@
-# lczx
-lczx server
+# GoFrame Template For SingleRepo
