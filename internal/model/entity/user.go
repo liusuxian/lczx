@@ -10,15 +10,16 @@ import (
 
 // User is the golang structure for table user.
 type User struct {
-	Id       uint        `json:"id"       ` // 用户ID
-	Passport string      `json:"passport" ` // 账号
-	Password string      `json:"password" ` // 密码
-	Realname string      `json:"realname" ` // 姓名
-	Nickname string      `json:"nickname" ` // 昵称
-	Gender   uint        `json:"gender"   ` // 性别 0: 未设置 1: 男 2: 女
-	Avatar   string      `json:"avatar"   ` // 头像地址
-	Telno    string      `json:"telno"    ` // 手机号
-	Status   uint        `json:"status"   ` // 状态 0:启用 1:禁用
-	CreateAt *gtime.Time `json:"createAt" ` // 创建时间
-	UpdateAt *gtime.Time `json:"updateAt" ` // 更新时间
+	Id        uint        `json:"id"        ` // 用户ID
+	Passport  string      `json:"passport"  ` // 账号
+	Password  string      `json:"password"  ` // 密码
+	Realname  string      `json:"realname"  ` // 姓名
+	Nickname  string      `json:"nickname"  ` // 昵称
+	Gender    uint        `json:"gender"    ` // 性别 0: 未设置 1: 男 2: 女
+	Avatar    string      `json:"avatar"    ` // 头像地址
+	Telno     string      `json:"telno"     ` // 手机号
+	Status    uint        `json:"status"    ` // 状态 0:启用 1:禁用
+	CreateAt  *gtime.Time `json:"createAt"  ` // 创建时间
+	UpdateAt  *gtime.Time `json:"updateAt"  ` // 更新时间
+	DeletedAt *gtime.Time `json:"deletedAt" ` // 软删除时间
 }
