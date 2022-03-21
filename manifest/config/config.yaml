@@ -104,10 +104,10 @@ redis:
 
 gToken:
   ServerName: "lczx"                                # 服务名。默认为空
-  CacheMode: 2                                      # 缓存模式。1: gcache 2: gredis 3: fileCache 默认1
-  CacheKey: "GToken:lczx"                           # 缓存key。默认缓存前缀GToken:
-  Timeout: 2000                                     # 超时时间。默认10天（毫秒）
-  MaxRefresh: 1000                                  # 缓存刷新时间。默认为超时时间的一半（毫秒）
+  CacheMode: 1                                      # 缓存模式。1: gcache 2: gredis 3: fileCache 默认1
+  CacheKey: "GToken:lczx:"                          # 缓存key。默认缓存前缀GToken:
+  Timeout: 60000                                    # 超时时间。默认10天（毫秒）
+  MaxRefresh: 30000                                 # 缓存刷新时间。默认为超时时间的一半（毫秒）
   TokenDelimiter: "_"                               # Token分隔符。默认_
   EncryptKey: "1ee7f75f1145e929df46514e3c924d69"    # Token加密key。默认12345678912345678912345678912345
   AuthFailMsg: "登录超时，请重新登录"                  # 认证失败提示。默认请求错误或登录超时

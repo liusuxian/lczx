@@ -65,6 +65,9 @@ var (
 				if err != nil {
 					logger.Panic(ctx, "GfToken Start Error: ", err.Error())
 				}
+				group.Group("/user", func(group *ghttp.RouterGroup) {
+					group.Bind()
+				})
 			})
 			// 启动
 			s.Run()
