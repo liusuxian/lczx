@@ -10,7 +10,8 @@ import (
 
 // UserOnline is the golang structure for table user_online.
 type UserOnline struct {
-	Id           uint        `json:"id"           ` // 用户ID
-	LastLoginAt  *gtime.Time `json:"lastLoginAt"  ` // 最近登录时间
-	LastLogoutAt *gtime.Time `json:"lastLogoutAt" ` // 最近登出时间
+	Id         uint        `json:"id"         ` // 用户ID
+	LastTime   *gtime.Time `json:"lastTime"   ` // 最后一次登录时间
+	LastIp     string      `json:"lastIp"     ` // 最后一次登录ip
+	VisitCount uint        `json:"visitCount" ` // 访问次数
 }

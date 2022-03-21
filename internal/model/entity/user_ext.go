@@ -7,7 +7,7 @@ package entity
 // UserExt is the golang structure for table user_ext.
 type UserExt struct {
 	Id        uint `json:"id"        ` // 用户ID
-	BranchId  uint `json:"branchId"  ` // 部门ID
+	DeptId    uint `json:"deptId"    ` // 部门ID
 	ZskRoleId uint `json:"zskRoleId" ` // 知识库角色ID 0: 默认普通用户 1000: 超级管理员 900: 普通管理员
 	WdkRoleId uint `json:"wdkRoleId" ` // 文档库角色ID 0: 默认普通用户 1000: 超级管理员 900: 普通管理员
 }

@@ -11,8 +11,9 @@ import (
 
 // UserOnline is the golang structure of table user_online for DAO operations like Where/Data.
 type UserOnline struct {
-	g.Meta       `orm:"table:user_online, do:true"`
-	Id           interface{} // 用户ID
-	LastLoginAt  *gtime.Time // 最近登录时间
-	LastLogoutAt *gtime.Time // 最近登出时间
+	g.Meta     `orm:"table:user_online, do:true"`
+	Id         interface{} // 用户ID
+	LastTime   *gtime.Time // 最后一次登录时间
+	LastIp     interface{} // 最后一次登录ip
+	VisitCount interface{} // 访问次数
 }

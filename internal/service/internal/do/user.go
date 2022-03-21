@@ -19,7 +19,7 @@ type User struct {
 	Nickname  interface{} // 昵称
 	Gender    interface{} // 性别 0: 未设置 1: 男 2: 女
 	Avatar    interface{} // 头像地址
-	Telno     interface{} // 手机号
+	Mobile    interface{} // 手机号
 	Status    interface{} // 状态 0:启用 1:禁用
 	CreateAt  *gtime.Time // 创建时间
 	UpdateAt  *gtime.Time // 更新时间

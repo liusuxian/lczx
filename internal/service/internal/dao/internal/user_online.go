@@ -19,16 +19,18 @@ type UserOnlineDao struct {
 
 // UserOnlineColumns defines and stores column names for table user_online.
 type UserOnlineColumns struct {
-	Id           string // 用户ID
-	LastLoginAt  string // 最近登录时间
-	LastLogoutAt string // 最近登出时间
+	Id         string // 用户ID
+	LastTime   string // 最后一次登录时间
+	LastIp     string // 最后一次登录ip
+	VisitCount string // 访问次数
 }
 
 //  userOnlineColumns holds the columns for table user_online.
 var userOnlineColumns = UserOnlineColumns{
-	Id:           "id",
-	LastLoginAt:  "last_login_at",
-	LastLogoutAt: "last_logout_at",
+	Id:         "id",
+	LastTime:   "last_time",
+	LastIp:     "last_ip",
+	VisitCount: "visit_count",
 }
 
 // NewUserOnlineDao creates and returns a new DAO object for table data access.

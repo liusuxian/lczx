@@ -4,8 +4,8 @@
 
 package entity
 
-// Branch is the golang structure for table branch.
-type Branch struct {
+// Dept is the golang structure for table dept.
+type Dept struct {
 	Id   uint   `json:"id"   ` // 部门ID
 	Name string `json:"name" ` // 部门名称
 }

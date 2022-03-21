@@ -20,7 +20,7 @@ type UserExtDao struct {
 // UserExtColumns defines and stores column names for table user_ext.
 type UserExtColumns struct {
 	Id        string // 用户ID
-	BranchId  string // 部门ID
+	DeptId    string // 部门ID
 	ZskRoleId string // 知识库角色ID 0: 默认普通用户 1000: 超级管理员 900: 普通管理员
 	WdkRoleId string // 文档库角色ID 0: 默认普通用户 1000: 超级管理员 900: 普通管理员
 }
@@ -28,7 +28,7 @@ type UserExtColumns struct {
 //  userExtColumns holds the columns for table user_ext.
 var userExtColumns = UserExtColumns{
 	Id:        "id",
-	BranchId:  "branch_id",
+	DeptId:    "dept_id",
 	ZskRoleId: "zsk_role_id",
 	WdkRoleId: "wdk_role_id",
 }

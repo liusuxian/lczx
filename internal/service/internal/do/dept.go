@@ -8,9 +8,9 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 )
 
-// Branch is the golang structure of table branch for DAO operations like Where/Data.
-type Branch struct {
-	g.Meta `orm:"table:branch, do:true"`
+// Dept is the golang structure of table dept for DAO operations like Where/Data.
+type Dept struct {
+	g.Meta `orm:"table:dept, do:true"`
 	Id     interface{} // 部门ID
 	Name   interface{} // 部门名称
 }

@@ -26,7 +26,7 @@ type UserColumns struct {
 	Nickname  string // 昵称
 	Gender    string // 性别 0: 未设置 1: 男 2: 女
 	Avatar    string // 头像地址
-	Telno     string // 手机号
+	Mobile    string // 手机号
 	Status    string // 状态 0:启用 1:禁用
 	CreateAt  string // 创建时间
 	UpdateAt  string // 更新时间
@@ -42,7 +42,7 @@ var userColumns = UserColumns{
 	Nickname:  "nickname",
 	Gender:    "gender",
 	Avatar:    "avatar",
-	Telno:     "telno",
+	Mobile:    "mobile",
 	Status:    "status",
 	CreateAt:  "create_at",
 	UpdateAt:  "update_at",

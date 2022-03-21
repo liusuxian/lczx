@@ -8,16 +8,16 @@ import (
 	"lczx/internal/service/internal/dao/internal"
 )
 
-// branchDao is the data access object for table branch.
+// deptDao is the data access object for table dept.
 // You can define custom methods on it to extend its functionality as you wish.
-type branchDao struct {
-	*internal.BranchDao
+type deptDao struct {
+	*internal.DeptDao
 }
 
 var (
-	// Branch is globally public accessible object for table branch operations.
-	Branch = branchDao{
-		internal.NewBranchDao(),
+	// Dept is globally public accessible object for table dept operations.
+	Dept = deptDao{
+		internal.NewDeptDao(),
 	}
 )
 
