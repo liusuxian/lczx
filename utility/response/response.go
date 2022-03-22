@@ -5,7 +5,6 @@ import (
 	"github.com/gogf/gf/v2/errors/gcode"
 	"github.com/gogf/gf/v2/frame/g"
 	"lczx/utility/logger"
-	"strconv"
 )
 
 // JsonResponse 数据返回通用JSON数据结构
@@ -29,15 +28,5 @@ func Json(ctx context.Context, code gcode.Code, data any) {
 	})
 	if err != nil {
 		logger.Error(ctx, "JsonResponse Error:", err.Error())
-	}
-}
-
-// HtmlText 返回 HtmlText
-func HtmlText(ctx context.Context, size int, data []byte) {
-	g.RequestFromCtx(ctx).Response.Writer.Header().Set("content-length", strconv.Itoa(size))
-	g.RequestFromCtx(ctx).Response.Writer.Header().Set("content-type:", "text/html;charset=UTF-8")
-	_, err := g.RequestFromCtx(ctx).Response.Writer.Write(data)
-	if err != nil {
-		logger.Error(ctx, "HtmlPage Error:", err.Error())
 	}
 }
