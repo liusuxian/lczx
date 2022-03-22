@@ -27,6 +27,8 @@ type UserColumns struct {
 	Gender    string // 性别 0: 未设置 1: 男 2: 女
 	Avatar    string // 头像地址
 	Mobile    string // 手机号
+	DeptId    string // 部门ID
+	RoleId    string // 角色ID 0: 默认普通用户 1000: 超级管理员 900: 普通管理员
 	Status    string // 状态 0:启用 1:禁用
 	CreateAt  string // 创建时间
 	UpdateAt  string // 更新时间
@@ -43,6 +45,8 @@ var userColumns = UserColumns{
 	Gender:    "gender",
 	Avatar:    "avatar",
 	Mobile:    "mobile",
+	DeptId:    "dept_id",
+	RoleId:    "role_id",
 	Status:    "status",
 	CreateAt:  "create_at",
 	UpdateAt:  "update_at",

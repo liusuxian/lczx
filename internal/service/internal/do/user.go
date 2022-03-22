@@ -20,6 +20,8 @@ type User struct {
 	Gender    interface{} // 性别 0: 未设置 1: 男 2: 女
 	Avatar    interface{} // 头像地址
 	Mobile    interface{} // 手机号
+	DeptId    interface{} // 部门ID
+	RoleId    interface{} // 角色ID 0: 默认普通用户 1000: 超级管理员 900: 普通管理员
 	Status    interface{} // 状态 0:启用 1:禁用
 	CreateAt  *gtime.Time // 创建时间
 	UpdateAt  *gtime.Time // 更新时间

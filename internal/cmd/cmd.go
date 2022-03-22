@@ -36,14 +36,15 @@ var (
 					service.Middleware().CORS,
 					ghttp.MiddlewareHandlerResponse,
 				)
-				err = service.GfToken(ctx).Middleware(ctx, group)
+				err = service.InitGfToken(ctx).Middleware(ctx, group)
 				if err != nil {
 					logger.Panic(ctx, "GfToken Start Error: ", err.Error())
 				}
 				group.Group("/user", func(group *ghttp.RouterGroup) {
-					group.Bind(
-						controller.User,
-					)
+					group.Bind(controller.User)
+				})
+				group.Group("/dept", func(group *ghttp.RouterGroup) {
+					group.Bind(controller.Dept)
 				})
 			})
 			// 启动

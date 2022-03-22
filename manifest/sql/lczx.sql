@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 22/03/2022 19:04:34
+ Date: 22/03/2022 23:01:58
 */
 
 SET NAMES utf8mb4;
@@ -48,6 +48,8 @@ CREATE TABLE `user` (
   `gender` int unsigned NOT NULL COMMENT '性别 0: 未设置 1: 男 2: 女',
   `avatar` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT '头像地址',
   `mobile` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '手机号',
+  `dept_id` int unsigned NOT NULL COMMENT '部门ID',
+  `role_id` int unsigned NOT NULL COMMENT '角色ID 0: 默认普通用户 1000: 超级管理员 900: 普通管理员',
   `status` int unsigned NOT NULL COMMENT '状态 0:启用 1:禁用',
   `create_at` datetime DEFAULT NULL COMMENT '创建时间',
   `update_at` datetime DEFAULT NULL COMMENT '更新时间',
@@ -60,26 +62,7 @@ CREATE TABLE `user` (
 -- Records of user
 -- ----------------------------
 BEGIN;
-INSERT INTO `user` (`id`, `passport`, `password`, `realname`, `nickname`, `gender`, `avatar`, `mobile`, `status`, `create_at`, `update_at`, `deleted_at`) VALUES (1, 'liusuxian', 'lsx19890329', '刘苏贤', NULL, 1, NULL, NULL, 0, '2022-03-18 13:20:00', '2022-03-18 13:20:00', NULL);
-COMMIT;
-
--- ----------------------------
--- Table structure for user_ext
--- ----------------------------
-DROP TABLE IF EXISTS `user_ext`;
-CREATE TABLE `user_ext` (
-  `id` int unsigned NOT NULL COMMENT '用户ID',
-  `dept_id` int unsigned NOT NULL COMMENT '部门ID',
-  `zsk_role_id` int unsigned DEFAULT NULL COMMENT '知识库角色ID 0: 默认普通用户 1000: 超级管理员 900: 普通管理员',
-  `wdk_role_id` int unsigned DEFAULT NULL COMMENT '文档库角色ID 0: 默认普通用户 1000: 超级管理员 900: 普通管理员',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- ----------------------------
--- Records of user_ext
--- ----------------------------
-BEGIN;
-INSERT INTO `user_ext` (`id`, `dept_id`, `zsk_role_id`, `wdk_role_id`) VALUES (1, 1, NULL, NULL);
+INSERT INTO `user` (`id`, `passport`, `password`, `realname`, `nickname`, `gender`, `avatar`, `mobile`, `dept_id`, `role_id`, `status`, `create_at`, `update_at`, `deleted_at`) VALUES (1, 'liusuxian', 'lsx19890329', '刘苏贤', NULL, 1, NULL, NULL, 1, 1000, 0, '2022-03-18 13:20:00', '2022-03-18 13:20:00', NULL);
 COMMIT;
 
 -- ----------------------------
@@ -89,7 +72,7 @@ DROP TABLE IF EXISTS `user_online`;
 CREATE TABLE `user_online` (
   `id` int unsigned NOT NULL COMMENT '用户ID',
   `last_time` datetime DEFAULT NULL COMMENT '最后一次登录时间',
-  `last_ip` datetime DEFAULT NULL COMMENT '最后一次登录ip',
+  `last_ip` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '最后一次登录ip',
   `visit_count` int unsigned DEFAULT NULL COMMENT '访问次数',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

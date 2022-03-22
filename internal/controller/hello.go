@@ -15,5 +15,5 @@ type cHello struct{}
 
 func (c *cHello) Hello(ctx context.Context, req *v1.HelloReq) (res *v1.HelloRes, err error) {
 	response.JsonOK(ctx, "Hello World!")
-	return res, nil
+	return
 }

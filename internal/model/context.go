@@ -21,4 +21,6 @@ type ContextUser struct {
 	Gender   uint   // 性别 0: 未设置 1: 男 2: 女
 	Avatar   string // 头像地址
 	Mobile   string // 手机号
+	DeptId   uint   // 部门ID
+	RoleId   uint   // 角色ID 0: 默认普通用户 1000: 超级管理员 900: 普通管理员
 }

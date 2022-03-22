@@ -5,10 +5,6 @@
 package dao
 
 import (
-	"context"
-	"github.com/gogf/gf/v2/errors/gerror"
-	"lczx/internal/consts"
-	"lczx/internal/model/entity"
 	"lczx/internal/service/internal/dao/internal"
 )
 
@@ -26,13 +22,3 @@ var (
 )
 
 // Fill with you ideas below.
-
-// FindUserByPassport 通过账号获取用户信息
-func (d *userDao) FindUserByPassport(ctx context.Context, passport string) (user *entity.User, err error) {
-	err = d.Ctx(ctx).Where(d.Columns().Passport, passport).Scan(&user)
-	if err != nil {
-		err = gerror.New(consts.CodeGetUserInfoFailed.Message())
-	}
-
-	return user, err
-}

@@ -10,5 +10,7 @@ type LoginReq struct {
 	Password string `json:"password" v:"required#密码不能为空" dc:"密码"` // 密码
 }
 type LoginRes struct {
-	g.Meta `mime:"text/html" type:"string" example:"<html/>"`
+	Token   string `json:"token" dc:"token"`     // token
+	UserKey string `json:"userKey" dc:"userKey"` // userKey
+	Uuid    string `json:"uuid" dc:"uuid"`       // uuid
 }

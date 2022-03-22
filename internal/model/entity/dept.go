@@ -6,6 +6,6 @@ package entity
 
 // Dept is the golang structure for table dept.
 type Dept struct {
-	Id   uint   `json:"id"   ` // 部门ID
-	Name string `json:"name" ` // 部门名称
+	Id   uint   `json:"id"   description:"部门ID"` // 部门ID
+	Name string `json:"name" description:"部门名称"` // 部门名称
 }
