@@ -27,24 +27,25 @@ func (s *sMiddleware) Ctx(req *ghttp.Request) {
 	}
 	Context().Init(req, customCtx)
 	ctx := req.GetCtx()
-	userInfo := &entity.User{}
+	user := &entity.User{}
 	resp := GfToken().GetTokenData(req)
 	if resp.Success() {
-		err := gconv.Struct(resp.Get("data"), userInfo)
+		err := gconv.Struct(resp.Get("data"), user)
 		if err != nil {
 			logger.Error(ctx, "Ctx GetUserData Error: ", err.Error())
 		}
-		if userInfo != nil {
+		logger.Debug(ctx, "user: ", user)
+		if user != nil {
 			customCtx.User = &model.ContextUser{
-				Id:       userInfo.Id,
-				Passport: userInfo.Passport,
-				Realname: userInfo.Realname,
-				Nickname: userInfo.Nickname,
-				Gender:   userInfo.Gender,
-				Avatar:   userInfo.Avatar,
-				Mobile:   userInfo.Mobile,
-				DeptId:   userInfo.DeptId,
-				RoleId:   userInfo.RoleId,
+				Id:       user.Id,
+				Passport: user.Passport,
+				Realname: user.Realname,
+				Nickname: user.Nickname,
+				Gender:   user.Gender,
+				Avatar:   user.Avatar,
+				Mobile:   user.Mobile,
+				DeptId:   user.DeptId,
+				RoleId:   user.RoleId,
 			}
 		}
 	}
