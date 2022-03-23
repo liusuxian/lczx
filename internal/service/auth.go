@@ -55,42 +55,52 @@ func loginBefore(req *ghttp.Request) (string, interface{}) {
 	var err error
 	var loginReq *v1.LoginReq
 	if err = req.Parse(&loginReq); err != nil {
-		logger.Error(ctx, "请求参数错误: ", err.(gvalid.Error).Current().Error())
-		response.Json(ctx, gcode.CodeInvalidParameter, nil)
-		return "", nil
+		errMsg := err.(gvalid.Error).Current().Error()
+		logger.Warning(ctx, "请求参数错误: ", errMsg)
+		errCode := err.(gvalid.Error).Code().Code()
+		response.Json(ctx, gcode.New(errCode, errMsg, nil), nil)
+		return "None", nil
 	}
 	logger.Debug(ctx, "loginReq: ", loginReq)
-	var userInfo *entity.User
-	userInfo, err = User().GetUserByPassportAndPassword(ctx, loginReq.Passport, loginReq.Password)
+	var user *entity.User
+	user, err = User().GetUserByPassportAndPassword(ctx, loginReq.Passport, loginReq.Password)
 	if err != nil {
 		logger.Error(ctx, "获取用户信息失败: ", err.Error())
 		response.Json(ctx, consts.CodeGetUserInfoFailed, nil)
-		return "", nil
+		return "None", nil
 	}
-	logger.Debug(ctx, "userInfo: ", userInfo)
+	logger.Debug(ctx, "user: ", user)
+	if user == nil {
+		response.Json(ctx, consts.CodeUserInfoNotExist, nil)
+		return "None", nil
+	}
 	// 唯一标识，扩展参数user data
-	return loginReq.Passport, userInfo
+	return loginReq.Passport, user
 }
 
 // 登录返回方法
 func loginAfter(req *ghttp.Request, respData gtoken.Resp) {
 	ctx := req.GetCtx()
 	logger.Debug(ctx, "loginAfter respData: ", respData)
+	userKey := respData.GetString("userKey")
+	token := respData.GetString("token")
 	if !respData.Success() {
 		response.Json(ctx, gcode.New(respData.Code, respData.Msg, nil), respData.Data)
-	} else {
+	} else if userKey != "None" {
 		response.JsonOK(ctx, &v1.LoginRes{
-			Token:   respData.GetString("token"),
-			UserKey: respData.GetString("userKey"),
+			Token:   token,
+			UserKey: userKey,
 			Uuid:    respData.GetString("uuid"),
 		})
+	} else {
+		GfToken().RemoveToken(ctx, token)
 	}
 }
 
 // 登出验证方法 return true 继续执行，否则结束执行
 func logoutBefore(req *ghttp.Request) bool {
 	ctx := req.GetCtx()
-	logger.Debugf(ctx, "logoutBefore req %v", req)
+	logger.Debugf(ctx, "logoutBefore req: %v", req)
 	return true
 }
 
@@ -104,7 +114,7 @@ func logoutAfter(req *ghttp.Request, respData gtoken.Resp) {
 // 认证验证方法 return true 继续执行，否则结束执行
 func authBefore(req *ghttp.Request) bool {
 	ctx := req.GetCtx()
-	logger.Debugf(ctx, "authBefore req %v", req)
+	logger.Debugf(ctx, "authBefore req: %v", req)
 	return true
 }
 
