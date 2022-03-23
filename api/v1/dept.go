@@ -17,7 +17,8 @@ type DeptAddReq struct {
 	Name   string `json:"name" v:"required|max-length:10|regex:^[\u4e00-\u9fa5]+$#部门名称不能为空|部门名称不能超过10个字|部门名称必须为纯中文" dc:"部门名称"` // 部门名称
 }
 type DeptAddRes struct {
-	Dept *entity.Dept `json:"dept" dc:"部门信息"` // 部门信息
+	Id   uint   `json:"id"   dc:"部门ID"` // 部门ID
+	Name string `json:"name" dc:"部门名称"` // 部门名称
 }
 
 type DeptDeleteReq struct {
@@ -34,5 +35,6 @@ type DeptUpdateReq struct {
 	Name   string `json:"name" v:"required|max-length:10|regex:^[\u4e00-\u9fa5]+$#部门名称不能为空|部门名称不能超过10个字|部门名称必须为纯中文" dc:"部门名称"` // 部门名称
 }
 type DeptUpdateRes struct {
-	Dept *entity.Dept `json:"dept" dc:"部门信息"` // 部门信息
+	Id   uint   `json:"id"   dc:"部门ID"` // 部门ID
+	Name string `json:"name" dc:"部门名称"` // 部门名称
 }
