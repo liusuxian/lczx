@@ -19,14 +19,20 @@ type DeptDao struct {
 
 // DeptColumns defines and stores column names for table dept.
 type DeptColumns struct {
-	Id   string // 部门ID
-	Name string // 部门名称
+	Id        string // 部门ID
+	Name      string // 部门名称
+	CreateAt  string // 创建时间
+	UpdateAt  string // 更新时间
+	DeletedAt string // 软删除时间
 }
 
 //  deptColumns holds the columns for table dept.
 var deptColumns = DeptColumns{
-	Id:   "id",
-	Name: "name",
+	Id:        "id",
+	Name:      "name",
+	CreateAt:  "create_at",
+	UpdateAt:  "update_at",
+	DeletedAt: "deleted_at",
 }
 
 // NewDeptDao creates and returns a new DAO object for table data access.

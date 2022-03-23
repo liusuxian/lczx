@@ -2,14 +2,19 @@ package v1
 
 import (
 	"github.com/gogf/gf/v2/frame/g"
-	"lczx/internal/model/entity"
 )
+
+// DeptInfo 部门信息
+type DeptInfo struct {
+	Id   uint   `json:"id"   dc:"部门ID"` // 部门ID
+	Name string `json:"name" dc:"部门名称"` // 部门名称
+}
 
 type DeptListReq struct {
 	g.Meta `path:"/list" tags:"List" method:"post" summary:"You first list api"`
 }
 type DeptListRes struct {
-	List []*entity.Dept `json:"list" dc:"部门列表"` // 部门列表
+	List []*DeptInfo `json:"list" dc:"部门列表"` // 部门列表
 }
 
 type DeptAddReq struct {
@@ -17,8 +22,7 @@ type DeptAddReq struct {
 	Name   string `json:"name" v:"required|max-length:10|regex:^[\u4e00-\u9fa5]+$#部门名称不能为空|部门名称不能超过10个字|部门名称必须为纯中文" dc:"部门名称"` // 部门名称
 }
 type DeptAddRes struct {
-	Id   uint   `json:"id"   dc:"部门ID"` // 部门ID
-	Name string `json:"name" dc:"部门名称"` // 部门名称
+	Dept *DeptInfo `json:"dept" dc:"部门信息"` // 部门信息
 }
 
 type DeptDeleteReq struct {
@@ -35,6 +39,5 @@ type DeptUpdateReq struct {
 	Name   string `json:"name" v:"required|max-length:10|regex:^[\u4e00-\u9fa5]+$#部门名称不能为空|部门名称不能超过10个字|部门名称必须为纯中文" dc:"部门名称"` // 部门名称
 }
 type DeptUpdateRes struct {
-	Id   uint   `json:"id"   dc:"部门ID"` // 部门ID
-	Name string `json:"name" dc:"部门名称"` // 部门名称
+	Dept *DeptInfo `json:"dept" dc:"部门信息"` // 部门信息
 }

@@ -4,8 +4,15 @@
 
 package entity
 
+import (
+	"github.com/gogf/gf/v2/os/gtime"
+)
+
 // Dept is the golang structure for table dept.
 type Dept struct {
-	Id   uint   `json:"id"   description:"部门ID"` // 部门ID
-	Name string `json:"name" description:"部门名称"` // 部门名称
+	Id        uint        `json:"id"        description:"部门ID"`  // 部门ID
+	Name      string      `json:"name"      description:"部门名称"`  // 部门名称
+	CreateAt  *gtime.Time `json:"createAt"  description:"创建时间"`  // 创建时间
+	UpdateAt  *gtime.Time `json:"updateAt"  description:"更新时间"`  // 更新时间
+	DeletedAt *gtime.Time `json:"deletedAt" description:"软删除时间"` // 软删除时间
 }
