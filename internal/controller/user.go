@@ -35,7 +35,7 @@ func (c *cUser) GetUserInfo(ctx context.Context, req *v1.UserInfoReq) (res *v1.U
 		return
 	}
 
-	response.Json(ctx, consts.CodeGetUserInfoFailed, nil)
+	response.Json(ctx, consts.CodeGetUserFailed, nil)
 	return
 }
 
@@ -45,7 +45,7 @@ func (c *cUser) UserCreate(ctx context.Context, req *v1.UserCreateReq) (res *v1.
 	err = service.User().CreateUser(ctx, req)
 	if err != nil {
 		logger.Error(ctx, "UserCreate Error: ", err.Error())
-		response.Json(ctx, consts.CodeCreateUserInfoFailed, nil)
+		response.Json(ctx, consts.CodeAddUserFailed, nil)
 		return
 	}
 

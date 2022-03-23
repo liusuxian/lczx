@@ -66,16 +66,16 @@ func loginBefore(req *ghttp.Request) (string, interface{}) {
 	user, err = User().GetUserByPassportAndPassword(ctx, loginReq.Passport, loginReq.Password)
 	if err != nil {
 		logger.Error(ctx, "获取用户信息失败: ", err.Error())
-		response.Json(ctx, consts.CodeGetUserInfoFailed, nil)
+		response.Json(ctx, consts.CodeGetUserFailed, nil)
 		return "None", nil
 	}
 	logger.Debug(ctx, "user: ", user)
 	if user == nil {
-		response.Json(ctx, consts.CodeUserInfoNotExist, nil)
+		response.Json(ctx, consts.CodeUserNotExist, nil)
 		return "None", nil
 	}
 	// 唯一标识，扩展参数user data
-	return loginReq.Passport, user
+	return user.Passport, user
 }
 
 // 登录返回方法

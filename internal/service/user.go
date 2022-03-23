@@ -20,12 +20,8 @@ func User() *sUser {
 
 // GetUserByPassportAndPassword 通过账号和密码获取用户信息
 func (s *sUser) GetUserByPassportAndPassword(ctx context.Context, passport, password string) (user *entity.User, err error) {
-	err = dao.User.Ctx(ctx).Where(do.User{
-		Passport: passport,
-		Password: password,
-		Status:   0,
-	}).Scan(&user)
-	return user, err
+	err = dao.User.Ctx(ctx).Where(do.User{Passport: passport, Password: password, Status: 0}).Scan(&user)
+	return
 }
 
 // CreateUser 创建用户
