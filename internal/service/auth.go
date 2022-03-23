@@ -74,6 +74,12 @@ func loginBefore(req *ghttp.Request) (string, interface{}) {
 		response.Json(ctx, consts.CodeUserNotExist, nil)
 		return "None", nil
 	}
+	err = Session().SetUser(ctx, user)
+	if err != nil {
+		logger.Error(ctx, "设置用户信息到session中失败: ", err.Error())
+		response.Json(ctx, gcode.CodeInternalError, nil)
+		return "None", nil
+	}
 	// 唯一标识，扩展参数user data
 	return user.Passport, user
 }

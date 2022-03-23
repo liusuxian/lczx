@@ -38,7 +38,7 @@ var (
 				)
 				err = service.InitGfToken(ctx).Middleware(ctx, group)
 				if err != nil {
-					logger.Panic(ctx, "GfToken Start Error: ", err.Error())
+					logger.Panic(ctx, "Init GfToken Error: ", err.Error())
 				}
 				group.Group("/user", func(group *ghttp.RouterGroup) {
 					group.Bind(controller.User)

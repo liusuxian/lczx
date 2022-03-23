@@ -28,15 +28,15 @@ func (s *sMiddleware) Ctx(req *ghttp.Request) {
 	Context().Init(req, customCtx)
 	ctx := req.GetCtx()
 	user := &entity.User{}
-	resp := GfToken().GetTokenData(req)
-	if resp.Success() {
-		err := gconv.Struct(resp.Get("data"), user)
+	respData := GfToken().GetTokenData(req)
+	if respData.Success() {
+		err := gconv.Struct(respData.Get("data"), user)
 		if err != nil {
 			logger.Error(ctx, "Ctx GetUserData Error: ", err.Error())
 		}
 		logger.Debug(ctx, "user: ", user)
 		if user != nil {
-			customCtx.User = &model.ContextUser{
+			Context().SetUser(ctx, &model.ContextUser{
 				Id:       user.Id,
 				Passport: user.Passport,
 				Realname: user.Realname,
@@ -46,7 +46,7 @@ func (s *sMiddleware) Ctx(req *ghttp.Request) {
 				Mobile:   user.Mobile,
 				DeptId:   user.DeptId,
 				RoleId:   user.RoleId,
-			}
+			})
 		}
 	}
 	// 执行下一步请求逻辑
