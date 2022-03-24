@@ -23,6 +23,21 @@ func (s *sDept) GetDeptList(ctx context.Context) (deptList []*entity.Dept, err e
 	return
 }
 
+// GetDeptById 通过部门ID获取部门信息
+func (s *sDept) GetDeptById(ctx context.Context, id uint) (dept *entity.Dept, err error) {
+	err = dao.Dept.Ctx(ctx).Where(do.Dept{Id: id}).Scan(&dept)
+	return
+}
+
+// IsDeptNameAvailable 部门名称是否可用
+func (s *sDept) IsDeptNameAvailable(ctx context.Context, name string) (bool, error) {
+	count, err := dao.Dept.Ctx(ctx).Where(do.Dept{Name: name}).Count()
+	if err != nil {
+		return false, err
+	}
+	return count == 0, nil
+}
+
 // AddDept 新增部门
 func (s *sDept) AddDept(ctx context.Context, name string) (id int64, err error) {
 	var available bool
@@ -75,20 +90,5 @@ func (s *sDept) UpdateDept(ctx context.Context, id uint, name string) (updateId 
 		_, err = dao.Dept.Ctx(ctx).Data(do.Dept{Name: name}).Where(do.Dept{Id: id}).Update()
 		return err
 	})
-	return
-}
-
-// IsDeptNameAvailable 部门名称是否可用
-func (s *sDept) IsDeptNameAvailable(ctx context.Context, name string) (bool, error) {
-	count, err := dao.Dept.Ctx(ctx).Where(do.Dept{Name: name}).Count()
-	if err != nil {
-		return false, err
-	}
-	return count == 0, nil
-}
-
-// GetDeptById 通过部门ID获取部门信息
-func (s *sDept) GetDeptById(ctx context.Context, id uint) (dept *entity.Dept, err error) {
-	err = dao.Dept.Ctx(ctx).Where(do.Dept{Id: id}).Scan(&dept)
 	return
 }
