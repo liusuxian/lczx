@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"github.com/gogf/gf/v2/database/gdb"
+	"github.com/gogf/gf/v2/errors/gerror"
 	v1 "lczx/api/v1"
 	"lczx/internal/model/entity"
 	"lczx/internal/service/internal/dao"
@@ -49,6 +50,7 @@ func (s *sDept) AddDept(ctx context.Context, name string) (id int64, err error) 
 		return
 	}
 	if !available {
+		err = gerror.Newf(`部门名称[%s]已存在`, name)
 		return
 	}
 	err = dao.Dept.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
@@ -59,16 +61,16 @@ func (s *sDept) AddDept(ctx context.Context, name string) (id int64, err error) 
 }
 
 // DeleteDept 删除部门
-func (s *sDept) DeleteDept(ctx context.Context, id uint) (deleteId uint, err error) {
+func (s *sDept) DeleteDept(ctx context.Context, id uint) (err error) {
 	var deptExists bool
 	deptExists, err = s.DeptExistsById(ctx, id)
 	if err != nil {
 		return
 	}
 	if !deptExists {
+		err = gerror.Newf(`部门ID[%d]不存在`, id)
 		return
 	}
-	deleteId = id
 	err = dao.Dept.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		_, err = dao.Dept.Ctx(ctx).Delete(do.Dept{Id: id})
 		return err
@@ -77,16 +79,16 @@ func (s *sDept) DeleteDept(ctx context.Context, id uint) (deleteId uint, err err
 }
 
 // UpdateDept 修改部门
-func (s *sDept) UpdateDept(ctx context.Context, req *v1.DeptUpdateReq) (updateId uint, err error) {
+func (s *sDept) UpdateDept(ctx context.Context, req *v1.DeptUpdateReq) (err error) {
 	var deptExists bool
 	deptExists, err = s.DeptExistsById(ctx, req.Id)
 	if err != nil {
 		return
 	}
 	if !deptExists {
+		err = gerror.Newf(`部门ID[%d]不存在`, req.Id)
 		return
 	}
-	updateId = req.Id
 	err = dao.Dept.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		_, err = dao.Dept.Ctx(ctx).Data(do.Dept{Name: req.Name}).Where(do.Dept{Id: req.Id}).Update()
 		return err

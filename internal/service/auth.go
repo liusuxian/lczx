@@ -8,10 +8,10 @@ import (
 	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/util/gvalid"
 	v1 "lczx/api/v1"
+	"lczx/internal/code"
 	"lczx/internal/consts"
 	"lczx/internal/model/entity"
 	"lczx/utility/logger"
-	"lczx/utility/response"
 	"net/http"
 )
 
@@ -55,38 +55,45 @@ func loginBefore(req *ghttp.Request) (string, interface{}) {
 	var err error
 	var loginReq *v1.LoginReq
 	if err = req.Parse(&loginReq); err != nil {
-		errMsg := err.(gvalid.Error).Current().Error()
-		logger.Warning(ctx, "请求参数错误: ", errMsg)
 		errCode := err.(gvalid.Error).Code().Code()
-		response.Json(ctx, gcode.New(errCode, errMsg, nil), nil)
-		return "None", nil
+		errMsg := err.(gvalid.Error).Current().Error()
+		_ = req.Response.WriteJsonExit(gtoken.Resp{
+			Code: errCode,
+			Msg:  errMsg,
+		})
 	}
 	// 通过账号和密码获取用户信息
 	logger.Debug(ctx, "loginReq: ", loginReq)
 	var user *entity.User
 	user, err = User().GetUserByPassportAndPassword(ctx, loginReq.Passport, loginReq.Password)
 	if err != nil {
-		logger.Error(ctx, "获取用户信息失败: ", err.Error())
-		response.Json(ctx, consts.CodeGetUserFailed, nil)
-		return "None", nil
+		_ = req.Response.WriteJsonExit(gtoken.Resp{
+			Code: code.GetUserFailed.Code(),
+			Msg:  code.GetUserFailed.Message(),
+		})
 	}
 	// 判读用户信息
 	logger.Debug(ctx, "user: ", user)
 	if user == nil {
-		response.Json(ctx, consts.CodeUserNotExist, nil)
-		return "None", nil
+		_ = req.Response.WriteJsonExit(gtoken.Resp{
+			Code: code.UserNotExist.Code(),
+			Msg:  code.UserNotExist.Message(),
+		})
 	}
 	// 判断用户状态
 	if user.Status == consts.UserStatusDisabled {
-		response.Json(ctx, consts.CodeUserDisabled, nil)
-		return "None", nil
+		_ = req.Response.WriteJsonExit(gtoken.Resp{
+			Code: code.UserDisabled.Code(),
+			Msg:  code.UserDisabled.Message(),
+		})
 	}
 	// 设置用户信息到session中
 	err = Session().SetUser(ctx, user)
 	if err != nil {
-		logger.Error(ctx, "设置用户信息到session中失败: ", err.Error())
-		response.Json(ctx, gcode.CodeInternalError, nil)
-		return "None", nil
+		_ = req.Response.WriteJsonExit(gtoken.Resp{
+			Code: gcode.CodeInternalError.Code(),
+			Msg:  gcode.CodeInternalError.Message(),
+		})
 	}
 	// 唯一标识，扩展参数user data
 	return user.Passport, user
@@ -96,18 +103,14 @@ func loginBefore(req *ghttp.Request) (string, interface{}) {
 func loginAfter(req *ghttp.Request, respData gtoken.Resp) {
 	ctx := req.GetCtx()
 	logger.Debug(ctx, "loginAfter respData: ", respData)
-	userKey := respData.GetString("userKey")
-	token := respData.GetString("token")
 	if !respData.Success() {
-		response.Json(ctx, gcode.New(respData.Code, respData.Msg, nil), respData.Data)
-	} else if userKey != "None" {
-		response.JsonOK(ctx, &v1.LoginRes{
-			Token:   token,
-			UserKey: userKey,
+		_ = req.Response.WriteJson(respData)
+	} else {
+		_ = req.Response.WriteJson(&v1.LoginRes{
+			Token:   respData.GetString("token"),
+			UserKey: respData.GetString("userKey"),
 			Uuid:    respData.GetString("uuid"),
 		})
-	} else {
-		GfToken().RemoveToken(ctx, token)
 	}
 }
 
@@ -139,8 +142,12 @@ func authAfter(req *ghttp.Request, respData gtoken.Resp) {
 	if req.Method == "OPTIONS" || respData.Success() {
 		req.Middleware.Next()
 	} else if respData.Code == gtoken.UNAUTHORIZED {
-		response.Json(ctx, gcode.New(http.StatusUnauthorized, respData.Msg, nil), respData.Data)
+		_ = req.Response.WriteJson(gtoken.Resp{
+			Code: http.StatusUnauthorized,
+			Msg:  respData.Msg,
+			Data: respData.Data,
+		})
 	} else {
-		response.Json(ctx, gcode.New(respData.Code, respData.Msg, nil), respData.Data)
+		_ = req.Response.WriteJson(respData)
 	}
 }

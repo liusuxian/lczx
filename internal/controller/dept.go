@@ -2,13 +2,13 @@ package controller
 
 import (
 	"context"
+	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/util/gconv"
 	v1 "lczx/api/v1"
-	"lczx/internal/consts"
+	"lczx/internal/code"
 	"lczx/internal/model/entity"
 	"lczx/internal/service"
 	"lczx/utility/logger"
-	"lczx/utility/response"
 )
 
 var (
@@ -22,8 +22,7 @@ func (c *cDept) List(ctx context.Context, req *v1.DeptListReq) (res *v1.DeptList
 	var deptList []*entity.Dept
 	deptList, err = service.Dept().GetDeptList(ctx)
 	if err != nil {
-		logger.Error(ctx, "GetDeptList Error: ", err.Error())
-		response.Json(ctx, consts.CodeGetDeptListFailed, nil)
+		err = gerror.WrapCode(code.GetDeptListFailed, err)
 		return
 	}
 
@@ -31,7 +30,7 @@ func (c *cDept) List(ctx context.Context, req *v1.DeptListReq) (res *v1.DeptList
 	for k, v := range deptList {
 		deptInfoList[k] = &v1.DeptInfo{Id: v.Id, Name: v.Name}
 	}
-	response.JsonOK(ctx, &v1.DeptListRes{List: deptInfoList})
+	res = &v1.DeptListRes{List: deptInfoList}
 	return
 }
 
@@ -41,52 +40,37 @@ func (c *cDept) Add(ctx context.Context, req *v1.DeptAddReq) (res *v1.DeptAddRes
 	var deptId int64
 	deptId, err = service.Dept().AddDept(ctx, req.Name)
 	if err != nil {
-		logger.Error(ctx, "Add Error: ", err.Error())
-		response.Json(ctx, consts.CodeAddDeptFailed, nil)
+		err = gerror.WrapCode(code.AddDeptFailed, err)
 		return
 	}
 
 	newDeptId := gconv.Uint(deptId)
-	if newDeptId > 0 {
-		response.JsonOK(ctx, &v1.DeptAddRes{Dept: &v1.DeptInfo{Id: newDeptId, Name: req.Name}})
-	} else {
-		response.Json(ctx, consts.CodeDeptIDNotExist, nil)
-	}
+	res = &v1.DeptAddRes{Dept: &v1.DeptInfo{Id: newDeptId, Name: req.Name}}
 	return
 }
 
 // Delete 删除部门
 func (c *cDept) Delete(ctx context.Context, req *v1.DeptDeleteReq) (res *v1.DeptDeleteRes, err error) {
 	logger.Debug(ctx, "Delete Req: ", req)
-	var deleteId uint
-	deleteId, err = service.Dept().DeleteDept(ctx, req.Id)
+	err = service.Dept().DeleteDept(ctx, req.Id)
 	if err != nil {
-		logger.Error(ctx, "Delete Error: ", err.Error())
-		response.Json(ctx, consts.CodeDeleteDeptFailed, nil)
+		err = gerror.WrapCode(code.DeleteDeptFailed, err)
 		return
 	}
-	if deleteId > 0 {
-		response.JsonOK(ctx, &v1.DeptDeleteRes{Id: deleteId})
-	} else {
-		response.Json(ctx, consts.CodeDeptIDNotExist, nil)
-	}
+
+	res = &v1.DeptDeleteRes{Id: req.Id}
 	return
 }
 
 // Update 修改部门
 func (c *cDept) Update(ctx context.Context, req *v1.DeptUpdateReq) (res *v1.DeptUpdateRes, err error) {
 	logger.Debug(ctx, "Update Req: ", req)
-	var updateId uint
-	updateId, err = service.Dept().UpdateDept(ctx, req)
+	err = service.Dept().UpdateDept(ctx, req)
 	if err != nil {
-		logger.Error(ctx, "Update Error: ", err.Error())
-		response.Json(ctx, consts.CodeUpdateDeptFailed, nil)
+		err = gerror.WrapCode(code.UpdateDeptFailed, err)
 		return
 	}
-	if updateId > 0 {
-		response.JsonOK(ctx, &v1.DeptUpdateRes{Dept: &v1.DeptInfo{Id: updateId, Name: req.Name}})
-	} else {
-		response.Json(ctx, consts.CodeDeptIDNotExist, nil)
-	}
+
+	res = &v1.DeptUpdateRes{Dept: &v1.DeptInfo{Id: req.Id, Name: req.Name}}
 	return
 }

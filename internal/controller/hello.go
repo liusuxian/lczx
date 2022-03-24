@@ -2,8 +2,8 @@ package controller
 
 import (
 	"context"
-	"lczx/utility/response"
-
+	"github.com/goflyfox/gtoken/gtoken"
+	"github.com/gogf/gf/v2/frame/g"
 	"lczx/api/v1"
 )
 
@@ -14,6 +14,6 @@ var (
 type cHello struct{}
 
 func (c *cHello) Hello(ctx context.Context, req *v1.HelloReq) (res *v1.HelloRes, err error) {
-	response.JsonOK(ctx, "Hello World!")
+	err = g.RequestFromCtx(ctx).Response.WriteJson(gtoken.Succ("Hello World!"))
 	return
 }
