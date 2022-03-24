@@ -50,7 +50,7 @@ func (c *cDept) Add(ctx context.Context, req *v1.DeptAddReq) (res *v1.DeptAddRes
 	if newDeptId > 0 {
 		response.JsonOK(ctx, &v1.DeptAddRes{Dept: &v1.DeptInfo{Id: newDeptId, Name: req.Name}})
 	} else {
-		response.Json(ctx, consts.CodeAddDeptFailed, nil)
+		response.Json(ctx, consts.CodeDeptIDNotExist, nil)
 	}
 	return
 }
@@ -68,7 +68,7 @@ func (c *cDept) Delete(ctx context.Context, req *v1.DeptDeleteReq) (res *v1.Dept
 	if deleteId > 0 {
 		response.JsonOK(ctx, &v1.DeptDeleteRes{Id: deleteId})
 	} else {
-		response.Json(ctx, consts.CodeDeleteDeptNotExist, nil)
+		response.Json(ctx, consts.CodeDeptIDNotExist, nil)
 	}
 	return
 }
@@ -86,7 +86,7 @@ func (c *cDept) Update(ctx context.Context, req *v1.DeptUpdateReq) (res *v1.Dept
 	if updateId > 0 {
 		response.JsonOK(ctx, &v1.DeptUpdateRes{Dept: &v1.DeptInfo{Id: updateId, Name: req.Name}})
 	} else {
-		response.Json(ctx, consts.CodeUpdateDeptNotExist, nil)
+		response.Json(ctx, consts.CodeDeptIDNotExist, nil)
 	}
 	return
 }

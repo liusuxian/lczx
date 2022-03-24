@@ -78,7 +78,7 @@ func loginBefore(req *ghttp.Request) (string, interface{}) {
 	}
 	// 判断用户状态
 	if user.Status == consts.UserStatusDisabled {
-		response.Json(ctx, consts.CodeUserStatusDisabled, nil)
+		response.Json(ctx, consts.CodeUserDisabled, nil)
 		return "None", nil
 	}
 	// 设置用户信息到session中
