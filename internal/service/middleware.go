@@ -34,7 +34,6 @@ func (s *sMiddleware) Ctx(req *ghttp.Request) {
 		if err != nil {
 			logger.Error(ctx, "Ctx GetUserData Error: ", err.Error())
 		}
-		logger.Debug(ctx, "user: ", user)
 		if user != nil {
 			Context().SetUser(ctx, &model.ContextUser{
 				Id:       user.Id,

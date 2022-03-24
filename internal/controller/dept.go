@@ -8,7 +8,6 @@ import (
 	"lczx/internal/code"
 	"lczx/internal/model/entity"
 	"lczx/internal/service"
-	"lczx/utility/logger"
 )
 
 var (
@@ -36,7 +35,6 @@ func (c *cDept) List(ctx context.Context, req *v1.DeptListReq) (res *v1.DeptList
 
 // Add 新增部门
 func (c *cDept) Add(ctx context.Context, req *v1.DeptAddReq) (res *v1.DeptAddRes, err error) {
-	logger.Debug(ctx, "Add Req: ", req)
 	var deptId int64
 	deptId, err = service.Dept().AddDept(ctx, req.Name)
 	if err != nil {
@@ -51,7 +49,6 @@ func (c *cDept) Add(ctx context.Context, req *v1.DeptAddReq) (res *v1.DeptAddRes
 
 // Delete 删除部门
 func (c *cDept) Delete(ctx context.Context, req *v1.DeptDeleteReq) (res *v1.DeptDeleteRes, err error) {
-	logger.Debug(ctx, "Delete Req: ", req)
 	err = service.Dept().DeleteDept(ctx, req.Id)
 	if err != nil {
 		err = gerror.WrapCode(code.DeleteDeptFailed, err)
@@ -64,7 +61,6 @@ func (c *cDept) Delete(ctx context.Context, req *v1.DeptDeleteReq) (res *v1.Dept
 
 // Update 修改部门
 func (c *cDept) Update(ctx context.Context, req *v1.DeptUpdateReq) (res *v1.DeptUpdateRes, err error) {
-	logger.Debug(ctx, "Update Req: ", req)
 	err = service.Dept().UpdateDept(ctx, req)
 	if err != nil {
 		err = gerror.WrapCode(code.UpdateDeptFailed, err)

@@ -63,7 +63,6 @@ func loginBefore(req *ghttp.Request) (string, interface{}) {
 		})
 	}
 	// 通过账号和密码获取用户信息
-	logger.Debug(ctx, "loginReq: ", loginReq)
 	var user *entity.User
 	user, err = User().GetUserByPassportAndPassword(ctx, loginReq.Passport, loginReq.Password)
 	if err != nil {
@@ -73,7 +72,6 @@ func loginBefore(req *ghttp.Request) (string, interface{}) {
 		})
 	}
 	// 判读用户信息
-	logger.Debug(ctx, "user: ", user)
 	if user == nil {
 		_ = req.Response.WriteJsonExit(gtoken.Resp{
 			Code: code.UserNotExist.Code(),
@@ -102,7 +100,7 @@ func loginBefore(req *ghttp.Request) (string, interface{}) {
 // 登录返回方法
 func loginAfter(req *ghttp.Request, respData gtoken.Resp) {
 	ctx := req.GetCtx()
-	logger.Debug(ctx, "loginAfter respData: ", respData)
+	logger.Debug(ctx, "loginAfter: ", respData)
 	if !respData.Success() {
 		_ = req.Response.WriteJson(respData)
 	} else {
@@ -131,14 +129,14 @@ func logoutAfter(req *ghttp.Request, respData gtoken.Resp) {
 // 认证验证方法 return true 继续执行，否则结束执行
 func authBefore(req *ghttp.Request) bool {
 	ctx := req.GetCtx()
-	logger.Debugf(ctx, "authBefore req: %v", req)
+	logger.Debugf(ctx, "authBefore req: %v", req.GetClientIp())
 	return true
 }
 
 // 认证返回方法
 func authAfter(req *ghttp.Request, respData gtoken.Resp) {
 	ctx := req.GetCtx()
-	logger.Debug(ctx, "authAfter respData: ", respData)
+	logger.Debug(ctx, "authAfter: ", respData)
 	if req.Method == "OPTIONS" || respData.Success() {
 		req.Middleware.Next()
 	} else if respData.Code == gtoken.UNAUTHORIZED {
