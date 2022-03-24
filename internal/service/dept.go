@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"github.com/gogf/gf/v2/database/gdb"
+	v1 "lczx/api/v1"
 	"lczx/internal/model/entity"
 	"lczx/internal/service/internal/dao"
 	"lczx/internal/service/internal/do"
@@ -76,18 +77,18 @@ func (s *sDept) DeleteDept(ctx context.Context, id uint) (deleteId uint, err err
 }
 
 // UpdateDept 修改部门
-func (s *sDept) UpdateDept(ctx context.Context, id uint, name string) (updateId uint, err error) {
+func (s *sDept) UpdateDept(ctx context.Context, req *v1.DeptUpdateReq) (updateId uint, err error) {
 	var deptExists bool
-	deptExists, err = s.DeptExistsById(ctx, id)
+	deptExists, err = s.DeptExistsById(ctx, req.Id)
 	if err != nil {
 		return
 	}
 	if !deptExists {
 		return
 	}
-	updateId = id
+	updateId = req.Id
 	err = dao.Dept.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
-		_, err = dao.Dept.Ctx(ctx).Data(do.Dept{Name: name}).Where(do.Dept{Id: id}).Update()
+		_, err = dao.Dept.Ctx(ctx).Data(do.Dept{Name: req.Name}).Where(do.Dept{Id: req.Id}).Update()
 		return err
 	})
 	return

@@ -77,7 +77,7 @@ func (c *cDept) Delete(ctx context.Context, req *v1.DeptDeleteReq) (res *v1.Dept
 func (c *cDept) Update(ctx context.Context, req *v1.DeptUpdateReq) (res *v1.DeptUpdateRes, err error) {
 	logger.Debug(ctx, "Update Req: ", req)
 	var updateId uint
-	updateId, err = service.Dept().UpdateDept(ctx, req.Id, req.Name)
+	updateId, err = service.Dept().UpdateDept(ctx, req)
 	if err != nil {
 		logger.Error(ctx, "Update Error: ", err.Error())
 		response.Json(ctx, consts.CodeUpdateDeptFailed, nil)
