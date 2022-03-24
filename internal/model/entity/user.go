@@ -15,7 +15,7 @@ type User struct {
 	Password  string      `json:"password"  description:"密码"`                                    // 密码
 	Realname  string      `json:"realname"  description:"姓名"`                                    // 姓名
 	Nickname  string      `json:"nickname"  description:"昵称"`                                    // 昵称
-	Gender    uint        `json:"gender"    description:"性别 0: 未设置 1: 男 2: 女"`                   // 性别 0: 未设置 1: 男 2: 女
+	Gender    uint        `json:"gender"    description:"性别 1: 男 2: 女"`                          // 性别 1: 男 2: 女
 	Avatar    string      `json:"avatar"    description:"头像地址"`                                  // 头像地址
 	Mobile    string      `json:"mobile"    description:"手机号"`                                   // 手机号
 	DeptId    uint        `json:"deptId"    description:"部门ID"`                                  // 部门ID

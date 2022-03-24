@@ -18,7 +18,7 @@ type ContextUser struct {
 	Passport string // 账号
 	Realname string // 姓名
 	Nickname string // 昵称
-	Gender   uint   // 性别 0: 未设置 1: 男 2: 女
+	Gender   uint   // 性别 1: 男 2: 女
 	Avatar   string // 头像地址
 	Mobile   string // 手机号
 	DeptId   uint   // 部门ID

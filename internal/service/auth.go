@@ -104,32 +104,34 @@ func loginAfter(req *ghttp.Request, respData gtoken.Resp) {
 	if !respData.Success() {
 		_ = req.Response.WriteJson(respData)
 	} else {
-		_ = req.Response.WriteJson(&v1.LoginRes{
+		_ = req.Response.WriteJson(gtoken.Succ(&v1.LoginRes{
 			Token:   respData.GetString("token"),
 			UserKey: respData.GetString("userKey"),
 			Uuid:    respData.GetString("uuid"),
-		})
+		}))
 	}
 }
 
 // 登出验证方法 return true 继续执行，否则结束执行
 func logoutBefore(req *ghttp.Request) bool {
 	ctx := req.GetCtx()
-	logger.Debugf(ctx, "logoutBefore req: %v", req)
+	logger.Debug(ctx, "logoutBefore: ", req.GetClientIp())
 	return true
 }
 
 // 登出返回方法
 func logoutAfter(req *ghttp.Request, respData gtoken.Resp) {
 	ctx := req.GetCtx()
-	logger.Debug(ctx, "logoutAfter respData: ", respData)
+	logger.Debug(ctx, "logoutAfter: ", respData)
+	_ = Session().RemoveUser(ctx)
+	Context().Init(req, nil)
 	_ = req.Response.WriteJson(respData)
 }
 
 // 认证验证方法 return true 继续执行，否则结束执行
 func authBefore(req *ghttp.Request) bool {
 	ctx := req.GetCtx()
-	logger.Debugf(ctx, "authBefore req: %v", req.GetClientIp())
+	logger.Debug(ctx, "authBefore: ", req.GetClientIp())
 	return true
 }
 

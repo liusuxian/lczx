@@ -17,7 +17,7 @@ type User struct {
 	Password  interface{} // 密码
 	Realname  interface{} // 姓名
 	Nickname  interface{} // 昵称
-	Gender    interface{} // 性别 0: 未设置 1: 男 2: 女
+	Gender    interface{} // 性别 1: 男 2: 女
 	Avatar    interface{} // 头像地址
 	Mobile    interface{} // 手机号
 	DeptId    interface{} // 部门ID

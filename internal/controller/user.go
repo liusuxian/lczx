@@ -2,11 +2,12 @@ package controller
 
 import (
 	"context"
+	"github.com/gogf/gf/v2/errors/gerror"
+	"github.com/gogf/gf/v2/util/gconv"
 	v1 "lczx/api/v1"
-	"lczx/internal/consts"
+	"lczx/internal/code"
+	"lczx/internal/model/entity"
 	"lczx/internal/service"
-	"lczx/utility/logger"
-	"lczx/utility/response"
 )
 
 var (
@@ -15,40 +16,54 @@ var (
 
 type cUser struct{}
 
-// GetUserInfo 获取用户信息
-func (c *cUser) GetUserInfo(ctx context.Context, req *v1.UserInfoReq) (res *v1.UserInfoRes, err error) {
-	userInfo := service.Context().Get(ctx).User
-	if userInfo != nil && userInfo.Id > 0 {
-		response.JsonOK(ctx, &v1.UserInfoRes{
-			UserInfo: &v1.UserInfo{
-				Id:       userInfo.Id,
-				Passport: userInfo.Passport,
-				Realname: userInfo.Realname,
-				Nickname: userInfo.Nickname,
-				Gender:   userInfo.Gender,
-				Avatar:   userInfo.Avatar,
-				Mobile:   userInfo.Mobile,
-				DeptId:   userInfo.DeptId,
-				RoleId:   userInfo.RoleId,
-			},
-		})
-		return
+// Info 获取用户信息
+func (c *cUser) Info(ctx context.Context, req *v1.UserInfoReq) (res *v1.UserInfoRes, err error) {
+	user := service.Context().Get(ctx).User
+	res = &v1.UserInfoRes{
+		User: &v1.UserInfo{
+			Id:       user.Id,
+			Passport: user.Passport,
+			Realname: user.Realname,
+			Nickname: user.Nickname,
+			Gender:   user.Gender,
+			Avatar:   user.Avatar,
+			Mobile:   user.Mobile,
+			DeptId:   user.DeptId,
+			RoleId:   user.RoleId,
+		},
 	}
-
-	response.Json(ctx, consts.CodeGetUserFailed, nil)
 	return
 }
 
-// UserCreate 创建用户
-func (c *cUser) UserCreate(ctx context.Context, req *v1.UserCreateReq) (res *v1.UserCreateRes, err error) {
-	logger.Debug(ctx, "UserCreate Req: ", req)
-	err = service.User().CreateUser(ctx, req)
+// Add 新增用户
+func (c *cUser) Add(ctx context.Context, req *v1.UserAddReq) (res *v1.UserAddRes, err error) {
+	var id int64
+	id, err = service.User().AddUser(ctx, req)
 	if err != nil {
-		logger.Error(ctx, "UserCreate Error: ", err.Error())
-		response.Json(ctx, consts.CodeAddUserFailed, nil)
+		err = gerror.WrapCode(code.AddUserFailed, err)
 		return
 	}
 
-	response.JsonOK(ctx, &v1.UserCreateRes{})
+	var user *entity.User
+	newId := gconv.Uint(id)
+	user, err = service.User().GetUserById(ctx, newId)
+	if err != nil {
+		err = gerror.WrapCode(code.AddUserFailed, err)
+		return
+	}
+
+	res = &v1.UserAddRes{
+		User: &v1.UserInfo{
+			Id:       user.Id,
+			Passport: user.Passport,
+			Realname: user.Realname,
+			Nickname: user.Nickname,
+			Gender:   user.Gender,
+			Avatar:   user.Avatar,
+			Mobile:   user.Mobile,
+			DeptId:   user.DeptId,
+			RoleId:   user.RoleId,
+		},
+	}
 	return
 }

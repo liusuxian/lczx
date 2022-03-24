@@ -24,7 +24,7 @@ type UserColumns struct {
 	Password  string // 密码
 	Realname  string // 姓名
 	Nickname  string // 昵称
-	Gender    string // 性别 0: 未设置 1: 男 2: 女
+	Gender    string // 性别 1: 男 2: 女
 	Avatar    string // 头像地址
 	Mobile    string // 手机号
 	DeptId    string // 部门ID
