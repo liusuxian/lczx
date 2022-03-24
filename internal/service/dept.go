@@ -16,12 +16,6 @@ func Dept() *sDept {
 	return &insDept
 }
 
-// GetDeptList 获取部门列表
-func (s *sDept) GetDeptList(ctx context.Context) (deptList []*entity.Dept, err error) {
-	err = dao.Dept.Ctx(ctx).Scan(&deptList)
-	return
-}
-
 // IsDeptNameAvailable 部门名称是否可用
 func (s *sDept) IsDeptNameAvailable(ctx context.Context, name string) (bool, error) {
 	count, err := dao.Dept.Ctx(ctx).Where(do.Dept{Name: name}).Count()
@@ -31,13 +25,19 @@ func (s *sDept) IsDeptNameAvailable(ctx context.Context, name string) (bool, err
 	return count == 0, nil
 }
 
-// ExistsById 通过部门ID判断部门信息是否存在
-func (s *sDept) ExistsById(ctx context.Context, id uint) (bool, error) {
+// DeptExistsById 通过部门ID判断部门信息是否存在
+func (s *sDept) DeptExistsById(ctx context.Context, id uint) (bool, error) {
 	count, err := dao.Dept.Ctx(ctx).Where(do.Dept{Id: id}).Count()
 	if err != nil {
 		return false, err
 	}
 	return count != 0, nil
+}
+
+// GetDeptList 获取部门列表
+func (s *sDept) GetDeptList(ctx context.Context) (deptList []*entity.Dept, err error) {
+	err = dao.Dept.Ctx(ctx).Scan(&deptList)
+	return
 }
 
 // AddDept 新增部门
@@ -50,20 +50,21 @@ func (s *sDept) AddDept(ctx context.Context, name string) (id int64, err error) 
 	if !available {
 		return
 	}
-	return id, dao.Dept.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
+	err = dao.Dept.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		id, err = dao.Dept.Ctx(ctx).Data(do.Dept{Name: name}).InsertAndGetId()
 		return err
 	})
+	return
 }
 
 // DeleteDept 删除部门
 func (s *sDept) DeleteDept(ctx context.Context, id uint) (deleteId uint, err error) {
-	var isExists bool
-	isExists, err = s.ExistsById(ctx, id)
+	var deptExists bool
+	deptExists, err = s.DeptExistsById(ctx, id)
 	if err != nil {
 		return
 	}
-	if !isExists {
+	if !deptExists {
 		return
 	}
 	deleteId = id
@@ -76,12 +77,12 @@ func (s *sDept) DeleteDept(ctx context.Context, id uint) (deleteId uint, err err
 
 // UpdateDept 修改部门
 func (s *sDept) UpdateDept(ctx context.Context, id uint, name string) (updateId uint, err error) {
-	var isExists bool
-	isExists, err = s.ExistsById(ctx, id)
+	var deptExists bool
+	deptExists, err = s.DeptExistsById(ctx, id)
 	if err != nil {
 		return
 	}
-	if !isExists {
+	if !deptExists {
 		return
 	}
 	updateId = id
