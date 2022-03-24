@@ -11,14 +11,14 @@ type DeptInfo struct {
 }
 
 type DeptListReq struct {
-	g.Meta `path:"/list" tags:"List" method:"post" summary:"You first list api"`
+	g.Meta `path:"/list" tags:"DeptList" method:"post" summary:"You first /dept/list api"`
 }
 type DeptListRes struct {
 	List []*DeptInfo `json:"list" dc:"部门列表"` // 部门列表
 }
 
 type DeptAddReq struct {
-	g.Meta `path:"/add" tags:"Add" method:"post" summary:"You first add api"`
+	g.Meta `path:"/add" tags:"DeptAdd" method:"post" summary:"You first /dept/add api"`
 	Name   string `json:"name" v:"required|max-length:10|regex:^[\u4e00-\u9fa5]+$#部门名称不能为空|部门名称不能超过10个字|部门名称必须为纯中文" dc:"部门名称"` // 部门名称
 }
 type DeptAddRes struct {
@@ -26,7 +26,7 @@ type DeptAddRes struct {
 }
 
 type DeptDeleteReq struct {
-	g.Meta `path:"/delete" tags:"Delete" method:"post" summary:"You first delete api"`
+	g.Meta `path:"/delete" tags:"DeptDelete" method:"post" summary:"You first /dept/delete api"`
 	Id     uint `json:"id" v:"required|regex:^[1-9][0-9]*$#部门ID不能为空|部门ID必须为正整数" dc:"部门ID"` // 部门ID
 }
 type DeptDeleteRes struct {
@@ -34,7 +34,7 @@ type DeptDeleteRes struct {
 }
 
 type DeptUpdateReq struct {
-	g.Meta `path:"/update" tags:"Update" method:"post" summary:"You first update api"`
+	g.Meta `path:"/update" tags:"DeptUpdate" method:"post" summary:"You first /dept/update api"`
 	Id     uint   `json:"id" v:"required|regex:^[1-9][0-9]*$#部门ID不能为空|部门ID必须为正整数" dc:"部门ID"`                                   // 部门ID
 	Name   string `json:"name" v:"required|max-length:10|regex:^[\u4e00-\u9fa5]+$#部门名称不能为空|部门名称不能超过10个字|部门名称必须为纯中文" dc:"部门名称"` // 部门名称
 }

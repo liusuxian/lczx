@@ -61,6 +61,7 @@ func loginBefore(req *ghttp.Request) (string, interface{}) {
 		response.Json(ctx, gcode.New(errCode, errMsg, nil), nil)
 		return "None", nil
 	}
+	// 通过账号和密码获取用户信息
 	logger.Debug(ctx, "loginReq: ", loginReq)
 	var user *entity.User
 	user, err = User().GetUserByPassportAndPassword(ctx, loginReq.Passport, loginReq.Password)
@@ -69,11 +70,18 @@ func loginBefore(req *ghttp.Request) (string, interface{}) {
 		response.Json(ctx, consts.CodeGetUserFailed, nil)
 		return "None", nil
 	}
+	// 判读用户信息
 	logger.Debug(ctx, "user: ", user)
 	if user == nil {
 		response.Json(ctx, consts.CodeUserNotExist, nil)
 		return "None", nil
 	}
+	// 判断用户状态
+	if user.Status == consts.UserStatusDisabled {
+		response.Json(ctx, consts.CodeUserStatusDisabled, nil)
+		return "None", nil
+	}
+	// 设置用户信息到session中
 	err = Session().SetUser(ctx, user)
 	if err != nil {
 		logger.Error(ctx, "设置用户信息到session中失败: ", err.Error())
