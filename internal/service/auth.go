@@ -9,9 +9,9 @@ import (
 	"github.com/gogf/gf/v2/util/gvalid"
 	v1 "lczx/api/v1"
 	"lczx/internal/code"
-	"lczx/internal/consts"
 	"lczx/internal/model/entity"
 	"lczx/utility/logger"
+	"lczx/utility/utils"
 	"net/http"
 )
 
@@ -72,39 +72,23 @@ func loginBefore(req *ghttp.Request) (string, interface{}) {
 		LoginLog().Invoke(req, &entity.LoginLog{Passport: loginReq.Passport, Msg: err.Error()})
 		_ = req.Response.WriteJsonExit(gtoken.Resp{
 			Code: code.GetUserFailed.Code(),
-			Msg:  code.GetUserFailed.Message(),
-		})
-	}
-	// 判读用户信息
-	if user == nil {
-		// 保存登录日志（异步）
-		LoginLog().Invoke(req, &entity.LoginLog{Passport: loginReq.Passport, Msg: code.UserNotExist.Message()})
-		_ = req.Response.WriteJsonExit(gtoken.Resp{
-			Code: code.UserNotExist.Code(),
-			Msg:  code.UserNotExist.Message(),
-		})
-	}
-	// 判断用户状态
-	if user.Status == consts.UserStatusDisabled {
-		// 保存登录日志（异步）
-		LoginLog().Invoke(req, &entity.LoginLog{Passport: loginReq.Passport, Msg: code.UserDisabled.Message()})
-		_ = req.Response.WriteJsonExit(gtoken.Resp{
-			Code: code.UserDisabled.Code(),
-			Msg:  code.UserDisabled.Message(),
+			Msg:  code.GetUserFailed.Message() + ":" + err.Error(),
 		})
 	}
 	// 设置用户信息到session中
 	err = Session().SetUser(ctx, user)
 	if err != nil {
 		// 保存登录日志（异步）
-		LoginLog().Invoke(req, &entity.LoginLog{Passport: loginReq.Passport, Msg: "内部错误: " + err.Error()})
+		LoginLog().Invoke(req, &entity.LoginLog{Passport: loginReq.Passport, Msg: "内部错误:" + err.Error()})
 		_ = req.Response.WriteJsonExit(gtoken.Resp{
 			Code: gcode.CodeInternalError.Code(),
 			Msg:  gcode.CodeInternalError.Message(),
 		})
 	}
 	// 保存登录日志（异步）
-	LoginLog().Invoke(req, &entity.LoginLog{Passport: user.Passport, Status: consts.LoginSucc, Msg: "登录成功"})
+	LoginLog().Invoke(req, &entity.LoginLog{Passport: user.Passport, Status: 1, Msg: "登录成功"})
+	// 更新用户登录信息
+	User().UpdateUserLogin(ctx, user.Id, utils.GetClientIp(req))
 	req.SetParam("user", user)
 	return user.Passport, user
 }
@@ -116,11 +100,13 @@ func loginAfter(req *ghttp.Request, respData gtoken.Resp) {
 	if !respData.Success() {
 		_ = req.Response.WriteJson(respData)
 	} else {
-		_ = req.Response.WriteJson(gtoken.Succ(&v1.LoginRes{
-			Token:   respData.GetString("token"),
-			UserKey: respData.GetString("userKey"),
-			Uuid:    respData.GetString("uuid"),
-		}))
+		token := respData.GetString("token")
+		uuid := respData.GetString("uuid")
+		var user *entity.User
+		_ = req.GetParam("user").Struct(&user)
+		//保存用户在线状态token到数据库
+		logger.Debug(ctx, "11: ", uuid, user)
+		_ = req.Response.WriteJson(gtoken.Succ(&v1.LoginRes{Token: token}))
 	}
 }
 

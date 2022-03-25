@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 25/03/2022 17:04:32
+ Date: 25/03/2022 18:15:39
 */
 
 SET NAMES utf8mb4;
@@ -70,7 +70,7 @@ CREATE TABLE `user` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '用户ID',
   `passport` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '账号',
   `password` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '密码',
-  `salt` char(10) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '加密盐',
+  `salt` char(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '加密盐',
   `realname` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '姓名',
   `nickname` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '昵称',
   `gender` tinyint unsigned NOT NULL COMMENT '性别 1: 男 2: 女',
@@ -79,7 +79,7 @@ CREATE TABLE `user` (
   `dept_id` int unsigned DEFAULT NULL COMMENT '部门ID',
   `role_id` int unsigned NOT NULL COMMENT '角色ID 0: 默认普通用户 1000: 超级管理员 900: 普通管理员',
   `status` tinyint unsigned NOT NULL COMMENT '状态 0:禁用 1:启用',
-  `last_login_ip` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '最后登录ip',
+  `last_login_ip` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '最后登录ip',
   `last_login_time` datetime DEFAULT NULL COMMENT '最后登录时间',
   `create_at` datetime DEFAULT NULL COMMENT '创建时间',
   `update_at` datetime DEFAULT NULL COMMENT '更新时间',
@@ -92,7 +92,7 @@ CREATE TABLE `user` (
 -- Records of user
 -- ----------------------------
 BEGIN;
-INSERT INTO `user` (`id`, `passport`, `password`, `salt`, `realname`, `nickname`, `gender`, `avatar`, `mobile`, `dept_id`, `role_id`, `status`, `last_login_ip`, `last_login_time`, `create_at`, `update_at`, `deleted_at`) VALUES (1, 'sadmin', 'b0167dd859b8a70478da36238b0b3e05', 'CqDQa4THP1', '超级管理员', '超级管理员', 1, NULL, NULL, NULL, 1000, 1, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `user` (`id`, `passport`, `password`, `salt`, `realname`, `nickname`, `gender`, `avatar`, `mobile`, `dept_id`, `role_id`, `status`, `last_login_ip`, `last_login_time`, `create_at`, `update_at`, `deleted_at`) VALUES (1, 'sadmin', 'b0167dd859b8a70478da36238b0b3e05', 'CqDQa4THP1', '超级管理员', '超级管理员', 1, NULL, NULL, NULL, 1000, 1, NULL, NULL, '2022-03-25 17:41:40', '2022-03-25 17:41:40', NULL);
 COMMIT;
 
 SET FOREIGN_KEY_CHECKS = 1;

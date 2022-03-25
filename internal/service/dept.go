@@ -79,7 +79,7 @@ func (s *sDept) DeleteDept(ctx context.Context, id uint) (err error) {
 	return
 }
 
-// UpdateDept 修改部门
+// UpdateDept 更新部门
 func (s *sDept) UpdateDept(ctx context.Context, req *v1.DeptUpdateReq) (err error) {
 	var deptExists bool
 	deptExists, err = s.DeptExistsById(ctx, req.Id)

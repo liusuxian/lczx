@@ -10,7 +10,5 @@ type LoginReq struct {
 	Password string `json:"password" v:"required|password#密码不能为空|密码为任意可见字符，长度在6~18之间" dc:"密码"`             // 密码
 }
 type LoginRes struct {
-	Token   string `json:"token" dc:"token"`     // token
-	UserKey string `json:"userKey" dc:"userKey"` // userKey
-	Uuid    string `json:"uuid" dc:"uuid"`       // uuid
+	Token string `json:"token" dc:"token"` // token
 }

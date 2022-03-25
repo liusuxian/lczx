@@ -12,12 +12,6 @@ const (
 	UserStatusEnable   = 1 // 启用
 )
 
-// 登录状态
-const (
-	LoginFail = 0 // 失败
-	LoginSucc = 1 // 成功
-)
-
 // 角色
 const (
 	RoleUser       = 0    // 默认普通用户
