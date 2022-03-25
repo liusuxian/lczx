@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 25/03/2022 15:13:11
+ Date: 25/03/2022 17:04:32
 */
 
 SET NAMES utf8mb4;
@@ -67,17 +67,20 @@ COMMIT;
 -- ----------------------------
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '用户ID',
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '用户ID',
   `passport` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '账号',
   `password` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '密码',
+  `salt` char(10) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '加密盐',
   `realname` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '姓名',
   `nickname` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '昵称',
   `gender` tinyint unsigned NOT NULL COMMENT '性别 1: 男 2: 女',
   `avatar` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT '头像地址',
   `mobile` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '手机号',
-  `dept_id` int unsigned NOT NULL COMMENT '部门ID',
+  `dept_id` int unsigned DEFAULT NULL COMMENT '部门ID',
   `role_id` int unsigned NOT NULL COMMENT '角色ID 0: 默认普通用户 1000: 超级管理员 900: 普通管理员',
   `status` tinyint unsigned NOT NULL COMMENT '状态 0:禁用 1:启用',
+  `last_login_ip` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '最后登录ip',
+  `last_login_time` datetime DEFAULT NULL COMMENT '最后登录时间',
   `create_at` datetime DEFAULT NULL COMMENT '创建时间',
   `update_at` datetime DEFAULT NULL COMMENT '更新时间',
   `deleted_at` datetime DEFAULT NULL COMMENT '软删除时间',
@@ -89,25 +92,7 @@ CREATE TABLE `user` (
 -- Records of user
 -- ----------------------------
 BEGIN;
-INSERT INTO `user` (`id`, `passport`, `password`, `realname`, `nickname`, `gender`, `avatar`, `mobile`, `dept_id`, `role_id`, `status`, `create_at`, `update_at`, `deleted_at`) VALUES (1, 'liusuxian', 'lsx19890329', '刘苏贤', NULL, 1, NULL, NULL, 1, 1000, 0, '2022-03-18 13:20:00', '2022-03-18 13:20:00', NULL);
-COMMIT;
-
--- ----------------------------
--- Table structure for user_ext
--- ----------------------------
-DROP TABLE IF EXISTS `user_ext`;
-CREATE TABLE `user_ext` (
-  `id` int unsigned NOT NULL COMMENT '用户ID',
-  `last_time` datetime DEFAULT NULL COMMENT '最后一次登录时间',
-  `last_ip` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '最后一次登录ip',
-  `visit_count` int unsigned DEFAULT NULL COMMENT '访问次数',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- ----------------------------
--- Records of user_ext
--- ----------------------------
-BEGIN;
+INSERT INTO `user` (`id`, `passport`, `password`, `salt`, `realname`, `nickname`, `gender`, `avatar`, `mobile`, `dept_id`, `role_id`, `status`, `last_login_ip`, `last_login_time`, `create_at`, `update_at`, `deleted_at`) VALUES (1, 'sadmin', 'b0167dd859b8a70478da36238b0b3e05', 'CqDQa4THP1', '超级管理员', '超级管理员', 1, NULL, NULL, NULL, 1000, 1, NULL, NULL, NULL, NULL, NULL);
 COMMIT;
 
 SET FOREIGN_KEY_CHECKS = 1;

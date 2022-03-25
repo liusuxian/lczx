@@ -4,10 +4,12 @@ import (
 	"context"
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/errors/gerror"
+	"github.com/gogf/gf/v2/util/grand"
 	v1 "lczx/api/v1"
 	"lczx/internal/model/entity"
 	"lczx/internal/service/internal/dao"
 	"lczx/internal/service/internal/do"
+	"lczx/utility/utils"
 )
 
 type sUser struct{}
@@ -69,10 +71,15 @@ func (s *sUser) AddUser(ctx context.Context, req *v1.UserAddReq) (id int64, err 
 		err = gerror.Newf(`部门ID[%d]不存在`, id)
 		return
 	}
+	// 生成随机密码盐
+	salt := grand.S(10)
+	// 密码加密
+	password := utils.EncryptPassword(req.Passport, salt)
 	err = dao.User.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		id, err = dao.User.Ctx(ctx).Data(do.User{
 			Passport: req.Passport,
-			Password: req.Passport,
+			Password: password,
+			Salt:     salt,
 			Realname: req.Realname,
 			Gender:   req.Gender,
 			Mobile:   req.Mobile,

@@ -19,38 +19,44 @@ type UserDao struct {
 
 // UserColumns defines and stores column names for table user.
 type UserColumns struct {
-	Id        string // 用户ID
-	Passport  string // 账号
-	Password  string // 密码
-	Realname  string // 姓名
-	Nickname  string // 昵称
-	Gender    string // 性别 1: 男 2: 女
-	Avatar    string // 头像地址
-	Mobile    string // 手机号
-	DeptId    string // 部门ID
-	RoleId    string // 角色ID 0: 默认普通用户 1000: 超级管理员 900: 普通管理员
-	Status    string // 状态 0:禁用 1:启用
-	CreateAt  string // 创建时间
-	UpdateAt  string // 更新时间
-	DeletedAt string // 软删除时间
+	Id            string // 用户ID
+	Passport      string // 账号
+	Password      string // 密码
+	Salt          string // 加密盐
+	Realname      string // 姓名
+	Nickname      string // 昵称
+	Gender        string // 性别 1: 男 2: 女
+	Avatar        string // 头像地址
+	Mobile        string // 手机号
+	DeptId        string // 部门ID
+	RoleId        string // 角色ID 0: 默认普通用户 1000: 超级管理员 900: 普通管理员
+	Status        string // 状态 0:禁用 1:启用
+	LastLoginIp   string // 最后登录ip
+	LastLoginTime string // 最后登录时间
+	CreateAt      string // 创建时间
+	UpdateAt      string // 更新时间
+	DeletedAt     string // 软删除时间
 }
 
 //  userColumns holds the columns for table user.
 var userColumns = UserColumns{
-	Id:        "id",
-	Passport:  "passport",
-	Password:  "password",
-	Realname:  "realname",
-	Nickname:  "nickname",
-	Gender:    "gender",
-	Avatar:    "avatar",
-	Mobile:    "mobile",
-	DeptId:    "dept_id",
-	RoleId:    "role_id",
-	Status:    "status",
-	CreateAt:  "create_at",
-	UpdateAt:  "update_at",
-	DeletedAt: "deleted_at",
+	Id:            "id",
+	Passport:      "passport",
+	Password:      "password",
+	Salt:          "salt",
+	Realname:      "realname",
+	Nickname:      "nickname",
+	Gender:        "gender",
+	Avatar:        "avatar",
+	Mobile:        "mobile",
+	DeptId:        "dept_id",
+	RoleId:        "role_id",
+	Status:        "status",
+	LastLoginIp:   "last_login_ip",
+	LastLoginTime: "last_login_time",
+	CreateAt:      "create_at",
+	UpdateAt:      "update_at",
+	DeletedAt:     "deleted_at",
 }
 
 // NewUserDao creates and returns a new DAO object for table data access.

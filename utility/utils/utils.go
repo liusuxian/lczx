@@ -3,6 +3,7 @@ package utils
 import (
 	"context"
 	"fmt"
+	"github.com/gogf/gf/v2/crypto/gmd5"
 	"github.com/gogf/gf/v2/encoding/gcharset"
 	"github.com/gogf/gf/v2/encoding/gjson"
 	"github.com/gogf/gf/v2/frame/g"
@@ -43,4 +44,9 @@ func GetCityByIp(ctx context.Context, ip string) string {
 	} else {
 		return ""
 	}
+}
+
+// EncryptPassword 密码加密
+func EncryptPassword(password, salt string) string {
+	return gmd5.MustEncryptString(gmd5.MustEncryptString(password) + gmd5.MustEncryptString(salt))
 }
