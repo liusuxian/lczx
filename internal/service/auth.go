@@ -7,6 +7,7 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/util/gvalid"
+	"github.com/mssola/user_agent"
 	v1 "lczx/api/v1"
 	"lczx/internal/code"
 	"lczx/internal/consts"
@@ -62,6 +63,15 @@ func loginBefore(req *ghttp.Request) (string, interface{}) {
 			Msg:  errMsg,
 		})
 	}
+	ip := req.GetClientIp()
+	userAgent := req.Header.Get("User-Agent")
+	ua := user_agent.New(userAgent)
+	os := ua.OS()
+	explorer, _ := ua.Browser()
+	logger.Debug(ctx, "IP: ", ip)
+	logger.Debug(ctx, "userAgent: ", userAgent)
+	logger.Debug(ctx, "os: ", os)
+	logger.Debug(ctx, "explorer: ", explorer)
 	// 通过账号和密码获取用户信息
 	var user *entity.User
 	user, err = User().GetUserByPassportAndPassword(ctx, loginReq.Passport, loginReq.Password)

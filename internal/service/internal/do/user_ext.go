@@ -9,9 +9,9 @@ import (
 	"github.com/gogf/gf/v2/os/gtime"
 )
 
-// UserOnline is the golang structure of table user_online for DAO operations like Where/Data.
-type UserOnline struct {
-	g.Meta     `orm:"table:user_online, do:true"`
+// UserExt is the golang structure of table user_ext for DAO operations like Where/Data.
+type UserExt struct {
+	g.Meta     `orm:"table:user_ext, do:true"`
 	Id         interface{} // 用户ID
 	LastTime   *gtime.Time // 最后一次登录时间
 	LastIp     interface{} // 最后一次登录ip

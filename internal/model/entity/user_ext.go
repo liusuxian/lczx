@@ -8,8 +8,8 @@ import (
 	"github.com/gogf/gf/v2/os/gtime"
 )
 
-// UserOnline is the golang structure for table user_online.
-type UserOnline struct {
+// UserExt is the golang structure for table user_ext.
+type UserExt struct {
 	Id         uint        `json:"id"         description:"用户ID"`     // 用户ID
 	LastTime   *gtime.Time `json:"lastTime"   description:"最后一次登录时间"` // 最后一次登录时间
 	LastIp     string      `json:"lastIp"     description:"最后一次登录ip"` // 最后一次登录ip

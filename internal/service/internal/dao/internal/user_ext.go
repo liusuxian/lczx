@@ -10,60 +10,60 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 )
 
-// UserOnlineDao is the data access object for table user_online.
-type UserOnlineDao struct {
-	table   string            // table is the underlying table name of the DAO.
-	group   string            // group is the database configuration group name of current DAO.
-	columns UserOnlineColumns // columns contains all the column names of Table for convenient usage.
+// UserExtDao is the data access object for table user_ext.
+type UserExtDao struct {
+	table   string         // table is the underlying table name of the DAO.
+	group   string         // group is the database configuration group name of current DAO.
+	columns UserExtColumns // columns contains all the column names of Table for convenient usage.
 }
 
-// UserOnlineColumns defines and stores column names for table user_online.
-type UserOnlineColumns struct {
+// UserExtColumns defines and stores column names for table user_ext.
+type UserExtColumns struct {
 	Id         string // 用户ID
 	LastTime   string // 最后一次登录时间
 	LastIp     string // 最后一次登录ip
 	VisitCount string // 访问次数
 }
 
-//  userOnlineColumns holds the columns for table user_online.
-var userOnlineColumns = UserOnlineColumns{
+//  userExtColumns holds the columns for table user_ext.
+var userExtColumns = UserExtColumns{
 	Id:         "id",
 	LastTime:   "last_time",
 	LastIp:     "last_ip",
 	VisitCount: "visit_count",
 }
 
-// NewUserOnlineDao creates and returns a new DAO object for table data access.
-func NewUserOnlineDao() *UserOnlineDao {
-	return &UserOnlineDao{
+// NewUserExtDao creates and returns a new DAO object for table data access.
+func NewUserExtDao() *UserExtDao {
+	return &UserExtDao{
 		group:   "default",
-		table:   "user_online",
-		columns: userOnlineColumns,
+		table:   "user_ext",
+		columns: userExtColumns,
 	}
 }
 
 // DB retrieves and returns the underlying raw database management object of current DAO.
-func (dao *UserOnlineDao) DB() gdb.DB {
+func (dao *UserExtDao) DB() gdb.DB {
 	return g.DB(dao.group)
 }
 
 // Table returns the table name of current dao.
-func (dao *UserOnlineDao) Table() string {
+func (dao *UserExtDao) Table() string {
 	return dao.table
 }
 
 // Columns returns all column names of current dao.
-func (dao *UserOnlineDao) Columns() UserOnlineColumns {
+func (dao *UserExtDao) Columns() UserExtColumns {
 	return dao.columns
 }
 
 // Group returns the configuration group name of database of current dao.
-func (dao *UserOnlineDao) Group() string {
+func (dao *UserExtDao) Group() string {
 	return dao.group
 }
 
 // Ctx creates and returns the Model for current DAO, It automatically sets the context for current operation.
-func (dao *UserOnlineDao) Ctx(ctx context.Context) *gdb.Model {
+func (dao *UserExtDao) Ctx(ctx context.Context) *gdb.Model {
 	return dao.DB().Model(dao.table).Safe().Ctx(ctx)
 }
 
@@ -73,6 +73,6 @@ func (dao *UserOnlineDao) Ctx(ctx context.Context) *gdb.Model {
 //
 // Note that, you should not Commit or Rollback the transaction in function f
 // as it is automatically handled by this function.
-func (dao *UserOnlineDao) Transaction(ctx context.Context, f func(ctx context.Context, tx *gdb.TX) error) (err error) {
+func (dao *UserExtDao) Transaction(ctx context.Context, f func(ctx context.Context, tx *gdb.TX) error) (err error) {
 	return dao.Ctx(ctx).Transaction(ctx, f)
 }

@@ -2,7 +2,11 @@ module lczx
 
 go 1.18
 
-require github.com/gogf/gf/v2 v2.0.4
+require (
+	github.com/goflyfox/gtoken v1.5.6
+	github.com/gogf/gf/v2 v2.0.4
+	github.com/mssola/user_agent v0.5.3
+)
 
 require (
 	github.com/BurntSushi/toml v0.4.1 // indirect
@@ -13,7 +17,6 @@ require (
 	github.com/fsnotify/fsnotify v1.5.1 // indirect
 	github.com/go-redis/redis/v8 v8.11.4 // indirect
 	github.com/go-sql-driver/mysql v1.6.0 // indirect
-	github.com/goflyfox/gtoken v1.5.6 // indirect
 	github.com/gorilla/websocket v1.4.2 // indirect
 	github.com/grokify/html-strip-tags-go v0.0.1 // indirect
 	github.com/mattn/go-colorable v0.1.9 // indirect

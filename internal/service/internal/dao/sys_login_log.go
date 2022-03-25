@@ -8,16 +8,16 @@ import (
 	"lczx/internal/service/internal/dao/internal"
 )
 
-// userOnlineDao is the data access object for table user_online.
+// sysLoginLogDao is the data access object for table sys_login_log.
 // You can define custom methods on it to extend its functionality as you wish.
-type userOnlineDao struct {
-	*internal.UserOnlineDao
+type sysLoginLogDao struct {
+	*internal.SysLoginLogDao
 }
 
 var (
-	// UserOnline is globally public accessible object for table user_online operations.
-	UserOnline = userOnlineDao{
-		internal.NewUserOnlineDao(),
+	// SysLoginLog is globally public accessible object for table sys_login_log operations.
+	SysLoginLog = sysLoginLogDao{
+		internal.NewSysLoginLogDao(),
 	}
 )
 
