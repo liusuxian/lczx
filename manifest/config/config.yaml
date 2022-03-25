@@ -110,5 +110,5 @@ gToken:
   MaxRefresh: 1800000                               # 缓存刷新时间。默认为超时时间的一半（毫秒）
   TokenDelimiter: "_"                               # Token分隔符。默认_
   EncryptKey: "1ee7f75f1145e929df46514e3c924d69"    # Token加密key。默认12345678912345678912345678912345
-  AuthFailMsg: "登录超时，请重新登录"                  # 认证失败提示。默认请求错误或登录超时
+  AuthFailMsg: "登录超时或未登录，请重新登录"            # 认证失败提示。默认请求错误或登录超时
   MultiLogin: true                                  # 是否支持多端登录。默认false
