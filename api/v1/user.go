@@ -6,7 +6,7 @@ import (
 
 // UserInfo 用户信息
 type UserInfo struct {
-	Id       uint   `json:"id"        dc:"用户ID"`                                  // 用户ID
+	Id       uint64 `json:"id"        dc:"用户ID"`                                  // 用户ID
 	Passport string `json:"passport"  dc:"账号"`                                    // 账号
 	Realname string `json:"realname"  dc:"姓名"`                                    // 姓名
 	Nickname string `json:"nickname"  dc:"昵称"`                                    // 昵称

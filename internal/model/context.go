@@ -14,7 +14,7 @@ type Context struct {
 
 // ContextUser 请求上下文中的用户信息
 type ContextUser struct {
-	Id       uint   // 用户ID
+	Id       uint64 // 用户ID
 	Passport string // 账号
 	Realname string // 姓名
 	Nickname string // 昵称

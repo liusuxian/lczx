@@ -29,7 +29,7 @@ func (s *sUser) IsPassportAvailable(ctx context.Context, passport string) (bool,
 }
 
 // UserExistsById 通过用户ID判断用户信息是否存在
-func (s *sUser) UserExistsById(ctx context.Context, id uint) (bool, error) {
+func (s *sUser) UserExistsById(ctx context.Context, id uint64) (bool, error) {
 	count, err := dao.User.Ctx(ctx).Where(do.User{Id: id}).Count()
 	if err != nil {
 		return false, err
@@ -44,7 +44,7 @@ func (s *sUser) GetUserByPassportAndPassword(ctx context.Context, passport, pass
 }
 
 // GetUserById 通过用户ID获取用户信息
-func (s *sUser) GetUserById(ctx context.Context, id uint) (user *entity.User, err error) {
+func (s *sUser) GetUserById(ctx context.Context, id uint64) (user *entity.User, err error) {
 	err = dao.User.Ctx(ctx).Where(do.User{Id: id}).Scan(&user)
 	return
 }

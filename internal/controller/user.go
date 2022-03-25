@@ -45,7 +45,7 @@ func (c *cUser) Add(ctx context.Context, req *v1.UserAddReq) (res *v1.UserAddRes
 	}
 
 	var user *entity.User
-	newId := gconv.Uint(id)
+	newId := gconv.Uint64(id)
 	user, err = service.User().GetUserById(ctx, newId)
 	if err != nil {
 		err = gerror.WrapCode(code.AddUserFailed, err)

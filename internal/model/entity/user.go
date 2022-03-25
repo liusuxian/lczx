@@ -10,7 +10,7 @@ import (
 
 // User is the golang structure for table user.
 type User struct {
-	Id        uint        `json:"id"        description:"用户ID"`                                  // 用户ID
+	Id        uint64      `json:"id"        description:"用户ID"`                                  // 用户ID
 	Passport  string      `json:"passport"  description:"账号"`                                    // 账号
 	Password  string      `json:"password"  description:"密码"`                                    // 密码
 	Realname  string      `json:"realname"  description:"姓名"`                                    // 姓名
