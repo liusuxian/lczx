@@ -29,7 +29,7 @@ type UserColumns struct {
 	Mobile    string // 手机号
 	DeptId    string // 部门ID
 	RoleId    string // 角色ID 0: 默认普通用户 1000: 超级管理员 900: 普通管理员
-	Status    string // 状态 0:启用 1:禁用
+	Status    string // 状态 0:禁用 1:启用
 	CreateAt  string // 创建时间
 	UpdateAt  string // 更新时间
 	DeletedAt string // 软删除时间

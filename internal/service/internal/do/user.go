@@ -22,7 +22,7 @@ type User struct {
 	Mobile    interface{} // 手机号
 	DeptId    interface{} // 部门ID
 	RoleId    interface{} // 角色ID 0: 默认普通用户 1000: 超级管理员 900: 普通管理员
-	Status    interface{} // 状态 0:启用 1:禁用
+	Status    interface{} // 状态 0:禁用 1:启用
 	CreateAt  *gtime.Time // 创建时间
 	UpdateAt  *gtime.Time // 更新时间
 	DeletedAt *gtime.Time // 软删除时间

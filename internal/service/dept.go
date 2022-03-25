@@ -14,6 +14,7 @@ type sDept struct{}
 
 var insDept = sDept{}
 
+// Dept 部门管理服务
 func Dept() *sDept {
 	return &insDept
 }

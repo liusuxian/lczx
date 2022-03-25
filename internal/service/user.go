@@ -14,6 +14,7 @@ type sUser struct{}
 
 var insUser = sUser{}
 
+// User 用户管理服务
 func User() *sUser {
 	return &insUser
 }

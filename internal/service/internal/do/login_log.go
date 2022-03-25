@@ -9,16 +9,16 @@ import (
 	"github.com/gogf/gf/v2/os/gtime"
 )
 
-// SysLoginLog is the golang structure of table sys_login_log for DAO operations like Where/Data.
-type SysLoginLog struct {
-	g.Meta   `orm:"table:sys_login_log, do:true"`
+// LoginLog is the golang structure of table login_log for DAO operations like Where/Data.
+type LoginLog struct {
+	g.Meta   `orm:"table:login_log, do:true"`
 	Id       interface{} // 访问ID
 	Passport interface{} // 登录账号
 	Ip       interface{} // 登录IP地址
 	Location interface{} // 登录地点
 	Browser  interface{} // 浏览器类型
 	Os       interface{} // 操作系统
-	Status   interface{} // 登录状态 0:成功 1:失败
+	Status   interface{} // 登录状态 0:失败 1:成功
 	Msg      interface{} // 提示消息
 	Time     *gtime.Time // 登录时间
 	Module   interface{} // 登录模块

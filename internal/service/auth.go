@@ -7,7 +7,6 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/util/gvalid"
-	"github.com/mssola/user_agent"
 	v1 "lczx/api/v1"
 	"lczx/internal/code"
 	"lczx/internal/consts"
@@ -18,6 +17,7 @@ import (
 
 var gfToken *gtoken.GfToken
 
+// InitGfToken 初始化 gfToken
 func InitGfToken(ctx context.Context) *gtoken.GfToken {
 	if gfToken == nil {
 		gfToken = &gtoken.GfToken{
@@ -46,6 +46,7 @@ func InitGfToken(ctx context.Context) *gtoken.GfToken {
 	return gfToken
 }
 
+// GfToken 获取 gfToken
 func GfToken() *gtoken.GfToken {
 	return gfToken
 }
@@ -63,19 +64,12 @@ func loginBefore(req *ghttp.Request) (string, interface{}) {
 			Msg:  errMsg,
 		})
 	}
-	ip := req.GetClientIp()
-	userAgent := req.Header.Get("User-Agent")
-	ua := user_agent.New(userAgent)
-	os := ua.OS()
-	explorer, _ := ua.Browser()
-	logger.Debug(ctx, "IP: ", ip)
-	logger.Debug(ctx, "userAgent: ", userAgent)
-	logger.Debug(ctx, "os: ", os)
-	logger.Debug(ctx, "explorer: ", explorer)
 	// 通过账号和密码获取用户信息
 	var user *entity.User
 	user, err = User().GetUserByPassportAndPassword(ctx, loginReq.Passport, loginReq.Password)
 	if err != nil {
+		// 保存登录日志（异步）
+		LoginLog().Invoke(req, &entity.LoginLog{Passport: loginReq.Passport, Msg: err.Error()})
 		_ = req.Response.WriteJsonExit(gtoken.Resp{
 			Code: code.GetUserFailed.Code(),
 			Msg:  code.GetUserFailed.Message(),
@@ -83,6 +77,8 @@ func loginBefore(req *ghttp.Request) (string, interface{}) {
 	}
 	// 判读用户信息
 	if user == nil {
+		// 保存登录日志（异步）
+		LoginLog().Invoke(req, &entity.LoginLog{Passport: loginReq.Passport, Msg: code.UserNotExist.Message()})
 		_ = req.Response.WriteJsonExit(gtoken.Resp{
 			Code: code.UserNotExist.Code(),
 			Msg:  code.UserNotExist.Message(),
@@ -90,6 +86,8 @@ func loginBefore(req *ghttp.Request) (string, interface{}) {
 	}
 	// 判断用户状态
 	if user.Status == consts.UserStatusDisabled {
+		// 保存登录日志（异步）
+		LoginLog().Invoke(req, &entity.LoginLog{Passport: loginReq.Passport, Msg: code.UserDisabled.Message()})
 		_ = req.Response.WriteJsonExit(gtoken.Resp{
 			Code: code.UserDisabled.Code(),
 			Msg:  code.UserDisabled.Message(),
@@ -98,12 +96,16 @@ func loginBefore(req *ghttp.Request) (string, interface{}) {
 	// 设置用户信息到session中
 	err = Session().SetUser(ctx, user)
 	if err != nil {
+		// 保存登录日志（异步）
+		LoginLog().Invoke(req, &entity.LoginLog{Passport: loginReq.Passport, Msg: "内部错误: " + err.Error()})
 		_ = req.Response.WriteJsonExit(gtoken.Resp{
 			Code: gcode.CodeInternalError.Code(),
 			Msg:  gcode.CodeInternalError.Message(),
 		})
 	}
-	// 唯一标识，扩展参数user data
+	// 保存登录日志（异步）
+	LoginLog().Invoke(req, &entity.LoginLog{Passport: user.Passport, Status: consts.LoginSucc, Msg: "登录成功"})
+	req.SetParam("user", user)
 	return user.Passport, user
 }
 

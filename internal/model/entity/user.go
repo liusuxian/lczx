@@ -20,7 +20,7 @@ type User struct {
 	Mobile    string      `json:"mobile"    description:"手机号"`                                   // 手机号
 	DeptId    uint        `json:"deptId"    description:"部门ID"`                                  // 部门ID
 	RoleId    uint        `json:"roleId"    description:"角色ID 0: 默认普通用户 1000: 超级管理员 900: 普通管理员"` // 角色ID 0: 默认普通用户 1000: 超级管理员 900: 普通管理员
-	Status    uint        `json:"status"    description:"状态 0:启用 1:禁用"`                          // 状态 0:启用 1:禁用
+	Status    uint        `json:"status"    description:"状态 0:禁用 1:启用"`                          // 状态 0:禁用 1:启用
 	CreateAt  *gtime.Time `json:"createAt"  description:"创建时间"`                                  // 创建时间
 	UpdateAt  *gtime.Time `json:"updateAt"  description:"更新时间"`                                  // 更新时间
 	DeletedAt *gtime.Time `json:"deletedAt" description:"软删除时间"`                                 // 软删除时间

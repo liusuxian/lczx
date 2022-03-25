@@ -8,8 +8,14 @@ const (
 
 // 用户状态
 const (
-	UserStatusEnable   = 0 // 启用
-	UserStatusDisabled = 1 // 禁用
+	UserStatusDisabled = 0 // 禁用
+	UserStatusEnable   = 1 // 启用
+)
+
+// 登录状态
+const (
+	LoginFail = 0 // 失败
+	LoginSucc = 1 // 成功
 )
 
 // 角色
