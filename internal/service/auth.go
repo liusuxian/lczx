@@ -62,14 +62,6 @@ func loginBefore(req *ghttp.Request) (string, interface{}) {
 		errMsg := err.(gvalid.Error).Current().Error()
 		response.RespJsonExit(req, errCode, errMsg)
 	}
-	// 通过账号和密码获取用户信息
-	var user *entity.User
-	user, err = User().GetUserByPassportAndPassword(ctx, loginReq.Passport, loginReq.Password)
-	if err != nil {
-		// 保存登录日志（异步）
-		LoginLog().Invoke(req, &entity.LoginLog{Passport: loginReq.Passport, Msg: err.Error()})
-		response.RespJsonExit(req, code.GetUserFailed.Code(), code.GetUserFailed.Message()+": "+err.Error())
-	}
 	// 判断验证码是否正确
 	captchaDebugVar, err := g.Cfg().Get(ctx, "captcha.debug", false)
 	if err != nil {
@@ -79,6 +71,14 @@ func loginBefore(req *ghttp.Request) (string, interface{}) {
 		if !Captcha().VerifyString(loginReq.VerifyKey, loginReq.VerifyCode) {
 			response.RespJsonExit(req, code.CaptchaPutErr.Code(), code.CaptchaPutErr.Message())
 		}
+	}
+	// 通过账号和密码获取用户信息
+	var user *entity.User
+	user, err = User().GetUserByPassportAndPassword(ctx, loginReq.Passport, loginReq.Password)
+	if err != nil {
+		// 保存登录日志（异步）
+		LoginLog().Invoke(req, &entity.LoginLog{Passport: loginReq.Passport, Msg: err.Error()})
+		response.RespJsonExit(req, code.GetUserFailed.Code(), code.GetUserFailed.Message()+": "+err.Error())
 	}
 	// 设置用户信息到session中
 	err = Session().SetUser(ctx, user)
@@ -106,7 +106,7 @@ func loginAfter(req *ghttp.Request, respData gtoken.Resp) {
 		uuid := respData.GetString("uuid")
 		var user *entity.User
 		_ = req.GetParam("user").Struct(&user)
-		//保存用户在线状态token到数据库
+		// 保存用户在线状态token到数据库
 		logger.Debug(ctx, "11: ", uuid, user)
 		response.Succ(req, &v1.LoginRes{Token: token})
 	}

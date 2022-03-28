@@ -40,7 +40,7 @@ func (s *sLoginLog) Invoke(req *ghttp.Request, data *entity.LoginLog) {
 		data.Os = ua.OS()
 		data.Time = gtime.Now()
 		if data.Module == "" {
-			data.Module = "系统后台"
+			data.Module = "系统登录"
 		}
 		_, err := dao.LoginLog.Ctx(ctx).Insert(data)
 		if err != nil {
