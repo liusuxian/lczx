@@ -11,6 +11,7 @@ import (
 	"lczx/internal/code"
 	"lczx/internal/model/entity"
 	"lczx/utility/logger"
+	"lczx/utility/response"
 	"lczx/utility/utils"
 	"net/http"
 )
@@ -59,10 +60,7 @@ func loginBefore(req *ghttp.Request) (string, interface{}) {
 	if err = req.Parse(&loginReq); err != nil {
 		errCode := err.(gvalid.Error).Code().Code()
 		errMsg := err.(gvalid.Error).Current().Error()
-		_ = req.Response.WriteJsonExit(gtoken.Resp{
-			Code: errCode,
-			Msg:  errMsg,
-		})
+		response.RespJsonExit(req, errCode, errMsg)
 	}
 	// 通过账号和密码获取用户信息
 	var user *entity.User
@@ -70,20 +68,24 @@ func loginBefore(req *ghttp.Request) (string, interface{}) {
 	if err != nil {
 		// 保存登录日志（异步）
 		LoginLog().Invoke(req, &entity.LoginLog{Passport: loginReq.Passport, Msg: err.Error()})
-		_ = req.Response.WriteJsonExit(gtoken.Resp{
-			Code: code.GetUserFailed.Code(),
-			Msg:  code.GetUserFailed.Message() + ":" + err.Error(),
-		})
+		response.RespJsonExit(req, code.GetUserFailed.Code(), code.GetUserFailed.Message()+": "+err.Error())
+	}
+	// 判断验证码是否正确
+	captchaDebugVar, err := g.Cfg().Get(ctx, "captcha.debug", false)
+	if err != nil {
+		response.RespJsonExit(req, code.GetCaptchaCfgFailed.Code(), code.GetCaptchaCfgFailed.Message()+": "+err.Error())
+	}
+	if !captchaDebugVar.Bool() {
+		if !Captcha().VerifyString(loginReq.VerifyKey, loginReq.VerifyCode) {
+			response.RespJsonExit(req, code.CaptchaPutErr.Code(), code.CaptchaPutErr.Message())
+		}
 	}
 	// 设置用户信息到session中
 	err = Session().SetUser(ctx, user)
 	if err != nil {
 		// 保存登录日志（异步）
-		LoginLog().Invoke(req, &entity.LoginLog{Passport: loginReq.Passport, Msg: "内部错误:" + err.Error()})
-		_ = req.Response.WriteJsonExit(gtoken.Resp{
-			Code: gcode.CodeInternalError.Code(),
-			Msg:  gcode.CodeInternalError.Message(),
-		})
+		LoginLog().Invoke(req, &entity.LoginLog{Passport: loginReq.Passport, Msg: "内部错误: " + err.Error()})
+		response.RespJsonExit(req, gcode.CodeInternalError.Code(), "内部错误: "+err.Error())
 	}
 	// 保存登录日志（异步）
 	LoginLog().Invoke(req, &entity.LoginLog{Passport: user.Passport, Status: 1, Msg: "登录成功"})
@@ -98,7 +100,7 @@ func loginAfter(req *ghttp.Request, respData gtoken.Resp) {
 	ctx := req.GetCtx()
 	logger.Debug(ctx, "loginAfter: ", respData)
 	if !respData.Success() {
-		_ = req.Response.WriteJson(respData)
+		response.RespJson(req, respData.Code, respData.Msg, respData.Data)
 	} else {
 		token := respData.GetString("token")
 		uuid := respData.GetString("uuid")
@@ -106,7 +108,7 @@ func loginAfter(req *ghttp.Request, respData gtoken.Resp) {
 		_ = req.GetParam("user").Struct(&user)
 		//保存用户在线状态token到数据库
 		logger.Debug(ctx, "11: ", uuid, user)
-		_ = req.Response.WriteJson(gtoken.Succ(&v1.LoginRes{Token: token}))
+		response.Succ(req, &v1.LoginRes{Token: token})
 	}
 }
 
@@ -123,7 +125,7 @@ func logoutAfter(req *ghttp.Request, respData gtoken.Resp) {
 	logger.Debug(ctx, "logoutAfter: ", respData)
 	_ = Session().RemoveUser(ctx)
 	Context().Init(req, nil)
-	_ = req.Response.WriteJson(respData)
+	response.RespJson(req, respData.Code, respData.Msg, respData.Data)
 }
 
 // 认证验证方法 return true 继续执行，否则结束执行
@@ -140,12 +142,8 @@ func authAfter(req *ghttp.Request, respData gtoken.Resp) {
 	if req.Method == "OPTIONS" || respData.Success() {
 		req.Middleware.Next()
 	} else if respData.Code == gtoken.UNAUTHORIZED {
-		_ = req.Response.WriteJson(gtoken.Resp{
-			Code: http.StatusUnauthorized,
-			Msg:  respData.Msg,
-			Data: respData.Data,
-		})
+		response.RespJson(req, http.StatusUnauthorized, respData.Msg, respData.Data)
 	} else {
-		_ = req.Response.WriteJson(respData)
+		response.RespJson(req, respData.Code, respData.Msg, respData.Data)
 	}
 }

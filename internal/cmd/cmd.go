@@ -28,6 +28,9 @@ var (
 				group.Bind(
 					controller.Hello,
 				)
+				group.Group("/captcha", func(group *ghttp.RouterGroup) {
+					group.Bind(controller.Captcha)
+				})
 			})
 			// 认证接口
 			s.Group("/", func(group *ghttp.RouterGroup) {
