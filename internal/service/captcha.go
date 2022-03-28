@@ -24,7 +24,7 @@ func (s *sCaptcha) GetVerifyImgString(ctx context.Context) (idKeyC string, base6
 		NoiseCount:      50,
 		ShowLineOptions: 20,
 		Length:          4,
-		Source:          "abcdefghijklmnopqrstuvwxyz0123456789",
+		Source:          "abcdefghjkmnpqrstuvwxyz23456789",
 		Fonts:           []string{"chromohv.ttf"},
 	}
 	driver = driver.ConvertFonts()
