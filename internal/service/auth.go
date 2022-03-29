@@ -209,7 +209,7 @@ func logoutBefore(req *ghttp.Request) bool {
 func logoutAfter(req *ghttp.Request, respData gtoken.Resp) {
 	ctx := req.GetCtx()
 	logger.Debug(ctx, "logoutAfter: ", respData)
-	//response.RespJson(req, respData.Code, respData.Msg, respData.Data)
+	response.RespJson(req, respData.Code, respData.Msg, respData.Data)
 }
 
 // 认证验证方法 return true 继续执行，否则结束执行
