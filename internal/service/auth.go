@@ -17,6 +17,7 @@ import (
 	"lczx/utility/response"
 	"lczx/utility/utils"
 	"net/http"
+	"strings"
 )
 
 var gfToken *gtoken.GfToken
@@ -40,8 +41,8 @@ func InitGfToken(ctx context.Context) *gtoken.GfToken {
 			LogoutPath:       "/logout",
 			LogoutBeforeFunc: logoutBefore,
 			LogoutAfterFunc:  logoutAfter,
-			AuthPaths:        g.SliceStr{}, // 这里是按照前缀拦截，拦截
-			AuthExcludePaths: g.SliceStr{}, // 不拦截路径
+			AuthPaths:        g.SliceStr{},         // 这里是按照前缀拦截，拦截
+			AuthExcludePaths: g.SliceStr{"/login"}, // 不拦截路径
 			AuthBeforeFunc:   authBefore,
 			AuthAfterFunc:    authAfter,
 		}
@@ -122,10 +123,7 @@ func loginBefore(req *ghttp.Request) (string, interface{}) {
 		response.RespJsonExit(req, gcode.CodeInternalError.Code(), "内部错误: "+err.Error())
 	}
 	// 更新用户登录信息
-	err = User().UpdateUserLogin(ctx, user.Id, ip)
-	if err != nil {
-		logger.Error(ctx, "UpdateUserLogin Error: ", err.Error())
-	}
+	User().UpdateUserLogin(ctx, user.Id, ip)
 	// 保存登录日志（异步）
 	LoginLog().Invoke(ctx, &entity.LoginLog{
 		Passport: loginReq.Passport,
@@ -152,9 +150,10 @@ func loginAfter(req *ghttp.Request, respData gtoken.Resp) {
 		token := respData.GetString("token")
 		uuid := respData.GetString("uuid")
 		var user *entity.User
-		_ = req.GetParam("user").Struct(&user)
-		// 保存用户在线状态token到数据库
-		logger.Debug(ctx, "11: ", uuid, user)
+		err := req.GetParam("user").Struct(&user)
+		if err != nil {
+			logger.Error(ctx, "GetParam User Error: ", err.Error())
+		}
 		// 获取 User-Agent
 		userAgent := req.Header.Get("User-Agent")
 		ua := user_agent.New(userAgent)
@@ -174,14 +173,35 @@ func loginAfter(req *ghttp.Request, respData gtoken.Resp) {
 			Ip:       ip,
 			Time:     gtime.Now(),
 		})
-		response.Succ(req, &v1.LoginRes{Token: token})
+		response.SuccExit(req, &v1.LoginRes{Token: token})
 	}
 }
 
 // 登出验证方法 return true 继续执行，否则结束执行
 func logoutBefore(req *ghttp.Request) bool {
 	ctx := req.GetCtx()
-	logger.Debug(ctx, "logoutBefore: ", req.GetClientIp())
+	logger.Debug(ctx, "logoutBefore: ", req)
+	// 删除在线用户状态
+	var authHeader string
+	authHeader = req.Header.Get("Authorization")
+	if authHeader != "" {
+		parts := strings.SplitN(authHeader, " ", 2)
+		if len(parts) == 2 && parts[0] == "Bearer" && parts[1] != "" {
+			// 删除在线用户状态操作
+			UserOnline().DeleteOnlineByToken(ctx, parts[1])
+		}
+	}
+	authHeader = req.Get("token").String()
+	if authHeader != "" {
+		// 删除在线用户状态操作
+		UserOnline().DeleteOnlineByToken(ctx, authHeader)
+	}
+
+	Context().Init(req, nil)
+	err := Session().RemoveUser(ctx)
+	if err != nil {
+		logger.Error(ctx, "Session RemoveUser Error: ", err.Error())
+	}
 	return true
 }
 
@@ -189,15 +209,13 @@ func logoutBefore(req *ghttp.Request) bool {
 func logoutAfter(req *ghttp.Request, respData gtoken.Resp) {
 	ctx := req.GetCtx()
 	logger.Debug(ctx, "logoutAfter: ", respData)
-	_ = Session().RemoveUser(ctx)
-	Context().Init(req, nil)
-	response.RespJson(req, respData.Code, respData.Msg, respData.Data)
+	//response.RespJson(req, respData.Code, respData.Msg, respData.Data)
 }
 
 // 认证验证方法 return true 继续执行，否则结束执行
 func authBefore(req *ghttp.Request) bool {
 	ctx := req.GetCtx()
-	logger.Debug(ctx, "authBefore: ", req.GetClientIp())
+	logger.Debug(ctx, "authBefore: ", req)
 	return true
 }
 
@@ -208,8 +226,8 @@ func authAfter(req *ghttp.Request, respData gtoken.Resp) {
 	if req.Method == "OPTIONS" || respData.Success() {
 		req.Middleware.Next()
 	} else if respData.Code == gtoken.UNAUTHORIZED {
-		response.RespJson(req, http.StatusUnauthorized, respData.Msg, respData.Data)
+		response.RespJsonExit(req, http.StatusUnauthorized, respData.Msg, respData.Data)
 	} else {
-		response.RespJson(req, respData.Code, respData.Msg, respData.Data)
+		response.RespJsonExit(req, respData.Code, respData.Msg, respData.Data)
 	}
 }

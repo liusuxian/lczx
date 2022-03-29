@@ -56,3 +56,11 @@ func (s *sUserOnline) SaveUserOnline(ctx context.Context, data *entity.UserOnlin
 		}
 	}
 }
+
+// DeleteOnlineByToken 删除用户在线状态操作
+func (s *sUserOnline) DeleteOnlineByToken(ctx context.Context, token string) {
+	_, err := dao.UserOnline.Ctx(ctx).Delete(do.UserOnline{Token: token})
+	if err != nil {
+		logger.Error(ctx, "DeleteOnlineByToken Error: ", err.Error())
+	}
+}
