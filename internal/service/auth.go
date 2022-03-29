@@ -6,6 +6,7 @@ import (
 	"github.com/gogf/gf/v2/errors/gcode"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
+	"github.com/gogf/gf/v2/os/gcache"
 	"github.com/gogf/gf/v2/os/gtime"
 	"github.com/gogf/gf/v2/util/gvalid"
 	"github.com/mssola/user_agent"
@@ -57,6 +58,49 @@ func Auth(ctx context.Context) *sAuth {
 // Token 获取 gfToken
 func (s *sAuth) Token() *gtoken.GfToken {
 	return s.token
+}
+
+// GetUuidUserKeyByToken 通过token获取uuid和userKey
+func (s *sAuth) GetUuidUserKeyByToken(ctx context.Context, token string) (uuid, userKey string) {
+	decryptToken := s.token.DecryptToken(ctx, token)
+	if !decryptToken.Success() {
+		return
+	}
+	uuid = decryptToken.GetString("uuid")
+	userKey = decryptToken.GetString("userKey")
+	return
+}
+
+// UserIsOnline 判断用户是否在线
+func (s *sAuth) UserIsOnline(ctx context.Context, token string) bool {
+	uuid, userKey := s.GetUuidUserKeyByToken(ctx, token)
+	cacheKey := s.token.CacheKey + userKey
+	switch s.token.CacheMode {
+	case gtoken.CacheModeCache:
+		userCacheValue, err := gcache.Get(ctx, cacheKey)
+		if err != nil {
+			logger.Error(ctx, "GetCache gcache Error: ", err.Error())
+			return false
+		}
+		if userCacheValue == nil {
+			return false
+		}
+		return true
+	case gtoken.CacheModeRedis:
+		userCacheValue, err := g.Redis().Do(ctx, "GET", cacheKey)
+		if err != nil {
+			logger.Error(ctx, "GetCache redis Error: ", err.Error())
+			return false
+		}
+		if userCacheValue == nil {
+			return false
+		}
+		if uuid != userCacheValue.Map()["uuid"] {
+			return false
+		}
+		return true
+	}
+	return false
 }
 
 // 登录验证方法 return userKey 用户标识 如果userKey为空，结束执行

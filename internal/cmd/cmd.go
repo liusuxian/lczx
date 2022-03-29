@@ -49,6 +49,9 @@ var (
 				group.Group("/dept", func(group *ghttp.RouterGroup) {
 					group.Bind(controller.Dept)
 				})
+				group.Group("/user_online", func(group *ghttp.RouterGroup) {
+					group.Bind(controller.UserOnline)
+				})
 			})
 			// 启动
 			s.Run()

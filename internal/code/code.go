@@ -15,4 +15,5 @@ var (
 	AddDeptFailed            = gcode.New(2101, "新增部门信息失败", "")    // 新增部门信息失败
 	DeleteDeptFailed         = gcode.New(2102, "删除部门信息失败", "")    // 删除部门信息失败
 	UpdateDeptFailed         = gcode.New(2103, "修改部门信息失败", "")    // 修改部门信息失败
+	GetUserOnlineListFailed  = gcode.New(2200, "获取在线用户列表失败", "")  // 获取在线用户列表失败
 )
