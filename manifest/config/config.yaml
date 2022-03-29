@@ -102,6 +102,11 @@ redis:
     db: 0
     pass: ""
     idleTimeout: 600
+  cache:
+    address: 127.0.0.1:6379
+    db: 1
+    pass: ""
+    idleTimeout: 600
 
 # gToken 配置
 gToken:
@@ -115,6 +120,6 @@ gToken:
   AuthFailMsg: "登录超时或未登录，请重新登录"            # 认证失败提示。默认请求错误或登录超时
   MultiLogin: true                                  # 是否支持多端登录。默认false
 
-# captcha 配置
+# 验证码开关配置
 captcha:
   debug: false

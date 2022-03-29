@@ -20,12 +20,16 @@ import (
 	"strings"
 )
 
-var gfToken *gtoken.GfToken
+type sAuth struct {
+	token *gtoken.GfToken
+}
 
-// InitGfToken 初始化 gfToken
-func InitGfToken(ctx context.Context) *gtoken.GfToken {
-	if gfToken == nil {
-		gfToken = &gtoken.GfToken{
+var insAuth = sAuth{}
+
+// Auth 验证服务
+func Auth(ctx context.Context) *sAuth {
+	if insAuth.token == nil {
+		insAuth.token = &gtoken.GfToken{
 			ServerName:       g.Cfg().MustGet(ctx, "gToken.ServerName").String(),
 			CacheMode:        g.Cfg().MustGet(ctx, "gToken.CacheMode").Int8(),
 			CacheKey:         g.Cfg().MustGet(ctx, "gToken.CacheKey").String(),
@@ -36,28 +40,27 @@ func InitGfToken(ctx context.Context) *gtoken.GfToken {
 			AuthFailMsg:      g.Cfg().MustGet(ctx, "gToken.AuthFailMsg").String(),
 			MultiLogin:       g.Cfg().MustGet(ctx, "gToken.MultiLogin").Bool(),
 			LoginPath:        "/login",
-			LoginBeforeFunc:  loginBefore,
-			LoginAfterFunc:   loginAfter,
+			LoginBeforeFunc:  insAuth.loginBefore,
+			LoginAfterFunc:   insAuth.loginAfter,
 			LogoutPath:       "/logout",
-			LogoutBeforeFunc: logoutBefore,
-			LogoutAfterFunc:  logoutAfter,
+			LogoutBeforeFunc: insAuth.logoutBefore,
+			LogoutAfterFunc:  insAuth.logoutAfter,
 			AuthPaths:        g.SliceStr{},         // 这里是按照前缀拦截，拦截
 			AuthExcludePaths: g.SliceStr{"/login"}, // 不拦截路径
-			AuthBeforeFunc:   authBefore,
-			AuthAfterFunc:    authAfter,
+			AuthBeforeFunc:   insAuth.authBefore,
+			AuthAfterFunc:    insAuth.authAfter,
 		}
 	}
-
-	return gfToken
+	return &insAuth
 }
 
-// GfToken 获取 gfToken
-func GfToken() *gtoken.GfToken {
-	return gfToken
+// Token 获取 gfToken
+func (s *sAuth) Token() *gtoken.GfToken {
+	return s.token
 }
 
 // 登录验证方法 return userKey 用户标识 如果userKey为空，结束执行
-func loginBefore(req *ghttp.Request) (string, interface{}) {
+func (s *sAuth) loginBefore(req *ghttp.Request) (string, interface{}) {
 	ctx := req.GetCtx()
 	var err error
 	var loginReq *v1.LoginReq
@@ -141,7 +144,7 @@ func loginBefore(req *ghttp.Request) (string, interface{}) {
 }
 
 // 登录返回方法
-func loginAfter(req *ghttp.Request, respData gtoken.Resp) {
+func (s *sAuth) loginAfter(req *ghttp.Request, respData gtoken.Resp) {
 	ctx := req.GetCtx()
 	logger.Debug(ctx, "loginAfter: ", respData)
 	if !respData.Success() {
@@ -178,7 +181,7 @@ func loginAfter(req *ghttp.Request, respData gtoken.Resp) {
 }
 
 // 登出验证方法 return true 继续执行，否则结束执行
-func logoutBefore(req *ghttp.Request) bool {
+func (s *sAuth) logoutBefore(req *ghttp.Request) bool {
 	ctx := req.GetCtx()
 	logger.Debug(ctx, "logoutBefore: ", req)
 	// 删除在线用户状态
@@ -206,21 +209,21 @@ func logoutBefore(req *ghttp.Request) bool {
 }
 
 // 登出返回方法
-func logoutAfter(req *ghttp.Request, respData gtoken.Resp) {
+func (s *sAuth) logoutAfter(req *ghttp.Request, respData gtoken.Resp) {
 	ctx := req.GetCtx()
 	logger.Debug(ctx, "logoutAfter: ", respData)
 	response.RespJson(req, respData.Code, respData.Msg, respData.Data)
 }
 
 // 认证验证方法 return true 继续执行，否则结束执行
-func authBefore(req *ghttp.Request) bool {
+func (s *sAuth) authBefore(req *ghttp.Request) bool {
 	ctx := req.GetCtx()
 	logger.Debug(ctx, "authBefore: ", req)
 	return true
 }
 
 // 认证返回方法
-func authAfter(req *ghttp.Request, respData gtoken.Resp) {
+func (s *sAuth) authAfter(req *ghttp.Request, respData gtoken.Resp) {
 	ctx := req.GetCtx()
 	logger.Debug(ctx, "authAfter: ", respData)
 	if req.Method == "OPTIONS" || respData.Success() {

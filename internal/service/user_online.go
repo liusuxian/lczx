@@ -10,11 +10,11 @@ import (
 )
 
 type sUserOnline struct {
-	Pool *grpool.Pool
+	pool *grpool.Pool
 }
 
 var insUserOnline = sUserOnline{
-	Pool: grpool.New(100),
+	pool: grpool.New(100),
 }
 
 // UserOnline 用户在线表管理服务
@@ -24,7 +24,7 @@ func UserOnline() *sUserOnline {
 
 // Invoke 异步保存用户在线状态
 func (s *sUserOnline) Invoke(ctx context.Context, data *entity.UserOnline) {
-	err := s.Pool.Add(ctx, func(ctx context.Context) {
+	err := s.pool.Add(ctx, func(ctx context.Context) {
 		// 保存用户在线状态
 		s.SaveUserOnline(ctx, data)
 	})

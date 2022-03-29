@@ -28,7 +28,7 @@ func (s *sMiddleware) Ctx(req *ghttp.Request) {
 	Context().Init(req, customCtx)
 	ctx := req.GetCtx()
 	user := &entity.User{}
-	respData := GfToken().GetTokenData(req)
+	respData := Auth(ctx).Token().GetTokenData(req)
 	if respData.Success() {
 		err := gconv.Struct(respData.Get("data"), user)
 		if err != nil {

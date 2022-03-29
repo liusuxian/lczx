@@ -39,7 +39,7 @@ var (
 					service.Middleware().CORS,
 					ghttp.MiddlewareHandlerResponse,
 				)
-				err = service.InitGfToken(ctx).Middleware(ctx, group)
+				err = service.Auth(ctx).Token().Middleware(ctx, group)
 				if err != nil {
 					logger.Panic(ctx, "Init GfToken Error: ", err.Error())
 				}
