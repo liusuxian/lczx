@@ -6,9 +6,12 @@ import (
 	"github.com/gogf/gf/v2/errors/gcode"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
+	"github.com/gogf/gf/v2/os/gtime"
 	"github.com/gogf/gf/v2/util/gvalid"
+	"github.com/mssola/user_agent"
 	v1 "lczx/api/v1"
 	"lczx/internal/code"
+	"lczx/internal/consts"
 	"lczx/internal/model/entity"
 	"lczx/utility/logger"
 	"lczx/utility/response"
@@ -72,28 +75,69 @@ func loginBefore(req *ghttp.Request) (string, interface{}) {
 			response.RespJsonExit(req, code.CaptchaPutErr.Code(), code.CaptchaPutErr.Message())
 		}
 	}
+	// 获取客户端IP
+	ip := utils.GetClientIp(req)
+	// 获取ip所属城市
+	location := utils.GetCityByIp(ctx, ip)
+	// 获取 User-Agent
+	userAgent := req.Header.Get("User-Agent")
+	ua := user_agent.New(userAgent)
+	// 获取浏览器类型
+	explorer, _ := ua.Browser()
+	// 获取操作系统
+	os := ua.OS()
 	// 通过账号和密码获取用户信息
 	var user *entity.User
 	user, err = User().GetUserByPassportAndPassword(ctx, loginReq.Passport, loginReq.Password)
 	if err != nil {
 		// 保存登录日志（异步）
-		LoginLog().Invoke(req, &entity.LoginLog{Passport: loginReq.Passport, Msg: err.Error()})
+		LoginLog().Invoke(ctx, &entity.LoginLog{
+			Passport: loginReq.Passport,
+			Ip:       ip,
+			Location: location,
+			Browser:  explorer,
+			Os:       os,
+			Status:   consts.LoginFailed,
+			Msg:      err.Error(),
+			Time:     gtime.Now(),
+			Module:   "系统登录",
+		})
 		response.RespJsonExit(req, code.GetUserFailed.Code(), code.GetUserFailed.Message()+": "+err.Error())
 	}
 	// 设置用户信息到session中
 	err = Session().SetUser(ctx, user)
 	if err != nil {
 		// 保存登录日志（异步）
-		LoginLog().Invoke(req, &entity.LoginLog{Passport: loginReq.Passport, Msg: "内部错误: " + err.Error()})
+		LoginLog().Invoke(ctx, &entity.LoginLog{
+			Passport: loginReq.Passport,
+			Ip:       ip,
+			Location: location,
+			Browser:  explorer,
+			Os:       os,
+			Status:   consts.LoginFailed,
+			Msg:      "内部错误: " + err.Error(),
+			Time:     gtime.Now(),
+			Module:   "系统登录",
+		})
 		response.RespJsonExit(req, gcode.CodeInternalError.Code(), "内部错误: "+err.Error())
 	}
-	// 保存登录日志（异步）
-	LoginLog().Invoke(req, &entity.LoginLog{Passport: user.Passport, Status: 1, Msg: "登录成功"})
 	// 更新用户登录信息
-	err = User().UpdateUserLogin(ctx, user.Id, utils.GetClientIp(req))
+	err = User().UpdateUserLogin(ctx, user.Id, ip)
 	if err != nil {
 		logger.Error(ctx, "UpdateUserLogin Error: ", err.Error())
 	}
+	// 保存登录日志（异步）
+	LoginLog().Invoke(ctx, &entity.LoginLog{
+		Passport: loginReq.Passport,
+		Ip:       ip,
+		Location: location,
+		Browser:  explorer,
+		Os:       os,
+		Status:   consts.LoginSucc,
+		Msg:      "登录成功",
+		Time:     gtime.Now(),
+		Module:   "系统登录",
+	})
 	req.SetParam("user", user)
 	return user.Passport, user
 }
@@ -111,6 +155,25 @@ func loginAfter(req *ghttp.Request, respData gtoken.Resp) {
 		_ = req.GetParam("user").Struct(&user)
 		// 保存用户在线状态token到数据库
 		logger.Debug(ctx, "11: ", uuid, user)
+		// 获取 User-Agent
+		userAgent := req.Header.Get("User-Agent")
+		ua := user_agent.New(userAgent)
+		// 获取浏览器类型
+		explorer, _ := ua.Browser()
+		// 获取操作系统
+		os := ua.OS()
+		// 获取客户端IP
+		ip := utils.GetClientIp(req)
+		// 保存用户在线状态（异步）
+		UserOnline().Invoke(ctx, &entity.UserOnline{
+			Uuid:     uuid,
+			Token:    token,
+			Passport: user.Passport,
+			Browser:  explorer,
+			Os:       os,
+			Ip:       ip,
+			Time:     gtime.Now(),
+		})
 		response.Succ(req, &v1.LoginRes{Token: token})
 	}
 }

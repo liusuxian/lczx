@@ -107,7 +107,7 @@ func (s *sUser) AddUser(ctx context.Context, req *v1.UserAddReq) (id int64, err 
 			Mobile:   req.Mobile,
 			DeptId:   req.DeptId,
 			RoleId:   req.RoleId,
-			Status:   0,
+			Status:   consts.UserStatusEnable,
 		}).InsertAndGetId()
 		return err
 	})
