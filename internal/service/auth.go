@@ -65,7 +65,7 @@ func loginBefore(req *ghttp.Request) (string, interface{}) {
 	// 判断验证码是否正确
 	captchaDebugVar, err := g.Cfg().Get(ctx, "captcha.debug", false)
 	if err != nil {
-		response.RespJsonExit(req, code.GetCaptchaCfgFailed.Code(), code.GetCaptchaCfgFailed.Message()+": "+err.Error())
+		response.RespJsonExit(req, code.GetCaptchaOnOffCfgFailed.Code(), code.GetCaptchaOnOffCfgFailed.Message()+": "+err.Error())
 	}
 	if !captchaDebugVar.Bool() {
 		if !Captcha().VerifyString(loginReq.VerifyKey, loginReq.VerifyCode) {
@@ -90,7 +90,10 @@ func loginBefore(req *ghttp.Request) (string, interface{}) {
 	// 保存登录日志（异步）
 	LoginLog().Invoke(req, &entity.LoginLog{Passport: user.Passport, Status: 1, Msg: "登录成功"})
 	// 更新用户登录信息
-	User().UpdateUserLogin(ctx, user.Id, utils.GetClientIp(req))
+	err = User().UpdateUserLogin(ctx, user.Id, utils.GetClientIp(req))
+	if err != nil {
+		logger.Error(ctx, "UpdateUserLogin Error: ", err.Error())
+	}
 	req.SetParam("user", user)
 	return user.Passport, user
 }

@@ -4,7 +4,6 @@ import (
 	"context"
 	"github.com/gogf/gf/v2/text/gstr"
 	"github.com/mojocn/base64Captcha"
-	"lczx/utility/logger"
 )
 
 type sCaptcha struct{}
@@ -17,7 +16,7 @@ func Captcha() *sCaptcha {
 }
 
 // GetVerifyImgString 获取字母数字混合验证码
-func (s *sCaptcha) GetVerifyImgString(ctx context.Context) (idKeyC string, base64stringC string) {
+func (s *sCaptcha) GetVerifyImgString(ctx context.Context) (idKeyC, base64stringC string, err error) {
 	driver := &base64Captcha.DriverString{
 		Height:          80,
 		Width:           240,
@@ -30,10 +29,7 @@ func (s *sCaptcha) GetVerifyImgString(ctx context.Context) (idKeyC string, base6
 	driver = driver.ConvertFonts()
 	store := base64Captcha.DefaultMemStore
 	c := base64Captcha.NewCaptcha(driver, store)
-	idKeyC, base64stringC, err := c.Generate()
-	if err != nil {
-		logger.Error(ctx, "GetVerifyImgString Error: ", err.Error())
-	}
+	idKeyC, base64stringC, err = c.Generate()
 	return
 }
 

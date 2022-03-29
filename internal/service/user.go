@@ -11,7 +11,6 @@ import (
 	"lczx/internal/model/entity"
 	"lczx/internal/service/internal/dao"
 	"lczx/internal/service/internal/do"
-	"lczx/utility/logger"
 	"lczx/utility/utils"
 )
 
@@ -116,12 +115,10 @@ func (s *sUser) AddUser(ctx context.Context, req *v1.UserAddReq) (id int64, err 
 }
 
 // UpdateUserLogin 更新用户登录信息
-func (s *sUser) UpdateUserLogin(ctx context.Context, id uint64, ip string) {
-	_, err := dao.User.Ctx(ctx).Unscoped().Data(do.User{
+func (s *sUser) UpdateUserLogin(ctx context.Context, id uint64, ip string) (err error) {
+	_, err = dao.User.Ctx(ctx).Unscoped().Data(do.User{
 		LastLoginIp:   ip,
 		LastLoginTime: gtime.Now(),
 	}).Where(do.User{Id: id}).Update()
-	if err != nil {
-		logger.Error(ctx, "UpdateUserLogin Error: ", err.Error())
-	}
+	return
 }
