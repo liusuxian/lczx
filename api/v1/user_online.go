@@ -6,7 +6,7 @@ import (
 )
 
 type UserOnlineListReq struct {
-	g.Meta   `path:"/list" tags:"UserOnlineList" method:"post" summary:"You first userOnline/list api"`
+	g.Meta   `path:"/list" tags:"UserOnlineList" method:"get" summary:"You first /monitor/userOnline/list api"`
 	Passport string `json:"passport" dc:"账号"`                                                        // 账号
 	Ip       string `json:"ip" dc:"IP地址"`                                                            // IP地址
 	CurPage  int    `json:"curPage" v:"required|regex:^[1-9][0-9]*$#当前页码不能为空|当前页码必须为正整数" dc:"当前页码"`  // 当前页码
@@ -19,7 +19,7 @@ type UserOnlineListRes struct {
 }
 
 type UserOnlineForceLogoutReq struct {
-	g.Meta `path:"/forceLogout" tags:"UserOnlineForceLogout" method:"post" summary:"You first userOnline/forceLogout api"`
+	g.Meta `path:"/forceLogout" tags:"UserOnlineForceLogout" method:"put" summary:"You first /monitor/userOnline/forceLogout api"`
 	Ids    []int `json:"ids" v:"required#ID列表不能为空" dc:"ID列表"` // ID列表
 }
 type UserOnlineForceLogoutRes struct {

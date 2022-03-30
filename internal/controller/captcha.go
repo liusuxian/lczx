@@ -14,7 +14,8 @@ var (
 
 type cCaptcha struct{}
 
-func (c *cCaptcha) Img(ctx context.Context, req *v1.CaptchaImgReq) (res *v1.CaptchaImgRes, err error) {
+// Info 获取验证码信息
+func (c *cCaptcha) Info(ctx context.Context, req *v1.CaptchaInfoReq) (res *v1.CaptchaInfoRes, err error) {
 	var verifyKey, verifyCode string
 	verifyKey, verifyCode, err = service.Captcha().GetVerifyImgString()
 	if err != nil {
@@ -22,7 +23,7 @@ func (c *cCaptcha) Img(ctx context.Context, req *v1.CaptchaImgReq) (res *v1.Capt
 		return
 	}
 
-	res = &v1.CaptchaImgRes{
+	res = &v1.CaptchaInfoRes{
 		VerifyKey:  verifyKey,
 		VerifyCode: verifyCode,
 	}

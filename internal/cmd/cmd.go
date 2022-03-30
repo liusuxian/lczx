@@ -28,6 +28,7 @@ var (
 				group.Bind(
 					controller.Hello,
 				)
+				// 验证码
 				group.Group("/captcha", func(group *ghttp.RouterGroup) {
 					group.Bind(controller.Captcha)
 				})
@@ -43,14 +44,39 @@ var (
 				if err != nil {
 					logger.Panic(ctx, "Init GfToken Error: ", err.Error())
 				}
+				// TODO 用户相关
 				group.Group("/user", func(group *ghttp.RouterGroup) {
 					group.Bind(controller.User)
 				})
-				group.Group("/dept", func(group *ghttp.RouterGroup) {
-					group.Bind(controller.Dept)
+				// TODO 权限管理
+				group.Group("/auth", func(group *ghttp.RouterGroup) {
+					group.Bind(
+						// 菜单管理
+						// 角色管理
+						// 部门管理
+						controller.Dept,
+						// 岗位管理
+						// 用户管理
+					)
 				})
-				group.Group("/userOnline", func(group *ghttp.RouterGroup) {
-					group.Bind(controller.UserOnline)
+				// TODO 系统监控
+				group.Group("/monitor", func(group *ghttp.RouterGroup) {
+					// TODO 在线用户管理
+					group.Group("/userOnline", func(group *ghttp.RouterGroup) {
+						group.Bind(controller.UserOnline)
+					})
+					// TODO 定时任务管理
+					group.Group("/job", func(group *ghttp.RouterGroup) {
+					})
+					// TODO 服务监控
+					group.Group("/server", func(group *ghttp.RouterGroup) {
+					})
+					// TODO 登录日志
+					group.Group("/loginLog", func(group *ghttp.RouterGroup) {
+					})
+					// TODO 操作日志
+					group.Group("/operationLog", func(group *ghttp.RouterGroup) {
+					})
 				})
 			})
 			// 启动

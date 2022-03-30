@@ -103,6 +103,36 @@ func (s *sAuth) UserIsOnline(ctx context.Context, token string) bool {
 	return false
 }
 
+// CheckUserOnline 检查在线用户
+func (s *sAuth) CheckUserOnline(ctx context.Context) {
+	req := &v1.UserOnlineListReq{
+		CurPage:  1,
+		PageSize: 50,
+	}
+	var total int
+	for {
+		var list []*entity.UserOnline
+		var err error
+		total, list, err = UserOnline().GetOnlineList(ctx, req)
+		if err != nil {
+			logger.Error(ctx, "CheckUserOnline GetOnlineList Error: ", err.Error())
+			break
+		}
+		if list == nil {
+			break
+		}
+		for _, v := range list {
+			if ok := s.UserIsOnline(ctx, v.Token); !ok {
+				UserOnline().DeleteOnlineByToken(ctx, v.Token)
+			}
+		}
+		if req.CurPage*req.PageSize >= total {
+			break
+		}
+		req.CurPage++
+	}
+}
+
 // 登录验证方法 return userKey 用户标识 如果userKey为空，结束执行
 func (s *sAuth) loginBefore(req *ghttp.Request) (string, interface{}) {
 	ctx := req.GetCtx()

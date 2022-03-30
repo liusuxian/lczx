@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"github.com/gogf/gf/v2/container/gvar"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/os/grpool"
 	v1 "lczx/api/v1"
@@ -91,22 +92,23 @@ func (s *sUserOnline) GetOnlineList(ctx context.Context, req *v1.UserOnlineListR
 	return
 }
 
-// ForceLogout 强退用户
-func (s *sUserOnline) ForceLogout(ctx context.Context, ids []int) (tokens []string, err error) {
-	var list []*entity.UserOnline
-	list, err = s.GetOnlineListByIds(ctx, ids)
+// GetOnlineTokensByIds 通过ID列表获取在线用户的tokens
+func (s *sUserOnline) GetOnlineTokensByIds(ctx context.Context, ids []int) (tokens []string, err error) {
+	var array []*gvar.Var
+	model := dao.UserOnline.Ctx(ctx)
+	array, err = model.Fields(dao.UserOnline.Columns().Token).WhereIn(dao.UserOnline.Columns().Id, ids).Array()
 	if err != nil {
 		return
 	}
-	for _, v := range list {
-		tokens = append(tokens, v.Token)
+	for _, tokenVar := range array {
+		tokens = append(tokens, tokenVar.String())
 	}
-	_, err = dao.UserOnline.Ctx(ctx).WhereIn(dao.UserOnline.Columns().Id, ids).Delete()
-	return
-}
 
-// GetOnlineListByIds 通过ID列表获取在线用户列表
-func (s *sUserOnline) GetOnlineListByIds(ctx context.Context, ids []int) (list []*entity.UserOnline, err error) {
-	err = dao.UserOnline.Ctx(ctx).WhereIn(dao.UserOnline.Columns().Id, ids).Scan(&list)
+	if tokens != nil {
+		_, err = model.WhereIn(dao.UserOnline.Columns().Token, tokens).Delete()
+		if err != nil {
+			return
+		}
+	}
 	return
 }

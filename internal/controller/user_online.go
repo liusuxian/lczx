@@ -36,7 +36,7 @@ func (c *cUserOnline) List(ctx context.Context, req *v1.UserOnlineListReq) (res 
 // ForceLogout 强退用户
 func (c *cUserOnline) ForceLogout(ctx context.Context, req *v1.UserOnlineForceLogoutReq) (res *v1.UserOnlineForceLogoutRes, err error) {
 	var tokens []string
-	tokens, err = service.UserOnline().ForceLogout(ctx, req.Ids)
+	tokens, err = service.UserOnline().GetOnlineTokensByIds(ctx, req.Ids)
 	if err != nil {
 		err = gerror.WrapCode(code.ForceLogoutUserOnlineFailed, err)
 	}
