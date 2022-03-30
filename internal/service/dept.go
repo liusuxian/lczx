@@ -54,8 +54,9 @@ func (s *sDept) AddDept(ctx context.Context, name string) (id int64, err error) 
 		err = gerror.Newf(`部门名称[%s]已存在`, name)
 		return
 	}
-	err = dao.Dept.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
-		id, err = dao.Dept.Ctx(ctx).Data(do.Dept{Name: name}).InsertAndGetId()
+	model := dao.Dept.Ctx(ctx)
+	err = model.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
+		id, err = model.Data(do.Dept{Name: name}).InsertAndGetId()
 		return err
 	})
 	return
@@ -72,10 +73,7 @@ func (s *sDept) DeleteDept(ctx context.Context, id uint) (err error) {
 		err = gerror.Newf(`部门ID[%d]不存在`, id)
 		return
 	}
-	err = dao.Dept.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
-		_, err = dao.Dept.Ctx(ctx).Delete(do.Dept{Id: id})
-		return err
-	})
+	_, err = dao.Dept.Ctx(ctx).Delete(do.Dept{Id: id})
 	return
 }
 
@@ -90,9 +88,6 @@ func (s *sDept) UpdateDept(ctx context.Context, req *v1.DeptUpdateReq) (err erro
 		err = gerror.Newf(`部门ID[%d]不存在`, req.Id)
 		return
 	}
-	err = dao.Dept.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
-		_, err = dao.Dept.Ctx(ctx).Data(do.Dept{Name: req.Name}).Where(do.Dept{Id: req.Id}).Update()
-		return err
-	})
+	_, err = dao.Dept.Ctx(ctx).Data(do.Dept{Name: req.Name}).Where(do.Dept{Id: req.Id}).Update()
 	return
 }

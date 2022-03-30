@@ -98,8 +98,9 @@ func (s *sUser) AddUser(ctx context.Context, req *v1.UserAddReq) (id int64, err 
 	salt := grand.S(10)
 	// 密码加密
 	password := utils.EncryptPassword(req.Passport, salt)
-	err = dao.User.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
-		id, err = dao.User.Ctx(ctx).Data(do.User{
+	model := dao.User.Ctx(ctx)
+	err = model.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
+		id, err = model.Data(do.User{
 			Passport: req.Passport,
 			Password: password,
 			Salt:     salt,
@@ -109,7 +110,7 @@ func (s *sUser) AddUser(ctx context.Context, req *v1.UserAddReq) (id int64, err 
 			DeptId:   req.DeptId,
 			RoleId:   req.RoleId,
 			Status:   consts.UserStatusEnable,
-		}).InsertAndGetId()
+		}).FieldsEx(dao.User.Columns().Id).InsertAndGetId()
 		return err
 	})
 	return

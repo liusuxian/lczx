@@ -1,7 +1,6 @@
 package service
 
 import (
-	"context"
 	"github.com/gogf/gf/v2/text/gstr"
 	"github.com/mojocn/base64Captcha"
 )
@@ -16,7 +15,7 @@ func Captcha() *sCaptcha {
 }
 
 // GetVerifyImgString 获取字母数字混合验证码
-func (s *sCaptcha) GetVerifyImgString(ctx context.Context) (idKeyC, base64stringC string, err error) {
+func (s *sCaptcha) GetVerifyImgString() (idKeyC, base64stringC string, err error) {
 	driver := &base64Captcha.DriverString{
 		Height:          80,
 		Width:           240,

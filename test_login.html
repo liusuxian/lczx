@@ -41,8 +41,8 @@
     function getCaptchaImg(responseText) {
         let response = stringToObject(responseText)
         if (response.code === 0) {
-            document.getElementById("captchaImg").setAttribute("src", response.data.base64stringC)
-            document.getElementById("captchaKey").setAttribute("value", response.data.idKeyC)
+            document.getElementById("captchaImg").setAttribute("src", response.data.verifyCode)
+            document.getElementById("captchaKey").setAttribute("value", response.data.verifyKey)
         }
     }
 
