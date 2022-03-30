@@ -20,7 +20,7 @@ type UserOnlineListRes struct {
 
 type UserOnlineForceLogoutReq struct {
 	g.Meta `path:"/forceLogout" tags:"UserOnlineForceLogout" method:"post" summary:"You first userOnline/forceLogout api"`
-	Ids    []int `json:"ids" v:"required|regex:^[1-9][0-9]*$#ID列表不能为空|ID列表中的ID必须为正整数" dc:"ID列表"` // ID列表
+	Ids    []int `json:"ids" v:"required#ID列表不能为空" dc:"ID列表"` // ID列表
 }
 type UserOnlineForceLogoutRes struct {
 }

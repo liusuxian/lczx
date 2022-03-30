@@ -116,7 +116,7 @@ func (s *sAuth) loginBefore(req *ghttp.Request) (string, interface{}) {
 	// 判断验证码是否正确
 	captchaDebugVar, err := g.Cfg().Get(ctx, "captcha.debug", false)
 	if err != nil {
-		response.RespJsonExit(req, code.GetCaptchaOnOffCfgFailed.Code(), code.GetCaptchaOnOffCfgFailed.Message()+": "+err.Error())
+		response.RespJsonExit(req, code.GetCaptchaDebugFailed.Code(), code.GetCaptchaDebugFailed.Message()+": "+err.Error())
 	}
 	if !captchaDebugVar.Bool() {
 		if !Captcha().VerifyString(loginReq.VerifyKey, loginReq.VerifyCode) {
