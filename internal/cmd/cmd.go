@@ -66,7 +66,6 @@ var (
 					// TODO 服务监控
 					group.Group("/server", func(group *ghttp.RouterGroup) {
 					})
-					// TODO 登录日志
 					group.Group("/loginLog", func(group *ghttp.RouterGroup) {
 						group.Bind(controller.LoginLog)
 					})
