@@ -303,7 +303,7 @@ func (s *sAuth) authAfter(req *ghttp.Request, respData gtoken.Resp) {
 	if req.Method == "OPTIONS" || respData.Success() {
 		req.Middleware.Next()
 	} else if respData.Code == gtoken.UNAUTHORIZED {
-		response.RespJsonExit(req, http.StatusUnauthorized, respData.Msg, respData.Data)
+		response.RespJsonExit(req, http.StatusUnauthorized, s.token.AuthFailMsg, respData.Data)
 	} else {
 		response.RespJsonExit(req, respData.Code, respData.Msg, respData.Data)
 	}
