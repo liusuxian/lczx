@@ -18,8 +18,8 @@ type cUserOnline struct{}
 // List 在线用户列表
 func (c *cUserOnline) List(ctx context.Context, req *v1.UserOnlineListReq) (res *v1.UserOnlineListRes, err error) {
 	var total int
-	var userOnlineList []*entity.UserOnline
-	total, userOnlineList, err = service.UserOnline().GetOnlineList(ctx, req)
+	var list []*entity.UserOnline
+	total, list, err = service.UserOnline().GetOnlineList(ctx, req, "token")
 	if err != nil {
 		err = gerror.WrapCode(code.GetUserOnlineListFailed, err)
 		return
@@ -28,7 +28,7 @@ func (c *cUserOnline) List(ctx context.Context, req *v1.UserOnlineListReq) (res 
 	res = &v1.UserOnlineListRes{
 		CurPage: req.CurPage,
 		Total:   total,
-		List:    userOnlineList,
+		List:    list,
 	}
 	return
 }

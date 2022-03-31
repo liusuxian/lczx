@@ -14,16 +14,16 @@ var (
 
 type cCaptcha struct{}
 
-// Info 获取验证码信息
-func (c *cCaptcha) Info(ctx context.Context, req *v1.CaptchaInfoReq) (res *v1.CaptchaInfoRes, err error) {
+// Img 获取验证码图片信息
+func (c *cCaptcha) Img(ctx context.Context, req *v1.CaptchaImgReq) (res *v1.CaptchaImgRes, err error) {
 	var verifyKey, verifyCode string
 	verifyKey, verifyCode, err = service.Captcha().GetVerifyImgString()
 	if err != nil {
-		err = gerror.WrapCode(code.GetCaptchaFailed, err)
+		err = gerror.WrapCode(code.GetCaptchaImgFailed, err)
 		return
 	}
 
-	res = &v1.CaptchaInfoRes{
+	res = &v1.CaptchaImgRes{
 		VerifyKey:  verifyKey,
 		VerifyCode: verifyCode,
 	}

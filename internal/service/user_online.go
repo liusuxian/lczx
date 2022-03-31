@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"github.com/gogf/gf/v2/container/gvar"
-	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/os/grpool"
 	v1 "lczx/api/v1"
 	"lczx/internal/model/entity"
@@ -70,25 +69,23 @@ func (s *sUserOnline) DeleteOnlineByToken(ctx context.Context, token string) {
 }
 
 // GetOnlineList 获取在线用户列表
-func (s *sUserOnline) GetOnlineList(ctx context.Context, req *v1.UserOnlineListReq) (total int, list []*entity.UserOnline, err error) {
+func (s *sUserOnline) GetOnlineList(ctx context.Context, req *v1.UserOnlineListReq, fieldNames ...string) (total int, list []*entity.UserOnline, err error) {
 	model := dao.UserOnline.Ctx(ctx)
+	columns := dao.UserOnline.Columns()
 	if req.Ip != "" {
-		model = model.WhereLike(dao.UserOnline.Columns().Ip, "%"+req.Ip+"%")
+		model = model.WhereLike(columns.Ip, "%"+req.Ip+"%")
 	}
 	if req.Passport != "" {
-		model = model.WhereLike(dao.UserOnline.Columns().Passport, "%"+req.Passport+"%")
+		model = model.WhereLike(columns.Passport, "%"+req.Passport+"%")
 	}
 	total, err = model.Count()
 	if err != nil {
-		err = gerror.Wrap(err, "获取总行数失败")
 		return
 	}
-	err = model.FieldsEx(dao.UserOnline.Columns().Token).Page(req.CurPage, req.PageSize).
-		OrderDesc(dao.UserOnline.Columns().Time).Scan(&list)
-	if err != nil {
-		err = gerror.Wrap(err, "获取数据失败")
-		return
+	if len(fieldNames) != 0 {
+		model = model.FieldsEx(fieldNames)
 	}
+	err = model.Page(req.CurPage, req.PageSize).OrderDesc(columns.Time).Scan(&list)
 	return
 }
 
@@ -96,7 +93,8 @@ func (s *sUserOnline) GetOnlineList(ctx context.Context, req *v1.UserOnlineListR
 func (s *sUserOnline) GetOnlineTokensByIds(ctx context.Context, ids []int) (tokens []string, err error) {
 	var array []*gvar.Var
 	model := dao.UserOnline.Ctx(ctx)
-	array, err = model.Fields(dao.UserOnline.Columns().Token).WhereIn(dao.UserOnline.Columns().Id, ids).Array()
+	columns := dao.UserOnline.Columns()
+	array, err = model.Fields(columns.Token).WhereIn(columns.Id, ids).Array()
 	if err != nil {
 		return
 	}
@@ -105,10 +103,7 @@ func (s *sUserOnline) GetOnlineTokensByIds(ctx context.Context, ids []int) (toke
 	}
 
 	if tokens != nil {
-		_, err = model.WhereIn(dao.UserOnline.Columns().Token, tokens).Delete()
-		if err != nil {
-			return
-		}
+		_, err = model.WhereIn(columns.Token, tokens).Delete()
 	}
 	return
 }

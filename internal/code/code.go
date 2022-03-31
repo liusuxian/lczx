@@ -4,7 +4,7 @@ import "github.com/gogf/gf/v2/errors/gcode"
 
 var (
 	GetCaptchaDebugFailed       = gcode.New(1000, "获取验证码调试配置失败", "") // 获取验证码调试配置失败
-	GetCaptchaFailed            = gcode.New(1001, "获取验证码失败", "")     // 获取验证码失败
+	GetCaptchaImgFailed         = gcode.New(1001, "获取验证码图片信息失败", "") // 获取验证码图片信息失败
 	CaptchaPutErr               = gcode.New(1002, "验证码输入错误", "")     // 验证码输入错误
 	GetUserFailed               = gcode.New(2000, "获取用户信息失败", "")    // 获取用户信息失败
 	GetUserListFailed           = gcode.New(2001, "获取用户列表失败", "")    // 获取用户列表失败
