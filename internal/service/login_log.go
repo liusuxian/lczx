@@ -2,10 +2,9 @@ package service
 
 import (
 	"context"
-	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/os/grpool"
+	"github.com/gogf/gf/v2/util/gconv"
 	v1 "lczx/api/v1"
-	"lczx/internal/consts"
 	"lczx/internal/model/entity"
 	"lczx/internal/service/internal/dao"
 	"lczx/utility/logger"
@@ -43,12 +42,11 @@ func (s *sLoginLog) SaveLoginLog(ctx context.Context, data *entity.LoginLog) {
 	}
 }
 
-// LoginLogList 获取登录日志列表
-func (s *sLoginLog) LoginLogList(ctx context.Context, req *v1.LoginLogListReq) (total int, list []*v1.LoginLogListRes, err error) {
+// GetLoginLogList 获取登录日志列表
+func (s *sLoginLog) GetLoginLogList(ctx context.Context, req *v1.LoginLogListReq) (total int, list []*entity.LoginLog, err error) {
 	model := dao.LoginLog.Ctx(ctx)
 	columns := dao.LoginLog.Columns()
 	order := "id DESC"
-
 	if req.Passport != "" {
 		model = model.WhereLike(columns.Passport, "%"+req.Passport+"%")
 	}
@@ -58,8 +56,8 @@ func (s *sLoginLog) LoginLogList(ctx context.Context, req *v1.LoginLogListReq) (
 	if req.Location != "" {
 		model = model.WhereLike(columns.Location, "%"+req.Location+"%")
 	}
-	if req.Status == consts.LoginFailed || req.Status == consts.LoginSucc {
-		model = model.Where(columns.Status, req.Status)
+	if req.Status != "" {
+		model = model.Where(columns.Status, gconv.Uint(req.Status))
 	}
 	if req.StartTime.String() != "" {
 		model = model.WhereGTE(columns.Time, req.StartTime)
@@ -76,12 +74,20 @@ func (s *sLoginLog) LoginLogList(ctx context.Context, req *v1.LoginLogListReq) (
 	}
 	total, err = model.Count()
 	if err != nil {
-		err = gerror.Wrap(err, "获取总行数失败")
 		return
 	}
 	err = model.Page(req.CurPage, req.PageSize).Order(order).Scan(&list)
-	if err != nil {
-		err = gerror.Wrap(err, "获取数据失败")
-	}
+	return
+}
+
+// DeleteLoginLogByIds 通过ID列表删除登录日志
+func (s *sLoginLog) DeleteLoginLogByIds(ctx context.Context, ids []int) (err error) {
+	_, err = dao.LoginLog.Ctx(ctx).WhereIn(dao.LoginLog.Columns().Id, ids).Delete()
+	return
+}
+
+// ClearLoginLog 清除登录日志
+func (s *sLoginLog) ClearLoginLog(ctx context.Context) (err error) {
+	_, err = dao.LoginLog.DB().Exec(ctx, "truncate "+dao.LoginLog.Table())
 	return
 }

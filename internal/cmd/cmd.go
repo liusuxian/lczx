@@ -61,7 +61,6 @@ var (
 				})
 				// TODO 系统监控
 				group.Group("/monitor", func(group *ghttp.RouterGroup) {
-					// TODO 在线用户管理
 					group.Group("/userOnline", func(group *ghttp.RouterGroup) {
 						group.Bind(controller.UserOnline)
 					})
@@ -73,6 +72,7 @@ var (
 					})
 					// TODO 登录日志
 					group.Group("/loginLog", func(group *ghttp.RouterGroup) {
+						group.Bind(controller.LoginLog)
 					})
 					// TODO 操作日志
 					group.Group("/operationLog", func(group *ghttp.RouterGroup) {
