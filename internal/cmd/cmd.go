@@ -24,10 +24,6 @@ var (
 					service.Middleware().CORS,
 					ghttp.MiddlewareHandlerResponse,
 				)
-				// 调试路由
-				group.Bind(
-					controller.Hello,
-				)
 				// 验证码
 				group.Group("/captcha", func(group *ghttp.RouterGroup) {
 					group.Bind(controller.Captcha)
