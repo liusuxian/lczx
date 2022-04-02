@@ -41,19 +41,20 @@ func (s *sUserOnline) SaveUserOnline(ctx context.Context, data *entity.UserOnlin
 	var info *entity.UserOnline
 	var err error
 	model := dao.UserOnline.Ctx(ctx)
-	err = model.Fields(dao.UserOnline.Columns().Id).Where(do.UserOnline{Token: data.Token}).Scan(&info)
+	columns := dao.UserOnline.Columns()
+	err = model.Fields(columns.Id).Where(do.UserOnline{Token: data.Token}).Scan(&info)
 	if err != nil {
 		logger.Error(ctx, "SaveUserOnline Error: ", err.Error())
 	}
 	if info != nil {
 		// 已存在则更新
-		_, err = model.Where(do.UserOnline{Id: info.Id}).FieldsEx(dao.UserOnline.Columns().Id).Update(data)
+		_, err = model.Where(do.UserOnline{Id: info.Id}).FieldsEx(columns.Id).Update(data)
 		if err != nil {
 			logger.Error(ctx, "SaveUserOnline Update Error: ", err.Error())
 		}
 	} else {
 		// 不存在则新增
-		_, err = model.FieldsEx(dao.UserOnline.Columns().Id).Insert(data)
+		_, err = model.FieldsEx(columns.Id).Insert(data)
 		if err != nil {
 			logger.Error(ctx, "SaveUserOnline Insert Error: ", err.Error())
 		}
