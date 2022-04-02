@@ -13,7 +13,7 @@ type sContext struct{}
 
 var insContext = sContext{}
 
-// Context 上下文管理服务
+// Context 上下文服务
 func Context() *sContext {
 	return &insContext
 }

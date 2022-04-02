@@ -18,7 +18,7 @@ var insLoginLog = sLoginLog{
 	pool: grpool.New(100),
 }
 
-// LoginLog 系统登录日志管理服务
+// LoginLog 系统登录日志服务
 func LoginLog() *sLoginLog {
 	return &insLoginLog
 }

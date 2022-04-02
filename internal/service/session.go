@@ -10,7 +10,7 @@ type sSession struct{}
 
 var insSession = sSession{}
 
-// Session session管理服务
+// Session session服务
 func Session() *sSession {
 	return &insSession
 }

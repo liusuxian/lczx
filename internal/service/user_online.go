@@ -19,7 +19,7 @@ var insUserOnline = sUserOnline{
 	pool: grpool.New(100),
 }
 
-// UserOnline 用户在线表管理服务
+// UserOnline 在线用户服务
 func UserOnline() *sUserOnline {
 	return &insUserOnline
 }

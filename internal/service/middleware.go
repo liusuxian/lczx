@@ -13,7 +13,7 @@ type sMiddleware struct{}
 
 var insMiddleware = sMiddleware{}
 
-// Middleware 中间件管理服务
+// Middleware 中间件服务
 func Middleware() *sMiddleware {
 	return &insMiddleware
 }
