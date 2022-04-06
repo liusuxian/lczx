@@ -10,21 +10,22 @@ import (
 
 // User is the golang structure for table user.
 type User struct {
-	Id            uint64      `json:"id"            description:"用户ID"`                                  // 用户ID
-	Passport      string      `json:"passport"      description:"账号"`                                    // 账号
-	Password      string      `json:"password"      description:"密码"`                                    // 密码
-	Salt          string      `json:"salt"          description:"加密盐"`                                   // 加密盐
-	Realname      string      `json:"realname"      description:"姓名"`                                    // 姓名
-	Nickname      string      `json:"nickname"      description:"昵称"`                                    // 昵称
-	Gender        uint        `json:"gender"        description:"性别 1: 男 2: 女"`                          // 性别 1: 男 2: 女
-	Avatar        string      `json:"avatar"        description:"头像地址"`                                  // 头像地址
-	Mobile        string      `json:"mobile"        description:"手机号"`                                   // 手机号
-	DeptId        uint        `json:"deptId"        description:"部门ID"`                                  // 部门ID
-	RoleId        uint        `json:"roleId"        description:"角色ID 0: 默认普通用户 1000: 超级管理员 900: 普通管理员"` // 角色ID 0: 默认普通用户 1000: 超级管理员 900: 普通管理员
-	Status        uint        `json:"status"        description:"状态 0:禁用 1:启用"`                          // 状态 0:禁用 1:启用
-	LastLoginIp   string      `json:"lastLoginIp"   description:"最后登录ip"`                                // 最后登录ip
-	LastLoginTime *gtime.Time `json:"lastLoginTime" description:"最后登录时间"`                                // 最后登录时间
-	CreateAt      *gtime.Time `json:"createAt"      description:"创建时间"`                                  // 创建时间
-	UpdateAt      *gtime.Time `json:"updateAt"      description:"更新时间"`                                  // 更新时间
-	DeletedAt     *gtime.Time `json:"deletedAt"     description:"软删除时间"`                                 // 软删除时间
+	Id            uint64      `json:"id"            description:"用户ID"`         // 用户ID
+	Passport      string      `json:"passport"      description:"账号"`           // 账号
+	Password      string      `json:"password"      description:"密码"`           // 密码
+	Salt          string      `json:"salt"          description:"加密盐"`          // 加密盐
+	Realname      string      `json:"realname"      description:"姓名"`           // 姓名
+	Nickname      string      `json:"nickname"      description:"昵称"`           // 昵称
+	DeptId        uint        `json:"deptId"        description:"部门ID"`         // 部门ID
+	Gender        uint        `json:"gender"        description:"性别 1: 男 2: 女"` // 性别 1: 男 2: 女
+	Status        uint        `json:"status"        description:"状态 0:禁用 1:启用"` // 状态 0:禁用 1:启用
+	Avatar        string      `json:"avatar"        description:"头像地址"`         // 头像地址
+	Mobile        string      `json:"mobile"        description:"手机号"`          // 手机号
+	Email         string      `json:"email"         description:"用户邮箱"`         // 用户邮箱
+	Remark        string      `json:"remark"        description:"备注"`           // 备注
+	LastLoginIp   string      `json:"lastLoginIp"   description:"最后登录ip"`       // 最后登录ip
+	LastLoginTime *gtime.Time `json:"lastLoginTime" description:"最后登录时间"`       // 最后登录时间
+	CreateAt      *gtime.Time `json:"createAt"      description:"创建时间"`         // 创建时间
+	UpdateAt      *gtime.Time `json:"updateAt"      description:"更新时间"`         // 更新时间
+	DeletedAt     *gtime.Time `json:"deletedAt"     description:"软删除时间"`        // 软删除时间
 }

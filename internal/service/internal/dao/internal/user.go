@@ -25,12 +25,13 @@ type UserColumns struct {
 	Salt          string // 加密盐
 	Realname      string // 姓名
 	Nickname      string // 昵称
+	DeptId        string // 部门ID
 	Gender        string // 性别 1: 男 2: 女
+	Status        string // 状态 0:禁用 1:启用
 	Avatar        string // 头像地址
 	Mobile        string // 手机号
-	DeptId        string // 部门ID
-	RoleId        string // 角色ID 0: 默认普通用户 1000: 超级管理员 900: 普通管理员
-	Status        string // 状态 0:禁用 1:启用
+	Email         string // 用户邮箱
+	Remark        string // 备注
 	LastLoginIp   string // 最后登录ip
 	LastLoginTime string // 最后登录时间
 	CreateAt      string // 创建时间
@@ -46,12 +47,13 @@ var userColumns = UserColumns{
 	Salt:          "salt",
 	Realname:      "realname",
 	Nickname:      "nickname",
+	DeptId:        "dept_id",
 	Gender:        "gender",
+	Status:        "status",
 	Avatar:        "avatar",
 	Mobile:        "mobile",
-	DeptId:        "dept_id",
-	RoleId:        "role_id",
-	Status:        "status",
+	Email:         "email",
+	Remark:        "remark",
 	LastLoginIp:   "last_login_ip",
 	LastLoginTime: "last_login_time",
 	CreateAt:      "create_at",
