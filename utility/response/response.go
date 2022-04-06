@@ -1,11 +1,10 @@
 package response
 
 import (
+	"github.com/gogf/gf/v2/errors/gcode"
 	"github.com/gogf/gf/v2/net/ghttp"
 	"lczx/utility/logger"
 )
-
-const SUCCESS = 0
 
 // Resp 数据返回通用JSON数据结构
 type Resp struct {
@@ -31,18 +30,29 @@ func RespJson(req *ghttp.Request, code int, msg string, data ...any) {
 	}
 }
 
+// RespJsonByGcode 标准返回结果数据
+func RespJsonByGcode(req *ghttp.Request, gcode gcode.Code, data ...any) {
+	RespJson(req, gcode.Code(), gcode.Message(), data...)
+}
+
 // RespJsonExit 标准返回结果数据并退出
 func RespJsonExit(req *ghttp.Request, code int, msg string, data ...any) {
 	RespJson(req, code, msg, data...)
 	req.Exit()
 }
 
+// RespJsonExitByGcode 标准返回结果数据并退出
+func RespJsonExitByGcode(req *ghttp.Request, gcode gcode.Code, data ...any) {
+	RespJson(req, gcode.Code(), gcode.Message(), data...)
+	req.Exit()
+}
+
 // Succ 成功
 func Succ(req *ghttp.Request, data ...any) {
-	RespJson(req, SUCCESS, "success", data...)
+	RespJson(req, gcode.CodeOK.Code(), gcode.CodeOK.Message(), data...)
 }
 
 // SuccExit 成功并退出
 func SuccExit(req *ghttp.Request, data ...any) {
-	RespJsonExit(req, SUCCESS, "success", data...)
+	RespJsonExit(req, gcode.CodeOK.Code(), gcode.CodeOK.Message(), data...)
 }

@@ -144,14 +144,8 @@ func (s *sAuth) loginBefore(req *ghttp.Request) (string, interface{}) {
 		response.RespJsonExit(req, errCode, errMsg)
 	}
 	// 判断验证码是否正确
-	captchaDebugVar, err := g.Cfg().Get(ctx, "captcha.debug", false)
-	if err != nil {
-		response.RespJsonExit(req, code.GetCaptchaDebugFailed.Code(), code.GetCaptchaDebugFailed.Message()+": "+err.Error())
-	}
-	if !captchaDebugVar.Bool() {
-		if !Captcha().VerifyString(loginReq.VerifyKey, loginReq.VerifyCode) {
-			response.RespJsonExit(req, code.CaptchaPutErr.Code(), code.CaptchaPutErr.Message())
-		}
+	if !Captcha().VerifyString(loginReq.VerifyKey, loginReq.VerifyCode) {
+		response.RespJsonExitByGcode(req, code.CaptchaPutErr)
 	}
 	// 获取客户端IP
 	ip := utils.GetClientIp(req)
@@ -180,7 +174,8 @@ func (s *sAuth) loginBefore(req *ghttp.Request) (string, interface{}) {
 			Time:     gtime.Now(),
 			Module:   "系统登录",
 		})
-		response.RespJsonExit(req, code.GetUserFailed.Code(), code.GetUserFailed.Message()+": "+err.Error())
+		logger.Error(ctx, "GetUserByPassportAndPassword Error: ", err.Error())
+		response.RespJsonExitByGcode(req, code.GetUserFailed)
 	}
 	// 设置用户信息到session中
 	err = Session().SetUser(ctx, user)
@@ -197,7 +192,8 @@ func (s *sAuth) loginBefore(req *ghttp.Request) (string, interface{}) {
 			Time:     gtime.Now(),
 			Module:   "系统登录",
 		})
-		response.RespJsonExit(req, gcode.CodeInternalError.Code(), "内部错误: "+err.Error())
+		logger.Error(ctx, "设置用户信息到session中出错：", err.Error())
+		response.RespJsonExitByGcode(req, gcode.CodeInternalError)
 	}
 	// 更新用户登录信息
 	User().UpdateUserLogin(ctx, user.Id, ip)

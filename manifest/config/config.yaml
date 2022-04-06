@@ -119,7 +119,3 @@ gToken:
   EncryptKey: "1ee7f75f1145e929df46514e3c924d69"    # Token加密key。默认12345678912345678912345678912345
   AuthFailMsg: "登录超时或未登录，请重新登录"            # 认证失败提示。默认请求错误或登录超时
   MultiLogin: true                                  # 是否支持多端登录。默认false
-
-# 验证码调试配置
-captcha:
-  debug: false                                      # 验证码调试模式，默认false

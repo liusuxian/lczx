@@ -3,9 +3,8 @@ package code
 import "github.com/gogf/gf/v2/errors/gcode"
 
 var (
-	GetCaptchaDebugFailed = gcode.New(1000, "获取验证码调试配置失败", "") // 获取验证码调试配置失败
-	GetCaptchaImgFailed   = gcode.New(1001, "获取验证码图片信息失败", "") // 获取验证码图片信息失败
-	CaptchaPutErr         = gcode.New(1002, "验证码输入错误", "")     // 验证码输入错误
+	GetCaptchaImgFailed = gcode.New(1000, "获取验证码图片信息失败", "") // 获取验证码图片信息失败
+	CaptchaPutErr       = gcode.New(1001, "验证码输入错误", "")     // 验证码输入错误
 
 	GetUserOnlineListFailed     = gcode.New(1100, "获取在线用户列表失败", "") // 获取在线用户列表失败
 	ForceLogoutUserOnlineFailed = gcode.New(1101, "强退在线用户失败", "")   // 强退在线用户失败
