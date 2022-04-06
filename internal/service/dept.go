@@ -152,6 +152,22 @@ func (s *sDept) DeleteDept(ctx context.Context, id uint64) (err error) {
 	return
 }
 
+// GetDeptTree 获取部门树信息
+func (s *sDept) GetDeptTree(deptList []*entity.Dept, parentId uint64) (tree []*v1.DeptTreeInfo) {
+	tree = make([]*v1.DeptTreeInfo, 0, len(deptList))
+	for _, v := range deptList {
+		if v.ParentId == parentId {
+			t := &v1.DeptTreeInfo{Dept: v}
+			children := s.GetDeptTree(deptList, v.Id)
+			if len(children) > 0 {
+				t.Children = children
+			}
+			tree = append(tree, t)
+		}
+	}
+	return
+}
+
 // IsDeptNameAvailable 部门名称是否可用
 func (s *sDept) IsDeptNameAvailable(ctx context.Context, name string, parentId uint64) (bool, error) {
 	count, err := dao.Dept.Ctx(ctx).Where(do.Dept{Name: name, ParentId: parentId}).Count()
@@ -178,22 +194,6 @@ func (s *sDept) FindSonByParentId(deptList []*entity.Dept, parentId uint64) (chi
 			children = append(children, v)
 			fChildren := s.FindSonByParentId(deptList, v.Id)
 			children = append(children, fChildren...)
-		}
-	}
-	return
-}
-
-// GetDeptTree 获取部门树信息
-func (s *sDept) GetDeptTree(deptList []*entity.Dept, parentId uint64) (tree []*v1.DeptTreeInfo) {
-	tree = make([]*v1.DeptTreeInfo, 0, len(deptList))
-	for _, v := range deptList {
-		if v.ParentId == parentId {
-			t := &v1.DeptTreeInfo{Dept: v}
-			children := s.GetDeptTree(deptList, v.Id)
-			if len(children) > 0 {
-				t.Children = children
-			}
-			tree = append(tree, t)
 		}
 	}
 	return

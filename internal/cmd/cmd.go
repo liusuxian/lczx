@@ -49,12 +49,12 @@ var (
 					// TODO 角色管理
 					group.Group("/role", func(group *ghttp.RouterGroup) {
 					})
-					// TODO 部门管理
 					group.Group("/dept", func(group *ghttp.RouterGroup) {
 						group.Bind(controller.Dept)
 					})
 					// TODO 用户管理
-					group.Group("/user", func(group *ghttp.RouterGroup) {
+					group.Group("/userManager", func(group *ghttp.RouterGroup) {
+						group.Bind(controller.UserManager)
 					})
 				})
 				// TODO 系统监控
