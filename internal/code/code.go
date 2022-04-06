@@ -21,7 +21,7 @@ var (
 
 	GetDeptListFailed = gcode.New(1300, "获取部门列表失败", "") // 获取部门列表失败
 	AddDeptFailed     = gcode.New(1301, "新增部门信息失败", "") // 新增部门信息失败
-	DeleteDeptFailed  = gcode.New(1302, "删除部门信息失败", "") // 删除部门信息失败
-	UpdateDeptFailed  = gcode.New(1303, "修改部门信息失败", "") // 修改部门信息失败
-
+	GetDeptFailed     = gcode.New(1302, "获取部门信息失败", "") // 获取部门信息失败
+	EditDeptFailed    = gcode.New(1303, "修改部门信息失败", "") // 修改部门信息失败
+	DeleteDeptFailed  = gcode.New(1304, "删除部门信息失败", "") // 删除部门信息失败
 )
