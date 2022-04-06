@@ -18,6 +18,12 @@ const (
 	LoginSucc   = 1 // 成功
 )
 
+// 部门状态
+const (
+	DeptStatusDisabled = 0 // 停用
+	DeptStatusEnable   = 1 // 正常
+)
+
 // 角色
 const (
 	RoleUser       = 0    // 默认普通用户

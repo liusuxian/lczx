@@ -171,13 +171,29 @@ func (s *sDept) DeptExistsById(ctx context.Context, id uint64) (bool, error) {
 }
 
 // FindSonByParentId 通过父部门ID获取所有的子部门信息
-func (s *sDept) FindSonByParentId(deptList []*entity.Dept, id uint64) (children []*entity.Dept) {
+func (s *sDept) FindSonByParentId(deptList []*entity.Dept, parentId uint64) (children []*entity.Dept) {
 	children = make([]*entity.Dept, 0, len(deptList))
 	for _, v := range deptList {
-		if v.ParentId == id {
+		if v.ParentId == parentId {
 			children = append(children, v)
 			fChildren := s.FindSonByParentId(deptList, v.Id)
 			children = append(children, fChildren...)
+		}
+	}
+	return
+}
+
+// GetDeptTree 获取部门树信息
+func (s *sDept) GetDeptTree(deptList []*entity.Dept, parentId uint64) (tree []*v1.DeptTreeInfo) {
+	tree = make([]*v1.DeptTreeInfo, 0, len(deptList))
+	for _, v := range deptList {
+		if v.ParentId == parentId {
+			t := &v1.DeptTreeInfo{Dept: v}
+			children := s.GetDeptTree(deptList, v.Id)
+			if len(children) > 0 {
+				t.Children = children
+			}
+			tree = append(tree, t)
 		}
 	}
 	return

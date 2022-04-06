@@ -19,9 +19,10 @@ var (
 	DeleteUserFailed  = gcode.New(1203, "删除用户信息失败", "") // 删除用户信息失败
 	UpdateUserFailed  = gcode.New(1204, "修改用户信息失败", "") // 修改用户信息失败
 
-	GetDeptListFailed = gcode.New(1300, "获取部门列表失败", "") // 获取部门列表失败
-	AddDeptFailed     = gcode.New(1301, "新增部门信息失败", "") // 新增部门信息失败
-	GetDeptFailed     = gcode.New(1302, "获取部门信息失败", "") // 获取部门信息失败
-	EditDeptFailed    = gcode.New(1303, "修改部门信息失败", "") // 修改部门信息失败
-	DeleteDeptFailed  = gcode.New(1304, "删除部门信息失败", "") // 删除部门信息失败
+	GetDeptListFailed = gcode.New(1300, "获取部门列表失败", "")  // 获取部门列表失败
+	GetDeptTreeFailed = gcode.New(1301, "获取部门树信息失败", "") // 获取部门树信息失败
+	AddDeptFailed     = gcode.New(1302, "新增部门信息失败", "")  // 新增部门信息失败
+	GetDeptFailed     = gcode.New(1303, "获取部门信息失败", "")  // 获取部门信息失败
+	EditDeptFailed    = gcode.New(1304, "修改部门信息失败", "")  // 修改部门信息失败
+	DeleteDeptFailed  = gcode.New(1305, "删除部门信息失败", "")  // 删除部门信息失败
 )

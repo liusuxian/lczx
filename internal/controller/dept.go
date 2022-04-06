@@ -3,8 +3,10 @@ package controller
 import (
 	"context"
 	"github.com/gogf/gf/v2/errors/gerror"
+	"github.com/gogf/gf/v2/util/gconv"
 	v1 "lczx/api/v1"
 	"lczx/internal/code"
+	"lczx/internal/consts"
 	"lczx/internal/model/entity"
 	"lczx/internal/service"
 )
@@ -71,5 +73,20 @@ func (c *cDept) Delete(ctx context.Context, req *v1.DeptDeleteReq) (res *v1.Dept
 		return
 	}
 
+	return
+}
+
+// Tree 部门树信息
+func (c *cDept) Tree(ctx context.Context, req *v1.DeptTreeReq) (res *v1.DeptTreeRes, err error) {
+	// 获取正常状态部门数据
+	var list []*entity.Dept
+	list, err = service.Dept().GetDeptList(ctx, &v1.DeptListReq{Status: gconv.String(consts.DeptStatusEnable)})
+	if err != nil {
+		err = gerror.WrapCode(code.GetDeptTreeFailed, err)
+		return
+	}
+
+	tree := service.Dept().GetDeptTree(list, 0)
+	res = &v1.DeptTreeRes{Tree: tree}
 	return
 }
