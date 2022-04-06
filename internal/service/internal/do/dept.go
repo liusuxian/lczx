@@ -14,7 +14,6 @@ type Dept struct {
 	g.Meta    `orm:"table:dept, do:true"`
 	Id        interface{} // 部门ID
 	ParentId  interface{} // 父部门ID
-	Ancestors interface{} // 祖级列表
 	Name      interface{} // 部门名称
 	Status    interface{} // 部门状态 0:停用 1:正常
 	CreatedBy interface{} // 创建人

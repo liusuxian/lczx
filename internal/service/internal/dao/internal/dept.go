@@ -21,7 +21,6 @@ type DeptDao struct {
 type DeptColumns struct {
 	Id        string // 部门ID
 	ParentId  string // 父部门ID
-	Ancestors string // 祖级列表
 	Name      string // 部门名称
 	Status    string // 部门状态 0:停用 1:正常
 	CreatedBy string // 创建人
@@ -35,7 +34,6 @@ type DeptColumns struct {
 var deptColumns = DeptColumns{
 	Id:        "id",
 	ParentId:  "parent_id",
-	Ancestors: "ancestors",
 	Name:      "name",
 	Status:    "status",
 	CreatedBy: "created_by",

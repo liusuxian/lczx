@@ -12,7 +12,6 @@ import (
 type Dept struct {
 	Id        uint64      `json:"id"        description:"部门ID"`           // 部门ID
 	ParentId  uint64      `json:"parentId"  description:"父部门ID"`          // 父部门ID
-	Ancestors string      `json:"ancestors" description:"祖级列表"`           // 祖级列表
 	Name      string      `json:"name"      description:"部门名称"`           // 部门名称
 	Status    uint        `json:"status"    description:"部门状态 0:停用 1:正常"` // 部门状态 0:停用 1:正常
 	CreatedBy uint64      `json:"createdBy" description:"创建人"`            // 创建人
