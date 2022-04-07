@@ -7,7 +7,6 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/os/gcache"
-	"github.com/gogf/gf/v2/os/gctx"
 	"github.com/gogf/gf/v2/os/gtime"
 	"github.com/gogf/gf/v2/util/gvalid"
 	"github.com/mssola/user_agent"
@@ -27,7 +26,6 @@ type sAuth struct {
 }
 
 var (
-	ctx      = gctx.New()
 	insAuth  = sAuth{}
 	insToken = &gtoken.GfToken{
 		ServerName:       g.Cfg().MustGet(ctx, "gToken.ServerName").String(),
@@ -140,7 +138,7 @@ func (s *sAuth) CheckUserOnline(ctx context.Context) {
 }
 
 // 登录验证方法 return userKey 用户标识 如果userKey为空，结束执行
-func (s *sAuth) loginBefore(req *ghttp.Request) (string, interface{}) {
+func (s *sAuth) loginBefore(req *ghttp.Request) (string, any) {
 	ctx := req.GetCtx()
 	var err error
 	var loginReq *v1.LoginReq

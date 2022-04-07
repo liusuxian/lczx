@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"github.com/gogf/gf/v2/os/gctx"
 	"lczx/internal/consts"
 	"lczx/internal/model"
 
@@ -12,6 +13,7 @@ import (
 type sContext struct{}
 
 var (
+	ctx        = gctx.New()
 	insContext = sContext{}
 )
 
