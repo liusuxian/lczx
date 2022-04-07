@@ -24,6 +24,8 @@ type RoleColumns struct {
 	Name      string // 角色名称
 	Remark    string // 备注
 	DataScope string // 数据范围 1:全部数据权限 2:自定义数据权限 3:本部门数据权限 4:本部门及以下数据权限
+	CreateAt  string // 创建时间
+	UpdateAt  string // 更新时间
 }
 
 //  roleColumns holds the columns for table role.
@@ -33,6 +35,8 @@ var roleColumns = RoleColumns{
 	Name:      "name",
 	Remark:    "remark",
 	DataScope: "data_scope",
+	CreateAt:  "create_at",
+	UpdateAt:  "update_at",
 }
 
 // NewRoleDao creates and returns a new DAO object for table data access.

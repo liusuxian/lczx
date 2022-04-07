@@ -8,7 +8,9 @@ import (
 
 type sSession struct{}
 
-var insSession = sSession{}
+var (
+	insSession = sSession{}
+)
 
 // Session session服务
 func Session() *sSession {

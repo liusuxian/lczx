@@ -102,11 +102,7 @@ redis:
     db: 0
     pass: ""
     idleTimeout: 600
-  cache:
-    address: 127.0.0.1:6379
-    db: 1
-    pass: ""
-    idleTimeout: 600
+    maxActive: 100
 
 # gToken 配置
 gToken:
@@ -119,3 +115,7 @@ gToken:
   EncryptKey: "1ee7f75f1145e929df46514e3c924d69"    # Token加密key。默认12345678912345678912345678912345
   AuthFailMsg: "登录超时或未登录，请重新登录"            # 认证失败提示。默认请求错误或登录超时
   MultiLogin: true                                  # 是否支持多端登录。默认false
+
+# 缓存
+cache:
+  mode: 2                                           # 缓存模式。1: gcache 2: gredis

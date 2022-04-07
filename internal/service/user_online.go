@@ -15,9 +15,11 @@ type sUserOnline struct {
 	pool *grpool.Pool
 }
 
-var insUserOnline = sUserOnline{
-	pool: grpool.New(100),
-}
+var (
+	insUserOnline = sUserOnline{
+		pool: grpool.New(100),
+	}
+)
 
 // UserOnline 在线用户服务
 func UserOnline() *sUserOnline {

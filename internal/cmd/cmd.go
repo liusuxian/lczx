@@ -36,7 +36,7 @@ var (
 					service.Middleware().CORS,
 					ghttp.MiddlewareHandlerResponse,
 				)
-				err = service.Auth(ctx).Token().Middleware(ctx, group)
+				err = service.Auth().Token().Middleware(ctx, group)
 				if err != nil {
 					logger.Panic(ctx, "Init GfToken Error: ", err.Error())
 				}
@@ -46,12 +46,14 @@ var (
 				})
 				// TODO 权限管理
 				group.Group("/auth", func(group *ghttp.RouterGroup) {
+					// TODO 菜单管理
 					// TODO 角色管理
 					group.Group("/role", func(group *ghttp.RouterGroup) {
 					})
 					group.Group("/dept", func(group *ghttp.RouterGroup) {
 						group.Bind(controller.Dept)
 					})
+					// TODO 岗位管理
 					// TODO 用户管理
 					group.Group("/userManager", func(group *ghttp.RouterGroup) {
 						group.Bind(controller.UserManager)

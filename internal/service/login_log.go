@@ -14,9 +14,11 @@ type sLoginLog struct {
 	pool *grpool.Pool
 }
 
-var insLoginLog = sLoginLog{
-	pool: grpool.New(100),
-}
+var (
+	insLoginLog = sLoginLog{
+		pool: grpool.New(100),
+	}
+)
 
 // LoginLog 系统登录日志服务
 func LoginLog() *sLoginLog {

@@ -42,7 +42,7 @@ func (c *cUserOnline) ForceLogout(ctx context.Context, req *v1.UserOnlineForceLo
 	}
 
 	for _, token := range tokens {
-		service.Auth(ctx).Token().RemoveToken(ctx, token)
+		service.Auth().Token().RemoveToken(ctx, token)
 	}
 	return
 }

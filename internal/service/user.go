@@ -14,7 +14,9 @@ import (
 
 type sUser struct{}
 
-var insUser = sUser{}
+var (
+	insUser = sUser{}
+)
 
 // User 用户服务
 func User() *sUser {

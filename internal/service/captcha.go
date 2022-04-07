@@ -7,7 +7,9 @@ import (
 
 type sCaptcha struct{}
 
-var insCaptcha = sCaptcha{}
+var (
+	insCaptcha = sCaptcha{}
+)
 
 // Captcha 验证码服务
 func Captcha() *sCaptcha {

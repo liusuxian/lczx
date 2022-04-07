@@ -23,10 +23,3 @@ const (
 	DeptStatusDisabled = 0 // 停用
 	DeptStatusEnable   = 1 // 正常
 )
-
-// 角色
-const (
-	RoleUser       = 0    // 默认普通用户
-	RoleAdmin      = 900  // 普通管理员
-	RoleSuperAdmin = 1000 // 超级管理员
-)

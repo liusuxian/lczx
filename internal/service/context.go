@@ -11,7 +11,9 @@ import (
 
 type sContext struct{}
 
-var insContext = sContext{}
+var (
+	insContext = sContext{}
+)
 
 // Context 上下文服务
 func Context() *sContext {

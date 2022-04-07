@@ -11,7 +11,9 @@ import (
 
 type sMiddleware struct{}
 
-var insMiddleware = sMiddleware{}
+var (
+	insMiddleware = sMiddleware{}
+)
 
 // Middleware 中间件服务
 func Middleware() *sMiddleware {
@@ -28,7 +30,7 @@ func (s *sMiddleware) Ctx(req *ghttp.Request) {
 	Context().Init(req, customCtx)
 	ctx := req.GetCtx()
 	user := &entity.User{}
-	respData := Auth(ctx).Token().GetTokenData(req)
+	respData := Auth().Token().GetTokenData(req)
 	if respData.Success() {
 		err := gconv.Struct(respData.Get("data"), user)
 		if err != nil {
