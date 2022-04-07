@@ -22,8 +22,8 @@ type RoleColumns struct {
 	Id        string // 角色ID
 	Status    string // 状态 0:停用 1:正常
 	Name      string // 角色名称
-	Remark    string // 备注
 	DataScope string // 数据范围 1:全部数据权限 2:自定义数据权限 3:本部门数据权限 4:本部门及以下数据权限
+	Remark    string // 备注
 	CreateAt  string // 创建时间
 	UpdateAt  string // 更新时间
 }
@@ -33,8 +33,8 @@ var roleColumns = RoleColumns{
 	Id:        "id",
 	Status:    "status",
 	Name:      "name",
-	Remark:    "remark",
 	DataScope: "data_scope",
+	Remark:    "remark",
 	CreateAt:  "create_at",
 	UpdateAt:  "update_at",
 }

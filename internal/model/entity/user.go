@@ -16,7 +16,7 @@ type User struct {
 	Salt          string      `json:"salt"          description:"加密盐"`          // 加密盐
 	Realname      string      `json:"realname"      description:"姓名"`           // 姓名
 	Nickname      string      `json:"nickname"      description:"昵称"`           // 昵称
-	DeptId        uint        `json:"deptId"        description:"部门ID"`         // 部门ID
+	DeptId        uint64      `json:"deptId"        description:"部门ID"`         // 部门ID
 	Gender        uint        `json:"gender"        description:"性别 1: 男 2: 女"` // 性别 1: 男 2: 女
 	Status        uint        `json:"status"        description:"状态 0:禁用 1:启用"` // 状态 0:禁用 1:启用
 	Avatar        string      `json:"avatar"        description:"头像地址"`         // 头像地址
