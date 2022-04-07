@@ -40,6 +40,10 @@ var (
 				if err != nil {
 					logger.Panic(ctx, "Init GfToken Error: ", err.Error())
 				}
+				// 权限判断
+				group.Middleware(
+					service.Middleware().Auth,
+				)
 				// TODO 用户相关
 				group.Group("/user", func(group *ghttp.RouterGroup) {
 					group.Bind(controller.User)

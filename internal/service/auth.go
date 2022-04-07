@@ -7,6 +7,7 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/os/gcache"
+	"github.com/gogf/gf/v2/os/gctx"
 	"github.com/gogf/gf/v2/os/gtime"
 	"github.com/gogf/gf/v2/util/gvalid"
 	"github.com/mssola/user_agent"
@@ -26,17 +27,18 @@ type sAuth struct {
 }
 
 var (
+	authCtx  = gctx.New()
 	insAuth  = sAuth{}
 	insToken = &gtoken.GfToken{
-		ServerName:       g.Cfg().MustGet(ctx, "gToken.ServerName").String(),
-		CacheMode:        g.Cfg().MustGet(ctx, "gToken.CacheMode").Int8(),
-		CacheKey:         g.Cfg().MustGet(ctx, "gToken.CacheKey").String(),
-		Timeout:          g.Cfg().MustGet(ctx, "gToken.Timeout").Int(),
-		MaxRefresh:       g.Cfg().MustGet(ctx, "gToken.MaxRefresh").Int(),
-		TokenDelimiter:   g.Cfg().MustGet(ctx, "gToken.TokenDelimiter").String(),
-		EncryptKey:       g.Cfg().MustGet(ctx, "gToken.EncryptKey").Bytes(),
-		AuthFailMsg:      g.Cfg().MustGet(ctx, "gToken.AuthFailMsg").String(),
-		MultiLogin:       g.Cfg().MustGet(ctx, "gToken.MultiLogin").Bool(),
+		ServerName:       g.Cfg().MustGet(authCtx, "gToken.ServerName").String(),
+		CacheMode:        g.Cfg().MustGet(authCtx, "gToken.CacheMode").Int8(),
+		CacheKey:         g.Cfg().MustGet(authCtx, "gToken.CacheKey").String(),
+		Timeout:          g.Cfg().MustGet(authCtx, "gToken.Timeout").Int(),
+		MaxRefresh:       g.Cfg().MustGet(authCtx, "gToken.MaxRefresh").Int(),
+		TokenDelimiter:   g.Cfg().MustGet(authCtx, "gToken.TokenDelimiter").String(),
+		EncryptKey:       g.Cfg().MustGet(authCtx, "gToken.EncryptKey").Bytes(),
+		AuthFailMsg:      g.Cfg().MustGet(authCtx, "gToken.AuthFailMsg").String(),
+		MultiLogin:       g.Cfg().MustGet(authCtx, "gToken.MultiLogin").Bool(),
 		LoginPath:        "/login",
 		LoginBeforeFunc:  insAuth.loginBefore,
 		LoginAfterFunc:   insAuth.loginAfter,

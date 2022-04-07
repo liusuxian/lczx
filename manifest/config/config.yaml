@@ -116,6 +116,11 @@ gToken:
   AuthFailMsg: "登录超时或未登录，请重新登录"            # 认证失败提示。默认请求错误或登录超时
   MultiLogin: true                                  # 是否支持多端登录。默认false
 
-# 缓存
-cache:
-  mode: 2                                           # 缓存模式。1: gcache 2: gredis
+# 用户管理配置
+userManager:
+  notCheckAuthUserIds: [ 1 ]                        # 无需验证后台权限的用户ID
+
+# casbin配置
+casbin:
+  modelFile: "manifest/config/rbac_model.conf"
+  policyFile: "manifest/config/rbac_policy.csv"
