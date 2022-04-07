@@ -174,8 +174,7 @@ func (s *sAuth) loginBefore(req *ghttp.Request) (string, interface{}) {
 			Time:     gtime.Now(),
 			Module:   "系统登录",
 		})
-		logger.Error(ctx, "GetUserByPassportAndPassword Error: ", err.Error())
-		response.RespJsonExitByGcode(req, code.GetUserFailed)
+		response.RespJsonExit(req, code.GetUserFailed.Code(), code.GetUserFailed.Message()+": "+err.Error())
 	}
 	// 设置用户信息到session中
 	err = Session().SetUser(ctx, user)
@@ -192,8 +191,7 @@ func (s *sAuth) loginBefore(req *ghttp.Request) (string, interface{}) {
 			Time:     gtime.Now(),
 			Module:   "系统登录",
 		})
-		logger.Error(ctx, "设置用户信息到session中出错：", err.Error())
-		response.RespJsonExitByGcode(req, gcode.CodeInternalError)
+		response.RespJsonExit(req, gcode.CodeInternalError.Code(), "内部错误: "+err.Error())
 	}
 	// 更新用户登录信息
 	User().UpdateUserLogin(ctx, user.Id, ip)
