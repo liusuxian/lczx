@@ -8,7 +8,7 @@ import (
 
 // LoginLogListReq 登录日志列表请求参数
 type LoginLogListReq struct {
-	g.Meta    `path:"/list" tags:"LoginLogList" method:"get" summary:"You first /monitor/loginLog/list api"`
+	g.Meta    `path:"/list" tags:"LoginLogList" method:"get" summary:"You first monitor/loginLog/list api"`
 	Passport  string      `json:"passport" dc:"账号"`                                                        // 账号
 	Ip        string      `json:"ip" dc:"IP地址"`                                                            // IP地址
 	Location  string      `json:"location" dc:"登录地点"`                                                      // 登录地点
@@ -30,7 +30,7 @@ type LoginLogListRes struct {
 
 // LoginLogDeleteReq 删除登录日志请求参数
 type LoginLogDeleteReq struct {
-	g.Meta `path:"/delete" tags:"LoginLogDelete" method:"delete" summary:"You first /monitor/loginLog/delete api"`
+	g.Meta `path:"/delete" tags:"LoginLogDelete" method:"delete" summary:"You first monitor/loginLog/delete api"`
 	Ids    []int `json:"ids" v:"required#ID列表不能为空" dc:"ID列表"` // ID列表
 }
 
@@ -40,7 +40,7 @@ type LoginLogDeleteRes struct {
 
 // LoginLogClearReq 清除登录日志请求参数
 type LoginLogClearReq struct {
-	g.Meta `path:"/clear" tags:"LoginLogClear" method:"delete" summary:"You first /monitor/loginLog/clear api"`
+	g.Meta `path:"/clear" tags:"LoginLogClear" method:"delete" summary:"You first monitor/loginLog/clear api"`
 }
 
 // LoginLogClearRes 清除登录日志返回参数

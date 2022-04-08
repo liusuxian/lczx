@@ -4,7 +4,7 @@ import "github.com/gogf/gf/v2/frame/g"
 
 // CaptchaImgReq 获取验证码图片信息请求参数
 type CaptchaImgReq struct {
-	g.Meta `path:"/img" tags:"CaptchaImg" method:"get" summary:"You first /captcha/img api"`
+	g.Meta `path:"/img" tags:"CaptchaImg" method:"get" summary:"You first captcha/img api"`
 }
 
 // CaptchaImgRes 获取验证码图片信息返回参数
