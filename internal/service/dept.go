@@ -27,7 +27,7 @@ func (s *sDept) GetDeptList(ctx context.Context, req *v1.DeptListReq, fieldNames
 	model := dao.Dept.Ctx(ctx)
 	columns := dao.Dept.Columns()
 	if req.Name != "" {
-		model = model.WhereIn(columns.Name, "%"+req.Name+"%")
+		model = model.WhereLike(columns.Name, "%"+req.Name+"%")
 	}
 	if req.Status != "" {
 		model = model.Where(columns.Status, gconv.Uint(req.Status))
