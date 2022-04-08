@@ -22,7 +22,7 @@ type ContextUser struct {
 	Gender        uint        // 性别 1: 男 2: 女
 	Avatar        string      // 头像地址
 	Mobile        string      // 手机号
-	DeptId        uint        // 部门ID
+	DeptId        uint64      // 部门ID
 	Status        uint        // 状态 0:禁用 1:启用
 	Email         string      // 用户邮箱
 	LastLoginIp   string      // 最后登录ip
