@@ -12,8 +12,8 @@ import (
 type AuthRule struct {
 	Id         uint64      `json:"id"         description:"规则ID"`              // 规则ID
 	ParentId   uint64      `json:"parentId"   description:"父规则ID"`             // 父规则ID
-	ApiPath    string      `json:"apiPath"    description:"接口路径"`              // 接口路径
-	ApiName    string      `json:"apiName"    description:"接口名称"`              // 接口名称
+	Rule       string      `json:"rule"       description:"权限规则"`              // 权限规则
+	Name       string      `json:"name"       description:"菜单名称"`              // 菜单名称
 	Condition  string      `json:"condition"  description:"条件"`                // 条件
 	MenuType   uint        `json:"menuType"   description:"类型 0:目录 1:菜单 2:按钮"` // 类型 0:目录 1:菜单 2:按钮
 	Status     uint        `json:"status"     description:"菜单状态 0:停用 1:正常"`    // 菜单状态 0:停用 1:正常

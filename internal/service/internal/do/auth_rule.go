@@ -14,8 +14,8 @@ type AuthRule struct {
 	g.Meta     `orm:"table:auth_rule, do:true"`
 	Id         interface{} // 规则ID
 	ParentId   interface{} // 父规则ID
-	ApiPath    interface{} // 接口路径
-	ApiName    interface{} // 接口名称
+	Rule       interface{} // 权限规则
+	Name       interface{} // 菜单名称
 	Condition  interface{} // 条件
 	MenuType   interface{} // 类型 0:目录 1:菜单 2:按钮
 	Status     interface{} // 菜单状态 0:停用 1:正常

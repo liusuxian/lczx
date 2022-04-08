@@ -21,8 +21,8 @@ type AuthRuleDao struct {
 type AuthRuleColumns struct {
 	Id         string // 规则ID
 	ParentId   string // 父规则ID
-	ApiPath    string // 接口路径
-	ApiName    string // 接口名称
+	Rule       string // 权限规则
+	Name       string // 菜单名称
 	Condition  string // 条件
 	MenuType   string // 类型 0:目录 1:菜单 2:按钮
 	Status     string // 菜单状态 0:停用 1:正常
@@ -43,8 +43,8 @@ type AuthRuleColumns struct {
 var authRuleColumns = AuthRuleColumns{
 	Id:         "id",
 	ParentId:   "parent_id",
-	ApiPath:    "api_path",
-	ApiName:    "api_name",
+	Rule:       "rule",
+	Name:       "name",
 	Condition:  "condition",
 	MenuType:   "menu_type",
 	Status:     "status",
