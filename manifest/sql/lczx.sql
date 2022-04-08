@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 08/04/2022 11:29:59
+ Date: 08/04/2022 17:27:49
 */
 
 SET NAMES utf8mb4;
@@ -25,7 +25,7 @@ CREATE TABLE `auth_rule` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '规则ID',
   `parent_id` bigint unsigned NOT NULL COMMENT '父规则ID',
   `rule` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '权限规则',
-  `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '菜单名称',
+  `name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '菜单名称',
   `condition` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '条件',
   `menu_type` tinyint unsigned NOT NULL COMMENT '类型 0:目录 1:菜单 2:按钮',
   `status` tinyint unsigned NOT NULL COMMENT '菜单状态 0:停用 1:正常',
@@ -105,7 +105,7 @@ DROP TABLE IF EXISTS `dept`;
 CREATE TABLE `dept` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '部门ID',
   `parent_id` bigint unsigned DEFAULT NULL COMMENT '父部门ID',
-  `name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '部门名称',
+  `name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '部门名称',
   `status` tinyint unsigned DEFAULT NULL COMMENT '部门状态 0:停用 1:正常',
   `created_by` bigint unsigned DEFAULT NULL COMMENT '创建人',
   `updated_by` bigint unsigned DEFAULT NULL COMMENT '修改人',
@@ -173,11 +173,11 @@ COMMIT;
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '用户ID',
-  `passport` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '账号',
-  `password` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '密码',
+  `passport` varchar(18) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '账号',
+  `password` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '密码',
   `salt` char(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '加密盐',
-  `realname` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '姓名',
-  `nickname` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '昵称',
+  `realname` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '姓名',
+  `nickname` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '昵称',
   `dept_id` bigint unsigned NOT NULL COMMENT '部门ID',
   `gender` tinyint unsigned NOT NULL COMMENT '性别 1: 男 2: 女',
   `status` tinyint unsigned NOT NULL COMMENT '状态 0:禁用 1:启用',
