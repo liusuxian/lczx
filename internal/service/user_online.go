@@ -93,7 +93,7 @@ func (s *sUserOnline) GetOnlineList(ctx context.Context, req *v1.UserOnlineListR
 }
 
 // GetOnlineTokensByIds 通过ID列表获取在线用户的tokens
-func (s *sUserOnline) GetOnlineTokensByIds(ctx context.Context, ids []int) (tokens []string, err error) {
+func (s *sUserOnline) GetOnlineTokensByIds(ctx context.Context, ids []uint64) (tokens []string, err error) {
 	var array []*gvar.Var
 	model := dao.UserOnline.Ctx(ctx)
 	columns := dao.UserOnline.Columns()

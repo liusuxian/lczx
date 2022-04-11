@@ -16,6 +16,7 @@ var (
 		Usage: "main",
 		Brief: "start http server",
 		Func: func(ctx context.Context, parser *gcmd.Parser) (err error) {
+			service.ParamsValid()
 			s := g.Server()
 			// 不认证接口
 			s.Group("/", func(group *ghttp.RouterGroup) {
@@ -51,15 +52,17 @@ var (
 				// TODO 权限管理
 				group.Group("/auth", func(group *ghttp.RouterGroup) {
 					// TODO 菜单管理
+					group.Group("/menu", func(group *ghttp.RouterGroup) {
+					})
 					// TODO 角色管理
 					group.Group("/role", func(group *ghttp.RouterGroup) {
 					})
+					// 部门管理
 					group.Group("/dept", func(group *ghttp.RouterGroup) {
 						group.Bind(controller.Dept)
 					})
-					// TODO 岗位管理
 					// TODO 用户管理
-					group.Group("/userManager", func(group *ghttp.RouterGroup) {
+					group.Group("/user", func(group *ghttp.RouterGroup) {
 						group.Bind(controller.UserManager)
 					})
 				})

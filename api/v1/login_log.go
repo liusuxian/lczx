@@ -31,7 +31,7 @@ type LoginLogListRes struct {
 // LoginLogDeleteReq 删除登录日志请求参数
 type LoginLogDeleteReq struct {
 	g.Meta `path:"/delete" tags:"LoginLogDelete" method:"delete" summary:"You first monitor/loginLog/delete api"`
-	Ids    []int `json:"ids" v:"required#ID列表不能为空" dc:"ID列表"` // ID列表
+	Ids    []uint64 `json:"ids" v:"required|slice_valid:uint64#ID列表不能为空" dc:"ID列表"` // ID列表
 }
 
 // LoginLogDeleteRes 删除登录日志返回参数

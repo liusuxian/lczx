@@ -83,7 +83,7 @@ func (s *sLoginLog) GetLoginLogList(ctx context.Context, req *v1.LoginLogListReq
 }
 
 // DeleteLoginLogByIds 通过ID列表删除登录日志
-func (s *sLoginLog) DeleteLoginLogByIds(ctx context.Context, ids []int) (err error) {
+func (s *sLoginLog) DeleteLoginLogByIds(ctx context.Context, ids []uint64) (err error) {
 	_, err = dao.LoginLog.Ctx(ctx).WhereIn(dao.LoginLog.Columns().Id, ids).Delete()
 	return
 }
