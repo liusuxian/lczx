@@ -26,4 +26,6 @@ var (
 	GetDeptFailed     = gcode.New(1303, "获取部门信息失败", "")  // 获取部门信息失败
 	EditDeptFailed    = gcode.New(1304, "修改部门信息失败", "")  // 修改部门信息失败
 	DeleteDeptFailed  = gcode.New(1305, "删除部门信息失败", "")  // 删除部门信息失败
+
+	GetMenuListFailed = gcode.New(1400, "获取菜单列表失败", "") // 获取菜单列表失败
 )

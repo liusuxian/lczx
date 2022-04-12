@@ -20,9 +20,9 @@ func Menu() *sMenu {
 }
 
 // GetMenuList 获取菜单列表
-func (s *sMenu) GetMenuList(ctx context.Context, req *v1.MenuListReq, fieldNames ...string) (list []*entity.AuthRule, err error) {
-	model := dao.AuthRule.Ctx(ctx)
-	columns := dao.AuthRule.Columns()
+func (s *sMenu) GetMenuList(ctx context.Context, req *v1.MenuListReq, fieldNames ...string) (list []*entity.Menu, err error) {
+	model := dao.Menu.Ctx(ctx)
+	columns := dao.Menu.Columns()
 	if req.Name != "" {
 		model = model.WhereLike(columns.Name, "%"+req.Name+"%")
 	}
@@ -36,7 +36,18 @@ func (s *sMenu) GetMenuList(ctx context.Context, req *v1.MenuListReq, fieldNames
 	return
 }
 
-// GetMenuListTree 获取菜单树列表
-func (s *sMenu) GetMenuListTree() {
-
+// GetMenuTree 获取菜单树信息
+func (s *sMenu) GetMenuTree(menuList []*entity.Menu, parentId uint64) (tree []*v1.MenuTreeInfo) {
+	tree = make([]*v1.MenuTreeInfo, 0, len(menuList))
+	for _, v := range menuList {
+		if v.ParentId == parentId {
+			t := &v1.MenuTreeInfo{Menu: v}
+			children := s.GetMenuTree(menuList, v.Id)
+			if len(children) > 0 {
+				t.Children = children
+			}
+			tree = append(tree, t)
+		}
+	}
+	return
 }

@@ -53,6 +53,7 @@ var (
 				group.Group("/auth", func(group *ghttp.RouterGroup) {
 					// TODO 菜单管理
 					group.Group("/menu", func(group *ghttp.RouterGroup) {
+						group.Bind(controller.Menu)
 					})
 					// TODO 角色管理
 					group.Group("/role", func(group *ghttp.RouterGroup) {
@@ -71,9 +72,6 @@ var (
 					// 在线用户管理
 					group.Group("/userOnline", func(group *ghttp.RouterGroup) {
 						group.Bind(controller.UserOnline)
-					})
-					// TODO 定时任务管理
-					group.Group("/job", func(group *ghttp.RouterGroup) {
 					})
 					// TODO 服务监控
 					group.Group("/server", func(group *ghttp.RouterGroup) {
