@@ -23,3 +23,19 @@ const (
 	DeptStatusDisabled = 0 // 停用
 	DeptStatusEnable   = 1 // 正常
 )
+
+// 菜单类型
+const (
+	MenuTypeDir    = 0 // 目录
+	MenuTypeMenu   = 1 // 菜单
+	MenuTypeButton = 2 // 按钮
+)
+
+const (
+	// CachePrefix 缓存前缀
+	CachePrefix = "cache:"
+	// Menu 缓存菜单KEY
+	Menu = CachePrefix + "menu"
+	// Role 角色缓存key
+	Role = CachePrefix + "role"
+)

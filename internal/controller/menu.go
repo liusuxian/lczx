@@ -18,7 +18,7 @@ type cMenu struct{}
 // List 菜单列表
 func (c *cMenu) List(ctx context.Context, req *v1.MenuListReq) (res *v1.MenuListRes, err error) {
 	var list []*entity.Menu
-	list, err = service.Menu().GetMenuList(ctx, req, "createAt", "updateAt", "deletedAt")
+	list, err = service.Menu().GetMenuList(ctx, req)
 	if err != nil {
 		err = gerror.WrapCode(code.GetMenuListFailed, err)
 		return
@@ -33,5 +33,18 @@ func (c *cMenu) List(ctx context.Context, req *v1.MenuListReq) (res *v1.MenuList
 	}
 
 	res = &v1.MenuListRes{List: treeInfos}
+	return
+}
+
+// IsMenus 获取菜单类型为目录和菜单的菜单列表
+func (c *cMenu) IsMenus(ctx context.Context, req *v1.MenuIsMenusReq) (res *v1.MenuIsMenusRes, err error) {
+	var list []*entity.Menu
+	list, err = service.Menu().GetIsMenus(ctx)
+	if err != nil {
+		err = gerror.WrapCode(code.GetIsMenusFailed, err)
+		return
+	}
+
+	res = &v1.MenuIsMenusRes{List: list}
 	return
 }

@@ -23,13 +23,13 @@ type MenuTreeInfo struct {
 	Children []*MenuTreeInfo `json:"children" dc:"子菜单信息列表"` // 子菜单信息列表
 }
 
-// MenuParentListReq 获取菜单类型为目录和菜单的菜单列表请求参数
-type MenuParentListReq struct {
-	g.Meta `path:"/parentList" tags:"MenuParentList" method:"get" summary:"You first auth/menu/parentList api"`
+// MenuIsMenusReq 获取菜单类型为目录和菜单的菜单列表请求参数
+type MenuIsMenusReq struct {
+	g.Meta `path:"/isMenus" tags:"MenuIsMenus" method:"get" summary:"You first auth/menu/isMenus api"`
 }
 
-// MenuParentListRes 获取菜单类型为目录和菜单的菜单列表返回参数
-type MenuParentListRes struct {
+// MenuIsMenusRes 获取菜单类型为目录和菜单的菜单列表返回参数
+type MenuIsMenusRes struct {
 	List []*entity.Menu `json:"list" dc:"菜单列表"` // 菜单列表
 }
 

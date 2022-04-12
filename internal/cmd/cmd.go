@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
+	"github.com/gogf/gf/v2/os/gcache"
 	"github.com/gogf/gf/v2/os/gcmd"
 	"lczx/internal/controller"
 	"lczx/internal/service"
@@ -16,6 +17,10 @@ var (
 		Usage: "main",
 		Brief: "start http server",
 		Func: func(ctx context.Context, parser *gcmd.Parser) (err error) {
+			// 适配Redis缓存
+			redisCache := gcache.NewAdapterRedis(g.Redis())
+			g.DB().GetCache().SetAdapter(redisCache)
+			// 自定义参数校验服务
 			service.ParamsValid()
 			s := g.Server()
 			// 不认证接口

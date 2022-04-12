@@ -2,8 +2,12 @@ package service
 
 import (
 	"context"
+	"github.com/gogf/gf/v2/container/gvar"
+	"github.com/gogf/gf/v2/database/gdb"
+	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/util/gconv"
 	v1 "lczx/api/v1"
+	"lczx/internal/consts"
 	"lczx/internal/model/entity"
 	"lczx/internal/service/internal/dao"
 )
@@ -36,6 +40,23 @@ func (s *sMenu) GetMenuList(ctx context.Context, req *v1.MenuListReq, fieldNames
 	return
 }
 
+// GetIsMenus 获取菜单类型为目录和菜单的菜单列表
+func (s *sMenu) GetIsMenus(ctx context.Context) (list []*entity.Menu, err error) {
+	var menus []*entity.Menu
+	menus, err = s.GetAllMenus(ctx)
+	if err != nil {
+		return
+	}
+
+	list = make([]*entity.Menu, 0, len(list))
+	for _, v := range menus {
+		if v.MenuType == consts.MenuTypeDir || v.MenuType == consts.MenuTypeMenu {
+			list = append(list, v)
+		}
+	}
+	return
+}
+
 // GetMenuTree 获取菜单树信息
 func (s *sMenu) GetMenuTree(menuList []*entity.Menu, parentId uint64) (tree []*v1.MenuTreeInfo) {
 	tree = make([]*v1.MenuTreeInfo, 0, len(menuList))
@@ -49,5 +70,32 @@ func (s *sMenu) GetMenuTree(menuList []*entity.Menu, parentId uint64) (tree []*v
 			tree = append(tree, t)
 		}
 	}
+	return
+}
+
+// GetAllMenus 获取所有菜单
+func (s *sMenu) GetAllMenus(ctx context.Context) (menus []*entity.Menu, err error) {
+	// 从缓存获取
+	var menusVar *gvar.Var
+	menusVar, err = g.DB().GetCache().Get(ctx, consts.Menu)
+	if err != nil {
+		return
+	}
+	menusMap := menusVar.Map()["Result"]
+	if menusMap != nil {
+		err = gconv.Structs(menusMap, &menus)
+		if err != nil {
+			return
+		}
+		if menus != nil {
+			return
+		}
+	}
+	// 从数据库获取
+	err = dao.Menu.Ctx(ctx).Cache(gdb.CacheOption{
+		Duration: 0,
+		Name:     consts.Menu,
+		Force:    false,
+	}).OrderAsc(dao.Menu.Columns().Id).Scan(&menus)
 	return
 }
