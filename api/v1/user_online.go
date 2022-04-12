@@ -24,7 +24,7 @@ type UserOnlineListRes struct {
 // UserOnlineForceLogoutReq 强退在线用户请求参数
 type UserOnlineForceLogoutReq struct {
 	g.Meta `path:"/forceLogout" tags:"UserOnlineForceLogout" method:"put" summary:"You first monitor/userOnline/forceLogout api"`
-	Ids    []uint64 `json:"ids" v:"required|slice_valid:uint64#ID列表不能为空" dc:"ID列表"` // ID列表
+	Ids    []uint64 `json:"ids" v:"required|slice_valid:uint64#在线用户ID列表不能为空" dc:"在线用户ID列表"` // 在线用户ID列表
 }
 
 // UserOnlineForceLogoutRes 强退在线用户返回参数

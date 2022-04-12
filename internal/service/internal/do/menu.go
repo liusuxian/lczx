@@ -9,9 +9,9 @@ import (
 	"github.com/gogf/gf/v2/os/gtime"
 )
 
-// AuthRule is the golang structure of table auth_rule for DAO operations like Where/Data.
-type AuthRule struct {
-	g.Meta     `orm:"table:auth_rule, do:true"`
+// Menu is the golang structure of table menu for DAO operations like Where/Data.
+type Menu struct {
+	g.Meta     `orm:"table:menu, do:true"`
 	Id         interface{} // 规则ID
 	ParentId   interface{} // 父规则ID
 	Rule       interface{} // 权限规则

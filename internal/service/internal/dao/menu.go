@@ -8,19 +8,19 @@ import (
 	"lczx/internal/service/internal/dao/internal"
 )
 
-// internalAuthRuleDao is internal type for wrapping internal DAO implements.
-type internalAuthRuleDao = *internal.AuthRuleDao
+// internalMenuDao is internal type for wrapping internal DAO implements.
+type internalMenuDao = *internal.MenuDao
 
-// authRuleDao is the data access object for table auth_rule.
+// menuDao is the data access object for table menu.
 // You can define custom methods on it to extend its functionality as you wish.
-type authRuleDao struct {
-	internalAuthRuleDao
+type menuDao struct {
+	internalMenuDao
 }
 
 var (
-	// AuthRule is globally public accessible object for table auth_rule operations.
-	AuthRule = authRuleDao{
-		internal.NewAuthRuleDao(),
+	// Menu is globally public accessible object for table menu operations.
+	Menu = menuDao{
+		internal.NewMenuDao(),
 	}
 )
 

@@ -8,8 +8,8 @@ import (
 	"github.com/gogf/gf/v2/os/gtime"
 )
 
-// AuthRule is the golang structure for table auth_rule.
-type AuthRule struct {
+// Menu is the golang structure for table menu.
+type Menu struct {
 	Id         uint64      `json:"id"         description:"规则ID"`              // 规则ID
 	ParentId   uint64      `json:"parentId"   description:"父规则ID"`             // 父规则ID
 	Rule       string      `json:"rule"       description:"权限规则"`              // 权限规则
