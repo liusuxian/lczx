@@ -48,3 +48,14 @@ func (c *cMenu) IsMenus(ctx context.Context, req *v1.MenuIsMenusReq) (res *v1.Me
 	res = &v1.MenuIsMenusRes{List: list}
 	return
 }
+
+// Add 新增菜单
+func (c *cMenu) Add(ctx context.Context, req *v1.MenuAddReq) (res *v1.MenuAddRes, err error) {
+	err = service.Menu().AddMenu(ctx, req)
+	if err != nil {
+		err = gerror.WrapCode(code.AddMenuFailed, err)
+		return
+	}
+
+	return
+}

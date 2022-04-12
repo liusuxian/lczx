@@ -60,6 +60,7 @@ func (s *sDept) AddDept(ctx context.Context, req *v1.DeptAddReq) (err error) {
 		return
 	}
 	if !available {
+		err = gerror.Newf(`部门名称[%s]已存在`, req.Name)
 		return
 	}
 	// 写入部门数据
