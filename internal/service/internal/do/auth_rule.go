@@ -25,7 +25,6 @@ type AuthRule struct {
 	Component  interface{} // 组件路径
 	IsFrame    interface{} // 是否外链 1是 0否
 	ModuleType interface{} // 所属模块
-	ModelId    interface{} // 模型ID
 	Remark     interface{} // 备注
 	CreateAt   *gtime.Time // 创建时间
 	UpdateAt   *gtime.Time // 更新时间

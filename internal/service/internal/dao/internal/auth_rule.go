@@ -32,7 +32,6 @@ type AuthRuleColumns struct {
 	Component  string // 组件路径
 	IsFrame    string // 是否外链 1是 0否
 	ModuleType string // 所属模块
-	ModelId    string // 模型ID
 	Remark     string // 备注
 	CreateAt   string // 创建时间
 	UpdateAt   string // 更新时间
@@ -54,7 +53,6 @@ var authRuleColumns = AuthRuleColumns{
 	Component:  "component",
 	IsFrame:    "is_frame",
 	ModuleType: "module_type",
-	ModelId:    "model_id",
 	Remark:     "remark",
 	CreateAt:   "create_at",
 	UpdateAt:   "update_at",
