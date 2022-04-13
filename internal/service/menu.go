@@ -44,26 +44,6 @@ func (s *sMenu) GetMenuList(ctx context.Context, req *v1.MenuListReq, fieldNames
 	return
 }
 
-// GetIsMenus 获取菜单类型为目录和菜单的菜单列表
-func (s *sMenu) GetIsMenus(ctx context.Context) (list []*entity.Menu, err error) {
-	// 获取所有菜单
-	var menus []*entity.Menu
-	menus, err = s.GetAllMenus(ctx)
-	if err != nil {
-		return
-	}
-
-	list = make([]*entity.Menu, 0, len(menus))
-	for _, v := range menus {
-		if v.Status == consts.MenuStatusEnable {
-			if v.MenuType == consts.MenuTypeDir || v.MenuType == consts.MenuTypeMenu {
-				list = append(list, v)
-			}
-		}
-	}
-	return
-}
-
 // AddMenu 新增菜单
 func (s *sMenu) AddMenu(ctx context.Context, req *v1.MenuAddReq) (err error) {
 	if req.ParentId == 0 && req.MenuType != consts.MenuTypeDir {
@@ -219,6 +199,26 @@ func (s *sMenu) EditMenu(ctx context.Context, req *v1.MenuEditReq) (err error) {
 		ModuleType: req.ModuleType,
 		Remark:     req.Remark,
 	}).Where(do.Menu{Id: req.Id}).Update()
+	return
+}
+
+// GetIsMenus 获取菜单类型为目录和菜单的菜单列表
+func (s *sMenu) GetIsMenus(ctx context.Context) (list []*entity.Menu, err error) {
+	// 获取所有菜单
+	var menus []*entity.Menu
+	menus, err = s.GetAllMenus(ctx)
+	if err != nil {
+		return
+	}
+
+	list = make([]*entity.Menu, 0, len(menus))
+	for _, v := range menus {
+		if v.Status == consts.MenuStatusEnable {
+			if v.MenuType == consts.MenuTypeDir || v.MenuType == consts.MenuTypeMenu {
+				list = append(list, v)
+			}
+		}
+	}
 	return
 }
 
