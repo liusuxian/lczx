@@ -12,6 +12,7 @@ import (
 	"lczx/internal/model/entity"
 	"lczx/internal/service/internal/dao"
 	"lczx/internal/service/internal/do"
+	"lczx/utility/utils"
 )
 
 type sMenu struct{}
@@ -111,7 +112,7 @@ func (s *sMenu) AddMenu(ctx context.Context, req *v1.MenuAddReq) (err error) {
 	// 写入菜单数据
 	_, err = dao.Menu.Ctx(ctx).Cache(gdb.CacheOption{
 		Duration: -1,
-		Name:     consts.Menu,
+		Name:     utils.GetCacheMenuKey(),
 		Force:    false,
 	}).Data(do.Menu{
 		ParentId:   req.ParentId,
@@ -150,25 +151,27 @@ func (s *sMenu) GetMenuTree(menuList []*entity.Menu, parentId uint64) (tree []*v
 // GetAllMenus 获取所有菜单
 func (s *sMenu) GetAllMenus(ctx context.Context) (menus []*entity.Menu, err error) {
 	// 从缓存获取
-	var menusVar *gvar.Var
-	menusVar, err = g.DB().GetCache().Get(ctx, consts.Menu)
+	var menusCacheValue *gvar.Var
+	menusCacheValue, err = g.Redis().Do(ctx, "GET", utils.GetCacheMenuKey())
 	if err != nil {
 		return
 	}
-	menusMap := menusVar.Map()["Result"]
-	if menusMap != nil {
-		err = gconv.Structs(menusMap, &menus)
-		if err != nil {
-			return
-		}
-		if menus != nil {
-			return
+	if menusCacheValue != nil {
+		menusCacheMap := menusCacheValue.Map()["Result"]
+		if menusCacheMap != nil {
+			err = gconv.Structs(menusCacheMap, &menus)
+			if err != nil {
+				return
+			}
+			if menus != nil {
+				return
+			}
 		}
 	}
 	// 从数据库获取
 	err = dao.Menu.Ctx(ctx).Cache(gdb.CacheOption{
 		Duration: 0,
-		Name:     consts.Menu,
+		Name:     utils.GetCacheMenuKey(),
 		Force:    false,
 	}).OrderAsc(dao.Menu.Columns().Id).Scan(&menus)
 	return

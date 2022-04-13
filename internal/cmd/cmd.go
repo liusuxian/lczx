@@ -17,9 +17,8 @@ var (
 		Usage: "main",
 		Brief: "start http server",
 		Func: func(ctx context.Context, parser *gcmd.Parser) (err error) {
-			// 适配Redis缓存
-			redisCache := gcache.NewAdapterRedis(g.Redis())
-			g.DB().GetCache().SetAdapter(redisCache)
+			// 数据库缓存适配Redis
+			g.DB().GetCache().SetAdapter(gcache.NewAdapterRedis(g.Redis()))
 			// 自定义参数校验服务
 			service.ParamsValid()
 			s := g.Server()
