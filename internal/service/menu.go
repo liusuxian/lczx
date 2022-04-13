@@ -53,8 +53,10 @@ func (s *sMenu) GetIsMenus(ctx context.Context) (list []*entity.Menu, err error)
 
 	list = make([]*entity.Menu, 0, len(list))
 	for _, v := range menus {
-		if v.MenuType == consts.MenuTypeDir || v.MenuType == consts.MenuTypeMenu {
-			list = append(list, v)
+		if v.Status == consts.MenuStatusEnable {
+			if v.MenuType == consts.MenuTypeDir || v.MenuType == consts.MenuTypeMenu {
+				list = append(list, v)
+			}
 		}
 	}
 	return
@@ -121,7 +123,6 @@ func (s *sMenu) AddMenu(ctx context.Context, req *v1.MenuAddReq) (err error) {
 		Condition:  req.Condition,
 		MenuType:   req.MenuType,
 		Status:     req.Status,
-		Show:       req.Show,
 		Path:       req.Path,
 		JumpPath:   req.JumpPath,
 		Component:  req.Component,

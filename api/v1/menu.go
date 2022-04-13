@@ -42,7 +42,6 @@ type MenuAddReq struct {
 	Condition  string `json:"condition" v:"max-length:255#条件长度不能超过255" dc:"条件"`                                                                                   // 条件
 	MenuType   uint   `json:"menuType" v:"required|in:0,1,2#类型不能为空|类型只能是0,1,2" dc:"类型 0:目录 1:菜单 2:按钮"`                                                            // 类型 0:目录 1:菜单 2:按钮
 	Status     uint   `json:"status" v:"required|in:0,1#菜单状态不能为空|菜单状态只能是0,1" dc:"菜单状态 0:停用 1:正常"`                                                                 // 菜单状态 0:停用 1:正常
-	Show       uint   `json:"show" v:"required|in:0,1#显示状态不能为空|显示状态只能是0,1" dc:"显示状态 0:隐藏 1:显示"`                                                                   // 显示状态 0:隐藏 1:显示
 	Path       string `json:"path" v:"required|regex:^[A-Za-z][A-Za-z0-9/_]{0,100}$#路由地址不能为空|路由地址以字母开头，只能包含字母、数字、下划线和反斜杠且长度不能超过100" dc:"路由地址"`                    // 路由地址
 	JumpPath   string `json:"jumpPath" v:"regex:^[A-Za-z][A-Za-z0-9/_]{0,100}$#跳转路由以字母开头，只能包含字母、数字、下划线和反斜杠且长度不能超过100" dc:"跳转路由"`                                  // 跳转路由
 	Component  string `json:"component" v:"required-if:menuType,1|regex:^[A-Za-z][A-Za-z0-9/_]{0,100}$#组件路径不能为空|组件路径以字母开头，只能包含字母、数字、下划线和反斜杠且长度不能超过100" dc:"组件路径"` // 组件路径
@@ -77,7 +76,6 @@ type MenuEditReq struct {
 	Condition  string `json:"condition" v:"max-length:255#条件长度不能超过255" dc:"条件"`                                                                                   // 条件
 	MenuType   uint   `json:"menuType" v:"required|in:0,1,2#类型不能为空|类型只能是0,1,2" dc:"类型 0:目录 1:菜单 2:按钮"`                                                            // 类型 0:目录 1:菜单 2:按钮
 	Status     uint   `json:"status" v:"required|in:0,1#菜单状态不能为空|菜单状态只能是0,1" dc:"菜单状态 0:停用 1:正常"`                                                                 // 菜单状态 0:停用 1:正常
-	Show       uint   `json:"show" v:"required|in:0,1#显示状态不能为空|显示状态只能是0,1" dc:"显示状态 0:隐藏 1:显示"`                                                                   // 显示状态 0:隐藏 1:显示
 	Path       string `json:"path" v:"required|regex:^[A-Za-z][A-Za-z0-9/_]{0,100}$#路由地址不能为空|路由地址以字母开头，只能包含字母、数字、下划线和反斜杠且长度不能超过100" dc:"路由地址"`                    // 路由地址
 	JumpPath   string `json:"jumpPath" v:"regex:^[A-Za-z][A-Za-z0-9/_]{0,100}$#跳转路由以字母开头，只能包含字母、数字、下划线和反斜杠且长度不能超过100" dc:"跳转路由"`                                  // 跳转路由
 	Component  string `json:"component" v:"required-if:menuType,1|regex:^[A-Za-z][A-Za-z0-9/_]{0,100}$#组件路径不能为空|组件路径以字母开头，只能包含字母、数字、下划线和反斜杠且长度不能超过100" dc:"组件路径"` // 组件路径

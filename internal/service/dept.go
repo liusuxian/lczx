@@ -3,12 +3,17 @@ package service
 import (
 	"context"
 	"github.com/gogf/gf/v2/container/garray"
+	"github.com/gogf/gf/v2/container/gvar"
+	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/errors/gerror"
+	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/util/gconv"
 	v1 "lczx/api/v1"
+	"lczx/internal/consts"
 	"lczx/internal/model/entity"
 	"lczx/internal/service/internal/dao"
 	"lczx/internal/service/internal/do"
+	"lczx/utility/utils"
 )
 
 type sDept struct{}
@@ -35,7 +40,7 @@ func (s *sDept) GetDeptList(ctx context.Context, req *v1.DeptListReq, fieldNames
 	if len(fieldNames) != 0 {
 		model = model.FieldsEx(fieldNames)
 	}
-	err = model.Scan(&list)
+	err = model.OrderAsc(columns.Id).Scan(&list)
 	return
 }
 
@@ -65,7 +70,11 @@ func (s *sDept) AddDept(ctx context.Context, req *v1.DeptAddReq) (err error) {
 	}
 	// 写入部门数据
 	user := Context().Get(ctx).User
-	_, err = dao.Dept.Ctx(ctx).Data(do.Dept{
+	_, err = dao.Dept.Ctx(ctx).Cache(gdb.CacheOption{
+		Duration: -1,
+		Name:     utils.GetCacheDeptKey(),
+		Force:    false,
+	}).Data(do.Dept{
 		ParentId:  req.ParentId,
 		Name:      req.Name,
 		Status:    req.Status,
@@ -108,11 +117,11 @@ func (s *sDept) EditDept(ctx context.Context, req *v1.DeptEditReq) (err error) {
 		err = gerror.Newf(`部门名称[%s]已存在`, req.Name)
 		return
 	}
-	// 获取部门列表
+	// 获取所有部门
 	var list []*entity.Dept
-	err = dao.Dept.Ctx(ctx).Scan(&list)
+	list, err = s.GetAllDepts(ctx)
 	if err != nil {
-		return err
+		return
 	}
 	// 获取部门ID下所有的子部门ID
 	children := s.FindSonByParentId(list, req.Id)
@@ -126,7 +135,11 @@ func (s *sDept) EditDept(ctx context.Context, req *v1.DeptEditReq) (err error) {
 	}
 	// 更新部门数据
 	user := Context().Get(ctx).User
-	_, err = dao.Dept.Ctx(ctx).Data(do.Dept{
+	_, err = dao.Dept.Ctx(ctx).Cache(gdb.CacheOption{
+		Duration: -1,
+		Name:     utils.GetCacheDeptKey(),
+		Force:    false,
+	}).Data(do.Dept{
 		ParentId:  req.ParentId,
 		Name:      req.Name,
 		Status:    req.Status,
@@ -137,11 +150,11 @@ func (s *sDept) EditDept(ctx context.Context, req *v1.DeptEditReq) (err error) {
 
 // DeleteDept 删除部门
 func (s *sDept) DeleteDept(ctx context.Context, id uint64) (err error) {
-	// 获取部门列表
+	// 获取所有部门
 	var list []*entity.Dept
-	err = dao.Dept.Ctx(ctx).Scan(&list)
+	list, err = s.GetAllDepts(ctx)
 	if err != nil {
-		return err
+		return
 	}
 	// 获取所有的子部门信息
 	children := s.FindSonByParentId(list, id)
@@ -151,7 +164,58 @@ func (s *sDept) DeleteDept(ctx context.Context, id uint64) (err error) {
 	}
 	ids = append(ids, id)
 	// 删除部门数据
-	_, err = dao.Dept.Ctx(ctx).WhereIn(dao.Dept.Columns().Id, ids).Delete()
+	_, err = dao.Dept.Ctx(ctx).Cache(gdb.CacheOption{
+		Duration: -1,
+		Name:     utils.GetCacheDeptKey(),
+		Force:    false,
+	}).WhereIn(dao.Dept.Columns().Id, ids).Delete()
+	return
+}
+
+// GetStatusEnableDepts 获取部门状态为正常的部门列表
+func (s *sDept) GetStatusEnableDepts(ctx context.Context) (depts []*entity.Dept, err error) {
+	// 获取所有部门
+	var list []*entity.Dept
+	list, err = s.GetAllDepts(ctx)
+	if err != nil {
+		return
+	}
+
+	depts = make([]*entity.Dept, 0, len(list))
+	for _, v := range list {
+		if v.Status == consts.DeptStatusEnable {
+			depts = append(depts, v)
+		}
+	}
+	return
+}
+
+// GetAllDepts 获取所有部门
+func (s *sDept) GetAllDepts(ctx context.Context) (depts []*entity.Dept, err error) {
+	// 从缓存获取
+	var deptsCacheValue *gvar.Var
+	deptsCacheValue, err = g.Redis().Do(ctx, "GET", utils.GetCacheDeptKey())
+	if err != nil {
+		return
+	}
+	if deptsCacheValue != nil {
+		deptsCacheMap := deptsCacheValue.Map()["Result"]
+		if deptsCacheMap != nil {
+			err = gconv.Structs(deptsCacheMap, &depts)
+			if err != nil {
+				return
+			}
+			if depts != nil {
+				return
+			}
+		}
+	}
+	// 从数据库获取
+	err = dao.Dept.Ctx(ctx).Cache(gdb.CacheOption{
+		Duration: 0,
+		Name:     utils.GetCacheDeptKey(),
+		Force:    false,
+	}).OrderAsc(dao.Dept.Columns().Id).Scan(&depts)
 	return
 }
 

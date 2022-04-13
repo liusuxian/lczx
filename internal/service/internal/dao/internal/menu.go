@@ -26,7 +26,6 @@ type MenuColumns struct {
 	Condition  string // 条件
 	MenuType   string // 类型 0:目录 1:菜单 2:按钮
 	Status     string // 菜单状态 0:停用 1:正常
-	Show       string // 显示状态 0:隐藏 1:显示
 	Path       string // 路由地址
 	JumpPath   string // 跳转路由
 	Component  string // 组件路径
@@ -47,7 +46,6 @@ var menuColumns = MenuColumns{
 	Condition:  "condition",
 	MenuType:   "menu_type",
 	Status:     "status",
-	Show:       "show",
 	Path:       "path",
 	JumpPath:   "jump_path",
 	Component:  "component",

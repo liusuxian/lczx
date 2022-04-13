@@ -24,6 +24,12 @@ const (
 	DeptStatusEnable   = 1 // 正常
 )
 
+// 菜单状态
+const (
+	MenuStatusDisabled = 0 // 停用
+	MenuStatusEnable   = 1 // 正常
+)
+
 // 菜单类型
 const (
 	MenuTypeDir    = 0 // 目录
