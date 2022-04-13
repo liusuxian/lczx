@@ -29,5 +29,6 @@ var (
 
 	GetMenuListFailed = gcode.New(1400, "获取菜单列表失败", "")            // 获取菜单列表失败
 	GetIsMenusFailed  = gcode.New(1401, "获取菜单类型为目录和菜单的菜单列表失败", "") // 获取菜单类型为目录和菜单的菜单列表失败
-	AddMenuFailed     = gcode.New(1302, "新增菜单信息失败", "")            // 新增菜单信息失败
+	AddMenuFailed     = gcode.New(1402, "新增菜单信息失败", "")            // 新增菜单信息失败
+	EditMenuFailed    = gcode.New(1403, "修改菜单信息失败", "")            // 修改菜单信息失败
 )

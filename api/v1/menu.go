@@ -23,14 +23,14 @@ type MenuTreeInfo struct {
 	Children []*MenuTreeInfo `json:"children" dc:"子菜单信息列表"` // 子菜单信息列表
 }
 
-// MenuIsMenusReq 获取菜单类型为目录和菜单的菜单列表请求参数
+// MenuIsMenusReq 获取菜单类型为目录和菜单的菜单树列表请求参数
 type MenuIsMenusReq struct {
 	g.Meta `path:"/isMenus" tags:"MenuIsMenus" method:"get" summary:"You first auth/menu/isMenus api"`
 }
 
-// MenuIsMenusRes 获取菜单类型为目录和菜单的菜单列表返回参数
+// MenuIsMenusRes 获取菜单类型为目录和菜单的菜单树列表返回参数
 type MenuIsMenusRes struct {
-	List []*entity.Menu `json:"list" dc:"菜单列表"` // 菜单列表
+	List []*MenuTreeInfo `json:"list" dc:"菜单树列表"` // 菜单树列表
 }
 
 // MenuAddReq 添加菜单请求参数
@@ -54,23 +54,11 @@ type MenuAddReq struct {
 type MenuAddRes struct {
 }
 
-// MenuInfoReq 获取菜单信息请求参数
-type MenuInfoReq struct {
-	g.Meta `path:"/info" tags:"MenuInfo" method:"get" summary:"You first auth/menu/info api"`
-	Id     uint64 `json:"id" v:"required|regex:^[1-9]\\d*$#规则ID不能为空|规则ID必须为正整数" dc:"规则ID"` // 规则ID
-}
-
-// MenuInfoRes 获取菜单信息返回参数
-type MenuInfoRes struct {
-	Info       *entity.Menu   `json:"info" dc:"菜单信息"`        // 菜单信息
-	ParentList []*entity.Menu `json:"parentList" dc:"父菜单列表"` // 父菜单列表
-}
-
 // MenuEditReq 编辑菜单请求参数
 type MenuEditReq struct {
 	g.Meta     `path:"/edit" tags:"MenuEdit" method:"put" summary:"You first auth/menu/edit api"`
 	Id         uint64 `json:"id" v:"required|regex:^[1-9]\\d*$#规则ID不能为空|规则ID必须为正整数" dc:"规则ID"`                                                                    // 规则ID
-	ParentId   uint64 `json:"parentId" v:"required|regex:^\\d*$#父规则ID不能为空|父规则ID必须为无符号整数" dc:"父规则ID"`                                                              // 父规则ID
+	ParentId   uint64 `json:"parentId" v:"required|regex:^\\d*|different:Id$#父规则ID不能为空|父规则ID必须为无符号整数|父规则ID和规则ID不能相同" dc:"父规则ID"`                                  // 父规则ID
 	Rule       string `json:"rule" v:"required|regex:^[A-Za-z][A-Za-z0-9/_]{0,100}$#权限规则不能为空|权限规则以字母开头，只能包含字母、数字、下划线和反斜杠且长度不能超过100" dc:"权限规则"`                    // 权限规则
 	Name       string `json:"name" v:"required|regex:^[\u4e00-\u9fa5]{0,20}$#菜单名称不能为空|菜单名称必须为中文且长度不能超过20" dc:"菜单名称"`                                              // 菜单名称
 	Condition  string `json:"condition" v:"max-length:255#条件长度不能超过255" dc:"条件"`                                                                                   // 条件

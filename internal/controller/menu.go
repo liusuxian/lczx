@@ -15,7 +15,7 @@ var (
 
 type cMenu struct{}
 
-// List 菜单列表
+// List 菜单树列表
 func (c *cMenu) List(ctx context.Context, req *v1.MenuListReq) (res *v1.MenuListRes, err error) {
 	var list []*entity.Menu
 	list, err = service.Menu().GetMenuList(ctx, req)
@@ -23,6 +23,7 @@ func (c *cMenu) List(ctx context.Context, req *v1.MenuListReq) (res *v1.MenuList
 		err = gerror.WrapCode(code.GetMenuListFailed, err)
 		return
 	}
+
 	treeInfos := make([]*v1.MenuTreeInfo, 0, len(list))
 	if !(req.Name == "" && req.Status == "") {
 		for _, v := range list {
@@ -36,15 +37,16 @@ func (c *cMenu) List(ctx context.Context, req *v1.MenuListReq) (res *v1.MenuList
 	return
 }
 
-// IsMenus 获取菜单类型为目录和菜单的菜单列表
+// IsMenus 菜单类型为目录和菜单的菜单树列表
 func (c *cMenu) IsMenus(ctx context.Context, req *v1.MenuIsMenusReq) (res *v1.MenuIsMenusRes, err error) {
-	var list []*entity.Menu
-	list, err = service.Menu().GetIsMenus(ctx)
+	var menuList []*entity.Menu
+	menuList, err = service.Menu().GetIsMenus(ctx)
 	if err != nil {
 		err = gerror.WrapCode(code.GetIsMenusFailed, err)
 		return
 	}
 
+	list := service.Menu().GetMenuTree(menuList, 0)
 	res = &v1.MenuIsMenusRes{List: list}
 	return
 }
@@ -54,6 +56,17 @@ func (c *cMenu) Add(ctx context.Context, req *v1.MenuAddReq) (res *v1.MenuAddRes
 	err = service.Menu().AddMenu(ctx, req)
 	if err != nil {
 		err = gerror.WrapCode(code.AddMenuFailed, err)
+		return
+	}
+
+	return
+}
+
+// Edit 编辑菜单
+func (c *cMenu) Edit(ctx context.Context, req *v1.MenuEditReq) (res *v1.MenuEditRes, err error) {
+	err = service.Menu().EditMenu(ctx, req)
+	if err != nil {
+		err = gerror.WrapCode(code.EditMenuFailed, err)
 		return
 	}
 

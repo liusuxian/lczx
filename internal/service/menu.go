@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"github.com/gogf/gf/v2/container/garray"
 	"github.com/gogf/gf/v2/container/gvar"
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/errors/gerror"
@@ -45,13 +46,14 @@ func (s *sMenu) GetMenuList(ctx context.Context, req *v1.MenuListReq, fieldNames
 
 // GetIsMenus 获取菜单类型为目录和菜单的菜单列表
 func (s *sMenu) GetIsMenus(ctx context.Context) (list []*entity.Menu, err error) {
+	// 获取所有菜单
 	var menus []*entity.Menu
 	menus, err = s.GetAllMenus(ctx)
 	if err != nil {
 		return
 	}
 
-	list = make([]*entity.Menu, 0, len(list))
+	list = make([]*entity.Menu, 0, len(menus))
 	for _, v := range menus {
 		if v.Status == consts.MenuStatusEnable {
 			if v.MenuType == consts.MenuTypeDir || v.MenuType == consts.MenuTypeMenu {
@@ -80,7 +82,7 @@ func (s *sMenu) AddMenu(ctx context.Context, req *v1.MenuAddReq) (err error) {
 			return
 		}
 		if menu.MenuType == consts.MenuTypeDir && req.MenuType == consts.MenuTypeButton {
-			err = gerror.Newf(`父规则菜单类型[%d]不能新增按钮类型`, menu.MenuType)
+			err = gerror.Newf(`父规则菜单类型[%d]不能添加按钮类型`, menu.MenuType)
 			return
 		}
 		if menu.MenuType == consts.MenuTypeMenu && req.MenuType != consts.MenuTypeButton {
@@ -88,7 +90,7 @@ func (s *sMenu) AddMenu(ctx context.Context, req *v1.MenuAddReq) (err error) {
 			return
 		}
 		if menu.MenuType == consts.MenuTypeButton {
-			err = gerror.Newf(`父规则菜单类型[%d]不能新增任何类型`, menu.MenuType)
+			err = gerror.Newf(`父规则菜单类型[%d]不能添加任何类型`, menu.MenuType)
 			return
 		}
 	}
@@ -130,6 +132,93 @@ func (s *sMenu) AddMenu(ctx context.Context, req *v1.MenuAddReq) (err error) {
 		ModuleType: req.ModuleType,
 		Remark:     req.Remark,
 	}).Insert()
+	return
+}
+
+// EditMenu 编辑菜单
+func (s *sMenu) EditMenu(ctx context.Context, req *v1.MenuEditReq) (err error) {
+	if req.ParentId == 0 && req.MenuType != consts.MenuTypeDir {
+		err = gerror.Newf(`父规则ID[%d]只能添加目录类型`, req.ParentId)
+		return
+	}
+	// 检查父规则ID是否存在
+	if req.ParentId != 0 {
+		var menu *entity.Menu
+		menu, err = s.GetMenuById(ctx, req.ParentId)
+		if err != nil {
+			return
+		}
+		if menu == nil {
+			err = gerror.Newf(`父规则ID[%d]不存在`, req.ParentId)
+			return
+		}
+		if menu.MenuType == consts.MenuTypeDir && req.MenuType == consts.MenuTypeButton {
+			err = gerror.Newf(`父规则菜单类型[%d]不能添加按钮类型`, menu.MenuType)
+			return
+		}
+		if menu.MenuType == consts.MenuTypeMenu && req.MenuType != consts.MenuTypeButton {
+			err = gerror.Newf(`父规则菜单类型[%d]只能添加按钮类型`, menu.MenuType)
+			return
+		}
+		if menu.MenuType == consts.MenuTypeButton {
+			err = gerror.Newf(`父规则菜单类型[%d]不能添加任何类型`, menu.MenuType)
+			return
+		}
+	}
+	// 检查权限规则是否可用
+	var available bool
+	available, err = s.IsMenuRuleAvailable(ctx, req.Rule)
+	if err != nil {
+		return
+	}
+	if !available {
+		err = gerror.Newf(`权限规则[%s]已存在`, req.Rule)
+		return
+	}
+	// 检查菜单路由地址是否可用
+	available, err = s.IsMenuPathAvailable(ctx, req.Path)
+	if err != nil {
+		return
+	}
+	if !available {
+		err = gerror.Newf(`路由地址[%s]已存在`, req.Path)
+		return
+	}
+	// 获取所有菜单
+	var list []*entity.Menu
+	list, err = s.GetAllMenus(ctx)
+	if err != nil {
+		return
+	}
+	// 获取规则ID下所有的子规则ID
+	children := s.FindSonByParentId(list, req.Id)
+	var idArray garray.Array
+	for _, v := range children {
+		idArray.Append(v.Id)
+	}
+	if idArray.Contains(req.ParentId) {
+		err = gerror.Newf(`父规则ID[%d]是规则ID[%d]的子规则ID`, req.ParentId, req.Id)
+		return
+	}
+	// 更新菜单数据
+	_, err = dao.Menu.Ctx(ctx).Cache(gdb.CacheOption{
+		Duration: -1,
+		Name:     utils.GetCacheMenuKey(),
+		Force:    false,
+	}).Data(do.Menu{
+		ParentId:   req.ParentId,
+		Rule:       req.Rule,
+		Name:       req.Name,
+		Condition:  req.Condition,
+		MenuType:   req.MenuType,
+		Status:     req.Status,
+		Path:       req.Path,
+		JumpPath:   req.JumpPath,
+		Component:  req.Component,
+		IsFrame:    req.IsFrame,
+		ModuleType: req.ModuleType,
+		Remark:     req.Remark,
+	}).Where(do.Menu{Id: req.Id}).Update()
 	return
 }
 
@@ -205,4 +294,17 @@ func (s *sMenu) IsMenuPathAvailable(ctx context.Context, path string) (bool, err
 		return false, err
 	}
 	return count == 0, nil
+}
+
+// FindSonByParentId 通过父规则ID获取所有的子菜单信息
+func (s *sMenu) FindSonByParentId(menuList []*entity.Menu, parentId uint64) (children []*entity.Menu) {
+	children = make([]*entity.Menu, 0, len(menuList))
+	for _, v := range menuList {
+		if v.ParentId == parentId {
+			children = append(children, v)
+			fChildren := s.FindSonByParentId(menuList, v.Id)
+			children = append(children, fChildren...)
+		}
+	}
+	return
 }
