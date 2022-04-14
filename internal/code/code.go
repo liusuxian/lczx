@@ -5,8 +5,9 @@ import "github.com/gogf/gf/v2/errors/gcode"
 var (
 	GetCaptchaImgFailed = gcode.New(1000, "获取验证码图片信息失败", "") // 获取验证码图片信息失败
 	CaptchaPutErr       = gcode.New(1001, "验证码输入错误", "")     // 验证码输入错误
-	GetAccessAuthFailed = gcode.New(1002, "获取权限失败", "")      // 获取权限失败
-	NotAccessAuth       = gcode.New(1003, "没有访问权限", "")      // 没有访问权限
+	RequestDataFailed   = gcode.New(1002, "请求数据失败", "")      // 请求数据失败
+	GetAccessAuthFailed = gcode.New(1003, "获取权限失败", "")      // 获取权限失败
+	NotAccessAuth       = gcode.New(1004, "没有访问权限", "")      // 没有访问权限
 
 	GetUserOnlineListFailed     = gcode.New(1100, "获取在线用户列表失败", "") // 获取在线用户列表失败
 	ForceLogoutUserOnlineFailed = gcode.New(1101, "强退在线用户失败", "")   // 强退在线用户失败
@@ -31,5 +32,5 @@ var (
 	GetIsMenusFailed  = gcode.New(1401, "获取菜单类型为目录和菜单的菜单列表失败", "") // 获取菜单类型为目录和菜单的菜单列表失败
 	AddMenuFailed     = gcode.New(1402, "新增菜单信息失败", "")            // 新增菜单信息失败
 	EditMenuFailed    = gcode.New(1403, "修改菜单信息失败", "")            // 修改菜单信息失败
-	DeleteMenuFailed  = gcode.New(1305, "删除菜单信息失败", "")            // 删除菜单信息失败
+	DeleteMenuFailed  = gcode.New(1404, "删除菜单信息失败", "")            // 删除菜单信息失败
 )

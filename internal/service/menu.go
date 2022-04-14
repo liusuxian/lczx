@@ -336,3 +336,21 @@ func (s *sMenu) FindSonByParentId(menuList []*entity.Menu, parentId uint64) (chi
 	}
 	return
 }
+
+// GetStatusEnableMenus 获取菜单状态为正常的菜单列表
+func (s *sMenu) GetStatusEnableMenus(ctx context.Context) (menus []*entity.Menu, err error) {
+	// 获取所有菜单
+	var list []*entity.Menu
+	list, err = s.GetAllMenus(ctx)
+	if err != nil {
+		return
+	}
+
+	menus = make([]*entity.Menu, 0, len(list))
+	for _, v := range list {
+		if v.Status == consts.MenuStatusEnable {
+			menus = append(menus, v)
+		}
+	}
+	return
+}
