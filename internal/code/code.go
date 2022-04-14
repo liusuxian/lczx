@@ -33,7 +33,8 @@ var (
 	AddMenuFailed      = gcode.New(1402, "新增菜单信息失败", "")            // 新增菜单信息失败
 	EditMenuFailed     = gcode.New(1403, "修改菜单信息失败", "")            // 修改菜单信息失败
 	DeleteMenuFailed   = gcode.New(1404, "删除菜单信息失败", "")            // 删除菜单信息失败
-	MenuStatusDisabled = gcode.New(1405, "菜单已停用", "")               // 菜单已停用
+	GetMenuTreeFailed  = gcode.New(1405, "获取菜单树信息失败", "")           // 获取菜单树信息失败
+	MenuStatusDisabled = gcode.New(1406, "菜单已停用", "")               // 菜单已停用
 
 	GetRoleListFailed = gcode.New(1500, "获取角色列表失败", "") // 获取角色列表失败
 )

@@ -2,6 +2,7 @@ package controller
 
 import (
 	"context"
+	"github.com/gogf/gf/v2/container/gmap"
 	"github.com/gogf/gf/v2/errors/gerror"
 	v1 "lczx/api/v1"
 	"lczx/internal/code"
@@ -24,7 +25,20 @@ func (c *cDept) List(ctx context.Context, req *v1.DeptListReq) (res *v1.DeptList
 		return
 	}
 
-	res = &v1.DeptListRes{List: list}
+	treeInfos := make([]*v1.DeptTreeInfo, 0, len(list))
+	idsMap := gmap.New(true)
+	for _, v := range list {
+		service.Dept().FindSonIdsByParentId(list, v.Id, idsMap)
+		if !idsMap.Contains(v.Id) {
+			t := &v1.DeptTreeInfo{Dept: v}
+			children := service.Dept().GetDeptTree(list, v.Id)
+			if len(children) > 0 {
+				t.Children = children
+			}
+			treeInfos = append(treeInfos, t)
+		}
+	}
+	res = &v1.DeptListRes{List: treeInfos}
 	return
 }
 
@@ -85,6 +99,6 @@ func (c *cDept) Tree(ctx context.Context, req *v1.DeptTreeReq) (res *v1.DeptTree
 	}
 
 	tree := service.Dept().GetDeptTree(list, 0)
-	res = &v1.DeptTreeRes{Tree: tree}
+	res = &v1.DeptTreeRes{List: tree}
 	return
 }

@@ -81,3 +81,13 @@ type MenuDeleteReq struct {
 // MenuDeleteRes 删除菜单返回参数
 type MenuDeleteRes struct {
 }
+
+// MenuTreeReq 全部菜单树请求参数
+type MenuTreeReq struct {
+	g.Meta `path:"/tree" tags:"MenuTree" method:"get" summary:"You first auth/menu/tree api"`
+}
+
+// MenuTreeRes 全部菜单树返回参数
+type MenuTreeRes struct {
+	List []*MenuTreeInfo `json:"list" dc:"菜单树列表"` // 菜单树列表
+}

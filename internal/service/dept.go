@@ -2,8 +2,7 @@ package service
 
 import (
 	"context"
-	"github.com/gogf/gf/v2/container/garray"
-	"github.com/gogf/gf/v2/container/gset"
+	"github.com/gogf/gf/v2/container/gmap"
 	"github.com/gogf/gf/v2/container/gvar"
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/errors/gerror"
@@ -125,12 +124,9 @@ func (s *sDept) EditDept(ctx context.Context, req *v1.DeptEditReq) (err error) {
 		return
 	}
 	// 获取部门ID下所有的子部门ID
-	children := s.FindSonByParentId(list, req.Id)
-	var idArray garray.Array
-	for _, v := range children {
-		idArray.Append(v.Id)
-	}
-	if idArray.Contains(req.ParentId) {
+	idsMap := gmap.New(true)
+	s.FindSonIdsByParentId(list, req.Id, idsMap)
+	if idsMap.Contains(req.ParentId) {
 		err = gerror.Newf(`父部门ID[%d]是部门ID[%d]的子部门ID`, req.ParentId, req.Id)
 		return
 	}
@@ -157,16 +153,13 @@ func (s *sDept) DeleteDept(ctx context.Context, ids []uint64) (err error) {
 	if err != nil {
 		return
 	}
-	// 获取所有的子部门信息
-	idsSet := gset.New(true)
+	// 获取所有的子部门ID
+	idsMap := gmap.New(true)
 	for _, id := range ids {
-		children := s.FindSonByParentId(list, id)
-		for _, child := range children {
-			idsSet.Add(child.Id)
-		}
-		idsSet.Add(id)
+		idsMap.Set(id, true)
+		s.FindSonIdsByParentId(list, id, idsMap)
 	}
-	delIds := idsSet.Slice()
+	delIds := idsMap.Keys()
 	// 删除部门数据
 	_, err = dao.Dept.Ctx(ctx).Cache(gdb.CacheOption{
 		Duration: -1,
@@ -257,15 +250,12 @@ func (s *sDept) DeptExistsById(ctx context.Context, id uint64) (bool, error) {
 	return count != 0, nil
 }
 
-// FindSonByParentId 通过父部门ID获取所有的子部门信息
-func (s *sDept) FindSonByParentId(deptList []*entity.Dept, parentId uint64) (children []*entity.Dept) {
-	children = make([]*entity.Dept, 0, len(deptList))
+// FindSonIdsByParentId 通过父部门ID获取所有的子部门ID
+func (s *sDept) FindSonIdsByParentId(deptList []*entity.Dept, parentId uint64, idsMap *gmap.Map) {
 	for _, v := range deptList {
 		if v.ParentId == parentId {
-			children = append(children, v)
-			fChildren := s.FindSonByParentId(deptList, v.Id)
-			children = append(children, fChildren...)
+			idsMap.Set(v.Id, true)
+			s.FindSonIdsByParentId(deptList, v.Id, idsMap)
 		}
 	}
-	return
 }

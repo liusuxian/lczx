@@ -5,16 +5,22 @@ import (
 	"lczx/internal/model/entity"
 )
 
-// DeptListReq 部门列表请求参数
+// DeptListReq 部门树列表请求参数
 type DeptListReq struct {
 	g.Meta `path:"/list" tags:"DeptList" method:"get" summary:"You first auth/dept/list api"`
 	Name   string `json:"name" v:"regex:^[\u4e00-\u9fa5]{0,20}$#部门名称必须为中文且长度不能超过20" dc:"部门名称"` // 部门名称
 	Status string `json:"status" v:"in:0,1#部门状态只能是0,1" dc:"部门状态 0:停用 1:正常"`                    // 部门状态 0:停用 1:正常
 }
 
-// DeptListRes 部门列表返回参数
+// DeptListRes 部门树列表返回参数
 type DeptListRes struct {
-	List []*entity.Dept `json:"list" dc:"部门列表"` // 部门列表
+	List []*DeptTreeInfo `json:"list" dc:"部门树列表"` // 部门树列表
+}
+
+// DeptTreeInfo 部门树信息
+type DeptTreeInfo struct {
+	Dept     *entity.Dept    `json:"dept" dc:"部门信息"`        // 部门信息
+	Children []*DeptTreeInfo `json:"children" dc:"子部门信息列表"` // 子部门信息列表
 }
 
 // DeptAddReq 新增部门请求参数
@@ -70,11 +76,5 @@ type DeptTreeReq struct {
 
 // DeptTreeRes 部门树信息返回参数
 type DeptTreeRes struct {
-	Tree []*DeptTreeInfo `json:"tree" dc:"部门树信息"` //部门树信息
-}
-
-// DeptTreeInfo 部门树信息
-type DeptTreeInfo struct {
-	Dept     *entity.Dept    `json:"dept" dc:"部门信息"`        // 部门信息
-	Children []*DeptTreeInfo `json:"children" dc:"子部门信息列表"` // 子部门信息列表
+	List []*DeptTreeInfo `json:"list" dc:"部门树列表"` // 部门树列表
 }
