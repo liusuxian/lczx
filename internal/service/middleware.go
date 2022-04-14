@@ -124,7 +124,7 @@ func (s *sMiddleware) Auth(req *ghttp.Request) {
 		if menu.Id != 0 {
 			// 判断权限操作
 			var enforcer *casbin.SyncedEnforcer
-			enforcer, err = Casbin().GetEnforcer()
+			enforcer, err = Casbin(ctx).GetEnforcer()
 			logger.Debug(ctx, "enforcer: ", enforcer)
 			if err != nil {
 				response.RespJsonExitByGcode(req, code.GetAccessAuthFailed)

@@ -1,11 +1,11 @@
 package service
 
 import (
+	"context"
 	"github.com/casbin/casbin/v2"
 	"github.com/casbin/casbin/v2/model"
 	"github.com/casbin/casbin/v2/persist"
 	"github.com/gogf/gf/v2/frame/g"
-	"github.com/gogf/gf/v2/os/gctx"
 	"lczx/internal/model/entity"
 	"lczx/internal/service/internal/dao"
 	"lczx/internal/service/internal/do"
@@ -19,14 +19,15 @@ type adapterCasbin struct {
 }
 
 var (
-	casbinCtx = gctx.New()
+	casbinCtx context.Context
 	insCasbin = sCasbin{}
 	once      sync.Once
 	ac        *adapterCasbin
 )
 
 // Casbin 访问控制服务
-func Casbin() *sCasbin {
+func Casbin(ctx context.Context) *sCasbin {
+	casbinCtx = ctx
 	return &insCasbin
 }
 
