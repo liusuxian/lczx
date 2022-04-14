@@ -72,3 +72,14 @@ func (c *cMenu) Edit(ctx context.Context, req *v1.MenuEditReq) (res *v1.MenuEdit
 
 	return
 }
+
+// Delete 删除菜单
+func (c *cMenu) Delete(ctx context.Context, req *v1.MenuDeleteReq) (res *v1.MenuDeleteRes, err error) {
+	err = service.Menu().DeleteMenu(ctx, req.Ids)
+	if err != nil {
+		err = gerror.WrapCode(code.DeleteMenuFailed, err)
+		return
+	}
+
+	return
+}

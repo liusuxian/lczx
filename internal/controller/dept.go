@@ -65,7 +65,7 @@ func (c *cDept) Edit(ctx context.Context, req *v1.DeptEditReq) (res *v1.DeptEdit
 
 // Delete 删除部门
 func (c *cDept) Delete(ctx context.Context, req *v1.DeptDeleteReq) (res *v1.DeptDeleteRes, err error) {
-	err = service.Dept().DeleteDept(ctx, req.Id)
+	err = service.Dept().DeleteDept(ctx, req.Ids)
 	if err != nil {
 		err = gerror.WrapCode(code.DeleteDeptFailed, err)
 		return

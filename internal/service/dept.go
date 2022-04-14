@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"github.com/gogf/gf/v2/container/garray"
+	"github.com/gogf/gf/v2/container/gset"
 	"github.com/gogf/gf/v2/container/gvar"
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/errors/gerror"
@@ -149,7 +150,7 @@ func (s *sDept) EditDept(ctx context.Context, req *v1.DeptEditReq) (err error) {
 }
 
 // DeleteDept 删除部门
-func (s *sDept) DeleteDept(ctx context.Context, id uint64) (err error) {
+func (s *sDept) DeleteDept(ctx context.Context, ids []uint64) (err error) {
 	// 获取所有部门
 	var list []*entity.Dept
 	list, err = s.GetAllDepts(ctx)
@@ -157,18 +158,21 @@ func (s *sDept) DeleteDept(ctx context.Context, id uint64) (err error) {
 		return
 	}
 	// 获取所有的子部门信息
-	children := s.FindSonByParentId(list, id)
-	ids := make([]uint64, 0, len(list))
-	for _, v := range children {
-		ids = append(ids, v.Id)
+	idsSet := gset.New(true)
+	for _, id := range ids {
+		children := s.FindSonByParentId(list, id)
+		for _, child := range children {
+			idsSet.Add(child.Id)
+		}
+		idsSet.Add(id)
 	}
-	ids = append(ids, id)
+	delIds := idsSet.Slice()
 	// 删除部门数据
 	_, err = dao.Dept.Ctx(ctx).Cache(gdb.CacheOption{
 		Duration: -1,
 		Name:     utils.GetCacheDeptKey(),
 		Force:    false,
-	}).WhereIn(dao.Dept.Columns().Id, ids).Delete()
+	}).WhereIn(dao.Dept.Columns().Id, delIds).Delete()
 	return
 }
 

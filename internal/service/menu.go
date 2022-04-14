@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"github.com/gogf/gf/v2/container/garray"
+	"github.com/gogf/gf/v2/container/gset"
 	"github.com/gogf/gf/v2/container/gvar"
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/errors/gerror"
@@ -199,6 +200,33 @@ func (s *sMenu) EditMenu(ctx context.Context, req *v1.MenuEditReq) (err error) {
 		ModuleType: req.ModuleType,
 		Remark:     req.Remark,
 	}).Where(do.Menu{Id: req.Id}).Update()
+	return
+}
+
+// DeleteMenu 删除菜单
+func (s *sMenu) DeleteMenu(ctx context.Context, ids []uint64) (err error) {
+	// 获取所有菜单
+	var list []*entity.Menu
+	list, err = s.GetAllMenus(ctx)
+	if err != nil {
+		return
+	}
+	// 获取规则ID下所有的子规则ID
+	idsSet := gset.New(true)
+	for _, id := range ids {
+		children := s.FindSonByParentId(list, id)
+		for _, child := range children {
+			idsSet.Add(child.Id)
+		}
+		idsSet.Add(id)
+	}
+	delIds := idsSet.Slice()
+	// 删除菜单数据
+	_, err = dao.Menu.Ctx(ctx).Cache(gdb.CacheOption{
+		Duration: -1,
+		Name:     utils.GetCacheMenuKey(),
+		Force:    false,
+	}).WhereIn(dao.Menu.Columns().Id, delIds).Delete()
 	return
 }
 

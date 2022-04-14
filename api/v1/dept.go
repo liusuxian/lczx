@@ -56,7 +56,7 @@ type DeptEditRes struct {
 // DeptDeleteReq 删除部门请求参数
 type DeptDeleteReq struct {
 	g.Meta `path:"/delete" tags:"DeptDelete" method:"delete" summary:"You first auth/dept/delete api"`
-	Id     uint64 `json:"id" v:"required|regex:^[1-9]\\d*$#部门ID不能为空|部门ID必须为正整数" dc:"部门ID"` // 部门ID
+	Ids    []uint64 `json:"ids" v:"required|slice_valid:uint64#部门ID列表不能为空" dc:"部门ID列表"` // 部门ID列表
 }
 
 // DeptDeleteRes 删除部门返回参数
