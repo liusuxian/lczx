@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 14/04/2022 13:46:38
+ Date: 14/04/2022 20:31:25
 */
 
 SET NAMES utf8mb4;
@@ -147,12 +147,13 @@ COMMIT;
 DROP TABLE IF EXISTS `role`;
 CREATE TABLE `role` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '角色ID',
-  `status` tinyint unsigned NOT NULL COMMENT '状态 0:停用 1:正常',
   `name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '角色名称',
+  `status` tinyint unsigned NOT NULL COMMENT '状态 0:停用 1:正常',
   `data_scope` tinyint unsigned NOT NULL COMMENT '数据范围 1:全部数据权限 2:自定义数据权限 3:本部门数据权限 4:本部门及以下数据权限',
   `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '备注',
   `create_at` datetime DEFAULT NULL COMMENT '创建时间',
   `update_at` datetime DEFAULT NULL COMMENT '更新时间',
+  `deleted_at` datetime DEFAULT NULL COMMENT '软删除时间',
   PRIMARY KEY (`id`),
   KEY `status_index` (`status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
