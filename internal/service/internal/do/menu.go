@@ -19,9 +19,7 @@ type Menu struct {
 	Condition  interface{} // 条件
 	MenuType   interface{} // 类型 0:目录 1:菜单 2:按钮
 	Status     interface{} // 菜单状态 0:停用 1:正常
-	Path       interface{} // 路由地址
 	JumpPath   interface{} // 跳转路由
-	Component  interface{} // 组件路径
 	IsFrame    interface{} // 是否外链 1是 0否
 	ModuleType interface{} // 所属模块
 	Remark     interface{} // 备注

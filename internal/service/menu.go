@@ -85,15 +85,6 @@ func (s *sMenu) AddMenu(ctx context.Context, req *v1.MenuAddReq) (err error) {
 		err = gerror.Newf(`权限规则[%s]已存在`, req.Rule)
 		return
 	}
-	// 检查菜单路由地址是否可用
-	available, err = s.IsMenuPathAvailable(ctx, req.Path)
-	if err != nil {
-		return
-	}
-	if !available {
-		err = gerror.Newf(`路由地址[%s]已存在`, req.Path)
-		return
-	}
 	// 写入菜单数据
 	_, err = dao.Menu.Ctx(ctx).Cache(gdb.CacheOption{
 		Duration: -1,
@@ -106,9 +97,7 @@ func (s *sMenu) AddMenu(ctx context.Context, req *v1.MenuAddReq) (err error) {
 		Condition:  req.Condition,
 		MenuType:   req.MenuType,
 		Status:     req.Status,
-		Path:       req.Path,
 		JumpPath:   req.JumpPath,
-		Component:  req.Component,
 		IsFrame:    req.IsFrame,
 		ModuleType: req.ModuleType,
 		Remark:     req.Remark,
@@ -156,15 +145,6 @@ func (s *sMenu) EditMenu(ctx context.Context, req *v1.MenuEditReq) (err error) {
 		err = gerror.Newf(`权限规则[%s]已存在`, req.Rule)
 		return
 	}
-	// 检查菜单路由地址是否可用
-	available, err = s.IsMenuPathAvailable(ctx, req.Path)
-	if err != nil {
-		return
-	}
-	if !available {
-		err = gerror.Newf(`路由地址[%s]已存在`, req.Path)
-		return
-	}
 	// 获取所有菜单
 	var list []*entity.Menu
 	list, err = s.GetAllMenus(ctx)
@@ -193,9 +173,7 @@ func (s *sMenu) EditMenu(ctx context.Context, req *v1.MenuEditReq) (err error) {
 		Condition:  req.Condition,
 		MenuType:   req.MenuType,
 		Status:     req.Status,
-		Path:       req.Path,
 		JumpPath:   req.JumpPath,
-		Component:  req.Component,
 		IsFrame:    req.IsFrame,
 		ModuleType: req.ModuleType,
 		Remark:     req.Remark,
@@ -241,10 +219,8 @@ func (s *sMenu) GetIsMenus(ctx context.Context) (list []*entity.Menu, err error)
 
 	list = make([]*entity.Menu, 0, len(menus))
 	for _, v := range menus {
-		if v.Status == consts.MenuStatusEnable {
-			if v.MenuType == consts.MenuTypeDir || v.MenuType == consts.MenuTypeMenu {
-				list = append(list, v)
-			}
+		if v.MenuType == consts.MenuTypeDir || v.MenuType == consts.MenuTypeMenu {
+			list = append(list, v)
 		}
 	}
 	return
@@ -314,16 +290,6 @@ func (s *sMenu) IsMenuRuleAvailable(ctx context.Context, rule string) (bool, err
 	return count == 0, nil
 }
 
-// IsMenuPathAvailable 菜单路由地址是否可用
-func (s *sMenu) IsMenuPathAvailable(ctx context.Context, path string) (bool, error) {
-	count, err := dao.Menu.Ctx(ctx).Where(do.Menu{Path: path}).
-		WhereNot(dao.Menu.Columns().MenuType, consts.MenuTypeButton).Count()
-	if err != nil {
-		return false, err
-	}
-	return count == 0, nil
-}
-
 // FindSonByParentId 通过父规则ID获取所有的子菜单信息
 func (s *sMenu) FindSonByParentId(menuList []*entity.Menu, parentId uint64) (children []*entity.Menu) {
 	children = make([]*entity.Menu, 0, len(menuList))
@@ -332,24 +298,6 @@ func (s *sMenu) FindSonByParentId(menuList []*entity.Menu, parentId uint64) (chi
 			children = append(children, v)
 			fChildren := s.FindSonByParentId(menuList, v.Id)
 			children = append(children, fChildren...)
-		}
-	}
-	return
-}
-
-// GetStatusEnableMenus 获取菜单状态为正常的菜单列表
-func (s *sMenu) GetStatusEnableMenus(ctx context.Context) (menus []*entity.Menu, err error) {
-	// 获取所有菜单
-	var list []*entity.Menu
-	list, err = s.GetAllMenus(ctx)
-	if err != nil {
-		return
-	}
-
-	menus = make([]*entity.Menu, 0, len(list))
-	for _, v := range list {
-		if v.Status == consts.MenuStatusEnable {
-			menus = append(menus, v)
 		}
 	}
 	return

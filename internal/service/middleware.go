@@ -7,6 +7,7 @@ import (
 	"github.com/gogf/gf/v2/text/gstr"
 	"github.com/gogf/gf/v2/util/gconv"
 	"lczx/internal/code"
+	"lczx/internal/consts"
 	"lczx/internal/model"
 	"lczx/internal/model/entity"
 	"lczx/utility/logger"
@@ -95,7 +96,7 @@ func (s *sMiddleware) Auth(req *ghttp.Request) {
 	// 获取地址对应的菜单ID
 	var err error
 	var menuList []*entity.Menu
-	menuList, err = Menu().GetStatusEnableMenus(ctx)
+	menuList, err = Menu().GetAllMenus(ctx)
 	if err != nil {
 		response.RespJsonExitByGcode(req, code.RequestDataFailed)
 	}
@@ -110,6 +111,10 @@ func (s *sMiddleware) Auth(req *ghttp.Request) {
 	logger.Debug(ctx, "menu: ", menu)
 	// 只验证存在数据库中的规则
 	if menu != nil {
+		// 检查菜单状态是否为已停用
+		if menu.Status == consts.MenuStatusDisabled {
+			response.RespJsonExitByGcode(req, code.MenuStatusDisabled)
+		}
 		// 若存在不需要验证的条件则跳过
 		if gstr.Equal(menu.Condition, "nocheck") {
 			req.Middleware.Next()

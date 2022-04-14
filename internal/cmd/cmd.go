@@ -55,12 +55,13 @@ var (
 				})
 				// TODO 权限管理
 				group.Group("/auth", func(group *ghttp.RouterGroup) {
-					// TODO 菜单管理
+					// 菜单管理
 					group.Group("/menu", func(group *ghttp.RouterGroup) {
 						group.Bind(controller.Menu)
 					})
 					// TODO 角色管理
 					group.Group("/role", func(group *ghttp.RouterGroup) {
+						group.Bind(controller.Role)
 					})
 					// 部门管理
 					group.Group("/dept", func(group *ghttp.RouterGroup) {

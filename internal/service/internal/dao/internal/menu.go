@@ -26,9 +26,7 @@ type MenuColumns struct {
 	Condition  string // 条件
 	MenuType   string // 类型 0:目录 1:菜单 2:按钮
 	Status     string // 菜单状态 0:停用 1:正常
-	Path       string // 路由地址
 	JumpPath   string // 跳转路由
-	Component  string // 组件路径
 	IsFrame    string // 是否外链 1是 0否
 	ModuleType string // 所属模块
 	Remark     string // 备注
@@ -46,9 +44,7 @@ var menuColumns = MenuColumns{
 	Condition:  "condition",
 	MenuType:   "menu_type",
 	Status:     "status",
-	Path:       "path",
 	JumpPath:   "jump_path",
-	Component:  "component",
 	IsFrame:    "is_frame",
 	ModuleType: "module_type",
 	Remark:     "remark",

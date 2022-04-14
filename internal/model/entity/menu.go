@@ -17,9 +17,7 @@ type Menu struct {
 	Condition  string      `json:"condition"  description:"条件"`                // 条件
 	MenuType   uint        `json:"menuType"   description:"类型 0:目录 1:菜单 2:按钮"` // 类型 0:目录 1:菜单 2:按钮
 	Status     uint        `json:"status"     description:"菜单状态 0:停用 1:正常"`    // 菜单状态 0:停用 1:正常
-	Path       string      `json:"path"       description:"路由地址"`              // 路由地址
 	JumpPath   string      `json:"jumpPath"   description:"跳转路由"`              // 跳转路由
-	Component  string      `json:"component"  description:"组件路径"`              // 组件路径
 	IsFrame    uint        `json:"isFrame"    description:"是否外链 1是 0否"`        // 是否外链 1是 0否
 	ModuleType string      `json:"moduleType" description:"所属模块"`              // 所属模块
 	Remark     string      `json:"remark"     description:"备注"`                // 备注

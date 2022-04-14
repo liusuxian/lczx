@@ -28,9 +28,12 @@ var (
 	EditDeptFailed    = gcode.New(1304, "修改部门信息失败", "")  // 修改部门信息失败
 	DeleteDeptFailed  = gcode.New(1305, "删除部门信息失败", "")  // 删除部门信息失败
 
-	GetMenuListFailed = gcode.New(1400, "获取菜单列表失败", "")            // 获取菜单列表失败
-	GetIsMenusFailed  = gcode.New(1401, "获取菜单类型为目录和菜单的菜单列表失败", "") // 获取菜单类型为目录和菜单的菜单列表失败
-	AddMenuFailed     = gcode.New(1402, "新增菜单信息失败", "")            // 新增菜单信息失败
-	EditMenuFailed    = gcode.New(1403, "修改菜单信息失败", "")            // 修改菜单信息失败
-	DeleteMenuFailed  = gcode.New(1404, "删除菜单信息失败", "")            // 删除菜单信息失败
+	GetMenuListFailed  = gcode.New(1400, "获取菜单列表失败", "")            // 获取菜单列表失败
+	GetIsMenusFailed   = gcode.New(1401, "获取菜单类型为目录和菜单的菜单列表失败", "") // 获取菜单类型为目录和菜单的菜单列表失败
+	AddMenuFailed      = gcode.New(1402, "新增菜单信息失败", "")            // 新增菜单信息失败
+	EditMenuFailed     = gcode.New(1403, "修改菜单信息失败", "")            // 修改菜单信息失败
+	DeleteMenuFailed   = gcode.New(1404, "删除菜单信息失败", "")            // 删除菜单信息失败
+	MenuStatusDisabled = gcode.New(1405, "菜单已停用", "")               // 菜单已停用
+
+	GetRoleListFailed = gcode.New(1500, "获取角色列表失败", "") // 获取角色列表失败
 )
