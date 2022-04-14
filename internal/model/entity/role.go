@@ -12,7 +12,7 @@ import (
 type Role struct {
 	Id        uint64      `json:"id"        description:"角色ID"`                                           // 角色ID
 	Name      string      `json:"name"      description:"角色名称"`                                           // 角色名称
-	Status    uint        `json:"status"    description:"状态 0:停用 1:正常"`                                   // 状态 0:停用 1:正常
+	Status    uint        `json:"status"    description:"角色状态 0:停用 1:正常"`                                 // 角色状态 0:停用 1:正常
 	DataScope uint        `json:"dataScope" description:"数据范围 1:全部数据权限 2:自定义数据权限 3:本部门数据权限 4:本部门及以下数据权限"` // 数据范围 1:全部数据权限 2:自定义数据权限 3:本部门数据权限 4:本部门及以下数据权限
 	Remark    string      `json:"remark"    description:"备注"`                                             // 备注
 	CreateAt  *gtime.Time `json:"createAt"  description:"创建时间"`                                           // 创建时间
