@@ -49,11 +49,17 @@ var (
 				group.Middleware(
 					service.Middleware().Auth,
 				)
+				// 后台操作日志记录
+				group.Hook("/*", ghttp.HookAfterOutput, service.OperLog().Invoke)
+				// 缓存相关
+				group.Group("/cache", func(group *ghttp.RouterGroup) {
+					group.Bind(controller.Cache)
+				})
 				// TODO 用户相关
 				group.Group("/user", func(group *ghttp.RouterGroup) {
 					group.Bind(controller.User)
 				})
-				// TODO 权限管理
+				// 权限管理
 				group.Group("/auth", func(group *ghttp.RouterGroup) {
 					// 菜单管理
 					group.Group("/menu", func(group *ghttp.RouterGroup) {
@@ -72,7 +78,7 @@ var (
 						group.Bind(controller.UserManager)
 					})
 				})
-				// TODO 系统监控
+				// 系统监控
 				group.Group("/monitor", func(group *ghttp.RouterGroup) {
 					// 在线用户管理
 					group.Group("/userOnline", func(group *ghttp.RouterGroup) {
@@ -85,8 +91,8 @@ var (
 					group.Group("/loginLog", func(group *ghttp.RouterGroup) {
 						group.Bind(controller.LoginLog)
 					})
-					// TODO 操作日志
-					group.Group("/operationLog", func(group *ghttp.RouterGroup) {
+					// 操作日志
+					group.Group("/operLog", func(group *ghttp.RouterGroup) {
 					})
 				})
 			})

@@ -93,7 +93,7 @@ func (s *sAuth) UserIsOnline(ctx context.Context, token string) bool {
 		}
 		return true
 	case gtoken.CacheModeRedis:
-		userCacheValue, err := g.Redis().Do(ctx, "GET", cacheKey)
+		userCacheValue, err := g.DB().GetCache().Get(ctx, cacheKey)
 		if err != nil {
 			logger.Error(ctx, "GetCache redis Error: ", err.Error())
 			return false

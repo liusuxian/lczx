@@ -210,7 +210,7 @@ func (s *sDept) GetStatusEnableDepts(ctx context.Context) (depts []*entity.Dept,
 func (s *sDept) GetAllDepts(ctx context.Context) (depts []*entity.Dept, err error) {
 	// 从缓存获取
 	var deptsCacheValue *gvar.Var
-	deptsCacheValue, err = g.Redis().Do(ctx, "GET", consts.DeptKey)
+	deptsCacheValue, err = g.DB().GetCache().Get(ctx, consts.DeptKey)
 	if err != nil {
 		return
 	}
@@ -287,5 +287,16 @@ func (s *sDept) GetDeptIdsByRoleId(ctx context.Context, id uint64) (deptIds []ui
 	for _, deptVar := range array {
 		deptIds = append(deptIds, deptVar.Uint64())
 	}
+	return
+}
+
+// GetDeptNameById 通过部门ID获取部门名称
+func (s *sDept) GetDeptNameById(ctx context.Context, id uint64) (deptName string, err error) {
+	var value *gvar.Var
+	value, err = dao.Dept.Ctx(ctx).Fields(dao.Dept.Columns().Name).Where(do.Dept{Id: id}).Value()
+	if err != nil {
+		return
+	}
+	deptName = value.String()
 	return
 }

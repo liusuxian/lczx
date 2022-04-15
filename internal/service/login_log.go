@@ -32,7 +32,7 @@ func (s *sLoginLog) Invoke(ctx context.Context, data *entity.LoginLog) {
 		s.SaveLoginLog(ctx, data)
 	})
 	if err != nil {
-		logger.Error(ctx, "SysLoginLog Pool Add Error: ", err.Error())
+		logger.Error(ctx, "LoginLog Pool Add Error: ", err.Error())
 	}
 }
 

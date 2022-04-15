@@ -81,7 +81,7 @@ func (s *sRole) AddRole(ctx context.Context, req *v1.RoleAddReq) (err error) {
 		return
 	}
 	// 清除角色缓存
-	_, err = g.Redis().Do(ctx, "DEL", consts.RoleKey)
+	_, err = g.DB().GetCache().Remove(ctx, consts.RoleKey)
 	return
 }
 
@@ -124,7 +124,7 @@ func (s *sRole) EditRole(ctx context.Context, req *v1.RoleEditReq) (err error) {
 		return
 	}
 	// 清除角色缓存
-	_, err = g.Redis().Do(ctx, "DEL", consts.RoleKey)
+	_, err = g.DB().GetCache().Remove(ctx, consts.RoleKey)
 	return
 }
 
@@ -165,7 +165,7 @@ func (s *sRole) SetRoleDataScope(ctx context.Context, req *v1.RoleSetDataScopeRe
 		return
 	}
 	// 清除角色缓存
-	_, err = g.Redis().Do(ctx, "DEL", consts.RoleKey)
+	_, err = g.DB().GetCache().Remove(ctx, consts.RoleKey)
 	return
 }
 
@@ -198,7 +198,7 @@ func (s *sRole) DeleteRoleByIds(ctx context.Context, ids []uint64) (err error) {
 		return
 	}
 	// 清除角色缓存
-	_, err = g.Redis().Do(ctx, "DEL", consts.RoleKey)
+	_, err = g.DB().GetCache().Remove(ctx, consts.RoleKey)
 	return
 }
 
@@ -206,7 +206,7 @@ func (s *sRole) DeleteRoleByIds(ctx context.Context, ids []uint64) (err error) {
 func (s *sRole) GetAllRoles(ctx context.Context) (roles []*entity.Role, err error) {
 	// 从缓存获取
 	var rolesCacheValue *gvar.Var
-	rolesCacheValue, err = g.Redis().Do(ctx, "GET", consts.RoleKey)
+	rolesCacheValue, err = g.DB().GetCache().Get(ctx, consts.RoleKey)
 	if err != nil {
 		return
 	}

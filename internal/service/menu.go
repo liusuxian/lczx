@@ -250,7 +250,7 @@ func (s *sMenu) GetMenuTree(menuList []*entity.Menu, parentId uint64) (tree []*v
 func (s *sMenu) GetAllMenus(ctx context.Context) (menus []*entity.Menu, err error) {
 	// 从缓存获取
 	var menusCacheValue *gvar.Var
-	menusCacheValue, err = g.Redis().Do(ctx, "GET", consts.MenuKey)
+	menusCacheValue, err = g.DB().GetCache().Get(ctx, consts.MenuKey)
 	if err != nil {
 		return
 	}
