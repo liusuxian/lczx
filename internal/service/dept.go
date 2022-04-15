@@ -46,16 +46,20 @@ func (s *sDept) GetDeptList(ctx context.Context, req *v1.DeptListReq, fieldNames
 // AddDept 新增部门
 func (s *sDept) AddDept(ctx context.Context, req *v1.DeptAddReq) (err error) {
 	// 检查父部门是否存在
+	parentDept := &entity.Dept{}
 	if req.ParentId != 0 {
-		var deptExists bool
-		deptExists, err = s.DeptExistsById(ctx, req.ParentId)
+		parentDept, err = s.GetDeptById(ctx, req.ParentId)
 		if err != nil {
 			return
 		}
-		if !deptExists {
+		if parentDept == nil {
 			err = gerror.Newf(`父部门ID[%d]不存在`, req.ParentId)
 			return
 		}
+	}
+	if parentDept.Name == req.Name {
+		err = gerror.Newf(`父部门名称[%s]不能与子部门名称[%s]相同`, parentDept.Name, req.Name)
+		return
 	}
 	// 检查部门名称是否可用
 	var available bool
@@ -95,26 +99,42 @@ func (s *sDept) GetDeptById(ctx context.Context, id uint64, fieldNames ...string
 // EditDept 编辑部门
 func (s *sDept) EditDept(ctx context.Context, req *v1.DeptEditReq) (err error) {
 	// 检查父部门是否存在
+	parentDept := &entity.Dept{}
 	if req.ParentId != 0 {
-		var deptExists bool
-		deptExists, err = s.DeptExistsById(ctx, req.ParentId)
+		parentDept, err = s.GetDeptById(ctx, req.ParentId)
 		if err != nil {
 			return
 		}
-		if !deptExists {
+		if parentDept == nil {
 			err = gerror.Newf(`父部门ID[%d]不存在`, req.ParentId)
 			return
 		}
 	}
-	// 检查部门名称是否可用
-	var available bool
-	available, err = s.IsDeptNameAvailable(ctx, req.Name, req.ParentId)
+	if parentDept.Name == req.Name {
+		err = gerror.Newf(`父部门名称[%s]不能与子部门名称[%s]相同`, parentDept.Name, req.Name)
+		return
+	}
+	// 检查部门信息是否存在
+	var dept *entity.Dept
+	dept, err = s.GetDeptById(ctx, req.Id)
 	if err != nil {
 		return
 	}
-	if !available {
-		err = gerror.Newf(`部门名称[%s]已存在`, req.Name)
+	if dept == nil {
+		err = gerror.Newf(`部门ID[%d]不存在`, req.Id)
 		return
+	}
+	// 检查部门名称是否可用
+	if dept.Name != req.Name {
+		var available bool
+		available, err = s.IsDeptNameAvailable(ctx, req.Name, req.ParentId)
+		if err != nil {
+			return
+		}
+		if !available {
+			err = gerror.Newf(`部门名称[%s]已存在`, req.Name)
+			return
+		}
 	}
 	// 获取所有部门
 	var list []*entity.Dept
