@@ -13,7 +13,6 @@ import (
 	"lczx/internal/model/entity"
 	"lczx/internal/service/internal/dao"
 	"lczx/internal/service/internal/do"
-	"lczx/utility/utils"
 )
 
 type sMenu struct{}
@@ -87,7 +86,7 @@ func (s *sMenu) AddMenu(ctx context.Context, req *v1.MenuAddReq) (err error) {
 	// 写入菜单数据
 	_, err = dao.Menu.Ctx(ctx).Cache(gdb.CacheOption{
 		Duration: -1,
-		Name:     utils.GetCacheMenuKey(),
+		Name:     consts.MenuKey,
 		Force:    false,
 	}).Data(do.Menu{
 		ParentId:   req.ParentId,
@@ -160,7 +159,7 @@ func (s *sMenu) EditMenu(ctx context.Context, req *v1.MenuEditReq) (err error) {
 	// 更新菜单数据
 	_, err = dao.Menu.Ctx(ctx).Cache(gdb.CacheOption{
 		Duration: -1,
-		Name:     utils.GetCacheMenuKey(),
+		Name:     consts.MenuKey,
 		Force:    false,
 	}).Data(do.Menu{
 		ParentId:   req.ParentId,
@@ -195,7 +194,7 @@ func (s *sMenu) DeleteMenu(ctx context.Context, ids []uint64) (err error) {
 	// 删除菜单数据
 	_, err = dao.Menu.Ctx(ctx).Cache(gdb.CacheOption{
 		Duration: -1,
-		Name:     utils.GetCacheMenuKey(),
+		Name:     consts.MenuKey,
 		Force:    false,
 	}).WhereIn(dao.Menu.Columns().Id, delIds).Delete()
 	return
@@ -239,7 +238,7 @@ func (s *sMenu) GetMenuTree(menuList []*entity.Menu, parentId uint64) (tree []*v
 func (s *sMenu) GetAllMenus(ctx context.Context) (menus []*entity.Menu, err error) {
 	// 从缓存获取
 	var menusCacheValue *gvar.Var
-	menusCacheValue, err = g.Redis().Do(ctx, "GET", utils.GetCacheMenuKey())
+	menusCacheValue, err = g.Redis().Do(ctx, "GET", consts.MenuKey)
 	if err != nil {
 		return
 	}
@@ -258,7 +257,7 @@ func (s *sMenu) GetAllMenus(ctx context.Context) (menus []*entity.Menu, err erro
 	// 从数据库获取
 	err = dao.Menu.Ctx(ctx).Cache(gdb.CacheOption{
 		Duration: 0,
-		Name:     utils.GetCacheMenuKey(),
+		Name:     consts.MenuKey,
 		Force:    false,
 	}).OrderAsc(dao.Menu.Columns().Id).Scan(&menus)
 	return

@@ -9,10 +9,10 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/util/gconv"
 	v1 "lczx/api/v1"
+	"lczx/internal/consts"
 	"lczx/internal/model/entity"
 	"lczx/internal/service/internal/dao"
 	"lczx/internal/service/internal/do"
-	"lczx/utility/utils"
 )
 
 type sRole struct{}
@@ -80,7 +80,7 @@ func (s *sRole) AddRole(ctx context.Context, req *v1.RoleAddReq) (err error) {
 		return
 	}
 	// 清除角色缓存
-	_, err = g.Redis().Do(ctx, "DEL", utils.GetCacheRoleKey())
+	_, err = g.Redis().Do(ctx, "DEL", consts.RoleKey)
 	return
 }
 

@@ -13,7 +13,6 @@ import (
 	"lczx/internal/model/entity"
 	"lczx/internal/service/internal/dao"
 	"lczx/internal/service/internal/do"
-	"lczx/utility/utils"
 )
 
 type sDept struct{}
@@ -72,7 +71,7 @@ func (s *sDept) AddDept(ctx context.Context, req *v1.DeptAddReq) (err error) {
 	user := Context().Get(ctx).User
 	_, err = dao.Dept.Ctx(ctx).Cache(gdb.CacheOption{
 		Duration: -1,
-		Name:     utils.GetCacheDeptKey(),
+		Name:     consts.DeptKey,
 		Force:    false,
 	}).Data(do.Dept{
 		ParentId:  req.ParentId,
@@ -134,7 +133,7 @@ func (s *sDept) EditDept(ctx context.Context, req *v1.DeptEditReq) (err error) {
 	user := Context().Get(ctx).User
 	_, err = dao.Dept.Ctx(ctx).Cache(gdb.CacheOption{
 		Duration: -1,
-		Name:     utils.GetCacheDeptKey(),
+		Name:     consts.DeptKey,
 		Force:    false,
 	}).Data(do.Dept{
 		ParentId:  req.ParentId,
@@ -163,7 +162,7 @@ func (s *sDept) DeleteDept(ctx context.Context, ids []uint64) (err error) {
 	// 删除部门数据
 	_, err = dao.Dept.Ctx(ctx).Cache(gdb.CacheOption{
 		Duration: -1,
-		Name:     utils.GetCacheDeptKey(),
+		Name:     consts.DeptKey,
 		Force:    false,
 	}).WhereIn(dao.Dept.Columns().Id, delIds).Delete()
 	return
@@ -191,7 +190,7 @@ func (s *sDept) GetStatusEnableDepts(ctx context.Context) (depts []*entity.Dept,
 func (s *sDept) GetAllDepts(ctx context.Context) (depts []*entity.Dept, err error) {
 	// 从缓存获取
 	var deptsCacheValue *gvar.Var
-	deptsCacheValue, err = g.Redis().Do(ctx, "GET", utils.GetCacheDeptKey())
+	deptsCacheValue, err = g.Redis().Do(ctx, "GET", consts.DeptKey)
 	if err != nil {
 		return
 	}
@@ -210,7 +209,7 @@ func (s *sDept) GetAllDepts(ctx context.Context) (depts []*entity.Dept, err erro
 	// 从数据库获取
 	err = dao.Dept.Ctx(ctx).Cache(gdb.CacheOption{
 		Duration: 0,
-		Name:     utils.GetCacheDeptKey(),
+		Name:     consts.DeptKey,
 		Force:    false,
 	}).OrderAsc(dao.Dept.Columns().Id).Scan(&depts)
 	return
