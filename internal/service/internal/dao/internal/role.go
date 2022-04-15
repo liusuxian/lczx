@@ -22,7 +22,7 @@ type RoleColumns struct {
 	Id        string // 角色ID
 	Name      string // 角色名称
 	Status    string // 角色状态 0:停用 1:正常
-	DataScope string // 数据范围 1:全部数据权限 2:自定义数据权限 3:本部门数据权限 4:本部门及以下数据权限 5:今本人数据权限
+	DataScope string // 数据范围 1:全部数据权限 2:自定义数据权限 3:本部门数据权限 4:本部门及以下数据权限 5:仅本人数据权限
 	Remark    string // 备注
 	CreateAt  string // 创建时间
 	UpdateAt  string // 更新时间
