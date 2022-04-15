@@ -75,3 +75,14 @@ func (c *cRole) Info(ctx context.Context, req *v1.RoleInfoReq) (res *v1.RoleInfo
 	}
 	return
 }
+
+// Edit 编辑角色
+func (c *cRole) Edit(ctx context.Context, req *v1.RoleEditReq) (res *v1.RoleEditRes, err error) {
+	err = service.Role().EditRole(ctx, req)
+	if err != nil {
+		err = gerror.WrapCode(code.EditRoleFailed, err)
+		return
+	}
+
+	return
+}

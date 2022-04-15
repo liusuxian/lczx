@@ -84,6 +84,49 @@ func (s *sRole) AddRole(ctx context.Context, req *v1.RoleAddReq) (err error) {
 	return
 }
 
+// EditRole 编辑角色
+func (s *sRole) EditRole(ctx context.Context, req *v1.RoleEditReq) (err error) {
+	// 检查角色信息是否存在
+	var role *entity.Role
+	role, err = s.GetRoleById(ctx, req.Id)
+	if err != nil {
+		return
+	}
+	if role == nil {
+		err = gerror.Newf(`角色ID[%d]不存在`, req.Id)
+		return
+	}
+	// 检查角色名称是否可用
+	if role.Name != req.Name {
+		var available bool
+		available, err = s.IsRoleNameAvailable(ctx, req.Name)
+		if err != nil {
+			return
+		}
+		if !available {
+			err = gerror.Newf(`角色名称[%s]已存在`, req.Name)
+			return
+		}
+	}
+	// 开启事务
+	err = dao.Role.Ctx(ctx).Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
+		// 保存角色
+		err := s.UpdateRole(ctx, req)
+		if err != nil {
+			return err
+		}
+		// 修改角色权限
+		err = s.EditRoleRule(ctx, req.MenuIds, req.Id)
+		return err
+	})
+	if err != nil {
+		return
+	}
+	// 清除角色缓存
+	_, err = g.Redis().Do(ctx, "DEL", consts.RoleKey)
+	return
+}
+
 // GetRoleById 通过角色ID获取角色信息
 func (s *sRole) GetRoleById(ctx context.Context, id uint64, fieldNames ...string) (role *entity.Role, err error) {
 	model := dao.Role.Ctx(ctx).Where(do.Role{Id: id})
@@ -132,6 +175,17 @@ func (s *sRole) SaveRole(ctx context.Context, req *v1.RoleAddReq) (roleId uint64
 	return
 }
 
+// UpdateRole 更新角色
+func (s *sRole) UpdateRole(ctx context.Context, req *v1.RoleEditReq) (err error) {
+	_, err = dao.Role.Ctx(ctx).Data(do.Role{
+		Name:      req.Name,
+		Status:    req.Status,
+		DataScope: req.DataScope,
+		Remark:    req.Remark,
+	}).Where(do.Role{Id: req.Id}).Update()
+	return
+}
+
 // AddRoleRule 添加角色权限
 func (s *sRole) AddRoleRule(ctx context.Context, iRule interface{}, roleId uint64) (err error) {
 	var enforcer *casbin.SyncedEnforcer
@@ -139,6 +193,29 @@ func (s *sRole) AddRoleRule(ctx context.Context, iRule interface{}, roleId uint6
 	if err != nil {
 		return
 	}
+	rule := gconv.Strings(iRule)
+	for _, v := range rule {
+		_, err = enforcer.AddPolicy(fmt.Sprintf("%d", roleId), fmt.Sprintf("%s", v), "All")
+		if err != nil {
+			break
+		}
+	}
+	return
+}
+
+// EditRoleRule 修改角色权限
+func (s *sRole) EditRoleRule(ctx context.Context, iRule interface{}, roleId uint64) (err error) {
+	var enforcer *casbin.SyncedEnforcer
+	enforcer, err = Casbin(ctx).GetEnforcer()
+	if err != nil {
+		return
+	}
+	// 删除旧权限
+	_, err = enforcer.RemoveFilteredPolicy(0, fmt.Sprintf("%d", roleId))
+	if err != nil {
+		return
+	}
+	// 添加新权限
 	rule := gconv.Strings(iRule)
 	for _, v := range rule {
 		_, err = enforcer.AddPolicy(fmt.Sprintf("%d", roleId), fmt.Sprintf("%s", v), "All")
