@@ -86,3 +86,14 @@ func (c *cRole) Edit(ctx context.Context, req *v1.RoleEditReq) (res *v1.RoleEdit
 
 	return
 }
+
+// SetStatus 设置角色状态
+func (c *cRole) SetStatus(ctx context.Context, req *v1.RoleSetStatusReq) (res *v1.RoleSetStatusRes, err error) {
+	err = service.Role().SetStatus(ctx, req)
+	if err != nil {
+		err = gerror.WrapCode(code.SetRoleStatusFailed, err)
+		return
+	}
+
+	return
+}

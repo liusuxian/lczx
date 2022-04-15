@@ -127,6 +127,16 @@ func (s *sRole) EditRole(ctx context.Context, req *v1.RoleEditReq) (err error) {
 	return
 }
 
+// SetStatus 设置角色状态
+func (s *sRole) SetStatus(ctx context.Context, req *v1.RoleSetStatusReq) (err error) {
+	_, err = dao.Role.Ctx(ctx).Cache(gdb.CacheOption{
+		Duration: -1,
+		Name:     consts.RoleKey,
+		Force:    false,
+	}).Data(do.Role{Status: req.Status}).Where(do.Role{Id: req.Id}).Update()
+	return
+}
+
 // GetRoleById 通过角色ID获取角色信息
 func (s *sRole) GetRoleById(ctx context.Context, id uint64, fieldNames ...string) (role *entity.Role, err error) {
 	model := dao.Role.Ctx(ctx).Where(do.Role{Id: id})
@@ -166,10 +176,9 @@ func (s *sRole) IsRoleNameAvailable(ctx context.Context, name string) (bool, err
 func (s *sRole) SaveRole(ctx context.Context, req *v1.RoleAddReq) (roleId uint64, err error) {
 	var id int64
 	id, err = dao.Role.Ctx(ctx).Data(do.Role{
-		Name:      req.Name,
-		Status:    req.Status,
-		DataScope: req.DataScope,
-		Remark:    req.Remark,
+		Name:   req.Name,
+		Status: req.Status,
+		Remark: req.Remark,
 	}).InsertAndGetId()
 	roleId = gconv.Uint64(id)
 	return
@@ -180,7 +189,7 @@ func (s *sRole) UpdateRole(ctx context.Context, req *v1.RoleEditReq) (err error)
 	_, err = dao.Role.Ctx(ctx).Data(do.Role{
 		Name:      req.Name,
 		Status:    req.Status,
-		DataScope: req.DataScope,
+		DataScope: 3,
 		Remark:    req.Remark,
 	}).Where(do.Role{Id: req.Id}).Update()
 	return

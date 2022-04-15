@@ -48,8 +48,11 @@ const (
 	MenuTypeButton = 2 // 按钮
 )
 
-// 角色状态
+// 数据范围
 const (
-	RoleStatusDisabled = 0 // 停用
-	RoleStatusEnable   = 1 // 正常
+	DataScopeAll          = 1 // 全部数据权限
+	DataScopeCustom       = 2 // 自定义数据权限
+	DataScopeDept         = 3 // 本部门数据权限
+	DataScopeDeptAndBelow = 4 // 本部门及以下数据权限
+	DataScopeSelf         = 5 // 仅本人数据权限
 )

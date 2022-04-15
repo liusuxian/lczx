@@ -41,4 +41,5 @@ var (
 	GetRoleFailed          = gcode.New(1502, "获取角色信息失败", "")        // 获取角色信息失败
 	GetMenuIdsByRoleFailed = gcode.New(1503, "获取角色关联的菜单ID列表失败", "") // 获取角色关联的菜单ID列表失败
 	EditRoleFailed         = gcode.New(1504, "修改角色信息失败", "")        // 修改角色信息失败
+	SetRoleStatusFailed    = gcode.New(1505, "设置角色状态失败", "")        // 设置角色状态失败
 )

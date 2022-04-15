@@ -26,12 +26,11 @@ type RoleListRes struct {
 
 // RoleAddReq 新增角色请求参数
 type RoleAddReq struct {
-	g.Meta    `path:"/add" tags:"RoleAdd" method:"post" summary:"You first auth/role/add api"`
-	Name      string   `json:"name" v:"required|regex:^[\u4e00-\u9fa5]{0,20}$#角色名称不能为空|角色名称必须为中文且长度不能超过20" dc:"角色名称"`                         // 角色名称
-	Status    uint     `json:"status" v:"required|in:0,1#角色状态不能为空|角色状态只能是0,1" dc:"角色状态 0:停用 1:正常"`                                            // 角色状态 0:停用 1:正常
-	DataScope uint     `json:"dataScope" v:"required|in:1,2,3,4#数据范围不能为空|数据范围只能是1,2,3,4" dc:"数据范围 1:全部数据权限 2:自定义数据权限 3:本部门数据权限 4:本部门及以下数据权限"` // 数据范围 1:全部数据权限 2:自定义数据权限 3:本部门数据权限 4:本部门及以下数据权限
-	MenuIds   []uint64 `json:"menuIds" v:"required|slice_valid:uint64#菜单ID列表不能为空" dc:"菜单ID列表"`                                                // 部门ID列表
-	Remark    string   `json:"remark" v:"max-length:255#备注长度不能超过255" dc:"备注"`                                                                 // 备注
+	g.Meta  `path:"/add" tags:"RoleAdd" method:"post" summary:"You first auth/role/add api"`
+	Name    string   `json:"name" v:"required|regex:^[\u4e00-\u9fa5]{0,20}$#角色名称不能为空|角色名称必须为中文且长度不能超过20" dc:"角色名称"` // 角色名称
+	Status  uint     `json:"status" v:"required|in:0,1#角色状态不能为空|角色状态只能是0,1" dc:"角色状态 0:停用 1:正常"`                    // 角色状态 0:停用 1:正常
+	MenuIds []uint64 `json:"menuIds" v:"required|slice_valid:uint64#菜单ID列表不能为空" dc:"菜单ID列表"`                        // 菜单ID列表
+	Remark  string   `json:"remark" v:"max-length:255#备注长度不能超过255" dc:"备注"`                                         // 备注
 }
 
 // RoleAddRes 新增角色返回参数
@@ -53,15 +52,37 @@ type RoleInfoRes struct {
 
 // RoleEditReq 编辑角色请求参数
 type RoleEditReq struct {
-	g.Meta    `path:"/edit" tags:"RoleEdit" method:"put" summary:"You first auth/role/edit api"`
-	Id        uint64   `json:"id" v:"required|regex:^[1-9]\\d*$#角色ID不能为空|角色ID必须为正整数" dc:"角色ID"`                                               // 角色ID
-	Name      string   `json:"name" v:"required|regex:^[\u4e00-\u9fa5]{0,20}$#角色名称不能为空|角色名称必须为中文且长度不能超过20" dc:"角色名称"`                         // 角色名称
-	Status    uint     `json:"status" v:"required|in:0,1#角色状态不能为空|角色状态只能是0,1" dc:"角色状态 0:停用 1:正常"`                                            // 角色状态 0:停用 1:正常
-	DataScope uint     `json:"dataScope" v:"required|in:1,2,3,4#数据范围不能为空|数据范围只能是1,2,3,4" dc:"数据范围 1:全部数据权限 2:自定义数据权限 3:本部门数据权限 4:本部门及以下数据权限"` // 数据范围 1:全部数据权限 2:自定义数据权限 3:本部门数据权限 4:本部门及以下数据权限
-	MenuIds   []uint64 `json:"menuIds" v:"required|slice_valid:uint64#菜单ID列表不能为空" dc:"菜单ID列表"`                                                // 部门ID列表
-	Remark    string   `json:"remark" v:"max-length:255#备注长度不能超过255" dc:"备注"`                                                                 // 备注
+	g.Meta  `path:"/edit" tags:"RoleEdit" method:"put" summary:"You first auth/role/edit api"`
+	Id      uint64   `json:"id" v:"required|regex:^[1-9]\\d*$#角色ID不能为空|角色ID必须为正整数" dc:"角色ID"`                       // 角色ID
+	Name    string   `json:"name" v:"required|regex:^[\u4e00-\u9fa5]{0,20}$#角色名称不能为空|角色名称必须为中文且长度不能超过20" dc:"角色名称"` // 角色名称
+	Status  uint     `json:"status" v:"required|in:0,1#角色状态不能为空|角色状态只能是0,1" dc:"角色状态 0:停用 1:正常"`                    // 角色状态 0:停用 1:正常
+	MenuIds []uint64 `json:"menuIds" v:"required|slice_valid:uint64#菜单ID列表不能为空" dc:"菜单ID列表"`                        // 菜单ID列表
+	Remark  string   `json:"remark" v:"max-length:255#备注长度不能超过255" dc:"备注"`                                         // 备注
 }
 
 // RoleEditRes 编辑角色返回参数
 type RoleEditRes struct {
+}
+
+// RoleSetStatusReq 设置角色状态请求参数
+type RoleSetStatusReq struct {
+	g.Meta `path:"/setStatus" tags:"RoleSetStatus" method:"put" summary:"You first auth/role/setStatus api"`
+	Id     uint64 `json:"id" v:"required|regex:^[1-9]\\d*$#角色ID不能为空|角色ID必须为正整数" dc:"角色ID"`    // 角色ID
+	Status uint   `json:"status" v:"required|in:0,1#角色状态不能为空|角色状态只能是0,1" dc:"角色状态 0:停用 1:正常"` // 角色状态 0:停用 1:正常
+}
+
+// RoleSetStatusRes 设置角色状态返回参数
+type RoleSetStatusRes struct {
+}
+
+// RoleSetDataScopeReq 设置数据权限请求参数
+type RoleSetDataScopeReq struct {
+	g.Meta    `path:"/setDataScope" tags:"RoleSetDataScope" method:"put" summary:"You first auth/role/setDataScope api"`
+	Id        uint64   `json:"id" v:"required|regex:^[1-9]\\d*$#角色ID不能为空|角色ID必须为正整数" dc:"角色ID"`                                               // 角色ID
+	DataScope uint     `json:"dataScope" v:"required|in:1,2,3,4#数据范围不能为空|数据范围只能是1,2,3,4" dc:"数据范围 1:全部数据权限 2:自定义数据权限 3:本部门数据权限 4:本部门及以下数据权限"` // 数据范围 1:全部数据权限 2:自定义数据权限 3:本部门数据权限 4:本部门及以下数据权限
+	DeptIds   []uint64 `json:"deptIds" v:"required|slice_valid:uint64#部门ID列表不能为空" dc:"部门ID列表"`                                                // 部门ID列表
+}
+
+// RoleSetDataScopeRes 设置数据权限返回参数
+type RoleSetDataScopeRes struct {
 }
