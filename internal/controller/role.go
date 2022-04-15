@@ -89,9 +89,31 @@ func (c *cRole) Edit(ctx context.Context, req *v1.RoleEditReq) (res *v1.RoleEdit
 
 // SetStatus 设置角色状态
 func (c *cRole) SetStatus(ctx context.Context, req *v1.RoleSetStatusReq) (res *v1.RoleSetStatusRes, err error) {
-	err = service.Role().SetStatus(ctx, req)
+	err = service.Role().SetRoleStatus(ctx, req)
 	if err != nil {
 		err = gerror.WrapCode(code.SetRoleStatusFailed, err)
+		return
+	}
+
+	return
+}
+
+// SetDataScope 设置数据权限
+func (c *cRole) SetDataScope(ctx context.Context, req *v1.RoleSetDataScopeReq) (res *v1.RoleSetDataScopeRes, err error) {
+	err = service.Role().SetRoleDataScope(ctx, req)
+	if err != nil {
+		err = gerror.WrapCode(code.SetRoleDataScopeFailed, err)
+		return
+	}
+
+	return
+}
+
+// Delete 删除角色
+func (c *cRole) Delete(ctx context.Context, req *v1.RoleDeleteReq) (res *v1.RoleDeleteRes, err error) {
+	err = service.Role().DeleteRoleByIds(ctx, req.Ids)
+	if err != nil {
+		err = gerror.WrapCode(code.DeleteRoleFailed, err)
 		return
 	}
 

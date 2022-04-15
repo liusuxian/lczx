@@ -78,11 +78,21 @@ type RoleSetStatusRes struct {
 // RoleSetDataScopeReq 设置数据权限请求参数
 type RoleSetDataScopeReq struct {
 	g.Meta    `path:"/setDataScope" tags:"RoleSetDataScope" method:"put" summary:"You first auth/role/setDataScope api"`
-	Id        uint64   `json:"id" v:"required|regex:^[1-9]\\d*$#角色ID不能为空|角色ID必须为正整数" dc:"角色ID"`                                               // 角色ID
-	DataScope uint     `json:"dataScope" v:"required|in:1,2,3,4#数据范围不能为空|数据范围只能是1,2,3,4" dc:"数据范围 1:全部数据权限 2:自定义数据权限 3:本部门数据权限 4:本部门及以下数据权限"` // 数据范围 1:全部数据权限 2:自定义数据权限 3:本部门数据权限 4:本部门及以下数据权限
-	DeptIds   []uint64 `json:"deptIds" v:"required|slice_valid:uint64#部门ID列表不能为空" dc:"部门ID列表"`                                                // 部门ID列表
+	Id        uint64   `json:"id" v:"required|regex:^[1-9]\\d*$#角色ID不能为空|角色ID必须为正整数" dc:"角色ID"`                                                             // 角色ID
+	DataScope uint     `json:"dataScope" v:"required|in:1,2,3,4,5#数据范围不能为空|数据范围只能是1,2,3,4,5" dc:"数据范围 1:全部数据权限 2:自定义数据权限 3:本部门数据权限 4:本部门及以下数据权限 5:仅本人数据权限"` // 数据范围 1:全部数据权限 2:自定义数据权限 3:本部门数据权限 4:本部门及以下数据权限 5:仅本人数据权限
+	DeptIds   []uint64 `json:"deptIds" v:"required|slice_valid:uint64#部门ID列表不能为空" dc:"部门ID列表"`                                                              // 部门ID列表
 }
 
 // RoleSetDataScopeRes 设置数据权限返回参数
 type RoleSetDataScopeRes struct {
+}
+
+// RoleDeleteReq 删除角色请求参数
+type RoleDeleteReq struct {
+	g.Meta `path:"/delete" tags:"RoleDelete" method:"delete" summary:"You first auth/role/delete api"`
+	Ids    []uint64 `json:"ids" v:"required|slice_valid:uint64#角色ID列表不能为空" dc:"角色ID列表"` // 角色ID列表
+}
+
+// RoleDeleteRes 删除角色返回参数
+type RoleDeleteRes struct {
 }

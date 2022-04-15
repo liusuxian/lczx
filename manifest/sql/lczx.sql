@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 15/04/2022 14:48:16
+ Date: 15/04/2022 15:08:26
 */
 
 SET NAMES utf8mb4;
@@ -170,8 +170,8 @@ COMMIT;
 -- ----------------------------
 DROP TABLE IF EXISTS `role_dept`;
 CREATE TABLE `role_dept` (
-  `role_id` bigint NOT NULL COMMENT '角色ID',
-  `dept_id` bigint NOT NULL COMMENT '部门ID',
+  `role_id` bigint unsigned NOT NULL COMMENT '角色ID',
+  `dept_id` bigint unsigned NOT NULL COMMENT '部门ID',
   PRIMARY KEY (`role_id`,`dept_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 

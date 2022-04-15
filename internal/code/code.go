@@ -42,4 +42,6 @@ var (
 	GetMenuIdsByRoleFailed = gcode.New(1503, "获取角色关联的菜单ID列表失败", "") // 获取角色关联的菜单ID列表失败
 	EditRoleFailed         = gcode.New(1504, "修改角色信息失败", "")        // 修改角色信息失败
 	SetRoleStatusFailed    = gcode.New(1505, "设置角色状态失败", "")        // 设置角色状态失败
+	SetRoleDataScopeFailed = gcode.New(1506, "设置数据权限失败", "")        // 设置数据权限失败
+	DeleteRoleFailed       = gcode.New(1507, "删除角色信息失败", "")        // 删除角色信息失败
 )
