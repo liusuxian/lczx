@@ -78,3 +78,15 @@ type DeptTreeReq struct {
 type DeptTreeRes struct {
 	List []*DeptTreeInfo `json:"list" dc:"部门树列表"` // 部门树列表
 }
+
+// DeptRoleDeptTreeReq 角色部门树信息请求参数
+type DeptRoleDeptTreeReq struct {
+	g.Meta `path:"/roleDeptTree" tags:"DeptRoleDeptTree" method:"get" summary:"You first auth/dept/roleDeptTree api"`
+	Id     uint64 `json:"id" v:"required|regex:^[1-9]\\d*$#角色ID不能为空|角色ID必须为正整数" dc:"角色ID"` // 角色ID
+}
+
+// DeptRoleDeptTreeRes 角色部门树信息返回参数
+type DeptRoleDeptTreeRes struct {
+	List    []*DeptTreeInfo `json:"list" dc:"部门树列表"`          // 部门树列表
+	DeptIds []uint64        `json:"deptIds" dc:"角色关联的部门ID列表"` // 角色关联的部门ID列表
+}

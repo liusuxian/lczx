@@ -59,7 +59,7 @@ var (
 					group.Group("/menu", func(group *ghttp.RouterGroup) {
 						group.Bind(controller.Menu)
 					})
-					// TODO 角色管理
+					// 角色管理
 					group.Group("/role", func(group *ghttp.RouterGroup) {
 						group.Bind(controller.Role)
 					})

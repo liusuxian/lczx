@@ -102,3 +102,28 @@ func (c *cDept) Tree(ctx context.Context, req *v1.DeptTreeReq) (res *v1.DeptTree
 	res = &v1.DeptTreeRes{List: tree}
 	return
 }
+
+// RoleDeptTree 角色部门树信息
+func (c *cDept) RoleDeptTree(ctx context.Context, req *v1.DeptRoleDeptTreeReq) (res *v1.DeptRoleDeptTreeRes, err error) {
+	// 获取部门状态为正常的部门列表
+	var list []*entity.Dept
+	list, err = service.Dept().GetStatusEnableDepts(ctx)
+	if err != nil {
+		err = gerror.WrapCode(code.GetRoleDeptTreeFailed, err)
+		return
+	}
+	treeInfos := service.Dept().GetDeptTree(list, 0)
+	// 获取关联的角色数据权限
+	var deptIds []uint64
+	deptIds, err = service.Dept().GetDeptIdsByRoleId(ctx, req.Id)
+	if err != nil {
+		err = gerror.WrapCode(code.GetRoleDeptTreeFailed, err)
+		return
+	}
+	
+	res = &v1.DeptRoleDeptTreeRes{
+		List:    treeInfos,
+		DeptIds: deptIds,
+	}
+	return
+}

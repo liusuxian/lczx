@@ -21,12 +21,13 @@ var (
 	DeleteUserFailed  = gcode.New(1203, "删除用户信息失败", "") // 删除用户信息失败
 	UpdateUserFailed  = gcode.New(1204, "修改用户信息失败", "") // 修改用户信息失败
 
-	GetDeptListFailed = gcode.New(1300, "获取部门列表失败", "")  // 获取部门列表失败
-	GetDeptTreeFailed = gcode.New(1301, "获取部门树信息失败", "") // 获取部门树信息失败
-	AddDeptFailed     = gcode.New(1302, "添加部门信息失败", "")  // 添加部门信息失败
-	GetDeptFailed     = gcode.New(1303, "获取部门信息失败", "")  // 获取部门信息失败
-	EditDeptFailed    = gcode.New(1304, "修改部门信息失败", "")  // 修改部门信息失败
-	DeleteDeptFailed  = gcode.New(1305, "删除部门信息失败", "")  // 删除部门信息失败
+	GetDeptListFailed     = gcode.New(1300, "获取部门列表失败", "")    // 获取部门列表失败
+	GetDeptTreeFailed     = gcode.New(1301, "获取部门树信息失败", "")   // 获取部门树信息失败
+	GetRoleDeptTreeFailed = gcode.New(1302, "获取角色部门树信息失败", "") // 获取角色部门树信息失败
+	AddDeptFailed         = gcode.New(1303, "添加部门信息失败", "")    // 添加部门信息失败
+	GetDeptFailed         = gcode.New(1304, "获取部门信息失败", "")    // 获取部门信息失败
+	EditDeptFailed        = gcode.New(1305, "修改部门信息失败", "")    // 修改部门信息失败
+	DeleteDeptFailed      = gcode.New(1306, "删除部门信息失败", "")    // 删除部门信息失败
 
 	GetMenuListFailed  = gcode.New(1400, "获取菜单列表失败", "")            // 获取菜单列表失败
 	GetIsMenusFailed   = gcode.New(1401, "获取菜单类型为目录和菜单的菜单列表失败", "") // 获取菜单类型为目录和菜单的菜单列表失败
@@ -36,12 +37,11 @@ var (
 	GetMenuTreeFailed  = gcode.New(1405, "获取菜单树信息失败", "")           // 获取菜单树信息失败
 	MenuStatusDisabled = gcode.New(1406, "菜单已停用", "")               // 菜单已停用
 
-	GetRoleListFailed      = gcode.New(1500, "获取角色列表失败", "")        // 获取角色列表失败
-	AddRoleFailed          = gcode.New(1501, "添加角色信息失败", "")        // 添加角色信息失败
-	GetRoleFailed          = gcode.New(1502, "获取角色信息失败", "")        // 获取角色信息失败
-	GetMenuIdsByRoleFailed = gcode.New(1503, "获取角色关联的菜单ID列表失败", "") // 获取角色关联的菜单ID列表失败
-	EditRoleFailed         = gcode.New(1504, "修改角色信息失败", "")        // 修改角色信息失败
-	SetRoleStatusFailed    = gcode.New(1505, "设置角色状态失败", "")        // 设置角色状态失败
-	SetRoleDataScopeFailed = gcode.New(1506, "设置数据权限失败", "")        // 设置数据权限失败
-	DeleteRoleFailed       = gcode.New(1507, "删除角色信息失败", "")        // 删除角色信息失败
+	GetRoleListFailed      = gcode.New(1500, "获取角色列表失败", "") // 获取角色列表失败
+	AddRoleFailed          = gcode.New(1501, "添加角色信息失败", "") // 添加角色信息失败
+	GetRoleFailed          = gcode.New(1502, "获取角色信息失败", "") // 获取角色信息失败
+	EditRoleFailed         = gcode.New(1503, "修改角色信息失败", "") // 修改角色信息失败
+	SetRoleStatusFailed    = gcode.New(1504, "设置角色状态失败", "") // 设置角色状态失败
+	SetRoleDataScopeFailed = gcode.New(1505, "设置数据权限失败", "") // 设置数据权限失败
+	DeleteRoleFailed       = gcode.New(1506, "删除角色信息失败", "") // 删除角色信息失败
 )

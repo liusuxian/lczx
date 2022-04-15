@@ -56,7 +56,7 @@ func (c *cRole) Info(ctx context.Context, req *v1.RoleInfoReq) (res *v1.RoleInfo
 	var menus []*entity.Menu
 	menus, err = service.Menu().GetAllMenus(ctx)
 	if err != nil {
-		err = gerror.WrapCode(code.GetMenuTreeFailed, err)
+		err = gerror.WrapCode(code.GetRoleFailed, err)
 		return
 	}
 	menuList := service.Menu().GetMenuTree(menus, 0)
@@ -64,7 +64,7 @@ func (c *cRole) Info(ctx context.Context, req *v1.RoleInfoReq) (res *v1.RoleInfo
 	var menuIds []uint64
 	menuIds, err = service.Role().GetMenuIdsByRoleId(ctx, req.Id)
 	if err != nil {
-		err = gerror.WrapCode(code.GetMenuIdsByRoleFailed, err)
+		err = gerror.WrapCode(code.GetRoleFailed, err)
 		return
 	}
 

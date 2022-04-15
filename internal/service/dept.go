@@ -278,3 +278,14 @@ func (s *sDept) FindSonIdsByParentId(deptList []*entity.Dept, parentId uint64, i
 		}
 	}
 }
+
+// GetDeptIdsByRoleId 获取角色ID关联的部门ID列表
+func (s *sDept) GetDeptIdsByRoleId(ctx context.Context, id uint64) (deptIds []uint64, err error) {
+	var array []*gvar.Var
+	array, err = dao.RoleDept.Ctx(ctx).Fields(dao.RoleDept.Columns().DeptId).Where(do.RoleDept{RoleId: id}).Array()
+	deptIds = make([]uint64, 0, len(array))
+	for _, deptVar := range array {
+		deptIds = append(deptIds, deptVar.Uint64())
+	}
+	return
+}

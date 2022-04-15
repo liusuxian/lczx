@@ -101,6 +101,7 @@ func (s *sUserOnline) GetOnlineTokensByIds(ctx context.Context, ids []uint64) (t
 	if err != nil {
 		return
 	}
+	tokens = make([]string, 0, len(array))
 	for _, tokenVar := range array {
 		tokens = append(tokens, tokenVar.String())
 	}
