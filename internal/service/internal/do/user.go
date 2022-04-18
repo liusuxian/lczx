@@ -21,6 +21,7 @@ type User struct {
 	DeptId        interface{} // 部门ID
 	Gender        interface{} // 性别 1: 男 2: 女
 	Status        interface{} // 状态 0:禁用 1:启用
+	IsAdmin       interface{} // 是否后台管理员 0:否 1:是
 	Avatar        interface{} // 头像地址
 	Mobile        interface{} // 手机号
 	Email         interface{} // 用户邮箱

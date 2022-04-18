@@ -28,6 +28,7 @@ type UserColumns struct {
 	DeptId        string // 部门ID
 	Gender        string // 性别 1: 男 2: 女
 	Status        string // 状态 0:禁用 1:启用
+	IsAdmin       string // 是否后台管理员 0:否 1:是
 	Avatar        string // 头像地址
 	Mobile        string // 手机号
 	Email         string // 用户邮箱
@@ -50,6 +51,7 @@ var userColumns = UserColumns{
 	DeptId:        "dept_id",
 	Gender:        "gender",
 	Status:        "status",
+	IsAdmin:       "is_admin",
 	Avatar:        "avatar",
 	Mobile:        "mobile",
 	Email:         "email",
