@@ -91,27 +91,21 @@ func (s *sOperLog) Invoke(req *ghttp.Request) {
 	// 请求参数
 	params := req.GetMap()
 	if params != nil {
-		res := make(map[string]interface{})
-		if v, ok := params["apiReturnResp"]; ok {
-			res = gconv.Map(v)
-		} else {
-			res = gconv.Map(req.GetHandlerResponse())
+		if v, ok := params["apiReturnRes"]; ok {
+			res := gconv.Map(v)
+			// 操作状态
+			if gconv.Int(res["code"]) == 0 {
+				data.Status = 1
+			} else {
+				data.Status = 0
+			}
+			// 返回参数
+			jsonRes, _ := gjson.Encode(res)
+			if len(jsonRes) > 0 {
+				data.JsonResult = string(jsonRes)
+			}
+			delete(params, "apiReturnRes")
 		}
-		// 操作状态
-		if gconv.Int(res["code"]) == 0 {
-			data.Status = 1
-		} else {
-			data.Status = 0
-		}
-		if _, ok := res["data"]; ok {
-			delete(res, "data")
-		}
-		// 返回参数
-		jsonRes, _ := gjson.Encode(res)
-		if len(jsonRes) > 0 {
-			data.JsonResult = string(jsonRes)
-		}
-		delete(params, "apiReturnResp")
 		// 请求参数
 		args, _ := gjson.Encode(params)
 		if len(args) > 0 {
@@ -172,5 +166,17 @@ func (s *sOperLog) GetOperLogList(ctx context.Context, req *v1.OperLogListReq) (
 		return
 	}
 	err = model.Page(req.CurPage, req.PageSize).Order(order).Scan(&list)
+	return
+}
+
+// DeleteOperLogByIds 通过ID列表删除操作日志
+func (s *sOperLog) DeleteOperLogByIds(ctx context.Context, ids []uint64) (err error) {
+	_, err = dao.OperLog.Ctx(ctx).WhereIn(dao.OperLog.Columns().Id, ids).Delete()
+	return
+}
+
+// ClearOperLog 清除操作日志
+func (s *sOperLog) ClearOperLog(ctx context.Context) (err error) {
+	_, err = dao.OperLog.DB().Exec(ctx, "truncate "+dao.OperLog.Table())
 	return
 }

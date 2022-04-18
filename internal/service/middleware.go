@@ -2,6 +2,8 @@ package service
 
 import (
 	"github.com/casbin/casbin/v2"
+	"github.com/gogf/gf/v2/errors/gcode"
+	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/text/gstr"
@@ -12,6 +14,7 @@ import (
 	"lczx/internal/model/entity"
 	"lczx/utility/logger"
 	"lczx/utility/response"
+	"net/http"
 )
 
 type sMiddleware struct{}
@@ -67,6 +70,50 @@ func (s *sMiddleware) Ctx(req *ghttp.Request) {
 func (s *sMiddleware) CORS(req *ghttp.Request) {
 	req.Response.CORSDefault()
 	req.Middleware.Next()
+}
+
+// HandlerResponse 自定义返回中间件
+func (s *sMiddleware) HandlerResponse(req *ghttp.Request) {
+	req.Middleware.Next()
+	// 如果有自定义缓冲区内容，则退出当前处理程序。
+	if req.Response.BufferLength() > 0 {
+		return
+	}
+
+	msg := "OK"
+	ctx := req.Context()
+	err := req.GetError()
+	res := req.GetHandlerResponse()
+	rCode := gerror.Code(err)
+	if err != nil {
+		if rCode == gcode.CodeNil {
+			rCode = gcode.CodeInternalError
+		}
+		msg = err.Error()
+	} else if req.Response.Status > 0 && req.Response.Status != http.StatusOK {
+		msg = http.StatusText(req.Response.Status)
+		switch req.Response.Status {
+		case http.StatusNotFound:
+			rCode = gcode.CodeNotFound
+		case http.StatusForbidden:
+			rCode = gcode.CodeNotAuthorized
+		default:
+			rCode = gcode.CodeUnknown
+		}
+	} else {
+		rCode = gcode.CodeOK
+	}
+
+	resData := response.Resp{
+		Code: rCode.Code(),
+		Msg:  msg,
+		Data: res,
+	}
+	req.SetParam("apiReturnRes", resData)
+	internalErr := req.Response.WriteJson(resData)
+	if internalErr != nil {
+		logger.Errorf(ctx, `%+v`, internalErr)
+	}
 }
 
 // Auth 权限判断处理中间件

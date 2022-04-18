@@ -28,7 +28,7 @@ var (
 				group.Middleware(
 					service.Middleware().Ctx,
 					service.Middleware().CORS,
-					ghttp.MiddlewareHandlerResponse,
+					service.Middleware().HandlerResponse,
 				)
 				// 验证码
 				group.Group("/captcha", func(group *ghttp.RouterGroup) {
@@ -40,7 +40,7 @@ var (
 				group.Middleware(
 					service.Middleware().Ctx,
 					service.Middleware().CORS,
-					ghttp.MiddlewareHandlerResponse,
+					service.Middleware().HandlerResponse,
 				)
 				err = service.Auth().Token().Middleware(ctx, group)
 				if err != nil {

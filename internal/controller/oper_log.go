@@ -32,3 +32,25 @@ func (c *cOperLog) List(ctx context.Context, req *v1.OperLogListReq) (res *v1.Op
 	}
 	return
 }
+
+// Delete 删除操作日志
+func (c *cOperLog) Delete(ctx context.Context, req *v1.OperLogDeleteReq) (res *v1.OperLogDeleteRes, err error) {
+	err = service.OperLog().DeleteOperLogByIds(ctx, req.Ids)
+	if err != nil {
+		err = gerror.WrapCode(code.DeleteOperLogFailed, err)
+		return
+	}
+
+	return
+}
+
+// Clear 清除操作日志
+func (c *cOperLog) Clear(ctx context.Context, req *v1.OperLogClearReq) (res *v1.OperLogClearRes, err error) {
+	err = service.OperLog().ClearOperLog(ctx)
+	if err != nil {
+		err = gerror.WrapCode(code.ClearOperLogFailed, err)
+		return
+	}
+
+	return
+}

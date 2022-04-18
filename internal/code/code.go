@@ -16,6 +16,8 @@ var (
 	DeleteLoginLogFailed        = gcode.New(1103, "删除登录日志失败", "")   // 删除登录日志失败
 	ClearLoginLogFailed         = gcode.New(1104, "清除登录日志失败", "")   // 清除登录日志失败
 	GetOperLogListFailed        = gcode.New(1105, "获取操作日志列表失败", "") // 获取操作日志列表失败
+	DeleteOperLogFailed         = gcode.New(1106, "删除操作日志失败", "")   // 删除操作日志失败
+	ClearOperLogFailed          = gcode.New(1107, "清除操作日志失败", "")   // 清除操作日志失败
 
 	GetUserFailed     = gcode.New(1200, "获取用户信息失败", "") // 获取用户信息失败
 	GetUserListFailed = gcode.New(1201, "获取用户列表失败", "") // 获取用户列表失败

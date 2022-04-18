@@ -15,16 +15,18 @@ type Resp struct {
 
 // RespJson 标准返回结果数据
 func RespJson(req *ghttp.Request, code int, msg string, data ...any) {
-	var respData any
+	var rData any
 	if len(data) > 0 {
-		respData = data[0]
+		rData = data[0]
 	}
-	req.SetParam("apiReturnResp", respData)
-	err := req.Response.WriteJson(&Resp{
+
+	resData := Resp{
 		Code: code,
 		Msg:  msg,
-		Data: respData,
-	})
+		Data: rData,
+	}
+	req.SetParam("apiReturnRes", resData)
+	err := req.Response.WriteJson(resData)
 	if err != nil {
 		logger.Error(req.GetCtx(), "RespJson Error: ", err.Error())
 	}

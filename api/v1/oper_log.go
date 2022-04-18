@@ -27,3 +27,22 @@ type OperLogListRes struct {
 	Total   int               `json:"total" dc:"数据总量"`   // 数据总量
 	List    []*entity.OperLog `json:"list" dc:"操作日志列表"`  // 操作日志列表
 }
+
+// OperLogDeleteReq 删除操作日志请求参数
+type OperLogDeleteReq struct {
+	g.Meta `path:"/delete" tags:"OperLogDelete" method:"delete" summary:"You first monitor/operLog/delete api"`
+	Ids    []uint64 `json:"ids" v:"required|slice_valid:uint64#操作日志ID列表不能为空" dc:"操作日志ID列表"` // 操作日志ID列表
+}
+
+// OperLogDeleteRes 删除操作日志返回参数
+type OperLogDeleteRes struct {
+}
+
+// OperLogClearReq 清除操作日志请求参数
+type OperLogClearReq struct {
+	g.Meta `path:"/clear" tags:"OperLogClear" method:"delete" summary:"You first monitor/operLog/clear api"`
+}
+
+// OperLogClearRes 清除操作日志返回参数
+type OperLogClearRes struct {
+}
