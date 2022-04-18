@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 18/04/2022 17:04:46
+ Date: 18/04/2022 17:49:45
 */
 
 SET NAMES utf8mb4;
@@ -43,21 +43,31 @@ COMMIT;
 DROP TABLE IF EXISTS `dept`;
 CREATE TABLE `dept` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '部门ID',
-  `parent_id` bigint unsigned DEFAULT NULL COMMENT '父部门ID',
-  `name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '部门名称',
-  `status` tinyint unsigned DEFAULT NULL COMMENT '部门状态 0:停用 1:正常',
+  `parent_id` bigint unsigned NOT NULL COMMENT '父部门ID',
+  `name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '部门名称',
+  `status` tinyint unsigned NOT NULL COMMENT '部门状态 0:停用 1:正常',
   `created_by` bigint unsigned DEFAULT NULL COMMENT '创建人',
   `updated_by` bigint unsigned DEFAULT NULL COMMENT '修改人',
   `create_at` datetime DEFAULT NULL COMMENT '创建时间',
   `update_at` datetime DEFAULT NULL COMMENT '更新时间',
   `deleted_at` datetime DEFAULT NULL COMMENT '软删除时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ----------------------------
 -- Records of dept
 -- ----------------------------
 BEGIN;
+INSERT INTO `dept` (`id`, `parent_id`, `name`, `status`, `created_by`, `updated_by`, `create_at`, `update_at`, `deleted_at`) VALUES (1, 0, '绿城咨询集团', 1, 1, NULL, '2022-04-18 17:41:38', '2022-04-18 17:41:38', NULL);
+INSERT INTO `dept` (`id`, `parent_id`, `name`, `status`, `created_by`, `updated_by`, `create_at`, `update_at`, `deleted_at`) VALUES (2, 1, '分子公司', 1, 1, NULL, '2022-04-18 17:42:01', '2022-04-18 17:42:01', NULL);
+INSERT INTO `dept` (`id`, `parent_id`, `name`, `status`, `created_by`, `updated_by`, `create_at`, `update_at`, `deleted_at`) VALUES (3, 2, '浙江幸福绿城房地产咨询有限公司', 1, 1, NULL, '2022-04-18 17:42:30', '2022-04-18 17:42:30', NULL);
+INSERT INTO `dept` (`id`, `parent_id`, `name`, `status`, `created_by`, `updated_by`, `create_at`, `update_at`, `deleted_at`) VALUES (4, 3, '职能部门', 1, 1, NULL, '2022-04-18 17:42:55', '2022-04-18 17:42:55', NULL);
+INSERT INTO `dept` (`id`, `parent_id`, `name`, `status`, `created_by`, `updated_by`, `create_at`, `update_at`, `deleted_at`) VALUES (5, 4, '市场运营部', 1, 1, NULL, '2022-04-18 17:43:35', '2022-04-18 17:43:35', NULL);
+INSERT INTO `dept` (`id`, `parent_id`, `name`, `status`, `created_by`, `updated_by`, `create_at`, `update_at`, `deleted_at`) VALUES (6, 5, '运营组', 1, 1, NULL, '2022-04-18 17:43:57', '2022-04-18 17:43:57', NULL);
+INSERT INTO `dept` (`id`, `parent_id`, `name`, `status`, `created_by`, `updated_by`, `create_at`, `update_at`, `deleted_at`) VALUES (7, 5, '市场组', 1, 1, NULL, '2022-04-18 17:44:31', '2022-04-18 17:44:31', NULL);
+INSERT INTO `dept` (`id`, `parent_id`, `name`, `status`, `created_by`, `updated_by`, `create_at`, `update_at`, `deleted_at`) VALUES (8, 3, '业务部门', 1, 1, NULL, '2022-04-18 17:45:14', '2022-04-18 17:45:14', NULL);
+INSERT INTO `dept` (`id`, `parent_id`, `name`, `status`, `created_by`, `updated_by`, `create_at`, `update_at`, `deleted_at`) VALUES (9, 8, '物业咨询', 1, 1, NULL, '2022-04-18 17:45:36', '2022-04-18 17:45:36', NULL);
+INSERT INTO `dept` (`id`, `parent_id`, `name`, `status`, `created_by`, `updated_by`, `create_at`, `update_at`, `deleted_at`) VALUES (10, 9, '技术支持部', 1, 1, NULL, '2022-04-18 17:45:58', '2022-04-18 17:45:58', NULL);
 COMMIT;
 
 -- ----------------------------
@@ -227,6 +237,7 @@ CREATE TABLE `user` (
   `dept_id` bigint unsigned NOT NULL COMMENT '部门ID',
   `gender` tinyint unsigned NOT NULL COMMENT '性别 1: 男 2: 女',
   `status` tinyint unsigned NOT NULL COMMENT '状态 0:禁用 1:启用',
+  `is_admin` tinyint unsigned NOT NULL COMMENT '是否后台管理员 0:否 1:是',
   `avatar` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT '头像地址',
   `mobile` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '手机号',
   `email` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '用户邮箱',
@@ -247,7 +258,7 @@ CREATE TABLE `user` (
 -- Records of user
 -- ----------------------------
 BEGIN;
-INSERT INTO `user` (`id`, `passport`, `password`, `salt`, `realname`, `nickname`, `dept_id`, `gender`, `status`, `avatar`, `mobile`, `email`, `remark`, `last_login_ip`, `last_login_time`, `create_at`, `update_at`, `deleted_at`) VALUES (1, 'sadmin', 'b0167dd859b8a70478da36238b0b3e05', 'CqDQa4THP1', '超级管理员', '超级管理员', 0, 1, 1, NULL, NULL, NULL, NULL, '127.0.0.1', '2022-03-28 16:28:53', '2022-03-25 17:41:40', '2022-03-25 17:41:40', NULL);
+INSERT INTO `user` (`id`, `passport`, `password`, `salt`, `realname`, `nickname`, `dept_id`, `gender`, `status`, `is_admin`, `avatar`, `mobile`, `email`, `remark`, `last_login_ip`, `last_login_time`, `create_at`, `update_at`, `deleted_at`) VALUES (1, 'sadmin', 'b0167dd859b8a70478da36238b0b3e05', 'CqDQa4THP1', '超级管理员', '超级管理员', 1, 1, 1, 1, NULL, NULL, NULL, NULL, '127.0.0.1', '2022-03-28 16:28:53', '2022-03-25 17:41:40', '2022-03-25 17:41:40', NULL);
 COMMIT;
 
 -- ----------------------------
