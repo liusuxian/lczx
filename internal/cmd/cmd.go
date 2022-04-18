@@ -85,8 +85,9 @@ var (
 					group.Group("/userOnline", func(group *ghttp.RouterGroup) {
 						group.Bind(controller.UserOnline)
 					})
-					// TODO 服务监控
-					group.Group("/server", func(group *ghttp.RouterGroup) {
+					// 服务监控
+					group.Group("/server_monitor", func(group *ghttp.RouterGroup) {
+						group.Bind(controller.ServerMonitor)
 					})
 					// 登录日志
 					group.Group("/loginLog", func(group *ghttp.RouterGroup) {
