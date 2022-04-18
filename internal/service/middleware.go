@@ -55,10 +55,13 @@ func (s *sMiddleware) Ctx(req *ghttp.Request) {
 				Mobile:        user.Mobile,
 				DeptId:        user.DeptId,
 				Status:        user.Status,
+				IsAdmin:       user.IsAdmin,
 				Email:         user.Email,
+				Remark:        user.Remark,
 				LastLoginIp:   user.LastLoginIp,
 				LastLoginTime: user.LastLoginTime,
 				CreateAt:      user.CreateAt,
+				UpdateAt:      user.UpdateAt,
 			})
 		}
 	}

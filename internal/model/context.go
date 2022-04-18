@@ -24,8 +24,11 @@ type ContextUser struct {
 	Mobile        string      // 手机号
 	DeptId        uint64      // 部门ID
 	Status        uint        // 状态 0:禁用 1:启用
+	IsAdmin       uint        // 是否后台管理员 0:否 1:是
 	Email         string      // 用户邮箱
+	Remark        string      // 备注
 	LastLoginIp   string      // 最后登录ip
 	LastLoginTime *gtime.Time // 最后登录时间
 	CreateAt      *gtime.Time // 创建时间
+	UpdateAt      *gtime.Time // 更新时间
 }
