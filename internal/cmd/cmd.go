@@ -93,6 +93,7 @@ var (
 					})
 					// 操作日志
 					group.Group("/operLog", func(group *ghttp.RouterGroup) {
+						group.Bind(controller.OperLog)
 					})
 				})
 			})
