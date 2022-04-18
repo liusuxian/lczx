@@ -4,7 +4,6 @@ import (
 	"context"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
-	"github.com/gogf/gf/v2/os/gcache"
 	"github.com/gogf/gf/v2/os/gcmd"
 	"github.com/gogf/gf/v2/os/gcron"
 	"lczx/internal/controller"
@@ -19,7 +18,7 @@ var (
 		Brief: "start http server",
 		Func: func(ctx context.Context, parser *gcmd.Parser) (err error) {
 			// 数据库缓存适配Redis
-			g.DB().GetCache().SetAdapter(gcache.NewAdapterRedis(g.Redis()))
+			service.Cache().SetAdapter()
 			// 自定义参数校验服务
 			service.ParamsValid()
 			s := g.Server()

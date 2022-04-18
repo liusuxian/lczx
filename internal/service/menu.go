@@ -6,7 +6,6 @@ import (
 	"github.com/gogf/gf/v2/container/gvar"
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/errors/gerror"
-	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/util/gconv"
 	v1 "lczx/api/v1"
 	"lczx/internal/consts"
@@ -250,7 +249,7 @@ func (s *sMenu) GetMenuTree(menuList []*entity.Menu, parentId uint64) (tree []*v
 func (s *sMenu) GetAllMenus(ctx context.Context) (menus []*entity.Menu, err error) {
 	// 从缓存获取
 	var menusCacheValue *gvar.Var
-	menusCacheValue, err = g.DB().GetCache().Get(ctx, consts.MenuKey)
+	menusCacheValue, err = Cache().GetCache(ctx, consts.MenuKey)
 	if err != nil {
 		return
 	}

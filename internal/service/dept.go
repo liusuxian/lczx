@@ -6,7 +6,6 @@ import (
 	"github.com/gogf/gf/v2/container/gvar"
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/errors/gerror"
-	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/util/gconv"
 	v1 "lczx/api/v1"
 	"lczx/internal/consts"
@@ -210,7 +209,7 @@ func (s *sDept) GetStatusEnableDepts(ctx context.Context) (depts []*entity.Dept,
 func (s *sDept) GetAllDepts(ctx context.Context) (depts []*entity.Dept, err error) {
 	// 从缓存获取
 	var deptsCacheValue *gvar.Var
-	deptsCacheValue, err = g.DB().GetCache().Get(ctx, consts.DeptKey)
+	deptsCacheValue, err = Cache().GetCache(ctx, consts.DeptKey)
 	if err != nil {
 		return
 	}

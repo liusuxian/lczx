@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/gogf/gf/v2/container/gvar"
 	"github.com/gogf/gf/v2/frame/g"
+	"github.com/gogf/gf/v2/os/gcache"
 	"lczx/internal/consts"
 )
 
@@ -16,6 +17,11 @@ var (
 // Cache 缓存管理服务
 func Cache() *sCache {
 	return &insCache
+}
+
+// SetAdapter 设置数据库缓存适配Redis
+func (s *sCache) SetAdapter() {
+	g.DB().GetCache().SetAdapter(gcache.NewAdapterRedis(g.Redis()))
 }
 
 // ClearAllCache 清除所有缓存
