@@ -9,6 +9,7 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
 	"lczx/utility/logger"
+	"net"
 )
 
 // GetClientIp 获取客户端IP
@@ -18,6 +19,28 @@ func GetClientIp(req *ghttp.Request) string {
 		ip = req.GetClientIp()
 	}
 	return ip
+}
+
+// GetLocalIp 获取服务端IP
+func GetLocalIp() (ip string, err error) {
+	addrs, err := net.InterfaceAddrs()
+	if err != nil {
+		return
+	}
+	for _, addr := range addrs {
+		ipAddr, ok := addr.(*net.IPNet)
+		if !ok {
+			continue
+		}
+		if ipAddr.IP.IsLoopback() {
+			continue
+		}
+		if !ipAddr.IP.IsGlobalUnicast() {
+			continue
+		}
+		return ipAddr.IP.String(), nil
+	}
+	return
 }
 
 // GetCityByIp 获取ip所属城市
