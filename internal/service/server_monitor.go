@@ -71,7 +71,9 @@ func (s *sServerMonitor) ServerInfo() (serverInfo *v1.ServerMonitorInfo) {
 	var goUsage float64 = 0
 	var gomem runtime.MemStats
 	runtime.ReadMemStats(&gomem)
+	goTotal = gomem.TotalAlloc
 	goUsed = gomem.Sys
+	goFree = gomem.Frees
 	goUsage = gconv.Float64(fmt.Sprintf("%.2f", gconv.Float64(goUsed)/gconv.Float64(memTotal)*100))
 	// 服务器IP、硬件服务器名称、操作系统、系统架构
 	var serverName string
