@@ -8,6 +8,7 @@ import (
 	"github.com/gogf/gf/v2/os/gtime"
 	"github.com/gogf/gf/v2/text/gstr"
 	"github.com/gogf/gf/v2/util/gconv"
+	v1 "lczx/api/v1"
 	"lczx/internal/model/entity"
 	"lczx/internal/service/internal/dao"
 	"lczx/utility/logger"
@@ -134,4 +135,42 @@ func (s *sOperLog) SaveOperLog(ctx context.Context, data *entity.OperLog) {
 	if err != nil {
 		logger.Error(ctx, "SaveOperLog Error: ", err.Error())
 	}
+}
+
+// GetOperLogList 获取操作日志列表
+func (s *sOperLog) GetOperLogList(ctx context.Context, req *v1.OperLogListReq) (total int, list []*entity.OperLog, err error) {
+	model := dao.OperLog.Ctx(ctx)
+	columns := dao.OperLog.Columns()
+	order := "id DESC"
+	if req.Title != "" {
+		model = model.WhereLike(columns.Title, "%"+req.Title+"%")
+	}
+	if req.OperName != "" {
+		model = model.WhereLike(columns.OperName, "%"+req.OperName+"%")
+	}
+	if req.ReqMethod != "" {
+		model = model.Where(columns.ReqMethod, req.ReqMethod)
+	}
+	if req.Status != "" {
+		model = model.Where(columns.Status, gconv.Uint(req.Status))
+	}
+	if req.StartTime.String() != "" {
+		model = model.WhereGTE(columns.Time, req.StartTime)
+	}
+	if req.EndTime.String() != "" {
+		model = model.WhereLTE(columns.Time, req.EndTime)
+	}
+	if req.SortName != "" {
+		if req.SortOrder != "" {
+			order = req.SortName + " " + req.SortOrder
+		} else {
+			order = req.SortName + " DESC"
+		}
+	}
+	total, err = model.Count()
+	if err != nil {
+		return
+	}
+	err = model.Page(req.CurPage, req.PageSize).Order(order).Scan(&list)
+	return
 }

@@ -99,7 +99,7 @@ var (
 				})
 			})
 			// 每2小时执行一次检查在线用户
-			_, err = gcron.Add(ctx, "0 * */2 * * *", service.Auth().CheckUserOnline)
+			_, err = gcron.Add(ctx, "0 0 */2 * * *", service.Auth().CheckUserOnline)
 			if err != nil {
 				return err
 			}

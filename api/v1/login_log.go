@@ -10,7 +10,7 @@ import (
 type LoginLogListReq struct {
 	g.Meta    `path:"/list" tags:"LoginLogList" method:"get" summary:"You first monitor/loginLog/list api"`
 	Passport  string      `json:"passport" v:"regex:^[a-zA-Z]\\w{0,18}$#账号以字母开头，只能包含字母、数字和下划线且长度不能超过18" dc:"账号"` // 账号
-	Ip        string      `json:"ip" v:"regex:^[\\d\\.]{0,15}$#IP地址只能包含数字和.号且长度不能超过15" dc:"IP地址"`                // IP地址
+	Ip        string      `json:"ip" dc:"IP地址"`                                                                  // IP地址
 	Location  string      `json:"location" v:"regex:^[\u4e00-\u9fa5]{0,255}$#登录地点必须为中文且长度不能超过255" dc:"登录地点"`     // 登录地点
 	Status    string      `json:"status" v:"in:0,1#登录状态只能是0,1" dc:"登录状态 0:失败 1:成功"`                              // 登录状态 0:失败 1:成功
 	StartTime *gtime.Time `json:"startTime" v:"datetime#开始时间不是有效的日期时间" dc:"开始时间"`                                // 开始时间
