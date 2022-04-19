@@ -67,37 +67,14 @@ func (c *cUser) Info(ctx context.Context, req *v1.UserInfoReq) (res *v1.UserInfo
 // Profile 获取个人中心信息
 func (c *cUser) Profile(ctx context.Context, req *v1.UserProfileReq) (res *v1.UserProfileRes, err error) {
 	user := service.Context().Get(ctx).User
-	// 用户信息
-	var userInfo *entity.User
-	userInfo, err = service.User().GetUserById(ctx, user.Id)
-	userInfo.Password = ""
-	userInfo.Salt = ""
-	if err != nil {
-		err = gerror.WrapCode(code.GetUserProfileFailed, err)
-		return
-	}
-	// 获取用户部门信息
-	var dept *entity.Dept
-	dept, err = service.Dept().GetDeptById(ctx, userInfo.DeptId)
-	if err != nil {
-		err = gerror.WrapCode(code.GetUserProfileFailed, err)
-		return
-	}
-	// 获取用户角色
-	var roles []*entity.Role
-	roles, err = service.Role().GetUserRoles(ctx, user.Id)
+	var profileInfo *v1.UserProfileInfo
+	profileInfo, err = service.User().GetProfile(ctx, user.Id)
 	if err != nil {
 		err = gerror.WrapCode(code.GetUserProfileFailed, err)
 		return
 	}
 
-	res = &v1.UserProfileRes{
-		ProfileInfo: &v1.UserProfileInfo{
-			User:  userInfo,
-			Dept:  dept,
-			Roles: roles,
-		},
-	}
+	res = &v1.UserProfileRes{ProfileInfo: profileInfo}
 	return
 }
 

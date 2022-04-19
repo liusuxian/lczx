@@ -33,15 +33,21 @@ func OperLog() *sOperLog {
 // Invoke 异步保存日志
 func (s *sOperLog) Invoke(req *ghttp.Request) {
 	ctx := req.GetCtx()
-	user := Context().Get(ctx).User
-	if user == nil {
+	curUser := Context().Get(ctx).User
+	if curUser == nil {
+		return
+	}
+	var user *entity.User
+	var err error
+	user, err = User().GetUserById(ctx, curUser.Id)
+	if err != nil {
+		logger.Error(ctx, "Invoke GetUserById Error: ", err.Error())
 		return
 	}
 	// 请求地址
 	url := req.Request.URL
 	// 获取所有菜单
 	var menuList []*entity.Menu
-	var err error
 	menuList, err = Menu().GetAllMenus(ctx)
 	if err != nil {
 		logger.Error(ctx, "Invoke GetAllMenus Error: ", err.Error())
@@ -71,12 +77,19 @@ func (s *sOperLog) Invoke(req *ghttp.Request) {
 	// 操作人员
 	data.OperName = user.Realname
 	// 部门名称
-	var deptName string
-	deptName, err = Dept().GetDeptNameById(ctx, user.DeptId)
+	// 获取部门状态为正常的部门列表
+	var depts []*entity.Dept
+	depts, err = Dept().GetStatusEnableDepts(ctx)
+	if err != nil {
+		logger.Error(ctx, "Invoke GetAllDepts Error: ", err.Error())
+		return
+	}
+	deptNames := Dept().GetDeptAllNameById(depts, user.DeptId)
 	if err != nil {
 		logger.Error(ctx, "Invoke GetDeptNameById Error: ", err.Error())
 	}
-	data.DeptName = deptName
+	utils.Reverse(deptNames)
+	data.DeptName = gstr.Join(deptNames, "/")
 	// 请求URL
 	rawQuery := url.RawQuery
 	if rawQuery != "" {

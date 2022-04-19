@@ -29,9 +29,10 @@ type UserProfileRes struct {
 
 // UserProfileInfo 个人中心信息
 type UserProfileInfo struct {
-	User  *entity.User   `json:"user" dc:"用户信息"`  // 用户信息
-	Dept  *entity.Dept   `json:"dept" dc:"部门信息"`  // 部门信息
-	Roles []*entity.Role `json:"roles" dc:"角色信息"` // 角色信息
+	User        *entity.User   `json:"user" dc:"用户信息"`          // 用户信息
+	Dept        *entity.Dept   `json:"dept" dc:"部门信息"`          // 部门信息
+	DeptAllName string         `json:"deptAllName" dc:"部门名称全称"` // 部门名称全称
+	Roles       []*entity.Role `json:"roles" dc:"角色信息"`         // 角色信息
 }
 
 // UserUploadAvatarReq 用户上传头像请求参数

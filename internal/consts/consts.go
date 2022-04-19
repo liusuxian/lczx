@@ -15,6 +15,8 @@ const (
 	MenuKey = CachePrefix + "menu"
 	// RoleKey 缓存角色key
 	RoleKey = CachePrefix + "role"
+	// UserKey 缓存用户key
+	UserKey = CachePrefix + "user"
 )
 
 // 用户状态

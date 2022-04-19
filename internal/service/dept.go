@@ -290,13 +290,15 @@ func (s *sDept) GetDeptIdsByRoleId(ctx context.Context, id uint64) (deptIds []ui
 	return
 }
 
-// GetDeptNameById 通过部门ID获取部门名称
-func (s *sDept) GetDeptNameById(ctx context.Context, id uint64) (deptName string, err error) {
-	var value *gvar.Var
-	value, err = dao.Dept.Ctx(ctx).Fields(dao.Dept.Columns().Name).Where(do.Dept{Id: id}).Value()
-	if err != nil {
-		return
+// GetDeptAllNameById 通过部门ID获取部门名称全称
+func (s *sDept) GetDeptAllNameById(deptList []*entity.Dept, id uint64) (deptNames []string) {
+	deptNames = make([]string, 0, len(deptList))
+	for _, v := range deptList {
+		if v.Id == id {
+			deptNames = append(deptNames, v.Name)
+			parent := s.GetDeptAllNameById(deptList, v.ParentId)
+			deptNames = append(deptNames, parent...)
+		}
 	}
-	deptName = value.String()
 	return
 }
