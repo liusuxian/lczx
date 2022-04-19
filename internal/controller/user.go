@@ -23,7 +23,9 @@ func (c *cUser) Info(ctx context.Context, req *v1.UserInfoReq) (res *v1.UserInfo
 	user := service.Context().Get(ctx).User
 	// 用户信息
 	var userInfo *entity.User
-	userInfo, err = service.User().GetUserById(ctx, user.Id, "password", "salt")
+	userInfo, err = service.User().GetUserById(ctx, user.Id)
+	userInfo.Password = ""
+	userInfo.Salt = ""
 	if err != nil {
 		err = gerror.WrapCode(code.GetUserFailed, err)
 		return
@@ -67,7 +69,9 @@ func (c *cUser) Profile(ctx context.Context, req *v1.UserProfileReq) (res *v1.Us
 	user := service.Context().Get(ctx).User
 	// 用户信息
 	var userInfo *entity.User
-	userInfo, err = service.User().GetUserById(ctx, user.Id, "password", "salt")
+	userInfo, err = service.User().GetUserById(ctx, user.Id)
+	userInfo.Password = ""
+	userInfo.Salt = ""
 	if err != nil {
 		err = gerror.WrapCode(code.GetUserProfileFailed, err)
 		return
@@ -88,9 +92,11 @@ func (c *cUser) Profile(ctx context.Context, req *v1.UserProfileReq) (res *v1.Us
 	}
 
 	res = &v1.UserProfileRes{
-		User:  userInfo,
-		Dept:  dept,
-		Roles: roles,
+		ProfileInfo: &v1.UserProfileInfo{
+			User:  userInfo,
+			Dept:  dept,
+			Roles: roles,
+		},
 	}
 	return
 }

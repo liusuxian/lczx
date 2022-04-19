@@ -72,7 +72,7 @@ func (s *sUserOnline) DeleteOnlineByToken(ctx context.Context, token string) {
 }
 
 // GetOnlineList 获取在线用户列表
-func (s *sUserOnline) GetOnlineList(ctx context.Context, req *v1.UserOnlineListReq, fieldNames ...string) (total int, list []*entity.UserOnline, err error) {
+func (s *sUserOnline) GetOnlineList(ctx context.Context, req *v1.UserOnlineListReq, hasToken ...bool) (total int, list []*entity.UserOnline, err error) {
 	model := dao.UserOnline.Ctx(ctx)
 	columns := dao.UserOnline.Columns()
 	if req.Ip != "" {
@@ -85,8 +85,8 @@ func (s *sUserOnline) GetOnlineList(ctx context.Context, req *v1.UserOnlineListR
 	if err != nil {
 		return
 	}
-	if len(fieldNames) != 0 {
-		model = model.FieldsEx(fieldNames)
+	if len(hasToken) == 0 || !hasToken[0] {
+		model = model.FieldsEx(columns.Token)
 	}
 	err = model.Page(req.CurPage, req.PageSize).OrderDesc(columns.Time).Scan(&list)
 	return

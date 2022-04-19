@@ -28,7 +28,7 @@ func Role() *sRole {
 }
 
 // GetRoleList 获取角色列表
-func (s *sRole) GetRoleList(ctx context.Context, req *v1.RoleListReq, fieldNames ...string) (total int, list []*entity.Role, err error) {
+func (s *sRole) GetRoleList(ctx context.Context, req *v1.RoleListReq) (total int, list []*entity.Role, err error) {
 	model := dao.Role.Ctx(ctx)
 	columns := dao.Role.Columns()
 	if req.Name != "" {
@@ -46,9 +46,6 @@ func (s *sRole) GetRoleList(ctx context.Context, req *v1.RoleListReq, fieldNames
 	total, err = model.Count()
 	if err != nil {
 		return
-	}
-	if len(fieldNames) != 0 {
-		model = model.FieldsEx(fieldNames)
 	}
 	err = model.Page(req.CurPage, req.PageSize).OrderAsc(columns.Id).Scan(&list)
 	return
@@ -232,12 +229,8 @@ func (s *sRole) GetAllRoles(ctx context.Context) (roles []*entity.Role, err erro
 }
 
 // GetRoleById 通过角色ID获取角色信息
-func (s *sRole) GetRoleById(ctx context.Context, id uint64, fieldNames ...string) (role *entity.Role, err error) {
-	model := dao.Role.Ctx(ctx).Where(do.Role{Id: id})
-	if len(fieldNames) != 0 {
-		model = model.FieldsEx(fieldNames)
-	}
-	err = model.Scan(&role)
+func (s *sRole) GetRoleById(ctx context.Context, id uint64) (role *entity.Role, err error) {
+	err = dao.Role.Ctx(ctx).Where(do.Role{Id: id}).Scan(&role)
 	return
 }
 

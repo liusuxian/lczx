@@ -26,7 +26,7 @@ func Dept() *sDept {
 }
 
 // GetDeptList 获取部门列表
-func (s *sDept) GetDeptList(ctx context.Context, req *v1.DeptListReq, fieldNames ...string) (list []*entity.Dept, err error) {
+func (s *sDept) GetDeptList(ctx context.Context, req *v1.DeptListReq) (list []*entity.Dept, err error) {
 	model := dao.Dept.Ctx(ctx)
 	columns := dao.Dept.Columns()
 	if req.Name != "" {
@@ -34,9 +34,6 @@ func (s *sDept) GetDeptList(ctx context.Context, req *v1.DeptListReq, fieldNames
 	}
 	if req.Status != "" {
 		model = model.Where(columns.Status, gconv.Uint(req.Status))
-	}
-	if len(fieldNames) != 0 {
-		model = model.FieldsEx(fieldNames)
 	}
 	err = model.OrderAsc(columns.Id).Scan(&list)
 	return
@@ -90,12 +87,8 @@ func (s *sDept) AddDept(ctx context.Context, req *v1.DeptAddReq) (err error) {
 }
 
 // GetDeptById 通过部门ID获取部门信息
-func (s *sDept) GetDeptById(ctx context.Context, id uint64, fieldNames ...string) (dept *entity.Dept, err error) {
-	model := dao.Dept.Ctx(ctx).Where(do.Dept{Id: id})
-	if len(fieldNames) != 0 {
-		model = model.FieldsEx(fieldNames)
-	}
-	err = model.Scan(&dept)
+func (s *sDept) GetDeptById(ctx context.Context, id uint64) (dept *entity.Dept, err error) {
+	err = dao.Dept.Ctx(ctx).Where(do.Dept{Id: id}).Scan(&dept)
 	return
 }
 

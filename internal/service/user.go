@@ -26,8 +26,8 @@ func User() *sUser {
 }
 
 // GetUserByPassportAndPassword 通过账号和密码获取用户信息
-func (s *sUser) GetUserByPassportAndPassword(ctx context.Context, passport, password string, fieldNames ...string) (user *entity.User, err error) {
-	user, err = s.GetUserByPassport(ctx, passport, fieldNames...)
+func (s *sUser) GetUserByPassportAndPassword(ctx context.Context, passport, password string) (user *entity.User, err error) {
+	user, err = s.GetUserByPassport(ctx, passport)
 	if err != nil {
 		return
 	}
@@ -42,6 +42,8 @@ func (s *sUser) GetUserByPassportAndPassword(ctx context.Context, passport, pass
 	if user.Status == consts.UserStatusDisabled {
 		return nil, gerror.New("账号已被禁用")
 	}
+	user.Password = ""
+	user.Salt = ""
 	return
 }
 
@@ -98,21 +100,13 @@ func (s *sUser) EditPwd(ctx context.Context, id uint64, oldPassword, newPassword
 }
 
 // GetUserByPassport 通过账号获取用户信息
-func (s *sUser) GetUserByPassport(ctx context.Context, passport string, fieldNames ...string) (user *entity.User, err error) {
-	model := dao.User.Ctx(ctx)
-	if len(fieldNames) != 0 {
-		model = model.FieldsEx(fieldNames)
-	}
-	err = model.Where(do.User{Passport: passport}).Scan(&user)
+func (s *sUser) GetUserByPassport(ctx context.Context, passport string) (user *entity.User, err error) {
+	err = dao.User.Ctx(ctx).Where(do.User{Passport: passport}).Scan(&user)
 	return
 }
 
 // GetUserById 通过用户ID获取用户信息
-func (s *sUser) GetUserById(ctx context.Context, id uint64, fieldNames ...string) (user *entity.User, err error) {
-	model := dao.User.Ctx(ctx)
-	if len(fieldNames) != 0 {
-		model = model.FieldsEx(fieldNames)
-	}
-	err = model.Where(do.User{Id: id}).Scan(&user)
+func (s *sUser) GetUserById(ctx context.Context, id uint64) (user *entity.User, err error) {
+	err = dao.User.Ctx(ctx).Where(do.User{Id: id}).Scan(&user)
 	return
 }

@@ -2,6 +2,7 @@ package v1
 
 import (
 	"github.com/gogf/gf/v2/frame/g"
+	"github.com/gogf/gf/v2/os/gtime"
 	"lczx/internal/model/entity"
 )
 
@@ -16,13 +17,18 @@ type UserInfoRes struct {
 	MenuList []string     `json:"menuList" dc:"用户菜单列表"` // 用户菜单列表
 }
 
-// UserProfileReq 获取个人中心请求参数
+// UserProfileReq 获取个人中心信息请求参数
 type UserProfileReq struct {
 	g.Meta `path:"/profile" tags:"UserProfile" method:"get" summary:"You first user/profile api"`
 }
 
-// UserProfileRes 获取个人中心返回参数
+// UserProfileRes 获取个人中心信息返回参数
 type UserProfileRes struct {
+	ProfileInfo *UserProfileInfo `json:"profileInfo" dc:"个人中心信息"` // 个人中心信息
+}
+
+// UserProfileInfo 个人中心信息
+type UserProfileInfo struct {
 	User  *entity.User   `json:"user" dc:"用户信息"`  // 用户信息
 	Dept  *entity.Dept   `json:"dept" dc:"部门信息"`  // 部门信息
 	Roles []*entity.Role `json:"roles" dc:"角色信息"` // 角色信息
@@ -61,6 +67,29 @@ type UserPwdEditReq struct {
 
 // UserPwdEditRes 修改用户密码返回参数
 type UserPwdEditRes struct {
+}
+
+// UserListReq 用户列表请求参数
+type UserListReq struct {
+	g.Meta    `path:"/list" tags:"UserList" method:"get" summary:"You first auth/user/list api"`
+	DeptId    string      `json:"deptId" v:"regex:^[1-9]\\d*$#部门ID必须为正整数" dc:"部门ID"`                             // 部门ID
+	Passport  string      `json:"passport" v:"regex:^[a-zA-Z]\\w{0,18}$#账号以字母开头，只能包含字母、数字和下划线且长度不能超过18" dc:"账号"` // 账号
+	Realname  string      `json:"realname" v:"regex:^[\u4e00-\u9fa5]{0,10}$#姓名必须为中文且长度不能超过10" dc:"姓名"`           // 姓名
+	Mobile    string      `json:"mobile" v:"regex:^\\d{0,11}$#手机号必须为无符号整数且长度不能超过11" dc:"手机号"`                    // 手机号
+	Status    string      `json:"status" v:"in:0,1#状态只能是0,1" dc:"状态 0:禁用 1:启用"`                                  // 状态 0:禁用 1:启用
+	StartTime *gtime.Time `json:"startTime" v:"datetime#开始时间不是有效的日期时间" dc:"开始时间"`                                // 开始时间
+	EndTime   *gtime.Time `json:"endTime" v:"datetime#结束时间不是有效的日期时间" dc:"结束时间"`                                  // 结束时间
+	SortName  string      `json:"sortName" v:"regex:^[a-zA-Z]\\w*$#排序字段以字母开头，只能包含字母、数字和下划线" dc:"排序字段"`           // 排序字段
+	SortOrder string      `json:"sortOrder" v:"regex:^[a-zA-Z]\\w*$#排序方式以字母开头，只能包含字母、数字和下划线" dc:"排序方式"`          // 排序方式
+	CurPage   int         `json:"curPage" v:"required|regex:^[1-9]\\d*$#当前页码不能为空|当前页码必须为正整数" dc:"当前页码"`          // 当前页码
+	PageSize  int         `json:"pageSize" v:"required|regex:^[1-9]\\d*$#每页数量不能为空|每页数量必须为正整数" dc:"每页数量"`         // 每页数量
+}
+
+// UserListRes 用户列表返回参数
+type UserListRes struct {
+	CurPage         int                `json:"curPage" dc:"当前页码"`             // 当前页码
+	Total           int                `json:"total" dc:"数据总量"`               // 数据总量
+	ProfileInfoList []*UserProfileInfo `json:"profileInfoList" dc:"个人中心信息列表"` // 个人中心信息列表
 }
 
 type UserAddReq struct {

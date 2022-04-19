@@ -119,7 +119,7 @@ func (s *sAuth) CheckUserOnline(ctx context.Context) {
 	for {
 		var list []*entity.UserOnline
 		var err error
-		total, list, err = UserOnline().GetOnlineList(ctx, req)
+		total, list, err = UserOnline().GetOnlineList(ctx, req, true)
 		if err != nil {
 			logger.Error(ctx, "CheckUserOnline GetOnlineList Error: ", err.Error())
 			break

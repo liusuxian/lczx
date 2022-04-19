@@ -26,7 +26,7 @@ func Menu() *sMenu {
 }
 
 // GetMenuList 获取菜单列表
-func (s *sMenu) GetMenuList(ctx context.Context, req *v1.MenuListReq, fieldNames ...string) (list []*entity.Menu, err error) {
+func (s *sMenu) GetMenuList(ctx context.Context, req *v1.MenuListReq) (list []*entity.Menu, err error) {
 	model := dao.Menu.Ctx(ctx)
 	columns := dao.Menu.Columns()
 	if req.Name != "" {
@@ -34,9 +34,6 @@ func (s *sMenu) GetMenuList(ctx context.Context, req *v1.MenuListReq, fieldNames
 	}
 	if req.Status != "" {
 		model = model.Where(columns.Status, gconv.Uint(req.Status))
-	}
-	if len(fieldNames) != 0 {
-		model = model.FieldsEx(fieldNames)
 	}
 	err = model.OrderAsc(columns.Id).Scan(&list)
 	return
@@ -283,12 +280,8 @@ func (s *sMenu) GetAllMenus(ctx context.Context) (menus []*entity.Menu, err erro
 }
 
 // GetMenuById 通过规则ID获取菜单信息
-func (s *sMenu) GetMenuById(ctx context.Context, id uint64, fieldNames ...string) (menu *entity.Menu, err error) {
-	model := dao.Menu.Ctx(ctx).Where(do.Dept{Id: id})
-	if len(fieldNames) != 0 {
-		model = model.FieldsEx(fieldNames)
-	}
-	err = model.Scan(&menu)
+func (s *sMenu) GetMenuById(ctx context.Context, id uint64) (menu *entity.Menu, err error) {
+	err = dao.Menu.Ctx(ctx).Where(do.Dept{Id: id}).Scan(&menu)
 	return
 }
 

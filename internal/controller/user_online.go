@@ -19,7 +19,7 @@ type cUserOnline struct{}
 func (c *cUserOnline) List(ctx context.Context, req *v1.UserOnlineListReq) (res *v1.UserOnlineListRes, err error) {
 	var total int
 	var list []*entity.UserOnline
-	total, list, err = service.UserOnline().GetOnlineList(ctx, req, "token")
+	total, list, err = service.UserOnline().GetOnlineList(ctx, req)
 	if err != nil {
 		err = gerror.WrapCode(code.GetUserOnlineListFailed, err)
 		return
