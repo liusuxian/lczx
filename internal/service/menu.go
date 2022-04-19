@@ -59,6 +59,10 @@ func (s *sMenu) AddMenu(ctx context.Context, req *v1.MenuAddReq) (err error) {
 			err = gerror.Newf(`父规则ID[%d]不存在`, req.ParentId)
 			return
 		}
+		if parentMenu.Status == consts.MenuStatusDisabled {
+			err = gerror.Newf(`父规则ID[%d]已停用`, req.ParentId)
+			return
+		}
 		if parentMenu.MenuType == consts.MenuTypeDir && req.MenuType == consts.MenuTypeButton {
 			err = gerror.Newf(`父规则菜单类型[%d]不能添加按钮类型`, parentMenu.MenuType)
 			return
@@ -117,6 +121,10 @@ func (s *sMenu) EditMenu(ctx context.Context, req *v1.MenuEditReq) (err error) {
 		}
 		if parentMenu == nil {
 			err = gerror.Newf(`父规则ID[%d]不存在`, req.ParentId)
+			return
+		}
+		if parentMenu.Status == consts.MenuStatusDisabled {
+			err = gerror.Newf(`父规则ID[%d]已停用`, req.ParentId)
 			return
 		}
 		if parentMenu.MenuType == consts.MenuTypeDir && req.MenuType == consts.MenuTypeButton {
@@ -301,4 +309,22 @@ func (s *sMenu) FindSonIdsByParentId(menuList []*entity.Menu, parentId uint64, i
 			s.FindSonIdsByParentId(menuList, v.Id, idsMap)
 		}
 	}
+}
+
+// GetStatusEnableBtnList 获取正常状态的按钮列表
+func (s *sMenu) GetStatusEnableBtnList(ctx context.Context) (btnList []*entity.Menu, err error) {
+	// 获取所有菜单
+	var menus []*entity.Menu
+	menus, err = s.GetAllMenus(ctx)
+	if err != nil {
+		return
+	}
+
+	btnList = make([]*entity.Menu, 0, len(menus))
+	for _, v := range menus {
+		if v.MenuType == consts.MenuTypeButton && v.Status == consts.MenuStatusEnable {
+			btnList = append(btnList, v)
+		}
+	}
+	return
 }

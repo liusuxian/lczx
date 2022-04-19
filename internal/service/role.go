@@ -2,12 +2,12 @@ package service
 
 import (
 	"context"
-	"fmt"
 	"github.com/casbin/casbin/v2"
 	"github.com/gogf/gf/v2/container/gvar"
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
+	"github.com/gogf/gf/v2/text/gstr"
 	"github.com/gogf/gf/v2/util/gconv"
 	v1 "lczx/api/v1"
 	"lczx/internal/consts"
@@ -185,7 +185,7 @@ func (s *sRole) DeleteRoleByIds(ctx context.Context, ids []uint64) (err error) {
 		}
 		// 删除角色的权限
 		for _, id := range ids {
-			_, err = enforcer.RemoveFilteredPolicy(0, fmt.Sprintf("%d", id))
+			_, err = enforcer.RemoveFilteredPolicy(0, gconv.String(id))
 			if err != nil {
 				return err
 			}
@@ -249,7 +249,7 @@ func (s *sRole) GetMenuIdsByRoleId(ctx context.Context, id uint64) (menuIds []ui
 		return
 	}
 
-	gp := enforcer.GetFilteredNamedPolicy("p", 0, fmt.Sprintf("%d", id))
+	gp := enforcer.GetFilteredNamedPolicy("p", 0, gconv.String(id))
 	menuIds = make([]uint64, len(gp))
 	for k, v := range gp {
 		menuIds[k] = gconv.Uint64(v[1])
@@ -298,7 +298,7 @@ func (s *sRole) AddRoleRule(ctx context.Context, iRule interface{}, roleId uint6
 	}
 	rule := gconv.Strings(iRule)
 	for _, v := range rule {
-		_, err = enforcer.AddPolicy(fmt.Sprintf("%d", roleId), fmt.Sprintf("%s", v), "All")
+		_, err = enforcer.AddPolicy(gconv.String(roleId), gconv.String(v), "All")
 		if err != nil {
 			break
 		}
@@ -314,14 +314,14 @@ func (s *sRole) EditRoleRule(ctx context.Context, iRule interface{}, roleId uint
 		return
 	}
 	// 删除旧权限
-	_, err = enforcer.RemoveFilteredPolicy(0, fmt.Sprintf("%d", roleId))
+	_, err = enforcer.RemoveFilteredPolicy(0, gconv.String(roleId))
 	if err != nil {
 		return
 	}
 	// 添加新权限
 	rule := gconv.Strings(iRule)
 	for _, v := range rule {
-		_, err = enforcer.AddPolicy(fmt.Sprintf("%d", roleId), fmt.Sprintf("%s", v), "All")
+		_, err = enforcer.AddPolicy(gconv.String(roleId), gconv.String(v), "All")
 		if err != nil {
 			break
 		}
@@ -337,7 +337,7 @@ func (s *sRole) GetUserRoleIds(ctx context.Context, id uint64) (roleIds []uint64
 		return
 	}
 	// 查询关联角色规则
-	groupPolicy := enforcer.GetFilteredGroupingPolicy(0, fmt.Sprintf("%d", id))
+	groupPolicy := enforcer.GetFilteredGroupingPolicy(0, gconv.String(id))
 	if len(groupPolicy) > 0 {
 		roleIds = make([]uint64, len(groupPolicy))
 		// 得到角色ID的切片
@@ -372,6 +372,36 @@ func (s *sRole) GetUserRoles(ctx context.Context, id uint64) (roles []*entity.Ro
 		}
 		if len(roles) == len(roleIds) {
 			break
+		}
+	}
+	return
+}
+
+// GetPermissions 获取权限列表
+func (s *sRole) GetPermissions(ctx context.Context, ids []uint64) (permissions []string, err error) {
+	var enforcer *casbin.SyncedEnforcer
+	enforcer, err = Casbin(ctx).GetEnforcer()
+	if err != nil {
+		return
+	}
+
+	menuIds := map[uint64]uint64{}
+	for _, id := range ids {
+		// 查询当前权限
+		gp := enforcer.GetFilteredPolicy(0, gconv.String(id))
+		for _, p := range gp {
+			mid := gconv.Uint64(p[1])
+			menuIds[mid] = mid
+		}
+	}
+
+	// 获取所有开启的按钮
+	var btnList []*entity.Menu
+	btnList, err = Menu().GetStatusEnableBtnList(ctx)
+	permissions = make([]string, 0, len(btnList))
+	for _, btn := range btnList {
+		if _, ok := menuIds[gconv.Uint64(btn.Id)]; gstr.Equal(btn.Condition, "nocheck") || ok {
+			permissions = append(permissions, btn.Rule)
 		}
 	}
 	return

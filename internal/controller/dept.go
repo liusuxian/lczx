@@ -120,7 +120,7 @@ func (c *cDept) RoleDeptTree(ctx context.Context, req *v1.DeptRoleDeptTreeReq) (
 		err = gerror.WrapCode(code.GetRoleDeptTreeFailed, err)
 		return
 	}
-	
+
 	res = &v1.DeptRoleDeptTreeRes{
 		List:    treeInfos,
 		DeptIds: deptIds,

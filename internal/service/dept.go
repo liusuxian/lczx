@@ -55,6 +55,10 @@ func (s *sDept) AddDept(ctx context.Context, req *v1.DeptAddReq) (err error) {
 			err = gerror.Newf(`父部门ID[%d]不存在`, req.ParentId)
 			return
 		}
+		if parentDept.Status == consts.DeptStatusDisabled {
+			err = gerror.Newf(`父部门ID[%d]已停用`, req.ParentId)
+			return
+		}
 	}
 	if parentDept.Name == req.Name {
 		err = gerror.Newf(`父部门名称[%s]不能与子部门名称[%s]相同`, parentDept.Name, req.Name)
@@ -106,6 +110,10 @@ func (s *sDept) EditDept(ctx context.Context, req *v1.DeptEditReq) (err error) {
 		}
 		if parentDept == nil {
 			err = gerror.Newf(`父部门ID[%d]不存在`, req.ParentId)
+			return
+		}
+		if parentDept.Status == consts.DeptStatusDisabled {
+			err = gerror.Newf(`父部门ID[%d]已停用`, req.ParentId)
 			return
 		}
 	}
