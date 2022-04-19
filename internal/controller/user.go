@@ -97,16 +97,29 @@ func (c *cUser) Profile(ctx context.Context, req *v1.UserProfileReq) (res *v1.Us
 
 // UploadAvatar 上传用户头像
 func (c *cUser) UploadAvatar(ctx context.Context, req *v1.UserUploadAvatarReq) (res *v1.UserUploadAvatarRes, err error) {
-	avatar := g.RequestFromCtx(ctx).GetUploadFile("upload-avatar")
+	avatar := g.RequestFromCtx(ctx).GetUploadFile(req.UploadName)
 	logger.Debug(ctx, "avatar: ", avatar)
 	return
 }
 
 // ProfileEdit 编辑个人中心信息
 func (c *cUser) ProfileEdit(ctx context.Context, req *v1.UserProfileEditReq) (res *v1.UserProfileEditRes, err error) {
-	err = service.User().ProfileEdit(ctx, req)
+	user := service.Context().Get(ctx).User
+	err = service.User().EditProfile(ctx, user.Id, req)
 	if err != nil {
 		err = gerror.WrapCode(code.EditUserFailed, err)
+		return
+	}
+
+	return
+}
+
+// PwdEdit 修改用户密码
+func (c *cUser) PwdEdit(ctx context.Context, req *v1.UserPwdEditReq) (res *v1.UserPwdEditRes, err error) {
+	user := service.Context().Get(ctx).User
+	err = service.User().EditPwd(ctx, user.Id, req.OldPassword, req.NewPassword)
+	if err != nil {
+		err = gerror.WrapCode(code.EditPwdFailed, err)
 		return
 	}
 

@@ -30,7 +30,8 @@ type UserProfileRes struct {
 
 // UserUploadAvatarReq 用户上传头像请求参数
 type UserUploadAvatarReq struct {
-	g.Meta `path:"/uploadAvatar" tags:"UserUploadAvatar" method:"post" summary:"You first user/uploadAvatar api"`
+	g.Meta     `path:"/uploadAvatar" tags:"UserUploadAvatar" method:"post" summary:"You first user/uploadAvatar api"`
+	UploadName string `json:"uploadName" dc:"表单的文件字段名"` // 表单的文件字段名
 }
 
 type UserUploadAvatarRes struct {
@@ -40,7 +41,6 @@ type UserUploadAvatarRes struct {
 // UserProfileEditReq 编辑个人中心信息请求参数
 type UserProfileEditReq struct {
 	g.Meta   `path:"/profileEdit" tags:"UserProfileEdit" method:"put" summary:"You first user/profileEdit api"`
-	Id       uint64 `json:"id" v:"required|regex:^[1-9]\\d*$#用户ID不能为空|用户ID必须为正整数" dc:"用户ID"`                     // 用户ID
 	Realname string `json:"realname" v:"required|regex:^[\u4e00-\u9fa5]{0,10}$#姓名不能为空|姓名必须为中文且长度不能超过10" dc:"姓名"` // 姓名
 	Nickname string `json:"nickname" v:"regex:^[\u4e00-\u9fa5]{0,20}$#昵称必须为中文且长度不能超过20" dc:"昵称"`                 // 昵称
 	Mobile   string `json:"mobile" v:"phone#不是有效的手机号码" dc:"手机号"`                                                 // 手机号
@@ -50,6 +50,17 @@ type UserProfileEditReq struct {
 
 // UserProfileEditRes 编辑个人中心信息返回参数
 type UserProfileEditRes struct {
+}
+
+// UserPwdEditReq 修改用户密码请求参数
+type UserPwdEditReq struct {
+	g.Meta      `path:"/pwdEdit" tags:"UserPwdEdit" method:"put" summary:"You first user/pwdEdit api"`
+	OldPassword string `json:"oldPassword" v:"required|password#旧密码不能为空|旧密码为任意可见字符，长度在6~18之间" dc:"旧密码"` // 旧密码
+	NewPassword string `json:"newPassword" v:"required|password#新密码不能为空|新密码为任意可见字符，长度在6~18之间" dc:"新密码"` // 新密码
+}
+
+// UserPwdEditRes 修改用户密码返回参数
+type UserPwdEditRes struct {
 }
 
 type UserAddReq struct {

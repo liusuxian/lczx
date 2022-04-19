@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/os/gtime"
+	"github.com/gogf/gf/v2/util/grand"
 	v1 "lczx/api/v1"
 	"lczx/internal/consts"
 	"lczx/internal/model/entity"
@@ -61,15 +62,38 @@ func (s *sUser) SetAvatar(ctx context.Context, id uint64, avatarUrl string) (err
 	return
 }
 
-// ProfileEdit 编辑个人中心信息
-func (s *sUser) ProfileEdit(ctx context.Context, req *v1.UserProfileEditReq) (err error) {
+// EditProfile 编辑个人中心信息
+func (s *sUser) EditProfile(ctx context.Context, id uint64, req *v1.UserProfileEditReq) (err error) {
 	_, err = dao.User.Ctx(ctx).Data(do.User{
 		Realname: req.Realname,
 		Nickname: req.Nickname,
 		Mobile:   req.Mobile,
 		Email:    req.Email,
 		Gender:   req.Gender,
-	}).Where(do.User{Id: req.Id}).Update()
+	}).Where(do.User{Id: id}).Update()
+	return
+}
+
+// EditPwd 修改用户密码
+func (s *sUser) EditPwd(ctx context.Context, id uint64, oldPassword, newPassword string) (err error) {
+	var user *entity.User
+	user, err = s.GetUserById(ctx, id)
+	if err != nil {
+		return
+	}
+
+	oldEncryptPassword := utils.EncryptPassword(oldPassword, user.Salt)
+	if oldEncryptPassword != user.Password {
+		err = gerror.New("原始密码错误!")
+		return
+	}
+	// 生成随机密码盐
+	salt := grand.S(10)
+	newEncryptPassword := utils.EncryptPassword(newPassword, salt)
+	_, err = dao.User.Ctx(ctx).Data(do.User{
+		Salt:     salt,
+		Password: newEncryptPassword,
+	}).Where(do.User{Id: id}).Update()
 	return
 }
 

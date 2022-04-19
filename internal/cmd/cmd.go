@@ -55,8 +55,9 @@ var (
 				group.Group("/cache", func(group *ghttp.RouterGroup) {
 					group.Bind(controller.Cache)
 				})
-				// TODO 用户相关
+				// 用户相关
 				group.Group("/user", func(group *ghttp.RouterGroup) {
+					// TODO 上传头像未完成
 					group.Bind(controller.User)
 				})
 				// 权限管理
