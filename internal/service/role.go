@@ -377,8 +377,8 @@ func (s *sRole) GetUserRoles(ctx context.Context, id uint64) (roles []*entity.Ro
 	return
 }
 
-// GetPermissions 获取权限列表
-func (s *sRole) GetPermissions(ctx context.Context, ids []uint64) (permissions []string, err error) {
+// GetUserMenuList 获取用户菜单列表
+func (s *sRole) GetUserMenuList(ctx context.Context, ids []uint64) (menuList []string, err error) {
 	var enforcer *casbin.SyncedEnforcer
 	enforcer, err = Casbin(ctx).GetEnforcer()
 	if err != nil {
@@ -394,14 +394,13 @@ func (s *sRole) GetPermissions(ctx context.Context, ids []uint64) (permissions [
 			menuIds[mid] = mid
 		}
 	}
-
-	// 获取所有开启的按钮
-	var btnList []*entity.Menu
-	btnList, err = Menu().GetStatusEnableBtnList(ctx)
-	permissions = make([]string, 0, len(btnList))
-	for _, btn := range btnList {
-		if _, ok := menuIds[gconv.Uint64(btn.Id)]; gstr.Equal(btn.Condition, "nocheck") || ok {
-			permissions = append(permissions, btn.Rule)
+	// 获取所有正常状态的菜单列表
+	var menus []*entity.Menu
+	menus, err = Menu().GetStatusEnableMenus(ctx)
+	menuList = make([]string, 0, len(menus))
+	for _, m := range menus {
+		if _, ok := menuIds[gconv.Uint64(m.Id)]; gstr.Equal(m.Condition, "nocheck") || ok {
+			menuList = append(menuList, m.Rule)
 		}
 	}
 	return

@@ -311,8 +311,8 @@ func (s *sMenu) FindSonIdsByParentId(menuList []*entity.Menu, parentId uint64, i
 	}
 }
 
-// GetStatusEnableBtnList 获取正常状态的按钮列表
-func (s *sMenu) GetStatusEnableBtnList(ctx context.Context) (btnList []*entity.Menu, err error) {
+// GetStatusEnableMenus 获取所有正常状态的菜单列表
+func (s *sMenu) GetStatusEnableMenus(ctx context.Context) (menuList []*entity.Menu, err error) {
 	// 获取所有菜单
 	var menus []*entity.Menu
 	menus, err = s.GetAllMenus(ctx)
@@ -320,10 +320,10 @@ func (s *sMenu) GetStatusEnableBtnList(ctx context.Context) (btnList []*entity.M
 		return
 	}
 
-	btnList = make([]*entity.Menu, 0, len(menus))
+	menuList = make([]*entity.Menu, 0, len(menus))
 	for _, v := range menus {
-		if v.MenuType == consts.MenuTypeButton && v.Status == consts.MenuStatusEnable {
-			btnList = append(btnList, v)
+		if v.Status == consts.MenuStatusEnable {
+			menuList = append(menuList, v)
 		}
 	}
 	return
