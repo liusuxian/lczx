@@ -22,23 +22,11 @@ type cUser struct{}
 func (c *cUser) Info(ctx context.Context, req *v1.UserInfoReq) (res *v1.UserInfoRes, err error) {
 	user := service.Context().Get(ctx).User
 	// 用户信息
-	userInfo := &entity.User{
-		Id:            user.Id,
-		Passport:      user.Passport,
-		Realname:      user.Realname,
-		Nickname:      user.Nickname,
-		Gender:        user.Gender,
-		Avatar:        user.Avatar,
-		Mobile:        user.Mobile,
-		DeptId:        user.DeptId,
-		Status:        user.Status,
-		IsAdmin:       user.IsAdmin,
-		Email:         user.Email,
-		Remark:        user.Remark,
-		LastLoginIp:   user.LastLoginIp,
-		LastLoginTime: user.LastLoginTime,
-		CreateAt:      user.CreateAt,
-		UpdateAt:      user.UpdateAt,
+	var userInfo *entity.User
+	userInfo, err = service.User().GetUserById(ctx, user.Id, "password", "salt")
+	if err != nil {
+		err = gerror.WrapCode(code.GetUserFailed, err)
+		return
 	}
 	// 获取用户角色ID列表
 	var roleIds []uint64
@@ -78,27 +66,15 @@ func (c *cUser) Info(ctx context.Context, req *v1.UserInfoReq) (res *v1.UserInfo
 func (c *cUser) Profile(ctx context.Context, req *v1.UserProfileReq) (res *v1.UserProfileRes, err error) {
 	user := service.Context().Get(ctx).User
 	// 用户信息
-	userInfo := &entity.User{
-		Id:            user.Id,
-		Passport:      user.Passport,
-		Realname:      user.Realname,
-		Nickname:      user.Nickname,
-		Gender:        user.Gender,
-		Avatar:        user.Avatar,
-		Mobile:        user.Mobile,
-		DeptId:        user.DeptId,
-		Status:        user.Status,
-		IsAdmin:       user.IsAdmin,
-		Email:         user.Email,
-		Remark:        user.Remark,
-		LastLoginIp:   user.LastLoginIp,
-		LastLoginTime: user.LastLoginTime,
-		CreateAt:      user.CreateAt,
-		UpdateAt:      user.UpdateAt,
+	var userInfo *entity.User
+	userInfo, err = service.User().GetUserById(ctx, user.Id, "password", "salt")
+	if err != nil {
+		err = gerror.WrapCode(code.GetUserProfileFailed, err)
+		return
 	}
 	// 获取用户部门信息
 	var dept *entity.Dept
-	dept, err = service.Dept().GetDeptById(ctx, user.DeptId)
+	dept, err = service.Dept().GetDeptById(ctx, userInfo.DeptId)
 	if err != nil {
 		err = gerror.WrapCode(code.GetUserProfileFailed, err)
 		return

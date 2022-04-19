@@ -55,16 +55,6 @@ func (s *sUser) UpdateUserLogin(ctx context.Context, id uint64, ip string) {
 	}
 }
 
-// GetUserByPassport 通过账号获取用户信息
-func (s *sUser) GetUserByPassport(ctx context.Context, passport string, fieldNames ...string) (user *entity.User, err error) {
-	model := dao.User.Ctx(ctx)
-	if len(fieldNames) != 0 {
-		model = model.FieldsEx(fieldNames)
-	}
-	err = model.Where(do.User{Passport: passport}).Scan(&user)
-	return
-}
-
 // SetAvatar 设置用户头像
 func (s *sUser) SetAvatar(ctx context.Context, id uint64, avatarUrl string) (err error) {
 	_, err = dao.User.Ctx(ctx).Data(do.User{Avatar: avatarUrl}).Where(do.User{Id: id}).Update()
@@ -80,5 +70,25 @@ func (s *sUser) ProfileEdit(ctx context.Context, req *v1.UserProfileEditReq) (er
 		Email:    req.Email,
 		Gender:   req.Gender,
 	}).Where(do.User{Id: req.Id}).Update()
+	return
+}
+
+// GetUserByPassport 通过账号获取用户信息
+func (s *sUser) GetUserByPassport(ctx context.Context, passport string, fieldNames ...string) (user *entity.User, err error) {
+	model := dao.User.Ctx(ctx)
+	if len(fieldNames) != 0 {
+		model = model.FieldsEx(fieldNames)
+	}
+	err = model.Where(do.User{Passport: passport}).Scan(&user)
+	return
+}
+
+// GetUserById 通过用户ID获取用户信息
+func (s *sUser) GetUserById(ctx context.Context, id uint64, fieldNames ...string) (user *entity.User, err error) {
+	model := dao.User.Ctx(ctx)
+	if len(fieldNames) != 0 {
+		model = model.FieldsEx(fieldNames)
+	}
+	err = model.Where(do.User{Id: id}).Scan(&user)
 	return
 }

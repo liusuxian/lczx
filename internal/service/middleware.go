@@ -46,22 +46,14 @@ func (s *sMiddleware) Ctx(req *ghttp.Request) {
 		}
 		if user != nil {
 			Context().SetUser(ctx, &model.ContextUser{
-				Id:            user.Id,
-				Passport:      user.Passport,
-				Realname:      user.Realname,
-				Nickname:      user.Nickname,
-				Gender:        user.Gender,
-				Avatar:        user.Avatar,
-				Mobile:        user.Mobile,
-				DeptId:        user.DeptId,
-				Status:        user.Status,
-				IsAdmin:       user.IsAdmin,
-				Email:         user.Email,
-				Remark:        user.Remark,
-				LastLoginIp:   user.LastLoginIp,
-				LastLoginTime: user.LastLoginTime,
-				CreateAt:      user.CreateAt,
-				UpdateAt:      user.UpdateAt,
+				Id:       user.Id,
+				Passport: user.Passport,
+				Realname: user.Realname,
+				Nickname: user.Nickname,
+				Avatar:   user.Avatar,
+				DeptId:   user.DeptId,
+				Status:   user.Status,
+				IsAdmin:  user.IsAdmin,
 			})
 		}
 	}
