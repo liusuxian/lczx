@@ -328,3 +328,51 @@ func (s *sRole) EditRoleRule(ctx context.Context, iRule interface{}, roleId uint
 	}
 	return
 }
+
+// GetUserRoleIds 获取用户角色ID列表
+func (s *sRole) GetUserRoleIds(ctx context.Context, id uint64) (roleIds []uint64, err error) {
+	var enforcer *casbin.SyncedEnforcer
+	enforcer, err = Casbin(ctx).GetEnforcer()
+	if err != nil {
+		return
+	}
+	// 查询关联角色规则
+	groupPolicy := enforcer.GetFilteredGroupingPolicy(0, fmt.Sprintf("%d", id))
+	if len(groupPolicy) > 0 {
+		roleIds = make([]uint64, len(groupPolicy))
+		// 得到角色ID的切片
+		for k, v := range groupPolicy {
+			roleIds[k] = gconv.Uint64(v[1])
+		}
+	}
+	return
+}
+
+// GetUserRoles 获取用户角色
+func (s *sRole) GetUserRoles(ctx context.Context, id uint64) (roles []*entity.Role, err error) {
+	// 获取所有角色
+	var allRoles []*entity.Role
+	allRoles, err = s.GetAllRoles(ctx)
+	if err != nil {
+		return
+	}
+	// 获取用户角色ID列表
+	var roleIds []uint64
+	roleIds, err = s.GetUserRoleIds(ctx, id)
+	if err != nil {
+		return
+	}
+
+	roles = make([]*entity.Role, 0, len(allRoles))
+	for _, v := range allRoles {
+		for _, rid := range roleIds {
+			if rid == v.Id {
+				roles = append(roles, v)
+			}
+		}
+		if len(roles) == len(roleIds) {
+			break
+		}
+	}
+	return
+}
