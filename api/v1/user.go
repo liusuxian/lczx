@@ -12,9 +12,8 @@ type UserInfoReq struct {
 
 // UserInfoRes 获取用户信息返回参数
 type UserInfoRes struct {
-	User         *entity.User `json:"user" dc:"用户信息"`           // 用户信息
-	RoleNameList []string     `json:"roleNameList" dc:"角色名称列表"` // 用户角色名称列表
-	MenuList     []string     `json:"menuList" dc:"用户菜单列表"`     // 用户菜单列表
+	User     *entity.User `json:"user" dc:"用户信息"`       // 用户信息
+	MenuList []string     `json:"menuList" dc:"用户菜单列表"` // 用户菜单列表
 }
 
 // UserProfileReq 获取个人中心请求参数
@@ -24,9 +23,33 @@ type UserProfileReq struct {
 
 // UserProfileRes 获取个人中心返回参数
 type UserProfileRes struct {
-	User *entity.User `json:"user" dc:"用户信息"` // 用户信息
-	Dept *entity.Dept `json:"dept" dc:"部门信息"` // 部门信息
-	Role *entity.Role `json:"role" dc:"角色信息"` // 角色信息
+	User  *entity.User   `json:"user" dc:"用户信息"`  // 用户信息
+	Dept  *entity.Dept   `json:"dept" dc:"部门信息"`  // 部门信息
+	Roles []*entity.Role `json:"roles" dc:"角色信息"` // 角色信息
+}
+
+// UserUploadAvatarReq 用户上传头像请求参数
+type UserUploadAvatarReq struct {
+	g.Meta `path:"/uploadAvatar" tags:"UserUploadAvatar" method:"post" summary:"You first user/uploadAvatar api"`
+}
+
+type UserUploadAvatarRes struct {
+	FileInfo *FileInfo `json:"fileInfo" dc:"文件信息"` // 文件信息
+}
+
+// UserProfileEditReq 编辑个人中心信息请求参数
+type UserProfileEditReq struct {
+	g.Meta   `path:"/profileEdit" tags:"UserProfileEdit" method:"put" summary:"You first user/profileEdit api"`
+	Id       uint64 `json:"id" v:"required|regex:^[1-9]\\d*$#用户ID不能为空|用户ID必须为正整数" dc:"用户ID"`                     // 用户ID
+	Realname string `json:"realname" v:"required|regex:^[\u4e00-\u9fa5]{0,10}$#姓名不能为空|姓名必须为中文且长度不能超过10" dc:"姓名"` // 姓名
+	Nickname string `json:"nickname" v:"regex:^[\u4e00-\u9fa5]{0,20}$#昵称必须为中文且长度不能超过20" dc:"昵称"`                 // 昵称
+	Mobile   string `json:"mobile" v:"phone#不是有效的手机号码" dc:"手机号"`                                                 // 手机号
+	Email    string `json:"email" v:"email#不是有效的用户邮箱" dc:"用户邮箱"`                                                 // 用户邮箱
+	Gender   uint   `json:"gender" v:"required|in:1,2#性别不能为空|性别只能是1,2" dc:"性别 1: 男 2: 女"`                        // 性别 1: 男 2: 女
+}
+
+// UserProfileEditRes 编辑个人中心信息返回参数
+type UserProfileEditRes struct {
 }
 
 type UserAddReq struct {

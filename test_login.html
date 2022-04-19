@@ -20,6 +20,11 @@
     <br><br>
     <input style="width: 240px; height: 30px;" type="submit" value="登录">
 </form>
+<br><br>
+<form enctype="multipart/form-data" action="/view/upload" method="post">
+    <input type="file" name="upload-avatar" multiple="multiple"/>
+    <input type="submit" value="upload" style="background-color: #7ED321;width: 76px;height: 36px;color: #FFFFFF"/>
+</form>
 <script type="text/javascript">
     window.onload = function () {
         let request = new XMLHttpRequest()

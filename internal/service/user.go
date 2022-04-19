@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/os/gtime"
+	v1 "lczx/api/v1"
 	"lczx/internal/consts"
 	"lczx/internal/model/entity"
 	"lczx/internal/service/internal/dao"
@@ -61,5 +62,23 @@ func (s *sUser) GetUserByPassport(ctx context.Context, passport string, fieldNam
 		model = model.FieldsEx(fieldNames)
 	}
 	err = model.Where(do.User{Passport: passport}).Scan(&user)
+	return
+}
+
+// SetAvatar 设置用户头像
+func (s *sUser) SetAvatar(ctx context.Context, id uint64, avatarUrl string) (err error) {
+	_, err = dao.User.Ctx(ctx).Data(do.User{Avatar: avatarUrl}).Where(do.User{Id: id}).Update()
+	return
+}
+
+// ProfileEdit 编辑个人中心信息
+func (s *sUser) ProfileEdit(ctx context.Context, req *v1.UserProfileEditReq) (err error) {
+	_, err = dao.User.Ctx(ctx).Data(do.User{
+		Realname: req.Realname,
+		Nickname: req.Nickname,
+		Mobile:   req.Mobile,
+		Email:    req.Email,
+		Gender:   req.Gender,
+	}).Where(do.User{Id: req.Id}).Update()
 	return
 }

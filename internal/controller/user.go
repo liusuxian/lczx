@@ -3,11 +3,13 @@ package controller
 import (
 	"context"
 	"github.com/gogf/gf/v2/errors/gerror"
+	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/util/gconv"
 	v1 "lczx/api/v1"
 	"lczx/internal/code"
 	"lczx/internal/model/entity"
 	"lczx/internal/service"
+	"lczx/utility/logger"
 )
 
 var (
@@ -38,18 +40,12 @@ func (c *cUser) Info(ctx context.Context, req *v1.UserInfoReq) (res *v1.UserInfo
 		CreateAt:      user.CreateAt,
 		UpdateAt:      user.UpdateAt,
 	}
-	// 获取用户角色
-	var roles []*entity.Role
-	roles, err = service.Role().GetUserRoles(ctx, user.Id)
+	// 获取用户角色ID列表
+	var roleIds []uint64
+	roleIds, err = service.Role().GetUserRoleIds(ctx, user.Id)
 	if err != nil {
 		err = gerror.WrapCode(code.GetUserFailed, err)
 		return
-	}
-	roleNames := make([]string, len(roles))
-	roleIds := make([]uint64, len(roles))
-	for k, v := range roles {
-		roleNames[k] = v.Name
-		roleIds[k] = v.Id
 	}
 	// 获取用户菜单
 	var menuList []string
@@ -72,9 +68,71 @@ func (c *cUser) Info(ctx context.Context, req *v1.UserInfoReq) (res *v1.UserInfo
 	}
 
 	res = &v1.UserInfoRes{
-		User:         userInfo,
-		RoleNameList: roleNames,
-		MenuList:     menuList,
+		User:     userInfo,
+		MenuList: menuList,
 	}
+	return
+}
+
+// Profile 获取个人中心信息
+func (c *cUser) Profile(ctx context.Context, req *v1.UserProfileReq) (res *v1.UserProfileRes, err error) {
+	user := service.Context().Get(ctx).User
+	// 用户信息
+	userInfo := &entity.User{
+		Id:            user.Id,
+		Passport:      user.Passport,
+		Realname:      user.Realname,
+		Nickname:      user.Nickname,
+		Gender:        user.Gender,
+		Avatar:        user.Avatar,
+		Mobile:        user.Mobile,
+		DeptId:        user.DeptId,
+		Status:        user.Status,
+		IsAdmin:       user.IsAdmin,
+		Email:         user.Email,
+		Remark:        user.Remark,
+		LastLoginIp:   user.LastLoginIp,
+		LastLoginTime: user.LastLoginTime,
+		CreateAt:      user.CreateAt,
+		UpdateAt:      user.UpdateAt,
+	}
+	// 获取用户部门信息
+	var dept *entity.Dept
+	dept, err = service.Dept().GetDeptById(ctx, user.DeptId)
+	if err != nil {
+		err = gerror.WrapCode(code.GetUserProfileFailed, err)
+		return
+	}
+	// 获取用户角色
+	var roles []*entity.Role
+	roles, err = service.Role().GetUserRoles(ctx, user.Id)
+	if err != nil {
+		err = gerror.WrapCode(code.GetUserProfileFailed, err)
+		return
+	}
+
+	res = &v1.UserProfileRes{
+		User:  userInfo,
+		Dept:  dept,
+		Roles: roles,
+	}
+	return
+}
+
+// UploadAvatar 上传用户头像
+func (c *cUser) UploadAvatar(ctx context.Context, req *v1.UserUploadAvatarReq) (res *v1.UserUploadAvatarRes, err error) {
+	avatar := g.RequestFromCtx(ctx).GetUploadFile("upload-avatar")
+	logger.Debug(ctx, "avatar: ", avatar)
+	return
+}
+
+// ProfileEdit 编辑个人中心信息
+func (c *cUser) ProfileEdit(ctx context.Context, req *v1.UserProfileEditReq) (res *v1.UserProfileEditRes, err error) {
+	err = service.User().ProfileEdit(ctx, req)
+	if err != nil {
+		err = gerror.WrapCode(code.EditUserFailed, err)
+		return
+	}
+
 	return
 }
