@@ -96,3 +96,13 @@ type RoleDeleteReq struct {
 // RoleDeleteRes 删除角色返回参数
 type RoleDeleteRes struct {
 }
+
+// RoleEnableRolesReq 获取全部可用的角色请求参数
+type RoleEnableRolesReq struct {
+	g.Meta `path:"/enableRoles" tags:"RoleEnableRoles" method:"get" summary:"You first auth/role/enableRoles api"`
+}
+
+// RoleEnableRolesRes 获取全部可用的角色返回参数
+type RoleEnableRolesRes struct {
+	List []*entity.Role `json:"list" dc:"角色列表"` // 角色列表
+}

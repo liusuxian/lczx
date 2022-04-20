@@ -199,6 +199,24 @@ func (s *sRole) DeleteRoleByIds(ctx context.Context, ids []uint64) (err error) {
 	return
 }
 
+// GetEnableRoles 获取全部可用的角色
+func (s *sRole) GetEnableRoles(ctx context.Context) (roles []*entity.Role, err error) {
+	// 获取所有角色
+	var allRoles []*entity.Role
+	allRoles, err = s.GetAllRoles(ctx)
+	if err != nil {
+		return
+	}
+
+	roles = make([]*entity.Role, 0, len(allRoles))
+	for _, r := range allRoles {
+		if r.Status == consts.RoleStatusEnable {
+			roles = append(roles, r)
+		}
+	}
+	return
+}
+
 // GetAllRoles 获取所有角色
 func (s *sRole) GetAllRoles(ctx context.Context) (roles []*entity.Role, err error) {
 	// 从缓存获取

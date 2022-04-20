@@ -35,6 +35,12 @@ const (
 	DeptStatusEnable   = 1 // 正常
 )
 
+// 角色状态
+const (
+	RoleStatusDisabled = 0 // 停用
+	RoleStatusEnable   = 1 // 正常
+)
+
 // 菜单状态
 const (
 	MenuStatusDisabled = 0 // 停用

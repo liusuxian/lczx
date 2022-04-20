@@ -119,3 +119,16 @@ func (c *cRole) Delete(ctx context.Context, req *v1.RoleDeleteReq) (res *v1.Role
 
 	return
 }
+
+// EnableRoles 获取全部可用的角色
+func (c *cRole) EnableRoles(ctx context.Context, req *v1.RoleEnableRolesReq) (res *v1.RoleEnableRolesRes, err error) {
+	var roles []*entity.Role
+	roles, err = service.Role().GetEnableRoles(ctx)
+	if err != nil {
+		err = gerror.WrapCode(code.GetEnableRolesFailed, err)
+		return
+	}
+
+	res = &v1.RoleEnableRolesRes{List: roles}
+	return
+}
