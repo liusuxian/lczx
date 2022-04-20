@@ -156,3 +156,14 @@ type UserResetPwdReq struct {
 // UserResetPwdRes 重置用户密码返回参数
 type UserResetPwdRes struct {
 }
+
+// UserSetStatusReq 设置用户状态请求参数
+type UserSetStatusReq struct {
+	g.Meta `path:"/setStatus" tags:"UserSetStatus" method:"put" summary:"You first auth/user/setStatus api"`
+	Id     uint64 `json:"id" v:"required|regex:^[1-9]\\d*$#用户ID不能为空|用户ID必须为正整数" dc:"用户ID"` // 用户ID
+	Status uint   `json:"status" v:"required|in:0,1#状态不能为空|状态只能是0,1" dc:"状态 0:禁用 1:启用"`    // 状态 0:禁用 1:启用
+}
+
+// UserSetStatusRes 重置用户密码返回参数
+type UserSetStatusRes struct {
+}

@@ -103,3 +103,14 @@ func (c *cUserManager) ResetPwd(ctx context.Context, req *v1.UserResetPwdReq) (r
 
 	return
 }
+
+// SetStatus 设置用户状态
+func (c *cUserManager) SetStatus(ctx context.Context, req *v1.UserSetStatusReq) (res *v1.UserSetStatusRes, err error) {
+	err = service.UserManager().SetUserStatus(ctx, req.Id, req.Status)
+	if err != nil {
+		err = gerror.WrapCode(code.SetUserStatusFailed, err)
+		return
+	}
+
+	return
+}

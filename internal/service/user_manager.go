@@ -266,6 +266,16 @@ func (s *sUserManager) ResetUserPwd(ctx context.Context, id uint64, newPassword 
 	return
 }
 
+// SetUserStatus 设置用户状态
+func (s *sUserManager) SetUserStatus(ctx context.Context, id uint64, status uint) (err error) {
+	_, err = dao.User.Ctx(ctx).Cache(gdb.CacheOption{
+		Duration: -1,
+		Name:     User().UserCacheKey(id),
+		Force:    false,
+	}).Data(do.User{Status: status}).Where(do.User{Id: id}).Update()
+	return
+}
+
 // IsPassportAvailable 用户账号是否可用
 func (s *sUserManager) IsPassportAvailable(ctx context.Context, passport string) (bool, error) {
 	count, err := dao.User.Ctx(ctx).Where(do.User{Passport: passport}).Count()
