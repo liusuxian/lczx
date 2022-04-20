@@ -50,3 +50,45 @@ func (c *cUserManager) Add(ctx context.Context, req *v1.UserAddReq) (res *v1.Use
 
 	return
 }
+
+// GetEdit 获取被编辑用户的信息
+func (c *cUserManager) GetEdit(ctx context.Context, req *v1.UserGetEditInfoReq) (res *v1.UserGetEditInfoRes, err error) {
+	// 获取用户信息
+	var user *entity.User
+	user, err = service.User().GetUserById(ctx, req.Id)
+	if err != nil {
+		err = gerror.WrapCode(code.GetEditUserFailed, err)
+	}
+	user.Password = ""
+	user.Salt = ""
+	// 获取全部可用的角色
+	var roles []*entity.Role
+	roles, err = service.Role().GetEnableRoles(ctx)
+	if err != nil {
+		err = gerror.WrapCode(code.GetEditUserFailed, err)
+	}
+	// 获取用户角色ID列表
+	var roleIds []uint64
+	roleIds, err = service.Role().GetUserRoleIds(ctx, user.Id)
+	if err != nil {
+		err = gerror.WrapCode(code.GetEditUserFailed, err)
+	}
+
+	res = &v1.UserGetEditInfoRes{
+		User:     user,
+		RoleList: roles,
+		RoleIds:  roleIds,
+	}
+	return
+}
+
+// Edit 新增用户
+func (c *cUserManager) Edit(ctx context.Context, req *v1.UserEditReq) (res *v1.UserEditRes, err error) {
+	err = service.UserManager().EditUser(ctx, req)
+	if err != nil {
+		err = gerror.WrapCode(code.EditUserFailed, err)
+		return
+	}
+
+	return
+}

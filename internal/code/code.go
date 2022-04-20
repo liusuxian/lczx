@@ -18,13 +18,15 @@ var (
 	DeleteOperLogFailed         = gcode.New(1106, "删除操作日志失败", "")   // 删除操作日志失败
 	ClearOperLogFailed          = gcode.New(1107, "清除操作日志失败", "")   // 清除操作日志失败
 
-	GetUserFailed        = gcode.New(1200, "获取用户信息失败", "")     // 获取用户信息失败
-	GetUserProfileFailed = gcode.New(1201, "获取用户个人中心信息失败", "") // 获取用户个人中心信息失败
-	GetUserListFailed    = gcode.New(1202, "获取用户列表失败", "")     // 获取用户列表失败
-	AddUserFailed        = gcode.New(1203, "新增用户信息失败", "")     // 新增用户信息失败
-	DeleteUserFailed     = gcode.New(1204, "删除用户信息失败", "")     // 删除用户信息失败
-	EditUserFailed       = gcode.New(1205, "修改用户信息失败", "")     // 修改用户信息失败
-	EditPwdFailed        = gcode.New(1206, "修改用户密码失败", "")     // 修改用户密码失败
+	GetUserFailed         = gcode.New(1200, "获取用户信息失败", "")     // 获取用户信息失败
+	GetUserProfileFailed  = gcode.New(1201, "获取用户个人中心信息失败", "") // 获取用户个人中心信息失败
+	EditUserProfileFailed = gcode.New(1202, "修改用户个人中心信息失败", "") // 修改用户个人中心信息失败
+	GetUserListFailed     = gcode.New(1203, "获取用户列表失败", "")     // 获取用户列表失败
+	AddUserFailed         = gcode.New(1204, "添加用户信息失败", "")     // 添加用户信息失败
+	DeleteUserFailed      = gcode.New(1205, "删除用户信息失败", "")     // 删除用户信息失败
+	EditUserFailed        = gcode.New(1206, "修改用户信息失败", "")     // 修改用户信息失败
+	EditPwdFailed         = gcode.New(1207, "修改用户密码失败", "")     // 修改用户密码失败
+	GetEditUserFailed     = gcode.New(1208, "获取被修改用户的信息失败", "") // 获取被修改用户的信息失败
 
 	GetDeptListFailed     = gcode.New(1300, "获取部门列表失败", "")    // 获取部门列表失败
 	GetDeptTreeFailed     = gcode.New(1301, "获取部门树信息失败", "")   // 获取部门树信息失败

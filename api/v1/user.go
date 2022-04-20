@@ -94,7 +94,7 @@ type UserListRes struct {
 
 // UserAddReq 添加用户请求参数
 type UserAddReq struct {
-	g.Meta   `path:"/add" tags:"UserAdd" method:"post" summary:"You first user/add api"`
+	g.Meta   `path:"/add" tags:"UserAdd" method:"post" summary:"You first auth/user/add api"`
 	Passport string   `json:"passport" v:"required|passport#账号不能为空|账号以字母开头，只能包含字母、数字和下划线，长度在6~18之间" dc:"账号"`       // 账号
 	Password string   `json:"password" v:"required|password#密码不能为空|密码为任意可见字符，长度在6~18之间" dc:"密码"`                   // 密码
 	Realname string   `json:"realname" v:"required|regex:^[\u4e00-\u9fa5]{0,10}$#姓名不能为空|姓名必须为中文且长度不能超过10" dc:"姓名"` // 姓名
@@ -111,4 +111,37 @@ type UserAddReq struct {
 
 // UserAddRes 添加用户返回参数
 type UserAddRes struct {
+}
+
+// UserGetEditInfoReq 获取被编辑用户的信息请求参数
+type UserGetEditInfoReq struct {
+	g.Meta `path:"/getEdit" tags:"UserGetEditInfo" method:"get" summary:"You first auth/user/getEdit api"`
+	Id     uint64 `json:"id" v:"required|regex:^[1-9]\\d*$#用户ID不能为空|用户ID必须为正整数" dc:"用户ID"` // 用户ID
+}
+
+// UserGetEditInfoRes 获取被编辑用户的信息返回参数
+type UserGetEditInfoRes struct {
+	User     *entity.User   `json:"user" dc:"用户信息"`           // 用户信息
+	RoleList []*entity.Role `json:"roleList" dc:"可用角色列表"`     // 可用角色列表
+	RoleIds  []uint64       `json:"roleIds" dc:"用户关联的角色ID列表"` // 用户关联的角色ID列表
+}
+
+// UserEditReq 编辑用户请求参数
+type UserEditReq struct {
+	g.Meta   `path:"/edit" tags:"UserEdit" method:"put" summary:"You first auth/user/edit api"`
+	Id       uint64   `json:"id" v:"required|regex:^[1-9]\\d*$#用户ID不能为空|用户ID必须为正整数" dc:"用户ID"`                     // 用户ID
+	Realname string   `json:"realname" v:"required|regex:^[\u4e00-\u9fa5]{0,10}$#姓名不能为空|姓名必须为中文且长度不能超过10" dc:"姓名"` // 姓名
+	Nickname string   `json:"nickname" v:"regex:^[\u4e00-\u9fa5]{0,20}$#昵称必须为中文且长度不能超过20" dc:"昵称"`                 // 昵称
+	DeptId   uint64   `json:"deptId" v:"required|regex:^[1-9]\\d*$#部门ID不能为空|部门ID必须为正整数" dc:"部门ID"`                 // 部门ID
+	RoleIds  []uint64 `json:"roleIds" v:"required|slice_valid:uint64#角色ID列表不能为空" dc:"角色ID列表"`                      // 角色ID列表
+	Gender   uint     `json:"gender" v:"required|in:1,2#性别不能为空|性别只能是1,2" dc:"性别 1: 男 2: 女"`                        // 性别 1: 男 2: 女
+	Status   uint     `json:"status" v:"required|in:0,1#状态不能为空|状态只能是0,1" dc:"状态 0:禁用 1:启用"`                        // 状态 0:禁用 1:启用
+	IsAdmin  uint     `json:"isAdmin" v:"required|in:0,1#是否后台管理员不能为空|是否后台管理员只能是0,1" dc:"是否后台管理员 0:否 1:是"`          // 是否后台管理员 0:否 1:是
+	Mobile   string   `json:"mobile" v:"required|phone#手机号不能为空|不是有效的手机号" dc:"手机号"`                                 // 手机号
+	Email    string   `json:"email" v:"email#不是有效的用户邮箱" dc:"用户邮箱"`                                                 // 用户邮箱
+	Remark   string   `json:"remark" v:"max-length:255#备注长度不能超过255" dc:"备注"`                                       // 备注
+}
+
+// UserEditRes 编辑用户返回参数
+type UserEditRes struct {
 }

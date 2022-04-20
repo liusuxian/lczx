@@ -426,3 +426,24 @@ func (s *sRole) AddUserRoles(ctx context.Context, roleIds []uint64, userId uint6
 	}
 	return
 }
+
+// EditUserRoles 修改用户角色信息
+func (s *sRole) EditUserRoles(ctx context.Context, roleIds []uint64, userId uint64) (err error) {
+	var enforcer *casbin.SyncedEnforcer
+	enforcer, err = Casbin(ctx).GetEnforcer()
+	if err != nil {
+		return
+	}
+	// 删除用户旧角色信息
+	_, err = enforcer.RemoveFilteredGroupingPolicy(0, gconv.String(userId))
+	if err != nil {
+		return
+	}
+	for _, rid := range roleIds {
+		_, err = enforcer.AddGroupingPolicy(gconv.String(userId), gconv.String(rid))
+		if err != nil {
+			return
+		}
+	}
+	return
+}

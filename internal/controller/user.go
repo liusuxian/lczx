@@ -90,7 +90,7 @@ func (c *cUser) ProfileEdit(ctx context.Context, req *v1.UserProfileEditReq) (re
 	user := service.Context().Get(ctx).User
 	err = service.User().EditProfile(ctx, user.Id, req)
 	if err != nil {
-		err = gerror.WrapCode(code.EditUserFailed, err)
+		err = gerror.WrapCode(code.EditUserProfileFailed, err)
 		return
 	}
 

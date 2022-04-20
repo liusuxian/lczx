@@ -75,9 +75,11 @@ func (s *sCache) scanClearCache(ctx context.Context, cacheKey string) {
 		data := gconv.SliceAny(val)
 		delKeys := gconv.Interfaces(data[1])
 		// 批量删除
-		_, err = g.Redis().Do(ctx, "DEL", delKeys...)
-		if err != nil {
-			logger.Error(ctx, "scanClearCache Error: ", err.Error())
+		if len(delKeys) != 0 {
+			_, err = g.Redis().Do(ctx, "DEL", delKeys...)
+			if err != nil {
+				logger.Error(ctx, "scanClearCache Error: ", err.Error())
+			}
 		}
 		cursor = gconv.Int(data[0])
 		if cursor == 0 {
