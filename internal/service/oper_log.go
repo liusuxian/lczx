@@ -47,8 +47,8 @@ func (s *sOperLog) Invoke(req *ghttp.Request) {
 	// 请求地址
 	url := req.Request.URL
 	// 获取所有菜单
-	var menuList []*entity.Menu
-	menuList, err = Menu().GetAllMenus(ctx)
+	var allMenus []*entity.Menu
+	allMenus, err = Menu().GetAllMenus(ctx)
 	if err != nil {
 		logger.Error(ctx, "Invoke GetAllMenus Error: ", err.Error())
 		return
@@ -56,7 +56,7 @@ func (s *sOperLog) Invoke(req *ghttp.Request) {
 	// 获取地址对应的菜单ID
 	var menu *entity.Menu
 	path := gstr.TrimLeft(url.Path, "/")
-	for _, m := range menuList {
+	for _, m := range allMenus {
 		if gstr.Equal(m.Rule, path) {
 			menu = m
 			break

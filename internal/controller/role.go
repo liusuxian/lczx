@@ -53,13 +53,13 @@ func (c *cRole) Info(ctx context.Context, req *v1.RoleInfoReq) (res *v1.RoleInfo
 		return
 	}
 	// 获取所有菜单
-	var menus []*entity.Menu
-	menus, err = service.Menu().GetAllMenus(ctx)
+	var allMenus []*entity.Menu
+	allMenus, err = service.Menu().GetAllMenus(ctx)
 	if err != nil {
 		err = gerror.WrapCode(code.GetRoleFailed, err)
 		return
 	}
-	menuList := service.Menu().GetMenuTree(menus, 0)
+	menuList := service.Menu().GetMenuTree(allMenus, 0)
 	// 获取角色ID关联的菜单ID列表
 	var menuIds []uint64
 	menuIds, err = service.Role().GetMenuIdsByRoleId(ctx, req.Id)

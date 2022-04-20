@@ -82,16 +82,10 @@ func (s *sUser) GetProfile(ctx context.Context, id uint64) (profileInfo *v1.User
 	if err != nil {
 		return
 	}
+	// 获取部门信息
 	deptNames := Dept().GetDeptAllNameById(depts, user.DeptId)
 	utils.Reverse(deptNames)
-	// 获取用户部门信息
-	var dept *entity.Dept
-	for _, v := range depts {
-		if v.Id == user.DeptId {
-			dept = v
-			break
-		}
-	}
+	dept := Dept().GetDeptById(depts, user.DeptId)
 	dept.Name = gstr.Join(deptNames, "/")
 	// 获取用户角色
 	var roles []*entity.Role
