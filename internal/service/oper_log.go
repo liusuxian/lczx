@@ -81,7 +81,7 @@ func (s *sOperLog) Invoke(req *ghttp.Request) {
 	var depts []*entity.Dept
 	depts, err = Dept().GetStatusEnableDepts(ctx)
 	if err != nil {
-		logger.Error(ctx, "Invoke GetAllDepts Error: ", err.Error())
+		logger.Error(ctx, "Invoke GetStatusEnableDepts Error: ", err.Error())
 		return
 	}
 	deptNames := Dept().GetDeptAllNameById(depts, user.DeptId)
