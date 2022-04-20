@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 20/04/2022 02:14:22
+ Date: 20/04/2022 12:26:34
 */
 
 SET NAMES utf8mb4;
@@ -84,22 +84,21 @@ CREATE TABLE `dept` (
   `update_at` datetime DEFAULT NULL COMMENT '更新时间',
   `deleted_at` datetime DEFAULT NULL COMMENT '软删除时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ----------------------------
 -- Records of dept
 -- ----------------------------
 BEGIN;
-INSERT INTO `dept` (`id`, `parent_id`, `name`, `status`, `created_by`, `updated_by`, `create_at`, `update_at`, `deleted_at`) VALUES (1, 0, '绿城咨询集团', 1, 1, NULL, '2022-04-18 17:41:38', '2022-04-18 17:41:38', NULL);
-INSERT INTO `dept` (`id`, `parent_id`, `name`, `status`, `created_by`, `updated_by`, `create_at`, `update_at`, `deleted_at`) VALUES (2, 1, '分子公司', 1, 1, NULL, '2022-04-18 17:42:01', '2022-04-18 17:42:01', NULL);
-INSERT INTO `dept` (`id`, `parent_id`, `name`, `status`, `created_by`, `updated_by`, `create_at`, `update_at`, `deleted_at`) VALUES (3, 2, '浙江幸福绿城房地产咨询有限公司', 1, 1, NULL, '2022-04-18 17:42:30', '2022-04-18 17:42:30', NULL);
-INSERT INTO `dept` (`id`, `parent_id`, `name`, `status`, `created_by`, `updated_by`, `create_at`, `update_at`, `deleted_at`) VALUES (4, 3, '职能部门', 1, 1, NULL, '2022-04-18 17:42:55', '2022-04-18 17:42:55', NULL);
-INSERT INTO `dept` (`id`, `parent_id`, `name`, `status`, `created_by`, `updated_by`, `create_at`, `update_at`, `deleted_at`) VALUES (5, 4, '市场运营部', 1, 1, NULL, '2022-04-18 17:43:35', '2022-04-18 17:43:35', NULL);
-INSERT INTO `dept` (`id`, `parent_id`, `name`, `status`, `created_by`, `updated_by`, `create_at`, `update_at`, `deleted_at`) VALUES (6, 5, '运营组', 1, 1, NULL, '2022-04-18 17:43:57', '2022-04-18 17:43:57', NULL);
-INSERT INTO `dept` (`id`, `parent_id`, `name`, `status`, `created_by`, `updated_by`, `create_at`, `update_at`, `deleted_at`) VALUES (7, 5, '市场组', 1, 1, NULL, '2022-04-18 17:44:31', '2022-04-18 17:44:31', NULL);
-INSERT INTO `dept` (`id`, `parent_id`, `name`, `status`, `created_by`, `updated_by`, `create_at`, `update_at`, `deleted_at`) VALUES (8, 3, '业务部门', 1, 1, NULL, '2022-04-18 17:45:14', '2022-04-18 17:45:14', NULL);
-INSERT INTO `dept` (`id`, `parent_id`, `name`, `status`, `created_by`, `updated_by`, `create_at`, `update_at`, `deleted_at`) VALUES (9, 8, '物业咨询', 1, 1, NULL, '2022-04-18 17:45:36', '2022-04-18 17:45:36', NULL);
-INSERT INTO `dept` (`id`, `parent_id`, `name`, `status`, `created_by`, `updated_by`, `create_at`, `update_at`, `deleted_at`) VALUES (10, 9, '技术支持部', 1, 1, NULL, '2022-04-18 17:45:58', '2022-04-18 17:45:58', NULL);
+INSERT INTO `dept` (`id`, `parent_id`, `name`, `status`, `created_by`, `updated_by`, `create_at`, `update_at`, `deleted_at`) VALUES (1, 0, '绿城服务集团', 1, 1, NULL, '2022-04-20 12:18:04', '2022-04-20 12:18:04', NULL);
+INSERT INTO `dept` (`id`, `parent_id`, `name`, `status`, `created_by`, `updated_by`, `create_at`, `update_at`, `deleted_at`) VALUES (2, 1, '咨询集团', 1, 1, NULL, '2022-04-20 12:18:31', '2022-04-20 12:18:31', NULL);
+INSERT INTO `dept` (`id`, `parent_id`, `name`, `status`, `created_by`, `updated_by`, `create_at`, `update_at`, `deleted_at`) VALUES (3, 2, '职能中心', 1, 1, NULL, '2022-04-20 12:18:52', '2022-04-20 12:18:52', NULL);
+INSERT INTO `dept` (`id`, `parent_id`, `name`, `status`, `created_by`, `updated_by`, `create_at`, `update_at`, `deleted_at`) VALUES (4, 3, '运营管理中心', 1, 1, NULL, '2022-04-20 12:19:14', '2022-04-20 12:19:14', NULL);
+INSERT INTO `dept` (`id`, `parent_id`, `name`, `status`, `created_by`, `updated_by`, `create_at`, `update_at`, `deleted_at`) VALUES (5, 2, '分子公司', 1, 1, NULL, '2022-04-20 12:20:53', '2022-04-20 12:20:53', NULL);
+INSERT INTO `dept` (`id`, `parent_id`, `name`, `status`, `created_by`, `updated_by`, `create_at`, `update_at`, `deleted_at`) VALUES (6, 5, '浙江幸福绿城房地产咨询有限公司', 1, 1, NULL, '2022-04-20 12:21:54', '2022-04-20 12:21:54', NULL);
+INSERT INTO `dept` (`id`, `parent_id`, `name`, `status`, `created_by`, `updated_by`, `create_at`, `update_at`, `deleted_at`) VALUES (7, 6, '业务部门', 1, 1, NULL, '2022-04-20 12:22:29', '2022-04-20 12:22:29', NULL);
+INSERT INTO `dept` (`id`, `parent_id`, `name`, `status`, `created_by`, `updated_by`, `create_at`, `update_at`, `deleted_at`) VALUES (8, 7, '物业咨询', 1, 1, NULL, '2022-04-20 12:23:17', '2022-04-20 12:23:17', NULL);
+INSERT INTO `dept` (`id`, `parent_id`, `name`, `status`, `created_by`, `updated_by`, `create_at`, `update_at`, `deleted_at`) VALUES (9, 8, '技术支持部', 1, 1, NULL, '2022-04-20 12:23:45', '2022-04-20 12:23:45', NULL);
 COMMIT;
 
 -- ----------------------------
@@ -254,7 +253,6 @@ CREATE TABLE `role_dept` (
 -- Records of role_dept
 -- ----------------------------
 BEGIN;
-INSERT INTO `role_dept` (`role_id`, `dept_id`) VALUES (1, 1);
 COMMIT;
 
 -- ----------------------------
@@ -292,7 +290,7 @@ CREATE TABLE `user` (
 -- Records of user
 -- ----------------------------
 BEGIN;
-INSERT INTO `user` (`id`, `passport`, `password`, `salt`, `realname`, `nickname`, `dept_id`, `gender`, `status`, `is_admin`, `avatar`, `mobile`, `email`, `remark`, `last_login_ip`, `last_login_time`, `create_at`, `update_at`, `deleted_at`) VALUES (1, 'sadmin', 'b0167dd859b8a70478da36238b0b3e05', 'CqDQa4THP1', '超级管理员', '超级管理员', 1, 1, 1, 1, NULL, NULL, NULL, NULL, '127.0.0.1', '2022-04-19 14:22:16', '2022-03-25 17:41:40', '2022-03-25 17:41:40', NULL);
+INSERT INTO `user` (`id`, `passport`, `password`, `salt`, `realname`, `nickname`, `dept_id`, `gender`, `status`, `is_admin`, `avatar`, `mobile`, `email`, `remark`, `last_login_ip`, `last_login_time`, `create_at`, `update_at`, `deleted_at`) VALUES (1, 'sadmin', 'b0167dd859b8a70478da36238b0b3e05', 'CqDQa4THP1', '超级管理员', '超级管理员', 4, 1, 1, 1, NULL, '17364814710', '382185882@qq.com', NULL, '127.0.0.1', '2022-04-19 14:22:16', '2022-03-25 17:41:40', '2022-03-25 17:41:40', NULL);
 COMMIT;
 
 -- ----------------------------

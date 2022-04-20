@@ -92,6 +92,7 @@ func (s *sUser) GetProfile(ctx context.Context, id uint64) (profileInfo *v1.User
 			break
 		}
 	}
+	dept.Name = gstr.Join(deptNames, "/")
 	// 获取用户角色
 	var roles []*entity.Role
 	roles, err = Role().GetUserRoles(ctx, user.Id)
@@ -100,10 +101,9 @@ func (s *sUser) GetProfile(ctx context.Context, id uint64) (profileInfo *v1.User
 	}
 
 	profileInfo = &v1.UserProfileInfo{
-		User:        user,
-		Dept:        dept,
-		DeptAllName: gstr.Join(deptNames, "/"),
-		Roles:       roles,
+		User:  user,
+		Dept:  dept,
+		Roles: roles,
 	}
 	return
 }

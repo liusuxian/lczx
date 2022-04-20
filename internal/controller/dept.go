@@ -4,10 +4,12 @@ import (
 	"context"
 	"github.com/gogf/gf/v2/container/gmap"
 	"github.com/gogf/gf/v2/errors/gerror"
+	"github.com/gogf/gf/v2/text/gstr"
 	v1 "lczx/api/v1"
 	"lczx/internal/code"
 	"lczx/internal/model/entity"
 	"lczx/internal/service"
+	"lczx/utility/utils"
 )
 
 var (
@@ -55,12 +57,23 @@ func (c *cDept) Add(ctx context.Context, req *v1.DeptAddReq) (res *v1.DeptAddRes
 
 // Info 获取部门信息
 func (c *cDept) Info(ctx context.Context, req *v1.DeptInfoReq) (res *v1.DeptInfoRes, err error) {
+	// 获取所有部门
+	var allDepts []*entity.Dept
+	allDepts, err = service.Dept().GetAllDepts(ctx)
+	if err != nil {
+		err = gerror.WrapCode(code.GetDeptFailed, err)
+		return
+	}
+	deptNames := service.Dept().GetDeptAllNameById(allDepts, req.Id)
+	utils.Reverse(deptNames)
+	// 获取部门信息
 	var dept *entity.Dept
 	dept, err = service.Dept().GetDeptById(ctx, req.Id)
 	if err != nil {
 		err = gerror.WrapCode(code.GetDeptFailed, err)
 		return
 	}
+	dept.Name = gstr.Join(deptNames, "/")
 
 	res = &v1.DeptInfoRes{Info: dept}
 	return
