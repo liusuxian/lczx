@@ -55,7 +55,7 @@ func (s *sUser) GetUserByPassportAndPassword(ctx context.Context, passport, pass
 func (s *sUser) UpdateUserLogin(ctx context.Context, id uint64, ip string) {
 	_, err := dao.User.Ctx(ctx).Cache(gdb.CacheOption{
 		Duration: -1,
-		Name:     s.userCacheKey(id),
+		Name:     s.UserCacheKey(id),
 		Force:    false,
 	}).Unscoped().Data(do.User{
 		LastLoginIp:   ip,
@@ -106,7 +106,7 @@ func (s *sUser) GetProfile(ctx context.Context, id uint64) (profileInfo *v1.User
 func (s *sUser) SetAvatar(ctx context.Context, id uint64, avatarUrl string) (err error) {
 	_, err = dao.User.Ctx(ctx).Cache(gdb.CacheOption{
 		Duration: -1,
-		Name:     s.userCacheKey(id),
+		Name:     s.UserCacheKey(id),
 		Force:    false,
 	}).Data(do.User{Avatar: avatarUrl}).Where(do.User{Id: id}).Update()
 	return
@@ -116,7 +116,7 @@ func (s *sUser) SetAvatar(ctx context.Context, id uint64, avatarUrl string) (err
 func (s *sUser) EditProfile(ctx context.Context, id uint64, req *v1.UserProfileEditReq) (err error) {
 	_, err = dao.User.Ctx(ctx).Cache(gdb.CacheOption{
 		Duration: -1,
-		Name:     s.userCacheKey(id),
+		Name:     s.UserCacheKey(id),
 		Force:    false,
 	}).Data(do.User{
 		Realname: req.Realname,
@@ -145,7 +145,7 @@ func (s *sUser) EditPwd(ctx context.Context, id uint64, oldPassword, newPassword
 	newEncryptPassword := utils.EncryptPassword(newPassword, salt)
 	_, err = dao.User.Ctx(ctx).Cache(gdb.CacheOption{
 		Duration: -1,
-		Name:     s.userCacheKey(id),
+		Name:     s.UserCacheKey(id),
 		Force:    false,
 	}).Data(do.User{
 		Salt:     salt,
@@ -163,7 +163,7 @@ func (s *sUser) GetUserByPassport(ctx context.Context, passport string) (user *e
 // GetUserById 通过用户ID获取用户信息
 func (s *sUser) GetUserById(ctx context.Context, id uint64) (user *entity.User, err error) {
 	// 从缓存获取
-	userCacheKey := s.userCacheKey(id)
+	userCacheKey := s.UserCacheKey(id)
 	userCacheVal := Cache().GetCache(ctx, userCacheKey)
 	if userCacheVal != nil {
 		var userList []*entity.User
@@ -185,7 +185,7 @@ func (s *sUser) GetUserById(ctx context.Context, id uint64) (user *entity.User, 
 	return
 }
 
-// 用户缓存key
-func (s *sUser) userCacheKey(id uint64) string {
+// UserCacheKey 用户缓存key
+func (s *sUser) UserCacheKey(id uint64) string {
 	return consts.CachePrefix + "user:" + gconv.String(id)
 }

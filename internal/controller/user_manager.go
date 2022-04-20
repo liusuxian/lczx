@@ -92,3 +92,14 @@ func (c *cUserManager) Edit(ctx context.Context, req *v1.UserEditReq) (res *v1.U
 
 	return
 }
+
+// ResetPwd 重置用户密码
+func (c *cUserManager) ResetPwd(ctx context.Context, req *v1.UserResetPwdReq) (res *v1.UserResetPwdRes, err error) {
+	err = service.UserManager().ResetUserPwd(ctx, req.Id, req.Password)
+	if err != nil {
+		err = gerror.WrapCode(code.ResetPwdFailed, err)
+		return
+	}
+
+	return
+}

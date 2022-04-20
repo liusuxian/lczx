@@ -145,3 +145,14 @@ type UserEditReq struct {
 // UserEditRes 编辑用户返回参数
 type UserEditRes struct {
 }
+
+// UserResetPwdReq 重置用户密码请求参数
+type UserResetPwdReq struct {
+	g.Meta   `path:"/resetPwd" tags:"UserResetPwd" method:"put" summary:"You first auth/user/resetPwd api"`
+	Id       uint64 `json:"id" v:"required|regex:^[1-9]\\d*$#用户ID不能为空|用户ID必须为正整数" dc:"用户ID"`   // 用户ID
+	Password string `json:"password" v:"required|password#密码不能为空|密码为任意可见字符，长度在6~18之间" dc:"密码"` // 密码
+}
+
+// UserResetPwdRes 重置用户密码返回参数
+type UserResetPwdRes struct {
+}

@@ -242,6 +242,27 @@ func (s *sUserManager) EditUser(ctx context.Context, req *v1.UserEditReq) (err e
 		err = Role().EditUserRoles(ctx, req.RoleIds, req.Id)
 		return err
 	})
+	if err != nil {
+		return
+	}
+	// 清除用户缓存
+	_, err = Cache().ClearCache(ctx, User().UserCacheKey(req.Id))
+	return
+}
+
+// ResetUserPwd 重置用户密码
+func (s *sUserManager) ResetUserPwd(ctx context.Context, id uint64, newPassword string) (err error) {
+	// 生成随机密码盐
+	salt := grand.S(10)
+	newEncryptPassword := utils.EncryptPassword(newPassword, salt)
+	_, err = dao.User.Ctx(ctx).Cache(gdb.CacheOption{
+		Duration: -1,
+		Name:     User().UserCacheKey(id),
+		Force:    false,
+	}).Data(do.User{
+		Salt:     salt,
+		Password: newEncryptPassword,
+	}).Where(do.User{Id: id}).Update()
 	return
 }
 

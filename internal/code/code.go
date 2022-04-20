@@ -26,7 +26,8 @@ var (
 	DeleteUserFailed      = gcode.New(1205, "删除用户信息失败", "")     // 删除用户信息失败
 	EditUserFailed        = gcode.New(1206, "修改用户信息失败", "")     // 修改用户信息失败
 	EditPwdFailed         = gcode.New(1207, "修改用户密码失败", "")     // 修改用户密码失败
-	GetEditUserFailed     = gcode.New(1208, "获取被修改用户的信息失败", "") // 获取被修改用户的信息失败
+	ResetPwdFailed        = gcode.New(1208, "重置用户密码失败", "")     // 重置用户密码失败
+	GetEditUserFailed     = gcode.New(1209, "获取被修改用户的信息失败", "") // 获取被修改用户的信息失败
 
 	GetDeptListFailed     = gcode.New(1300, "获取部门列表失败", "")    // 获取部门列表失败
 	GetDeptTreeFailed     = gcode.New(1301, "获取部门树信息失败", "")   // 获取部门树信息失败
