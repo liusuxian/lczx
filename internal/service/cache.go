@@ -5,7 +5,9 @@ import (
 	"github.com/gogf/gf/v2/container/gvar"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gcache"
+	"github.com/gogf/gf/v2/util/gconv"
 	"lczx/internal/consts"
+	"lczx/utility/logger"
 )
 
 type sCache struct{}
@@ -14,30 +16,72 @@ var (
 	insCache = sCache{}
 )
 
+func init() {
+	// 设置数据库缓存适配Redis
+	g.DB().GetCache().SetAdapter(gcache.NewAdapterRedis(g.Redis()))
+}
+
 // Cache 缓存管理服务
 func Cache() *sCache {
 	return &insCache
 }
 
-// SetAdapter 设置数据库缓存适配Redis
-func (s *sCache) SetAdapter() {
-	g.DB().GetCache().SetAdapter(gcache.NewAdapterRedis(g.Redis()))
-}
-
 // ClearAllCache 清除所有缓存
-func (s *sCache) ClearAllCache(ctx context.Context) (err error) {
-	err = g.DB().GetCache().Removes(ctx, []interface{}{consts.MenuKey, consts.RoleKey, consts.DeptKey})
-	return
+func (s *sCache) ClearAllCache(ctx context.Context) {
+	var err error
+	err = g.DB().GetCache().Removes(ctx, []any{consts.MenuKey, consts.RoleKey, consts.DeptKey})
+	if err != nil {
+		logger.Error(ctx, "ClearAllCache Error: ", err.Error())
+	}
+	s.scanClearCache(ctx, consts.CachePrefix+"user:*")
+	// TODO 暂时不删除
+	//s.scanClearCache(ctx, "GToken:lczx:*")
 }
 
 // ClearCache 清除缓存
-func (s *sCache) ClearCache(ctx context.Context, key interface{}) (lastVal *gvar.Var, err error) {
+func (s *sCache) ClearCache(ctx context.Context, key any) (lastVal *gvar.Var, err error) {
 	lastVal, err = g.DB().GetCache().Remove(ctx, key)
 	return
 }
 
 // GetCache 获取缓存
-func (s *sCache) GetCache(ctx context.Context, key interface{}) (val *gvar.Var, err error) {
-	val, err = g.DB().GetCache().Get(ctx, key)
-	return
+func (s *sCache) GetCache(ctx context.Context, cacheKey any, mapKey ...string) any {
+	var cacheVal *gvar.Var
+	var err error
+	cacheVal, err = g.DB().GetCache().Get(ctx, cacheKey)
+	if err != nil {
+		logger.Errorf(ctx, "CacheKey: %s, GetCache Error: %s", cacheKey, err.Error())
+		return nil
+	}
+	if cacheVal != nil {
+		if len(mapKey) == 0 {
+			return cacheVal.Map()["Result"]
+		}
+		return cacheVal.Map()[mapKey[0]]
+	}
+	return nil
+}
+
+// 扫描删除缓存
+func (s *sCache) scanClearCache(ctx context.Context, cacheKey string) {
+	var err error
+	cursor := 0
+	for {
+		var val *gvar.Var
+		val, err = g.Redis().Do(ctx, "scan", cursor, "match", cacheKey, "count", "100")
+		if err != nil {
+			logger.Error(ctx, "scanClearCache Error: ", err.Error())
+		}
+		data := gconv.SliceAny(val)
+		delKeys := gconv.Interfaces(data[1])
+		// 批量删除
+		_, err = g.Redis().Do(ctx, "DEL", delKeys...)
+		if err != nil {
+			logger.Error(ctx, "scanClearCache Error: ", err.Error())
+		}
+		cursor = gconv.Int(data[0])
+		if cursor == 0 {
+			break
+		}
+	}
 }
