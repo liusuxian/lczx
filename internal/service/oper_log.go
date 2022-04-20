@@ -85,9 +85,6 @@ func (s *sOperLog) Invoke(req *ghttp.Request) {
 		return
 	}
 	deptNames := Dept().GetDeptAllNameById(depts, user.DeptId)
-	if err != nil {
-		logger.Error(ctx, "Invoke GetDeptNameById Error: ", err.Error())
-	}
 	utils.Reverse(deptNames)
 	data.DeptName = gstr.Join(deptNames, "/")
 	// 请求URL
