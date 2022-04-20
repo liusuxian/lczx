@@ -8,6 +8,7 @@ import (
 	"github.com/gogf/gf/v2/encoding/gjson"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
+	"github.com/gogf/gf/v2/text/gstr"
 	"lczx/utility/logger"
 	"net"
 )
@@ -79,4 +80,9 @@ func Reverse[T any](s []T) {
 	for i, j := 0, len(s)-1; i < j; i, j = i+1, j-1 {
 		s[i], s[j] = s[j], s[i]
 	}
+}
+
+// RedisKey 组装redis key
+func RedisKey(keys ...string) string {
+	return gstr.Join(keys, ":")
 }

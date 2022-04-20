@@ -48,11 +48,6 @@ func (s *sMiddleware) Ctx(req *ghttp.Request) {
 			Context().SetUser(ctx, &model.ContextUser{
 				Id:       user.Id,
 				Passport: user.Passport,
-				Realname: user.Realname,
-				Nickname: user.Nickname,
-				Avatar:   user.Avatar,
-				DeptId:   user.DeptId,
-				Status:   user.Status,
 				IsAdmin:  user.IsAdmin,
 			})
 		}
@@ -122,7 +117,7 @@ func (s *sMiddleware) Auth(req *ghttp.Request) {
 	}
 	// 获取无需验证权限的用户ID
 	tagSuperUser := false
-	UserManager().NotCheckAuthUserIds().Iterator(func(v interface{}) bool {
+	UserManager().NotCheckAuthUserIds().Iterator(func(v any) bool {
 		if gconv.Uint64(v) == user.Id {
 			tagSuperUser = true
 			return false

@@ -9,6 +9,7 @@ import (
 	"github.com/gogf/gf/v2/os/gcache"
 	"github.com/gogf/gf/v2/os/gctx"
 	"github.com/gogf/gf/v2/os/gtime"
+	"github.com/gogf/gf/v2/util/gconv"
 	"github.com/gogf/gf/v2/util/gvalid"
 	"github.com/mssola/user_agent"
 	v1 "lczx/api/v1"
@@ -93,15 +94,11 @@ func (s *sAuth) UserIsOnline(ctx context.Context, token string) bool {
 		}
 		return true
 	case gtoken.CacheModeRedis:
-		userCacheValue, err := Cache().GetCache(ctx, cacheKey)
-		if err != nil {
-			logger.Error(ctx, "GetCache redis Error: ", err.Error())
+		userCacheVal := Cache().GetCache(ctx, cacheKey, "uuid")
+		if userCacheVal == nil {
 			return false
 		}
-		if userCacheValue == nil {
-			return false
-		}
-		if uuid != userCacheValue.Map()["uuid"] {
+		if uuid != gconv.String(userCacheVal) {
 			return false
 		}
 		return true

@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"github.com/gogf/gf/v2/container/gmap"
-	"github.com/gogf/gf/v2/container/gvar"
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/util/gconv"
@@ -12,6 +11,7 @@ import (
 	"lczx/internal/model/entity"
 	"lczx/internal/service/internal/dao"
 	"lczx/internal/service/internal/do"
+	"time"
 )
 
 type sMenu struct{}
@@ -253,26 +253,19 @@ func (s *sMenu) GetMenuTree(menuList []*entity.Menu, parentId uint64) (tree []*v
 // GetAllMenus 获取所有菜单
 func (s *sMenu) GetAllMenus(ctx context.Context) (menus []*entity.Menu, err error) {
 	// 从缓存获取
-	var menusCacheValue *gvar.Var
-	menusCacheValue, err = Cache().GetCache(ctx, consts.MenuKey)
-	if err != nil {
-		return
-	}
-	if menusCacheValue != nil {
-		menusCacheMap := menusCacheValue.Map()["Result"]
-		if menusCacheMap != nil {
-			err = gconv.Structs(menusCacheMap, &menus)
-			if err != nil {
-				return
-			}
-			if menus != nil {
-				return
-			}
+	menusCacheVal := Cache().GetCache(ctx, consts.MenuKey)
+	if menusCacheVal != nil {
+		err = gconv.Structs(menusCacheVal, &menus)
+		if err != nil {
+			return
+		}
+		if menus != nil {
+			return
 		}
 	}
 	// 从数据库获取
 	err = dao.Menu.Ctx(ctx).Cache(gdb.CacheOption{
-		Duration: 0,
+		Duration: time.Hour * 2,
 		Name:     consts.MenuKey,
 		Force:    false,
 	}).OrderAsc(dao.Menu.Columns().Id).Scan(&menus)

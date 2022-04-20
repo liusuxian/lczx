@@ -12,6 +12,7 @@ import (
 	"lczx/internal/model/entity"
 	"lczx/internal/service/internal/dao"
 	"lczx/internal/service/internal/do"
+	"time"
 )
 
 type sDept struct{}
@@ -209,26 +210,19 @@ func (s *sDept) GetStatusEnableDepts(ctx context.Context) (depts []*entity.Dept,
 // GetAllDepts 获取所有部门
 func (s *sDept) GetAllDepts(ctx context.Context) (depts []*entity.Dept, err error) {
 	// 从缓存获取
-	var deptsCacheValue *gvar.Var
-	deptsCacheValue, err = Cache().GetCache(ctx, consts.DeptKey)
-	if err != nil {
-		return
-	}
-	if deptsCacheValue != nil {
-		deptsCacheMap := deptsCacheValue.Map()["Result"]
-		if deptsCacheMap != nil {
-			err = gconv.Structs(deptsCacheMap, &depts)
-			if err != nil {
-				return
-			}
-			if depts != nil {
-				return
-			}
+	deptsCacheVal := Cache().GetCache(ctx, consts.DeptKey)
+	if deptsCacheVal != nil {
+		err = gconv.Structs(deptsCacheVal, &depts)
+		if err != nil {
+			return
+		}
+		if depts != nil {
+			return
 		}
 	}
 	// 从数据库获取
 	err = dao.Dept.Ctx(ctx).Cache(gdb.CacheOption{
-		Duration: 0,
+		Duration: time.Hour * 2,
 		Name:     consts.DeptKey,
 		Force:    false,
 	}).OrderAsc(dao.Dept.Columns().Id).Scan(&depts)

@@ -40,7 +40,7 @@ func (c *cUser) Info(ctx context.Context, req *v1.UserInfoReq) (res *v1.UserInfo
 	// 获取用户菜单
 	var menuList []string
 	tagSuperUser := false
-	service.UserManager().NotCheckAuthUserIds().Iterator(func(v interface{}) bool {
+	service.UserManager().NotCheckAuthUserIds().Iterator(func(v any) bool {
 		if gconv.Uint64(v) == user.Id {
 			tagSuperUser = true
 			return false

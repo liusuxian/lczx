@@ -17,8 +17,8 @@ var (
 		Usage: "main",
 		Brief: "start http server",
 		Func: func(ctx context.Context, parser *gcmd.Parser) (err error) {
-			// 数据库缓存适配Redis
-			service.Cache().SetAdapter()
+			// 清除所有缓存
+			service.Cache().ClearAllCache(ctx)
 			// 自定义参数校验服务
 			service.ParamsValid()
 			s := g.Server()
@@ -51,10 +51,6 @@ var (
 				)
 				// 后台操作日志记录
 				group.Hook("/*", ghttp.HookAfterOutput, service.OperLog().Invoke)
-				// 缓存相关
-				group.Group("/cache", func(group *ghttp.RouterGroup) {
-					group.Bind(controller.Cache)
-				})
 				// 用户相关
 				group.Group("/user", func(group *ghttp.RouterGroup) {
 					// TODO 上传头像未完成

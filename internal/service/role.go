@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"github.com/casbin/casbin/v2"
-	"github.com/gogf/gf/v2/container/gvar"
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
@@ -14,6 +13,7 @@ import (
 	"lczx/internal/model/entity"
 	"lczx/internal/service/internal/dao"
 	"lczx/internal/service/internal/do"
+	"time"
 )
 
 type sRole struct{}
@@ -202,26 +202,19 @@ func (s *sRole) DeleteRoleByIds(ctx context.Context, ids []uint64) (err error) {
 // GetAllRoles 获取所有角色
 func (s *sRole) GetAllRoles(ctx context.Context) (roles []*entity.Role, err error) {
 	// 从缓存获取
-	var rolesCacheValue *gvar.Var
-	rolesCacheValue, err = Cache().GetCache(ctx, consts.RoleKey)
-	if err != nil {
-		return
-	}
-	if rolesCacheValue != nil {
-		rolesCacheMap := rolesCacheValue.Map()["Result"]
-		if rolesCacheMap != nil {
-			err = gconv.Structs(rolesCacheMap, &roles)
-			if err != nil {
-				return
-			}
-			if roles != nil {
-				return
-			}
+	rolesCacheVal := Cache().GetCache(ctx, consts.RoleKey)
+	if rolesCacheVal != nil {
+		err = gconv.Structs(rolesCacheVal, &roles)
+		if err != nil {
+			return
+		}
+		if roles != nil {
+			return
 		}
 	}
 	// 从数据库获取
 	err = dao.Role.Ctx(ctx).Cache(gdb.CacheOption{
-		Duration: 0,
+		Duration: time.Hour * 2,
 		Name:     consts.RoleKey,
 		Force:    false,
 	}).OrderAsc(dao.Role.Columns().Id).Scan(&roles)
@@ -283,7 +276,7 @@ func (s *sRole) UpdateRole(ctx context.Context, req *v1.RoleEditReq) (err error)
 }
 
 // AddRoleRule 添加角色权限
-func (s *sRole) AddRoleRule(ctx context.Context, iRule interface{}, roleId uint64) (err error) {
+func (s *sRole) AddRoleRule(ctx context.Context, iRule any, roleId uint64) (err error) {
 	var enforcer *casbin.SyncedEnforcer
 	enforcer, err = Casbin(ctx).GetEnforcer()
 	if err != nil {
@@ -300,7 +293,7 @@ func (s *sRole) AddRoleRule(ctx context.Context, iRule interface{}, roleId uint6
 }
 
 // EditRoleRule 修改角色权限
-func (s *sRole) EditRoleRule(ctx context.Context, iRule interface{}, roleId uint64) (err error) {
+func (s *sRole) EditRoleRule(ctx context.Context, iRule any, roleId uint64) (err error) {
 	var enforcer *casbin.SyncedEnforcer
 	enforcer, err = Casbin(ctx).GetEnforcer()
 	if err != nil {
