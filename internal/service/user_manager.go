@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"github.com/casbin/casbin/v2"
 	"github.com/gogf/gf/v2/container/gmap"
 	"github.com/gogf/gf/v2/container/gset"
 	"github.com/gogf/gf/v2/database/gdb"
@@ -246,7 +247,7 @@ func (s *sUserManager) EditUser(ctx context.Context, req *v1.UserEditReq) (err e
 		return
 	}
 	// 清除用户缓存
-	_, err = Cache().ClearCache(ctx, User().UserCacheKey(req.Id))
+	err = Cache().ClearCache(ctx, User().UserCacheKey(req.Id))
 	return
 }
 
@@ -273,6 +274,39 @@ func (s *sUserManager) SetUserStatus(ctx context.Context, id uint64, status uint
 		Name:     User().UserCacheKey(id),
 		Force:    false,
 	}).Data(do.User{Status: status}).Where(do.User{Id: id}).Update()
+	return
+}
+
+// DeleteUser 删除用户
+func (s *sUserManager) DeleteUser(ctx context.Context, ids []uint64) (err error) {
+	err = dao.User.Ctx(ctx).Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
+		_, err := dao.User.Ctx(ctx).WhereIn(dao.User.Columns().Id, ids).Delete()
+		if err != nil {
+			return err
+		}
+		// 删除对应权限
+		var enforcer *casbin.SyncedEnforcer
+		enforcer, err = Casbin(ctx).GetEnforcer()
+		if err != nil {
+			return err
+		}
+		for _, v := range ids {
+			_, err = enforcer.RemoveFilteredGroupingPolicy(0, gconv.String(v))
+			if err != nil {
+				return err
+			}
+		}
+		return nil
+	})
+	if err != nil {
+		return
+	}
+	// 清除用户缓存
+	userCacheKeys := make([]any, 0, len(ids))
+	for _, v := range ids {
+		userCacheKeys = append(userCacheKeys, User().UserCacheKey(v))
+	}
+	err = Cache().ClearCache(ctx, userCacheKeys...)
 	return
 }
 

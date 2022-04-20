@@ -114,3 +114,14 @@ func (c *cUserManager) SetStatus(ctx context.Context, req *v1.UserSetStatusReq) 
 
 	return
 }
+
+// Delete 删除用户
+func (c *cUserManager) Delete(ctx context.Context, req *v1.UserDeleteReq) (res *v1.UserDeleteRes, err error) {
+	err = service.UserManager().DeleteUser(ctx, req.Ids)
+	if err != nil {
+		err = gerror.WrapCode(code.DeleteUserFailed, err)
+		return
+	}
+
+	return
+}

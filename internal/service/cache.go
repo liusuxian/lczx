@@ -39,8 +39,10 @@ func (s *sCache) ClearAllCache(ctx context.Context) {
 }
 
 // ClearCache 清除缓存
-func (s *sCache) ClearCache(ctx context.Context, key any) (lastVal *gvar.Var, err error) {
-	lastVal, err = g.DB().GetCache().Remove(ctx, key)
+func (s *sCache) ClearCache(ctx context.Context, keys ...any) (err error) {
+	if len(keys) != 0 {
+		err = g.DB().GetCache().Removes(ctx, keys)
+	}
 	return
 }
 

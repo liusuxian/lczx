@@ -78,7 +78,7 @@ func (s *sRole) AddRole(ctx context.Context, req *v1.RoleAddReq) (err error) {
 		return
 	}
 	// 清除角色缓存
-	_, err = Cache().ClearCache(ctx, consts.RoleKey)
+	err = Cache().ClearCache(ctx, consts.RoleKey)
 	return
 }
 
@@ -121,7 +121,7 @@ func (s *sRole) EditRole(ctx context.Context, req *v1.RoleEditReq) (err error) {
 		return
 	}
 	// 清除角色缓存
-	_, err = Cache().ClearCache(ctx, consts.RoleKey)
+	err = Cache().ClearCache(ctx, consts.RoleKey)
 	return
 }
 
@@ -162,7 +162,7 @@ func (s *sRole) SetRoleDataScope(ctx context.Context, req *v1.RoleSetDataScopeRe
 		return
 	}
 	// 清除角色缓存
-	_, err = Cache().ClearCache(ctx, consts.RoleKey)
+	err = Cache().ClearCache(ctx, consts.RoleKey)
 	return
 }
 
@@ -195,7 +195,7 @@ func (s *sRole) DeleteRoleByIds(ctx context.Context, ids []uint64) (err error) {
 		return
 	}
 	// 清除角色缓存
-	_, err = Cache().ClearCache(ctx, consts.RoleKey)
+	err = Cache().ClearCache(ctx, consts.RoleKey)
 	return
 }
 

@@ -167,3 +167,13 @@ type UserSetStatusReq struct {
 // UserSetStatusRes 重置用户密码返回参数
 type UserSetStatusRes struct {
 }
+
+// UserDeleteReq 删除用户请求参数
+type UserDeleteReq struct {
+	g.Meta `path:"/delete" tags:"UserDelete" method:"delete" summary:"You first auth/user/delete api"`
+	Ids    []uint64 `json:"ids" v:"required|slice_valid:uint64#用户ID列表不能为空" dc:"用户ID列表"` // 用户ID列表
+}
+
+// UserDeleteRes 删除用户返回参数
+type UserDeleteRes struct {
+}
