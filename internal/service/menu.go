@@ -45,13 +45,15 @@ func (s *sMenu) AddMenu(ctx context.Context, req *v1.MenuAddReq) (err error) {
 		err = gerror.Newf(`父规则ID[%d]只能添加目录类型`, req.ParentId)
 		return
 	}
+	// 获取所有菜单
+	var allMenus []*entity.Menu
+	allMenus, err = s.GetAllMenus(ctx)
+	if err != nil {
+		return
+	}
 	// 检查父规则ID是否存在
 	if req.ParentId != 0 {
-		var parentMenu *entity.Menu
-		parentMenu, err = s.GetMenuById(ctx, req.ParentId)
-		if err != nil {
-			return
-		}
+		parentMenu := s.GetMenuById(allMenus, req.ParentId)
 		if parentMenu == nil {
 			err = gerror.Newf(`父规则ID[%d]不存在`, req.ParentId)
 			return
@@ -109,13 +111,15 @@ func (s *sMenu) EditMenu(ctx context.Context, req *v1.MenuEditReq) (err error) {
 		err = gerror.Newf(`父规则ID[%d]只能添加目录类型`, req.ParentId)
 		return
 	}
+	// 获取所有菜单
+	var allMenus []*entity.Menu
+	allMenus, err = s.GetAllMenus(ctx)
+	if err != nil {
+		return
+	}
 	// 检查父规则ID是否存在
 	if req.ParentId != 0 {
-		var parentMenu *entity.Menu
-		parentMenu, err = s.GetMenuById(ctx, req.ParentId)
-		if err != nil {
-			return
-		}
+		parentMenu := s.GetMenuById(allMenus, req.ParentId)
 		if parentMenu == nil {
 			err = gerror.Newf(`父规则ID[%d]不存在`, req.ParentId)
 			return
@@ -138,11 +142,7 @@ func (s *sMenu) EditMenu(ctx context.Context, req *v1.MenuEditReq) (err error) {
 		}
 	}
 	// 检查菜单信息是否存在
-	var menu *entity.Menu
-	menu, err = s.GetMenuById(ctx, req.Id)
-	if err != nil {
-		return
-	}
+	menu := s.GetMenuById(allMenus, req.Id)
 	if menu == nil {
 		err = gerror.Newf(`菜单ID[%d]不存在`, req.Id)
 		return
@@ -159,15 +159,9 @@ func (s *sMenu) EditMenu(ctx context.Context, req *v1.MenuEditReq) (err error) {
 			return
 		}
 	}
-	// 获取所有菜单
-	var list []*entity.Menu
-	list, err = s.GetAllMenus(ctx)
-	if err != nil {
-		return
-	}
 	// 获取规则ID下所有的子规则ID
 	idsMap := gmap.New(true)
-	s.FindSonIdsByParentId(list, req.Id, idsMap)
+	s.FindSonIdsByParentId(allMenus, req.Id, idsMap)
 	if idsMap.Contains(req.ParentId) {
 		err = gerror.Newf(`父规则ID[%d]是规则ID[%d]的子规则ID`, req.ParentId, req.Id)
 		return
@@ -195,8 +189,8 @@ func (s *sMenu) EditMenu(ctx context.Context, req *v1.MenuEditReq) (err error) {
 // DeleteMenu 删除菜单
 func (s *sMenu) DeleteMenu(ctx context.Context, ids []uint64) (err error) {
 	// 获取所有菜单
-	var list []*entity.Menu
-	list, err = s.GetAllMenus(ctx)
+	var allMenus []*entity.Menu
+	allMenus, err = s.GetAllMenus(ctx)
 	if err != nil {
 		return
 	}
@@ -204,7 +198,7 @@ func (s *sMenu) DeleteMenu(ctx context.Context, ids []uint64) (err error) {
 	idsMap := gmap.New(true)
 	for _, id := range ids {
 		idsMap.Set(id, true)
-		s.FindSonIdsByParentId(list, id, idsMap)
+		s.FindSonIdsByParentId(allMenus, id, idsMap)
 	}
 	delIds := idsMap.Keys()
 	// 删除菜单数据
@@ -219,16 +213,16 @@ func (s *sMenu) DeleteMenu(ctx context.Context, ids []uint64) (err error) {
 // GetIsMenus 获取菜单类型为目录和菜单的菜单列表
 func (s *sMenu) GetIsMenus(ctx context.Context) (list []*entity.Menu, err error) {
 	// 获取所有菜单
-	var menus []*entity.Menu
-	menus, err = s.GetAllMenus(ctx)
+	var allMenus []*entity.Menu
+	allMenus, err = s.GetAllMenus(ctx)
 	if err != nil {
 		return
 	}
 
-	list = make([]*entity.Menu, 0, len(menus))
-	for _, v := range menus {
-		if v.MenuType == consts.MenuTypeDir || v.MenuType == consts.MenuTypeMenu {
-			list = append(list, v)
+	list = make([]*entity.Menu, 0, len(allMenus))
+	for _, m := range allMenus {
+		if m.MenuType == consts.MenuTypeDir || m.MenuType == consts.MenuTypeMenu {
+			list = append(list, m)
 		}
 	}
 	return
@@ -272,12 +266,6 @@ func (s *sMenu) GetAllMenus(ctx context.Context) (menus []*entity.Menu, err erro
 	return
 }
 
-// GetMenuById 通过规则ID获取菜单信息
-func (s *sMenu) GetMenuById(ctx context.Context, id uint64) (menu *entity.Menu, err error) {
-	err = dao.Menu.Ctx(ctx).Where(do.Dept{Id: id}).Scan(&menu)
-	return
-}
-
 // IsMenuRuleAvailable 权限规则是否可用
 func (s *sMenu) IsMenuRuleAvailable(ctx context.Context, rule string) (bool, error) {
 	count, err := dao.Menu.Ctx(ctx).Where(do.Menu{Rule: rule}).Count()
@@ -300,16 +288,27 @@ func (s *sMenu) FindSonIdsByParentId(menuList []*entity.Menu, parentId uint64, i
 // GetStatusEnableMenus 获取所有正常状态的菜单列表
 func (s *sMenu) GetStatusEnableMenus(ctx context.Context) (menuList []*entity.Menu, err error) {
 	// 获取所有菜单
-	var menus []*entity.Menu
-	menus, err = s.GetAllMenus(ctx)
+	var allMenus []*entity.Menu
+	allMenus, err = s.GetAllMenus(ctx)
 	if err != nil {
 		return
 	}
 
-	menuList = make([]*entity.Menu, 0, len(menus))
-	for _, v := range menus {
-		if v.Status == consts.MenuStatusEnable {
-			menuList = append(menuList, v)
+	menuList = make([]*entity.Menu, 0, len(allMenus))
+	for _, m := range allMenus {
+		if m.Status == consts.MenuStatusEnable {
+			menuList = append(menuList, m)
+		}
+	}
+	return
+}
+
+// GetMenuById 通过规则ID获取菜单信息
+func (s *sMenu) GetMenuById(menuList []*entity.Menu, id uint64) (menu *entity.Menu) {
+	for _, m := range menuList {
+		if m.Id == id {
+			menu = m
+			return
 		}
 	}
 	return

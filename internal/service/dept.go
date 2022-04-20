@@ -42,13 +42,16 @@ func (s *sDept) GetDeptList(ctx context.Context, req *v1.DeptListReq) (list []*e
 
 // AddDept 新增部门
 func (s *sDept) AddDept(ctx context.Context, req *v1.DeptAddReq) (err error) {
+	// 获取所有部门
+	var allDepts []*entity.Dept
+	allDepts, err = s.GetAllDepts(ctx)
+	if err != nil {
+		return
+	}
 	// 检查父部门是否存在
 	parentDept := &entity.Dept{}
 	if req.ParentId != 0 {
-		parentDept, err = s.GetDeptById(ctx, req.ParentId)
-		if err != nil {
-			return
-		}
+		parentDept = s.GetDeptById(allDepts, req.ParentId)
 		if parentDept == nil {
 			err = gerror.Newf(`父部门ID[%d]不存在`, req.ParentId)
 			return
@@ -87,21 +90,18 @@ func (s *sDept) AddDept(ctx context.Context, req *v1.DeptAddReq) (err error) {
 	return
 }
 
-// GetDeptById 通过部门ID获取部门信息
-func (s *sDept) GetDeptById(ctx context.Context, id uint64) (dept *entity.Dept, err error) {
-	err = dao.Dept.Ctx(ctx).Where(do.Dept{Id: id}).Scan(&dept)
-	return
-}
-
 // EditDept 编辑部门
 func (s *sDept) EditDept(ctx context.Context, req *v1.DeptEditReq) (err error) {
+	// 获取所有部门
+	var allDepts []*entity.Dept
+	allDepts, err = s.GetAllDepts(ctx)
+	if err != nil {
+		return
+	}
 	// 检查父部门是否存在
 	parentDept := &entity.Dept{}
 	if req.ParentId != 0 {
-		parentDept, err = s.GetDeptById(ctx, req.ParentId)
-		if err != nil {
-			return
-		}
+		parentDept = s.GetDeptById(allDepts, req.ParentId)
 		if parentDept == nil {
 			err = gerror.Newf(`父部门ID[%d]不存在`, req.ParentId)
 			return
@@ -116,11 +116,7 @@ func (s *sDept) EditDept(ctx context.Context, req *v1.DeptEditReq) (err error) {
 		return
 	}
 	// 检查部门信息是否存在
-	var dept *entity.Dept
-	dept, err = s.GetDeptById(ctx, req.Id)
-	if err != nil {
-		return
-	}
+	dept := s.GetDeptById(allDepts, req.Id)
 	if dept == nil {
 		err = gerror.Newf(`部门ID[%d]不存在`, req.Id)
 		return
@@ -137,15 +133,9 @@ func (s *sDept) EditDept(ctx context.Context, req *v1.DeptEditReq) (err error) {
 			return
 		}
 	}
-	// 获取所有部门
-	var list []*entity.Dept
-	list, err = s.GetAllDepts(ctx)
-	if err != nil {
-		return
-	}
 	// 获取部门ID下所有的子部门ID
 	idsMap := gmap.New(true)
-	s.FindSonIdsByParentId(list, req.Id, idsMap)
+	s.FindSonIdsByParentId(allDepts, req.Id, idsMap)
 	if idsMap.Contains(req.ParentId) {
 		err = gerror.Newf(`父部门ID[%d]是部门ID[%d]的子部门ID`, req.ParentId, req.Id)
 		return
@@ -168,8 +158,8 @@ func (s *sDept) EditDept(ctx context.Context, req *v1.DeptEditReq) (err error) {
 // DeleteDept 删除部门
 func (s *sDept) DeleteDept(ctx context.Context, ids []uint64) (err error) {
 	// 获取所有部门
-	var list []*entity.Dept
-	list, err = s.GetAllDepts(ctx)
+	var allDepts []*entity.Dept
+	allDepts, err = s.GetAllDepts(ctx)
 	if err != nil {
 		return
 	}
@@ -177,7 +167,7 @@ func (s *sDept) DeleteDept(ctx context.Context, ids []uint64) (err error) {
 	idsMap := gmap.New(true)
 	for _, id := range ids {
 		idsMap.Set(id, true)
-		s.FindSonIdsByParentId(list, id, idsMap)
+		s.FindSonIdsByParentId(allDepts, id, idsMap)
 	}
 	delIds := idsMap.Keys()
 	// 删除部门数据
@@ -192,14 +182,14 @@ func (s *sDept) DeleteDept(ctx context.Context, ids []uint64) (err error) {
 // GetStatusEnableDepts 获取部门状态为正常的部门列表
 func (s *sDept) GetStatusEnableDepts(ctx context.Context) (depts []*entity.Dept, err error) {
 	// 获取所有部门
-	var list []*entity.Dept
-	list, err = s.GetAllDepts(ctx)
+	var allDepts []*entity.Dept
+	allDepts, err = s.GetAllDepts(ctx)
 	if err != nil {
 		return
 	}
 
-	depts = make([]*entity.Dept, 0, len(list))
-	for _, v := range list {
+	depts = make([]*entity.Dept, 0, len(allDepts))
+	for _, v := range allDepts {
 		if v.Status == consts.DeptStatusEnable {
 			depts = append(depts, v)
 		}
@@ -287,11 +277,22 @@ func (s *sDept) GetDeptIdsByRoleId(ctx context.Context, id uint64) (deptIds []ui
 // GetDeptAllNameById 通过部门ID获取部门名称全称
 func (s *sDept) GetDeptAllNameById(deptList []*entity.Dept, id uint64) (deptNames []string) {
 	deptNames = make([]string, 0, len(deptList))
-	for _, v := range deptList {
-		if v.Id == id {
-			deptNames = append(deptNames, v.Name)
-			parent := s.GetDeptAllNameById(deptList, v.ParentId)
+	for _, d := range deptList {
+		if d.Id == id {
+			deptNames = append(deptNames, d.Name)
+			parent := s.GetDeptAllNameById(deptList, d.ParentId)
 			deptNames = append(deptNames, parent...)
+		}
+	}
+	return
+}
+
+// GetDeptById 通过部门ID获取部门信息
+func (s *sDept) GetDeptById(deptList []*entity.Dept, id uint64) (dept *entity.Dept) {
+	for _, d := range deptList {
+		if d.Id == id {
+			dept = d
+			return
 		}
 	}
 	return

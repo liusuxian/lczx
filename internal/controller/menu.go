@@ -92,14 +92,14 @@ func (c *cMenu) Delete(ctx context.Context, req *v1.MenuDeleteReq) (res *v1.Menu
 // Tree 菜单树信息
 func (c *cMenu) Tree(ctx context.Context, req *v1.MenuTreeReq) (res *v1.MenuTreeRes, err error) {
 	// 获取所有菜单
-	var menus []*entity.Menu
-	menus, err = service.Menu().GetAllMenus(ctx)
+	var allMenus []*entity.Menu
+	allMenus, err = service.Menu().GetAllMenus(ctx)
 	if err != nil {
 		err = gerror.WrapCode(code.GetMenuTreeFailed, err)
 		return
 	}
 
-	tree := service.Menu().GetMenuTree(menus, 0)
+	tree := service.Menu().GetMenuTree(allMenus, 0)
 	res = &v1.MenuTreeRes{List: tree}
 	return
 }

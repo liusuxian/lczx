@@ -64,15 +64,10 @@ func (c *cDept) Info(ctx context.Context, req *v1.DeptInfoReq) (res *v1.DeptInfo
 		err = gerror.WrapCode(code.GetDeptFailed, err)
 		return
 	}
+	// 获取部门信息
 	deptNames := service.Dept().GetDeptAllNameById(allDepts, req.Id)
 	utils.Reverse(deptNames)
-	// 获取部门信息
-	var dept *entity.Dept
-	dept, err = service.Dept().GetDeptById(ctx, req.Id)
-	if err != nil {
-		err = gerror.WrapCode(code.GetDeptFailed, err)
-		return
-	}
+	dept := service.Dept().GetDeptById(allDepts, req.Id)
 	dept.Name = gstr.Join(deptNames, "/")
 
 	res = &v1.DeptInfoRes{Info: dept}
