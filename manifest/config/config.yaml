@@ -1,85 +1,85 @@
 server:
   # 基本配置
-  address: ":80"                                    # 本地监听地址。默认":80"
-  httpsAddr: ":443"                                 # TLS/HTTPS配置，同时需要配置证书和密钥。默认关闭
-  httpsCertPath: ""                                 # TLS/HTTPS证书文件本地路径，建议使用绝对路径。默认关闭
-  httpsKeyPath: ""                                  # TLS/HTTPS密钥文件本地路径，建议使用绝对路径。默认关闭
-  readTimeout: "60s"                                # 请求读取超时时间，一般不需要配置。默认为60秒
-  writeTimeout: "0"                                 # 数据返回写入超时时间，一般不需要配置。默认不超时（0）
-  idleTimeout: "60s"                                # 仅当Keep-Alive开启时有效，请求闲置时间。默认为60秒
-  maxHeaderBytes: "10240"                           # 请求Header大小限制（Byte）。默认为10KB
-  keepAlive: true                                   # 是否开启Keep-Alive功能。默认true
-  serverAgent: "lczx"                               # 服务端Agent信息。默认为"GoFrame HTTP Server"
+  address: ":80"            # 本地监听地址。默认":80"
+  httpsAddr: ":443"         # TLS/HTTPS配置，同时需要配置证书和密钥。默认关闭
+  httpsCertPath: ""         # TLS/HTTPS证书文件本地路径，建议使用绝对路径。默认关闭
+  httpsKeyPath: ""          # TLS/HTTPS密钥文件本地路径，建议使用绝对路径。默认关闭
+  readTimeout: "60s"        # 请求读取超时时间，一般不需要配置。默认为60秒
+  writeTimeout: "0"         # 数据返回写入超时时间，一般不需要配置。默认不超时（0）
+  idleTimeout: "60s"        # 仅当Keep-Alive开启时有效，请求闲置时间。默认为60秒
+  maxHeaderBytes: "10240"   # 请求Header大小限制（Byte）。默认为10KB
+  keepAlive: true           # 是否开启Keep-Alive功能。默认true
+  serverAgent: "lczx"       # 服务端Agent信息。默认为"GoFrame HTTP Server"
   openapiPath: "/api.json"
   swaggerPath: "/swagger"
 
   # Cookie配置
-  cookieMaxAge: "365d"                              # Cookie有效期。默认为365天
-  cookiePath: "/"                                   # Cookie有效路径。默认为"/"表示全站所有路径下有效
-  cookieDomain: ""                                  # Cookie有效域名。默认为当前配置Cookie时的域名
+  cookieMaxAge: "365d"  # Cookie有效期。默认为365天
+  cookiePath: "/"       # Cookie有效路径。默认为"/"表示全站所有路径下有效
+  cookieDomain: ""      # Cookie有效域名。默认为当前配置Cookie时的域名
 
   # Sessions配置
-  sessionMaxAge: "24h"                              # Session有效期。默认为24小时
-  sessionIdName: "gfsessionid"                      # SessionId的键名名称。默认为gfsessionid
-  sessionCookieOutput: true                         # Session特性开启时，是否将SessionId返回到Cookie中。默认true
-  sessionPath: "/tmp/gsessions"                     # Session存储的文件目录路径。默认为当前系统临时目录下的gsessions目录
+  sessionMaxAge: "24h"          # Session有效期。默认为24小时
+  sessionIdName: "gfsessionid"  # SessionId的键名名称。默认为gfsessionid
+  sessionCookieOutput: true     # Session特性开启时，是否将SessionId返回到Cookie中。默认true
+  sessionPath: "/tmp/gsessions" # Session存储的文件目录路径。默认为当前系统临时目录下的gsessions目录
 
   # Logging配置
-  logPath: "log/SystemLogs"                         # 日志文件存储目录路径，建议使用绝对路径。默认为空，表示关闭
-  logStdout: true                                   # 日志是否输出到终端。默认为true
-  errorStack: true                                  # 当Server捕获到异常时是否记录堆栈信息到日志中。默认为true
-  errorLogEnabled: true                             # 是否记录异常日志信息到日志中。默认为true
-  errorLogPattern: "error-{Y-m-d}.log"              # 异常错误日志文件格式。默认为"error-{Ymd}.log"
-  accessLogEnabled: false                           # 是否记录访问日志。默认为false
-  accessLogPattern: "access-{Y-m-d}.log"            # 访问日志文件格式。默认为"access-{Ymd}.log"
+  logPath: "log/SystemLogs"               # 日志文件存储目录路径，建议使用绝对路径。默认为空，表示关闭
+  logStdout: true                         # 日志是否输出到终端。默认为true
+  errorStack: true                        # 当Server捕获到异常时是否记录堆栈信息到日志中。默认为true
+  errorLogEnabled: true                   # 是否记录异常日志信息到日志中。默认为true
+  errorLogPattern: "error-{Y-m-d}.log"    # 异常错误日志文件格式。默认为"error-{Ymd}.log"
+  accessLogEnabled: false                 # 是否记录访问日志。默认为false
+  accessLogPattern: "access-{Y-m-d}.log"  # 访问日志文件格式。默认为"access-{Ymd}.log"
 
   # PProf配置
-  pprofEnabled: false                               # 是否开启PProf性能调试特性。默认为false
-  pprofPattern: ""                                  # 开启PProf时有效，表示PProf特性的页面访问路径，对当前Server绑定的所有域名有效。
+  pprofEnabled: false # 是否开启PProf性能调试特性。默认为false
+  pprofPattern: ""    # 开启PProf时有效，表示PProf特性的页面访问路径，对当前Server绑定的所有域名有效。
 
   # 其他配置
-  clientMaxBodySize: 810241024                      # 客户端最大Body上传限制大小，影响文件上传大小(Byte)。默认为8*1024*1024=8MB
-  formParsingMemory: 1048576                        # 解析表单时的缓冲区大小(Byte)，一般不需要配置。默认为1024*1024=1MB
-  nameToUriType: 0                                  # 路由注册中使用对象注册时的路由生成规则。默认为0
-  routeOverWrite: false                             # 当遇到重复路由注册时是否强制覆盖。默认为false，重复路由存在时将会在启动时报错退出
-  dumpRouterMap: true                               # 是否在Server启动时打印所有的路由列表。默认为true
-  graceful: false                                   # 是否开启平滑重启特性，开启时将会在本地增加10000的本地TCP端口用于进程间通信。默认false
-  gracefulTimeout: 2                                # 父进程在平滑重启后多少秒退出，默认2秒。若请求耗时大于该值，可能会导致请求中断
+  clientMaxBodySize: 810241024  # 客户端最大Body上传限制大小，影响文件上传大小(Byte)。默认为8*1024*1024=8MB
+  formParsingMemory: 1048576    # 解析表单时的缓冲区大小(Byte)，一般不需要配置。默认为1024*1024=1MB
+  nameToUriType: 0              # 路由注册中使用对象注册时的路由生成规则。默认为0
+  routeOverWrite: false         # 当遇到重复路由注册时是否强制覆盖。默认为false，重复路由存在时将会在启动时报错退出
+  dumpRouterMap: true           # 是否在Server启动时打印所有的路由列表。默认为true
+  graceful: false               # 是否开启平滑重启特性，开启时将会在本地增加10000的本地TCP端口用于进程间通信。默认false
+  gracefulTimeout: 2            # 父进程在平滑重启后多少秒退出，默认2秒。若请求耗时大于该值，可能会导致请求中断
 
 # 日志配置
 logger:
   access:
-    path: "log/lczx"                                # 日志文件路径。默认为空，表示关闭，仅输出到终端
-    file: "access-{Y-m-d}.log"                      # 日志文件格式。默认为"{Y-m-d}.log"
-    prefix: ""                                      # 日志内容输出前缀。默认为空
-    level: "ALL"                                    # 日志输出级别
-    ctxKeys: [ "RequestId" ]                        # 自定义Context上下文变量名称，自动打印Context的变量到日志中。默认为空
-    header: true                                    # 是否打印日志的头信息。默认true
-    stdout: true                                    # 日志是否同时输出到终端。默认true
-    rotateSize: "100M"                              # 按照日志文件大小对文件进行滚动切分。默认为0，表示关闭滚动切分特性
-    rotateExpire: 0                                 # 按照日志文件时间间隔对文件滚动切分。默认为0，表示关闭滚动切分特性
-    rotateBackupLimit: 10                           # 按照切分的文件数量清理切分文件，当滚动切分特性开启时有效。默认为0，表示不备份，切分则删除
-    rotateBackupExpire: "60d"                       # 按照切分的文件有效期清理切分文件，当滚动切分特性开启时有效。默认为0，表示不备份，切分则删除
-    rotateBackupCompress: 9                         # 滚动切分文件的压缩比（0-9）。默认为0，表示不压缩
-    rotateCheckInterval: "24h"                      # 滚动切分的时间检测间隔，一般不需要设置。默认为1小时
-    stdoutColorDisabled: false                      # 关闭终端的颜色打印。默认开启
-    writerColorEnable: false                        # 日志文件是否带上颜色。默认false，表示不带颜色
+    path: "log/lczx"            # 日志文件路径。默认为空，表示关闭，仅输出到终端
+    file: "access-{Y-m-d}.log"  # 日志文件格式。默认为"{Y-m-d}.log"
+    prefix: ""                  # 日志内容输出前缀。默认为空
+    level: "ALL"                # 日志输出级别
+    ctxKeys: [ "RequestId" ]    # 自定义Context上下文变量名称，自动打印Context的变量到日志中。默认为空
+    header: true                # 是否打印日志的头信息。默认true
+    stdout: true                # 日志是否同时输出到终端。默认true
+    rotateSize: "100M"          # 按照日志文件大小对文件进行滚动切分。默认为0，表示关闭滚动切分特性
+    rotateExpire: 0             # 按照日志文件时间间隔对文件滚动切分。默认为0，表示关闭滚动切分特性
+    rotateBackupLimit: 10       # 按照切分的文件数量清理切分文件，当滚动切分特性开启时有效。默认为0，表示不备份，切分则删除
+    rotateBackupExpire: "60d"   # 按照切分的文件有效期清理切分文件，当滚动切分特性开启时有效。默认为0，表示不备份，切分则删除
+    rotateBackupCompress: 9     # 滚动切分文件的压缩比（0-9）。默认为0，表示不压缩
+    rotateCheckInterval: "24h"  # 滚动切分的时间检测间隔，一般不需要设置。默认为1小时
+    stdoutColorDisabled: false  # 关闭终端的颜色打印。默认开启
+    writerColorEnable: false    # 日志文件是否带上颜色。默认false，表示不带颜色
   error:
-    path: "log/lczx"                                # 日志文件路径。默认为空，表示关闭，仅输出到终端
-    file: "error-{Y-m-d}.log"                       # 日志文件格式。默认为"{Y-m-d}.log"
-    prefix: ""                                      # 日志内容输出前缀。默认为空
-    level: "PROD"                                   # 日志输出级别
-    ctxKeys: [ "RequestId" ]                        # 自定义Context上下文变量名称，自动打印Context的变量到日志中。默认为空
-    header: true                                    # 是否打印日志的头信息。默认true
-    stdout: true                                    # 日志是否同时输出到终端。默认true
-    rotateSize: "100M"                              # 按照日志文件大小对文件进行滚动切分。默认为0，表示关闭滚动切分特性
-    rotateExpire: 0                                 # 按照日志文件时间间隔对文件滚动切分。默认为0，表示关闭滚动切分特性
-    rotateBackupLimit: 10                           # 按照切分的文件数量清理切分文件，当滚动切分特性开启时有效。默认为0，表示不备份，切分则删除
-    rotateBackupExpire: "60d"                       # 按照切分的文件有效期清理切分文件，当滚动切分特性开启时有效。默认为0，表示不备份，切分则删除
-    rotateBackupCompress: 9                         # 滚动切分文件的压缩比（0-9）。默认为0，表示不压缩
-    rotateCheckInterval: "24h"                      # 滚动切分的时间检测间隔，一般不需要设置。默认为1小时
-    stdoutColorDisabled: false                      # 关闭终端的颜色打印。默认开启
-    writerColorEnable: false                        # 日志文件是否带上颜色。默认false，表示不带颜色
+    path: "log/lczx"            # 日志文件路径。默认为空，表示关闭，仅输出到终端
+    file: "error-{Y-m-d}.log"   # 日志文件格式。默认为"{Y-m-d}.log"
+    prefix: ""                  # 日志内容输出前缀。默认为空
+    level: "PROD"               # 日志输出级别
+    ctxKeys: [ "RequestId" ]    # 自定义Context上下文变量名称，自动打印Context的变量到日志中。默认为空
+    header: true                # 是否打印日志的头信息。默认true
+    stdout: true                # 日志是否同时输出到终端。默认true
+    rotateSize: "100M"          # 按照日志文件大小对文件进行滚动切分。默认为0，表示关闭滚动切分特性
+    rotateExpire: 0             # 按照日志文件时间间隔对文件滚动切分。默认为0，表示关闭滚动切分特性
+    rotateBackupLimit: 10       # 按照切分的文件数量清理切分文件，当滚动切分特性开启时有效。默认为0，表示不备份，切分则删除
+    rotateBackupExpire: "60d"   # 按照切分的文件有效期清理切分文件，当滚动切分特性开启时有效。默认为0，表示不备份，切分则删除
+    rotateBackupCompress: 9     # 滚动切分文件的压缩比（0-9）。默认为0，表示不压缩
+    rotateCheckInterval: "24h"  # 滚动切分的时间检测间隔，一般不需要设置。默认为1小时
+    stdoutColorDisabled: false  # 关闭终端的颜色打印。默认开启
+    writerColorEnable: false    # 日志文件是否带上颜色。默认false，表示不带颜色
 
 # 数据库连接配置
 database:
@@ -106,21 +106,34 @@ redis:
 
 # gToken 配置
 gToken:
-  ServerName: "lczx"                                # 服务名。默认为空
-  CacheMode: 2                                      # 缓存模式。1: gcache 2: gredis 3: fileCache 默认1
-  CacheKey: "GToken:lczx:"                          # 缓存key。默认缓存前缀GToken:
-  Timeout: 864000000                                # 超时时间。默认10天（毫秒）
-  MaxRefresh: 432000000                             # 缓存刷新时间。默认为超时时间的一半（毫秒）
-  TokenDelimiter: "_"                               # Token分隔符。默认_
-  EncryptKey: "1ee7f75f1145e929df46514e3c924d69"    # Token加密key。默认12345678912345678912345678912345
-  AuthFailMsg: "登录超时或未登录，请重新登录"            # 认证失败提示。默认请求错误或登录超时
-  MultiLogin: true                                  # 是否支持多端登录。默认false
+  ServerName: "lczx"                              # 服务名。默认为空
+  CacheMode: 2                                    # 缓存模式。1: gcache 2: gredis 3: fileCache 默认1
+  CacheKey: "GToken:lczx:"                        # 缓存key。默认缓存前缀GToken:
+  Timeout: 864000000                              # 超时时间。默认10天（毫秒）
+  MaxRefresh: 432000000                           # 缓存刷新时间。默认为超时时间的一半（毫秒）
+  TokenDelimiter: "_"                             # Token分隔符。默认_
+  EncryptKey: "1ee7f75f1145e929df46514e3c924d69"  # Token加密key。默认12345678912345678912345678912345
+  AuthFailMsg: "登录超时或未登录，请重新登录"         # 认证失败提示。默认请求错误或登录超时
+  MultiLogin: true                                # 是否支持多端登录。默认false
 
 # 用户管理配置
 userManager:
-  notCheckAuthUserIds: [ 1 ]                        # 无需验证后台权限的用户ID
+  notCheckAuthUserIds: [ 1 ]  # 无需验证后台权限的用户ID
 
 # casbin配置
 casbin:
   modelFile: "manifest/config/rbac_model.conf"
   policyFile: "manifest/config/rbac_policy.csv"
+
+# 上传配置
+upload:
+  type: 1                                                                     # 上传方式。1: 阿里云OSS
+  imgList: [ "jpg", "jpeg", "png", "gif" ]                                    # 允许上传的图片类型
+  fileList: [ "doc", "docx", "xls", "xlsx", "ppt", "pptx", "pdf", "txt" ]     # 允许上传的文件类型
+  maxSize: 5120                                                               # 最大文件上传大小(MB)。默认为5*1024=5G=5120MB
+  aliyunOSS:
+    bucket: "lczx-sys"
+    endpoint: "https://oss-accelerate.aliyuncs.com"
+    rawUrl: "https://lczx-sys.oss-accelerate.aliyuncs.com"
+    accessKeyID: "LTAI5tF5WFqMquq6PfdVzujw"
+    accessKeySecret: "v8eTfD0wTNyZ34vzhZ6RIqJskyPNZj"

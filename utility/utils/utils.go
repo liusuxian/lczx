@@ -14,17 +14,18 @@ import (
 )
 
 // GetClientIp 获取客户端IP
-func GetClientIp(req *ghttp.Request) string {
-	ip := req.Header.Get("X-Forwarded-For")
+func GetClientIp(req *ghttp.Request) (ip string) {
+	ip = req.Header.Get("X-Forwarded-For")
 	if ip == "" {
 		ip = req.GetClientIp()
 	}
-	return ip
+	return
 }
 
 // GetLocalIp 获取服务端IP
 func GetLocalIp() (ip string, err error) {
-	addrs, err := net.InterfaceAddrs()
+	var addrs []net.Addr
+	addrs, err = net.InterfaceAddrs()
 	if err != nil {
 		return
 	}
@@ -39,7 +40,8 @@ func GetLocalIp() (ip string, err error) {
 		if !ipAddr.IP.IsGlobalUnicast() {
 			continue
 		}
-		return ipAddr.IP.String(), nil
+		ip = ipAddr.IP.String()
+		return
 	}
 	return
 }

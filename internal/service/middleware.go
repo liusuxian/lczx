@@ -48,6 +48,11 @@ func (s *sMiddleware) Ctx(req *ghttp.Request) {
 			Context().SetUser(ctx, &model.ContextUser{
 				Id:       user.Id,
 				Passport: user.Passport,
+				Realname: user.Realname,
+				Nickname: user.Nickname,
+				Avatar:   user.Avatar,
+				DeptId:   user.DeptId,
+				Status:   user.Status,
 				IsAdmin:  user.IsAdmin,
 			})
 		}

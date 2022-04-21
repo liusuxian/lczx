@@ -16,5 +16,10 @@ type Context struct {
 type ContextUser struct {
 	Id       uint64 // 用户ID
 	Passport string // 账号
+	Realname string // 姓名
+	Nickname string // 昵称
+	Avatar   string // 头像地址
+	DeptId   uint64 // 部门ID
+	Status   uint   // 状态 0:禁用 1:启用
 	IsAdmin  uint   // 是否后台管理员 0:否 1:是
 }
