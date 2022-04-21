@@ -9,7 +9,7 @@ import (
 	"lczx/internal/code"
 	"lczx/internal/model/entity"
 	"lczx/internal/service"
-	"lczx/utility/logger"
+	"lczx/internal/upload"
 )
 
 var (
@@ -81,7 +81,26 @@ func (c *cUser) Profile(ctx context.Context, req *v1.UserProfileReq) (res *v1.Us
 // UploadAvatar 上传用户头像
 func (c *cUser) UploadAvatar(ctx context.Context, req *v1.UserUploadAvatarReq) (res *v1.UserUploadAvatarRes, err error) {
 	avatar := g.RequestFromCtx(ctx).GetUploadFile(req.UploadName)
-	logger.Debug(ctx, "avatar: ", avatar)
+	if avatar == nil {
+		err = gerror.WrapCode(code.SetUserAvatarFailed, gerror.New("获取上传文件信息失败"))
+		return
+	}
+	// 上传头像
+	var fileInfo *upload.FileInfo
+	fileInfo, err = upload.Upload.UploadImg(avatar, "user/avatar")
+	if err != nil {
+		err = gerror.WrapCode(code.SetUserAvatarFailed, err)
+		return
+	}
+	// 设置用户头像
+	user := service.Context().Get(ctx).User
+	err = service.User().SetAvatar(ctx, user.Id, fileInfo.FileUrl)
+	if err != nil {
+		err = gerror.WrapCode(code.SetUserAvatarFailed, err)
+		return
+	}
+
+	res = &v1.UserUploadAvatarRes{FileInfo: fileInfo}
 	return
 }
 

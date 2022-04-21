@@ -29,6 +29,7 @@ var (
 	ResetPwdFailed        = gcode.New(1208, "重置用户密码失败", "")     // 重置用户密码失败
 	GetEditUserFailed     = gcode.New(1209, "获取被修改用户的信息失败", "") // 获取被修改用户的信息失败
 	SetUserStatusFailed   = gcode.New(1210, "设置用户状态失败", "")     // 设置用户状态失败
+	SetUserAvatarFailed   = gcode.New(1211, "设置用户头像失败", "")     // 设置用户头像失败
 
 	GetDeptListFailed     = gcode.New(1300, "获取部门列表失败", "")    // 获取部门列表失败
 	GetDeptTreeFailed     = gcode.New(1301, "获取部门树信息失败", "")   // 获取部门树信息失败
