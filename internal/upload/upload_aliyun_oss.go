@@ -11,6 +11,7 @@ import (
 	"github.com/gogf/gf/v2/util/gconv"
 	"github.com/gogf/gf/v2/util/grand"
 	"io"
+	"lczx/utility/crypto"
 	"strconv"
 	"strings"
 )
@@ -23,8 +24,8 @@ func init() {
 			Bucket:          g.Cfg().MustGet(ctx, "upload.aliyunOSS.bucket").String(),
 			Endpoint:        g.Cfg().MustGet(ctx, "upload.aliyunOSS.endpoint").String(),
 			RawUrl:          g.Cfg().MustGet(ctx, "upload.aliyunOSS.rawUrl").String(),
-			AccessKeyID:     g.Cfg().MustGet(ctx, "upload.aliyunOSS.accessKeyID").String(),
-			AccessKeySecret: g.Cfg().MustGet(ctx, "upload.aliyunOSS.accessKeySecret").String(),
+			AccessKeyID:     g.Cfg().MustGet(ctx, "upload.aliyunOSS.accessKeyID").Bytes(),
+			AccessKeySecret: g.Cfg().MustGet(ctx, "upload.aliyunOSS.accessKeySecret").Bytes(),
 		}
 		Upload = &upload{
 			upAdapter: adp,
@@ -36,8 +37,8 @@ type FileUploadOSSAdapter struct {
 	Bucket          string
 	Endpoint        string
 	RawUrl          string
-	AccessKeyID     string
-	AccessKeySecret string
+	AccessKeyID     []byte
+	AccessKeySecret []byte
 }
 
 func (u FileUploadOSSAdapter) UploadImg(file *ghttp.UploadFile, dirPath string) (fileInfo *FileInfo, err error) {
@@ -159,12 +160,25 @@ func (u FileUploadOSSAdapter) getUrl(filepath string) string {
 
 // 上传到阿里云OSS操作
 func (u FileUploadOSSAdapter) uploadAction(file *ghttp.UploadFile, dirPath string) (filepath string, err error) {
+	// 文件名处理
 	filename := strings.ToLower(strconv.FormatInt(gtime.TimestampNano(), 36) + grand.S(10))
 	filename = filename + gfile.Ext(file.Filename)
 	filepath = dirPath + "/" + filename
+	// 解密 accessKeyID
+	var accessKeyID []byte
+	accessKeyID, err = crypto.AesDecrypt(u.AccessKeyID)
+	if err != nil {
+		return
+	}
+	// 解密 accessKeySecret
+	var accessKeySecret []byte
+	accessKeySecret, err = crypto.AesDecrypt(u.AccessKeySecret)
+	if err != nil {
+		return
+	}
 	// 连接OSS
 	var client *oss.Client
-	client, err = oss.New(u.Endpoint, u.AccessKeyID, u.AccessKeySecret)
+	client, err = oss.New(u.Endpoint, gstr.TrimAll(string(accessKeyID)), gstr.TrimAll(string(accessKeySecret)))
 	if err != nil {
 		return
 	}
