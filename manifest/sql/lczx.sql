@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 20/04/2022 12:26:34
+ Date: 21/04/2022 19:29:06
 */
 
 SET NAMES utf8mb4;
@@ -312,6 +312,39 @@ CREATE TABLE `user_online` (
 
 -- ----------------------------
 -- Records of user_online
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
+-- Table structure for wdk_project
+-- ----------------------------
+DROP TABLE IF EXISTS `wdk_project`;
+CREATE TABLE `wdk_project` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '项目ID',
+  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '项目名称',
+  `type` tinyint unsigned DEFAULT NULL COMMENT '项目性质 0:蓝绿体系 1:非绿',
+  `origin` tinyint unsigned DEFAULT NULL COMMENT '项目来源 0:物业公司 1:分子公司 2:老客户 3:自拓',
+  `step` tinyint unsigned DEFAULT NULL COMMENT '项目阶段 0:合同签约 1:项目启动会 2:服务中 3:合同结束 4:复盘',
+  `file_upload_status` tinyint unsigned DEFAULT NULL COMMENT '项目文件上传状态 0:未传完 1:已传完',
+  `business_type` tinyint unsigned DEFAULT NULL COMMENT '业务类型 0:物业 1:专项 3:全过程',
+  `deep_culture` tinyint unsigned DEFAULT NULL COMMENT '是否为深耕 0:否 1:是',
+  `status` tinyint unsigned DEFAULT NULL COMMENT '服务状态 0:服务中 1:暂停 2:提前终止 3:正常结束',
+  `entrust_company` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '委托方公司',
+  `sign_company` tinyint unsigned DEFAULT NULL COMMENT '我方签订公司 0:绿城房地产咨询集团有限公司 1:浙江幸福绿城房地产咨询有限公司 2:浙江美好绿城房地产咨询有限公司',
+  `principal` bigint unsigned DEFAULT NULL COMMENT '负责人用户ID',
+  `dept_id` bigint unsigned DEFAULT NULL COMMENT '项目所属部门ID',
+  `region` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '地区(省/市/县)',
+  `start_time` datetime DEFAULT NULL COMMENT '项目开始时间',
+  `end_time` datetime DEFAULT NULL COMMENT '项目结束时间',
+  `create_at` datetime DEFAULT NULL COMMENT '项目创建时间',
+  `update_at` datetime DEFAULT NULL COMMENT '项目更新时间',
+  `deleted_at` datetime DEFAULT NULL COMMENT '项目软删除时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ----------------------------
+-- Records of wdk_project
 -- ----------------------------
 BEGIN;
 COMMIT;
