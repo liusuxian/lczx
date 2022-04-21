@@ -127,13 +127,13 @@ casbin:
 
 # 上传配置
 upload:
-  type: 1                                                                     # 上传方式。1: 阿里云OSS
-  imgList: [ "jpg", "jpeg", "png", "gif" ]                                    # 允许上传的图片类型
-  fileList: [ "doc", "docx", "xls", "xlsx", "ppt", "pptx", "pdf", "txt" ]     # 允许上传的文件类型
-  maxSize: 5120                                                               # 最大文件上传大小(MB)。默认为5*1024=5G=5120MB
+  type: 1                                                                                                                                     # 上传方式。1: 阿里云OSS
+  imgList: [ "jpg", "jpeg", "png", "gif" ]                                                                                                    # 允许上传的图片类型
+  fileList: [ "doc", "docx", "xls", "xlsx", "ppt", "pptx", "pdf", "txt" ]                                                                     # 允许上传的文件类型
+  maxSize: 5120                                                                                                                               # 最大文件上传大小(MB)。默认为5*1024=5G=5120MB
   aliyunOSS:
     bucket: "lczx-sys"
     endpoint: "https://oss-accelerate.aliyuncs.com"
     rawUrl: "https://lczx-sys.oss-accelerate.aliyuncs.com"
-    accessKeyID: "LTAI5tF5WFqMquq6PfdVzujw"
-    accessKeySecret: "v8eTfD0wTNyZ34vzhZ6RIqJskyPNZj"
+    accessKeyID: [ 104,222,248,148,22,144,35,243,135,147,82,154,133,165,192,17,47,214,132,247,14,186,4,177,34,170,13,46,190,52,125,237 ]      # accessKeyID 已加密处理
+    accessKeySecret: [ 82,178,220,137,69,160,85,177,132,155,90,141,199,228,199,93,39,119,76,189,234,99,18,162,142,93,195,224,115,167,146,36 ] # accessKeySecret 已加密处理
