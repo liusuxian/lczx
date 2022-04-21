@@ -2,12 +2,14 @@ package cmd
 
 import (
 	"context"
+	"fmt"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/os/gcmd"
 	"github.com/gogf/gf/v2/os/gcron"
 	"lczx/internal/controller"
 	"lczx/internal/service"
+	"lczx/internal/upload"
 	"lczx/utility/logger"
 )
 
@@ -32,6 +34,20 @@ var (
 				// 验证码
 				group.Group("/captcha", func(group *ghttp.RouterGroup) {
 					group.Bind(controller.Captcha)
+				})
+				// 测试上传文件
+				group.Group("/upload", func(group *ghttp.RouterGroup) {
+					group.POST("/test", func(req *ghttp.Request) {
+						file := req.GetUploadFile("upload-test")
+						if file != nil {
+							f, e := upload.Upload.UploadFile(file, "wdk")
+							if e != nil {
+								fmt.Println("upload test err: ", e)
+							} else {
+								fmt.Println("upload test succ: ", f)
+							}
+						}
+					})
 				})
 			})
 			// 认证接口
