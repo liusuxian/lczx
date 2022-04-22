@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 21/04/2022 19:29:06
+ Date: 22/04/2022 19:00:29
 */
 
 SET NAMES utf8mb4;
@@ -317,34 +317,270 @@ BEGIN;
 COMMIT;
 
 -- ----------------------------
--- Table structure for wdk_project
+-- Table structure for wdk_attachment_file
 -- ----------------------------
-DROP TABLE IF EXISTS `wdk_project`;
-CREATE TABLE `wdk_project` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '项目ID',
-  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '项目名称',
-  `type` tinyint unsigned DEFAULT NULL COMMENT '项目性质 0:蓝绿体系 1:非绿',
-  `origin` tinyint unsigned DEFAULT NULL COMMENT '项目来源 0:物业公司 1:分子公司 2:老客户 3:自拓',
-  `step` tinyint unsigned DEFAULT NULL COMMENT '项目阶段 0:合同签约 1:项目启动会 2:服务中 3:合同结束 4:复盘',
-  `file_upload_status` tinyint unsigned DEFAULT NULL COMMENT '项目文件上传状态 0:未传完 1:已传完',
-  `business_type` tinyint unsigned DEFAULT NULL COMMENT '业务类型 0:物业 1:专项 3:全过程',
-  `deep_culture` tinyint unsigned DEFAULT NULL COMMENT '是否为深耕 0:否 1:是',
-  `status` tinyint unsigned DEFAULT NULL COMMENT '服务状态 0:服务中 1:暂停 2:提前终止 3:正常结束',
-  `entrust_company` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '委托方公司',
-  `sign_company` tinyint unsigned DEFAULT NULL COMMENT '我方签订公司 0:绿城房地产咨询集团有限公司 1:浙江幸福绿城房地产咨询有限公司 2:浙江美好绿城房地产咨询有限公司',
-  `principal` bigint unsigned DEFAULT NULL COMMENT '负责人用户ID',
-  `dept_id` bigint unsigned DEFAULT NULL COMMENT '项目所属部门ID',
-  `region` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '地区(省/市/县)',
-  `start_time` datetime DEFAULT NULL COMMENT '项目开始时间',
-  `end_time` datetime DEFAULT NULL COMMENT '项目结束时间',
-  `create_at` datetime DEFAULT NULL COMMENT '项目创建时间',
-  `update_at` datetime DEFAULT NULL COMMENT '项目更新时间',
-  `deleted_at` datetime DEFAULT NULL COMMENT '项目软删除时间',
+DROP TABLE IF EXISTS `wdk_attachment_file`;
+CREATE TABLE `wdk_attachment_file` (
+  `id` bigint unsigned NOT NULL COMMENT '附件上传记录ID',
+  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '附件名',
+  `origin_url` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '原始附件url',
+  `pdf_url` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT 'pdf附件url',
+  KEY `id_index` (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ----------------------------
+-- Records of wdk_attachment_file
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
+-- Table structure for wdk_attachment_record
+-- ----------------------------
+DROP TABLE IF EXISTS `wdk_attachment_record`;
+CREATE TABLE `wdk_attachment_record` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '附件上传记录ID',
+  `remark` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '备注',
+  `create_at` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_at` datetime DEFAULT NULL COMMENT '更新时间',
+  `deleted_at` datetime DEFAULT NULL COMMENT '软删除时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ----------------------------
+-- Records of wdk_attachment_record
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
+-- Table structure for wdk_audit_cfg
+-- ----------------------------
+DROP TABLE IF EXISTS `wdk_audit_cfg`;
+CREATE TABLE `wdk_audit_cfg` (
+  `type_id` bigint unsigned NOT NULL COMMENT '上传文件类型ID',
+  `audit_uid` bigint unsigned NOT NULL COMMENT '审核员用户ID',
+  `audit_name` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '审核员姓名',
+  PRIMARY KEY (`type_id`,`audit_uid`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ----------------------------
+-- Records of wdk_audit_cfg
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
+-- Table structure for wdk_audit_filetype
+-- ----------------------------
+DROP TABLE IF EXISTS `wdk_audit_filetype`;
+CREATE TABLE `wdk_audit_filetype` (
+  `audit_uid` bigint unsigned NOT NULL COMMENT '审核员用户ID',
+  `file_id` bigint unsigned NOT NULL COMMENT '审核的文件ID',
+  `type_id` bigint unsigned NOT NULL COMMENT '审核文件类型ID 详见wdk_filetype_cfg配置',
+  PRIMARY KEY (`audit_uid`,`file_id`,`type_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ----------------------------
+-- Records of wdk_audit_filetype
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
+-- Table structure for wdk_audit_record
+-- ----------------------------
+DROP TABLE IF EXISTS `wdk_audit_record`;
+CREATE TABLE `wdk_audit_record` (
+  `audit_uid` bigint unsigned NOT NULL COMMENT '审核员用户ID',
+  `file_id` bigint unsigned NOT NULL COMMENT '需要审核的文件ID',
+  `status` tinyint unsigned NOT NULL COMMENT '审核状态 1:审核中 2:已通过 3:未通过',
+  `audit_time` datetime DEFAULT NULL COMMENT '审核时间',
+  `audit_name` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '审核员姓名',
+  `create_at` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_at` datetime DEFAULT NULL COMMENT '更新时间',
+  `deleted_at` datetime DEFAULT NULL COMMENT '软删除时间',
+  PRIMARY KEY (`audit_uid`,`file_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ----------------------------
+-- Records of wdk_audit_record
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
+-- Table structure for wdk_file
+-- ----------------------------
+DROP TABLE IF EXISTS `wdk_file`;
+CREATE TABLE `wdk_file` (
+  `file_id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '上传文件ID',
+  `project_id` bigint unsigned NOT NULL COMMENT '所属项目ID',
+  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '文件名',
+  `create_by` bigint unsigned NOT NULL COMMENT '上传者用户ID',
+  `create_name` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '上传者姓名',
+  `audit_status` tinyint unsigned NOT NULL COMMENT '审核状态 0:不需要审核 1:审核中 2:已通过 3:未通过',
+  `audit_names` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '审核人员们的姓名',
+  `audit_end_time` datetime DEFAULT NULL COMMENT '审核完成时间',
+  `excellence` tinyint unsigned NOT NULL COMMENT '是否是优秀报告 0:无该属性 1:被推荐为优秀报告 2:未被评选为优秀报告 3:已被评选为优秀报告',
+  `origin_url` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '原始文件url',
+  `pdf_url` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'pdf文件url',
+  `create_at` datetime DEFAULT NULL COMMENT '上传时间',
+  `update_at` datetime DEFAULT NULL COMMENT '更新时间',
+  `deleted_at` datetime DEFAULT NULL COMMENT '软删除时间',
+  PRIMARY KEY (`file_id`,`project_id`) USING BTREE,
+  KEY `id_index` (`project_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ----------------------------
+-- Records of wdk_file
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
+-- Table structure for wdk_file_comment
+-- ----------------------------
+DROP TABLE IF EXISTS `wdk_file_comment`;
+CREATE TABLE `wdk_file_comment` (
+  `audit_uid` bigint unsigned NOT NULL COMMENT '审核员用户ID',
+  `file_id` bigint unsigned NOT NULL COMMENT '审核的文件ID',
+  `page` int unsigned NOT NULL COMMENT '文件页码',
+  `audit_name` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '审核人员姓名',
+  `comment` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '每页评价内容',
+  `create_at` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_at` datetime DEFAULT NULL COMMENT '更新时间',
+  `deleted_at` datetime DEFAULT NULL COMMENT '软删除时间',
+  PRIMARY KEY (`audit_uid`,`file_id`,`page`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ----------------------------
+-- Records of wdk_file_comment
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
+-- Table structure for wdk_filetype
+-- ----------------------------
+DROP TABLE IF EXISTS `wdk_filetype`;
+CREATE TABLE `wdk_filetype` (
+  `file_id` bigint unsigned NOT NULL COMMENT '上传文件ID',
+  `type_id` bigint unsigned NOT NULL COMMENT '上传文件类型ID 详见wdk_filetype_cfg配置',
+  PRIMARY KEY (`file_id`,`type_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ----------------------------
+-- Records of wdk_filetype
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
+-- Table structure for wdk_filetype_cfg
+-- ----------------------------
+DROP TABLE IF EXISTS `wdk_filetype_cfg`;
+CREATE TABLE `wdk_filetype_cfg` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '上传文件类型ID',
+  `name` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '类型名称',
+  `multiple` tinyint unsigned NOT NULL COMMENT '是否同时存在多个文件 0:否 1:是',
+  `audit` tinyint unsigned NOT NULL COMMENT '是否需要审核 0:不需要 1:需要',
+  `step` tinyint unsigned NOT NULL COMMENT '所属项目阶段 1:合同签约 2:项目启动会 3:服务中 4:合同结束 5:复盘',
+  `create_at` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_at` datetime DEFAULT NULL COMMENT '更新时间',
+  `deleted_at` datetime DEFAULT NULL COMMENT '软删除时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name_index` (`name`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ----------------------------
+-- Records of wdk_filetype_cfg
+-- ----------------------------
+BEGIN;
+INSERT INTO `wdk_filetype_cfg` (`id`, `name`, `multiple`, `audit`, `step`, `create_at`, `update_at`, `deleted_at`) VALUES (1, '合同扫描文件', 0, 0, 1, '2022-04-22 10:38:11', '2022-04-22 10:38:11', NULL);
+INSERT INTO `wdk_filetype_cfg` (`id`, `name`, `multiple`, `audit`, `step`, `create_at`, `update_at`, `deleted_at`) VALUES (2, '年度服务计划书', 0, 0, 2, '2022-04-22 10:38:44', '2022-04-22 10:38:44', NULL);
+INSERT INTO `wdk_filetype_cfg` (`id`, `name`, `multiple`, `audit`, `step`, `create_at`, `update_at`, `deleted_at`) VALUES (3, '总结报告', 0, 0, 4, '2022-04-22 10:39:02', '2022-04-22 10:39:02', NULL);
+INSERT INTO `wdk_filetype_cfg` (`id`, `name`, `multiple`, `audit`, `step`, `create_at`, `update_at`, `deleted_at`) VALUES (4, '项目移交', 0, 0, 4, '2022-04-22 10:39:19', '2022-04-22 10:39:19', NULL);
+INSERT INTO `wdk_filetype_cfg` (`id`, `name`, `multiple`, `audit`, `step`, `create_at`, `update_at`, `deleted_at`) VALUES (5, '复盘报告', 0, 0, 5, '2022-04-22 10:40:05', '2022-04-22 10:40:05', NULL);
+INSERT INTO `wdk_filetype_cfg` (`id`, `name`, `multiple`, `audit`, `step`, `create_at`, `update_at`, `deleted_at`) VALUES (6, '文件签收单', 1, 0, 3, '2022-04-22 10:40:43', '2022-04-22 10:40:43', NULL);
+INSERT INTO `wdk_filetype_cfg` (`id`, `name`, `multiple`, `audit`, `step`, `create_at`, `update_at`, `deleted_at`) VALUES (7, '满意度调查表', 1, 0, 3, '2022-04-22 10:41:37', '2022-04-22 10:41:37', NULL);
+INSERT INTO `wdk_filetype_cfg` (`id`, `name`, `multiple`, `audit`, `step`, `create_at`, `update_at`, `deleted_at`) VALUES (8, '规划设计报告', 1, 1, 3, '2022-04-22 10:42:59', '2022-04-22 10:42:59', NULL);
+INSERT INTO `wdk_filetype_cfg` (`id`, `name`, `multiple`, `audit`, `step`, `create_at`, `update_at`, `deleted_at`) VALUES (9, '建筑图纸报告', 1, 1, 3, '2022-04-22 10:43:17', '2022-04-22 10:43:17', NULL);
+INSERT INTO `wdk_filetype_cfg` (`id`, `name`, `multiple`, `audit`, `step`, `create_at`, `update_at`, `deleted_at`) VALUES (10, '水电报告', 1, 1, 3, '2022-04-22 10:43:40', '2022-04-22 10:43:40', NULL);
+COMMIT;
+
+-- ----------------------------
+-- Table structure for wdk_project
+-- ----------------------------
+DROP TABLE IF EXISTS `wdk_project`;
+CREATE TABLE `wdk_project` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '文档库项目ID',
+  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '项目名称',
+  `type` tinyint unsigned NOT NULL COMMENT '项目性质 0:蓝绿体系 1:非绿',
+  `origin` tinyint unsigned NOT NULL COMMENT '项目来源 0:物业公司 1:分子公司 2:老客户 3:自拓',
+  `step` tinyint unsigned NOT NULL COMMENT '项目阶段 1:合同签约 2:项目启动会 3:服务中 4:合同结束 5:复盘',
+  `file_upload_status` tinyint unsigned NOT NULL COMMENT '项目文件上传状态 0:未传完 1:已传完',
+  `business_type` tinyint unsigned NOT NULL COMMENT '业务类型 0:物业 1:专项 3:全过程',
+  `deep_culture` tinyint unsigned NOT NULL COMMENT '是否为深耕 0:否 1:是',
+  `status` tinyint unsigned NOT NULL COMMENT '服务状态 0:服务中 1:暂停 2:提前终止 3:正常结束',
+  `entrust_company` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '委托方公司',
+  `sign_company` tinyint unsigned NOT NULL COMMENT '我方签订公司 0:绿城房地产咨询集团有限公司 1:浙江幸福绿城房地产咨询有限公司 2:浙江美好绿城房地产咨询有限公司',
+  `principal_uid` bigint unsigned NOT NULL COMMENT '负责人用户ID',
+  `principal_name` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '负责人姓名',
+  `dept_id` bigint unsigned NOT NULL COMMENT '项目所属部门ID',
+  `region` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '地区(省/市/县)',
+  `start_time` datetime DEFAULT NULL COMMENT '项目开始时间',
+  `end_time` datetime DEFAULT NULL COMMENT '项目结束时间',
+  `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '备注',
+  `create_at` datetime DEFAULT NULL COMMENT '项目创建时间',
+  `update_at` datetime DEFAULT NULL COMMENT '项目更新时间',
+  `deleted_at` datetime DEFAULT NULL COMMENT '项目软删除时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name_index` (`name`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ----------------------------
 -- Records of wdk_project
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
+-- Table structure for wdk_service_photo
+-- ----------------------------
+DROP TABLE IF EXISTS `wdk_service_photo`;
+CREATE TABLE `wdk_service_photo` (
+  `id` bigint unsigned NOT NULL COMMENT '服务记录ID',
+  `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '照片名称',
+  `url` text COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '照片文件url',
+  KEY `id_index` (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ----------------------------
+-- Records of wdk_service_photo
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
+-- Table structure for wdk_service_record
+-- ----------------------------
+DROP TABLE IF EXISTS `wdk_service_record`;
+CREATE TABLE `wdk_service_record` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '服务记录ID',
+  `service_time` datetime NOT NULL COMMENT '服务时间',
+  `xch_name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '行程涵文件名',
+  `xch_origin_url` text COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '原始行程涵url',
+  `xch_pdf_url` text COLLATE utf8mb4_unicode_ci COMMENT 'pdf行程涵url',
+  `remark` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '备注',
+  `create_at` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_at` datetime DEFAULT NULL COMMENT '更新时间',
+  `deleted_at` datetime DEFAULT NULL COMMENT '软删除时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ----------------------------
+-- Records of wdk_service_record
 -- ----------------------------
 BEGIN;
 COMMIT;

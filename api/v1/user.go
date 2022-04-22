@@ -48,11 +48,10 @@ type UserUploadAvatarRes struct {
 // UserProfileEditReq 编辑个人中心信息请求参数
 type UserProfileEditReq struct {
 	g.Meta   `path:"/profileEdit" tags:"UserProfileEdit" method:"put" summary:"You first user/profileEdit api"`
-	Realname string `json:"realname" v:"required|regex:^[\u4e00-\u9fa5]{0,10}$#姓名不能为空|姓名必须为中文且长度不能超过10" dc:"姓名"` // 姓名
-	Nickname string `json:"nickname" v:"regex:^[\u4e00-\u9fa5]{0,20}$#昵称必须为中文且长度不能超过20" dc:"昵称"`                 // 昵称
-	Mobile   string `json:"mobile" v:"phone#不是有效的手机号码" dc:"手机号"`                                                 // 手机号
-	Email    string `json:"email" v:"email#不是有效的用户邮箱" dc:"用户邮箱"`                                                 // 用户邮箱
-	Gender   uint   `json:"gender" v:"required|in:1,2#性别不能为空|性别只能是1,2" dc:"性别 1: 男 2: 女"`                        // 性别 1: 男 2: 女
+	Nickname string `json:"nickname" v:"regex:^[\u4e00-\u9fa5]{0,20}$#昵称必须为中文且长度不能超过20" dc:"昵称"` // 昵称
+	Mobile   string `json:"mobile" v:"phone#不是有效的手机号码" dc:"手机号"`                                 // 手机号
+	Email    string `json:"email" v:"email#不是有效的用户邮箱" dc:"用户邮箱"`                                 // 用户邮箱
+	Gender   uint   `json:"gender" v:"required|in:1,2#性别不能为空|性别只能是1,2" dc:"性别 1: 男 2: 女"`        // 性别 1: 男 2: 女
 }
 
 // UserProfileEditRes 编辑个人中心信息返回参数

@@ -119,7 +119,6 @@ func (s *sUser) EditProfile(ctx context.Context, id uint64, req *v1.UserProfileE
 		Name:     s.UserCacheKey(id),
 		Force:    false,
 	}).Data(do.User{
-		Realname: req.Realname,
 		Nickname: req.Nickname,
 		Mobile:   req.Mobile,
 		Email:    req.Email,
