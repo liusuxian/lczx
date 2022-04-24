@@ -58,4 +58,7 @@ var (
 
 	GetWdkProjectListFailed = gcode.New(1600, "获取文档库项目列表失败", "") // 获取文档库项目列表失败
 	AddWdkProjectFailed     = gcode.New(1601, "添加文档库项目失败", "")   // 添加文档库项目失败
+	GetWdkProjectFailed     = gcode.New(1602, "获取文档库项目信息失败", "") // 获取文档库项目信息失败
+	EditWdkProjectFailed    = gcode.New(1603, "修改文档库项目失败", "")   // 修改文档库项目失败
+	DeleteWdkProjectFailed  = gcode.New(1604, "删除文档库项目失败", "")   // 删除文档库项目失败
 )

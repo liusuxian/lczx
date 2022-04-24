@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 24/04/2022 15:25:11
+ Date: 24/04/2022 17:35:49
 */
 
 SET NAMES utf8mb4;
@@ -78,12 +78,14 @@ CREATE TABLE `dept` (
   `parent_id` bigint unsigned NOT NULL COMMENT '父部门ID',
   `name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '部门名称',
   `status` tinyint unsigned NOT NULL COMMENT '部门状态 0:停用 1:正常',
-  `created_by` bigint unsigned DEFAULT NULL COMMENT '创建人',
+  `created_by` bigint unsigned NOT NULL COMMENT '创建人',
   `updated_by` bigint unsigned DEFAULT NULL COMMENT '修改人',
   `create_at` datetime DEFAULT NULL COMMENT '创建时间',
   `update_at` datetime DEFAULT NULL COMMENT '更新时间',
   `deleted_at` datetime DEFAULT NULL COMMENT '软删除时间',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `parent_id_index` (`parent_id`) USING BTREE,
+  KEY `name_index` (`name`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ----------------------------

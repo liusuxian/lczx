@@ -263,7 +263,7 @@ func (s *sRole) GetMenuIdsByRoleId(ctx context.Context, id uint64) (menuIds []ui
 
 // IsRoleNameAvailable 角色名称是否可用
 func (s *sRole) IsRoleNameAvailable(ctx context.Context, name string) (bool, error) {
-	count, err := dao.Role.Ctx(ctx).Where(do.Role{Name: name}).Count()
+	count, err := dao.Role.Ctx(ctx).Where(do.Role{Name: name}).Unscoped().Count()
 	if err != nil {
 		return false, err
 	}

@@ -49,7 +49,7 @@ type WdkProjectAddReq struct {
 	SignCompany    uint        `json:"signCompany" v:"required|in:0,1,2#我方签订公司不能为空|我方签订公司只能是0,1,2" dc:"我方签订公司 0:绿城房地产咨询集团有限公司 1:浙江幸福绿城房地产咨询有限公司 2:浙江美好绿城房地产咨询有限公司"` // 我方签订公司 0:绿城房地产咨询集团有限公司 1:浙江幸福绿城房地产咨询有限公司 2:浙江美好绿城房地产咨询有限公司
 	PrincipalUid   uint64      `json:"principalUid" v:"required|regex:^[1-9]\\d*$#负责人用户ID不能为空|负责人用户ID必须为正整数" dc:"负责人用户ID"`                                          // 负责人用户ID
 	DeptId         uint64      `json:"deptId" v:"required|regex:^[1-9]\\d*$#项目所属部门ID不能为空|项目所属部门ID必须为正整数" dc:"项目所属部门ID"`                                             // 项目所属部门ID
-	Region         string      `json:"region" v:"required|regex:^[\u4e00-\u9fa5\\s]{0,50}$#地区(省/市/县)不能为空|地区(省/市/县)必须为中文且长度不能超过50" dc:"地区(省/市/县)"`                   // 地区(省/市/县)
+	Region         string      `json:"region" v:"required|regex:^[\u4e00-\u9fa5]{0,50}$#地区(省/市/县)不能为空|地区(省/市/县)必须为中文且长度不能超过50" dc:"地区(省/市/县)"`                      // 地区(省/市/县)
 	StartTime      *gtime.Time `json:"startTime" v:"required|datetime#项目开始时间不能为空|项目开始时间不是有效的日期时间" dc:"项目开始时间"`                                                      // 项目开始时间
 	EndTime        *gtime.Time `json:"endTime" v:"required|datetime#项目结束时间不能为空|项目结束时间不是有效的日期时间" dc:"项目结束时间"`                                                        // 项目结束时间
 	Remark         string      `json:"remark" v:"max-length:255#备注长度不能超过255" dc:"备注"`                                                                               // 备注
@@ -59,9 +59,21 @@ type WdkProjectAddReq struct {
 type WdkProjectAddRes struct {
 }
 
+// WdkProjectInfoReq 文档库项目信息请求参数
+type WdkProjectInfoReq struct {
+	g.Meta `path:"/info" tags:"WdkProjectEdit" method:"put" summary:"You first wdk/project/info api"`
+	Id     uint64 `json:"id" v:"required|regex:^[1-9]\\d*$#文档库项目ID不能为空|文档库项目ID必须为正整数" dc:"文档库项目ID"` // 文档库项目ID
+}
+
+// WdkProjectInfoRes 文档库项目信息返回参数
+type WdkProjectInfoRes struct {
+	Info *entity.WdkProject `json:"info" dc:"文档库项目信息"` // 文档库项目信息
+}
+
 // WdkProjectEditReq 文档库编辑项目请求参数
 type WdkProjectEditReq struct {
-	g.Meta         `path:"/add" tags:"WdkProjectEdit" method:"put" summary:"You first wdk/project/edit api"`
+	g.Meta         `path:"/edit" tags:"WdkProjectEdit" method:"put" summary:"You first wdk/project/edit api"`
+	Id             uint64      `json:"id" v:"required|regex:^[1-9]\\d*$#文档库项目ID不能为空|文档库项目ID必须为正整数" dc:"文档库项目ID"`                                                    // 文档库项目ID
 	Name           string      `json:"name" v:"required|regex:^[\u4e00-\u9fa5\\w]{0,100}#项目名称不能为空|项目名称只能包含中文、英文、数字和下划线且长度不能超过100" dc:"项目名称"`                        // 项目名称
 	Type           uint        `json:"type" v:"required|in:0,1#项目性质不能为空|项目性质只能是0,1" dc:"项目性质 0:蓝绿体系 1:非绿"`                                                          // 项目性质 0:蓝绿体系 1:非绿
 	Origin         uint        `json:"origin" v:"required|in:0,1,2,3#项目来源不能为空|项目来源只能是0,1,2,3" dc:"项目来源 0:物业公司 1:分子公司 2:老客户 3:自拓"`                                   // 项目来源 0:物业公司 1:分子公司 2:老客户 3:自拓

@@ -43,3 +43,38 @@ func (c *cWdkProject) Add(ctx context.Context, req *v1.WdkProjectAddReq) (res *v
 
 	return
 }
+
+// Info 文档库项目信息
+func (c *cWdkProject) Info(ctx context.Context, req *v1.WdkProjectInfoReq) (res *v1.WdkProjectInfoRes, err error) {
+	var wdkProject *entity.WdkProject
+	wdkProject, err = service.WdkProject().GetWdkProjectById(ctx, req.Id)
+	if err != nil {
+		err = gerror.WrapCode(code.GetWdkProjectFailed, err)
+		return
+	}
+
+	res = &v1.WdkProjectInfoRes{Info: wdkProject}
+	return
+}
+
+// Edit 编辑文档库项目
+func (c *cWdkProject) Edit(ctx context.Context, req *v1.WdkProjectEditReq) (res *v1.WdkProjectEditRes, err error) {
+	err = service.WdkProject().EditWdkProject(ctx, req)
+	if err != nil {
+		err = gerror.WrapCode(code.EditWdkProjectFailed, err)
+		return
+	}
+
+	return
+}
+
+// Delete 删除文档库项目
+func (c *cWdkProject) Delete(ctx context.Context, req *v1.WdkProjectDeleteReq) (res *v1.WdkProjectDeleteRes, err error) {
+	err = service.WdkProject().DeleteWdkProject(ctx, req.Ids)
+	if err != nil {
+		err = gerror.WrapCode(code.DeleteWdkProjectFailed, err)
+		return
+	}
+
+	return
+}
