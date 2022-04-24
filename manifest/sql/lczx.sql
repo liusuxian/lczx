@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 24/04/2022 14:57:50
+ Date: 24/04/2022 15:25:11
 */
 
 SET NAMES utf8mb4;
@@ -537,7 +537,7 @@ CREATE TABLE `wdk_project` (
   `start_time` datetime NOT NULL COMMENT '项目开始时间',
   `end_time` datetime NOT NULL COMMENT '项目结束时间',
   `create_by` bigint unsigned NOT NULL COMMENT '项目创建者用户ID',
-  `updated_by` bigint unsigned NOT NULL COMMENT '项目修改者用户ID',
+  `updated_by` bigint unsigned DEFAULT NULL COMMENT '项目修改者用户ID',
   `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '备注',
   `create_at` datetime DEFAULT NULL COMMENT '项目创建时间',
   `update_at` datetime DEFAULT NULL COMMENT '项目更新时间',

@@ -110,6 +110,13 @@ var (
 						group.Bind(controller.OperLog)
 					})
 				})
+				// 文档库
+				group.Group("/wdk", func(group *ghttp.RouterGroup) {
+					// 项目管理
+					group.Group("/project", func(group *ghttp.RouterGroup) {
+						group.Bind(controller.WdkProject)
+					})
+				})
 			})
 			// 每2小时执行一次检查在线用户
 			_, err = gcron.Add(ctx, "0 0 */2 * * *", service.Auth().CheckUserOnline)
