@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 24/04/2022 10:40:41
+ Date: 24/04/2022 14:57:50
 */
 
 SET NAMES utf8mb4;
@@ -185,10 +185,10 @@ INSERT INTO `menu` (`id`, `parent_id`, `rule`, `name`, `condition`, `menu_type`,
 INSERT INTO `menu` (`id`, `parent_id`, `rule`, `name`, `condition`, `menu_type`, `status`, `jump_path`, `is_frame`, `module_type`, `remark`, `create_at`, `update_at`, `deleted_at`) VALUES (30, 28, 'monitor/operLog/clear', '清除操作日志', NULL, 2, 1, NULL, 0, 'sys_admin', NULL, '2022-04-18 14:06:21', '2022-04-18 14:06:21', NULL);
 INSERT INTO `menu` (`id`, `parent_id`, `rule`, `name`, `condition`, `menu_type`, `status`, `jump_path`, `is_frame`, `module_type`, `remark`, `create_at`, `update_at`, `deleted_at`) VALUES (31, 22, 'monitor/server_monitor/info', '服务监控信息', NULL, 1, 1, NULL, 0, 'sys_admin', NULL, '2022-04-18 17:03:42', '2022-04-18 17:03:42', NULL);
 INSERT INTO `menu` (`id`, `parent_id`, `rule`, `name`, `condition`, `menu_type`, `status`, `jump_path`, `is_frame`, `module_type`, `remark`, `create_at`, `update_at`, `deleted_at`) VALUES (32, 0, 'wdk', '文档库', NULL, 0, 1, NULL, 0, 'sys_admin', NULL, '2022-04-24 10:17:10', '2022-04-24 10:17:10', NULL);
-INSERT INTO `menu` (`id`, `parent_id`, `rule`, `name`, `condition`, `menu_type`, `status`, `jump_path`, `is_frame`, `module_type`, `remark`, `create_at`, `update_at`, `deleted_at`) VALUES (33, 32, 'wdk/project/list', '文档库项目管理', NULL, 1, 1, NULL, 0, 'sys_admin', NULL, '2022-04-24 10:18:56', '2022-04-24 10:18:56', NULL);
-INSERT INTO `menu` (`id`, `parent_id`, `rule`, `name`, `condition`, `menu_type`, `status`, `jump_path`, `is_frame`, `module_type`, `remark`, `create_at`, `update_at`, `deleted_at`) VALUES (34, 33, 'wdk/project/add', '文档库添加项目', NULL, 2, 1, NULL, 0, 'sys_admin', NULL, '2022-04-24 10:20:38', '2022-04-24 10:20:38', NULL);
-INSERT INTO `menu` (`id`, `parent_id`, `rule`, `name`, `condition`, `menu_type`, `status`, `jump_path`, `is_frame`, `module_type`, `remark`, `create_at`, `update_at`, `deleted_at`) VALUES (35, 33, 'wdk/project/edit', '文档库修改项目', NULL, 2, 1, NULL, 0, 'sys_admin', NULL, '2022-04-24 10:22:56', '2022-04-24 10:22:56', NULL);
-INSERT INTO `menu` (`id`, `parent_id`, `rule`, `name`, `condition`, `menu_type`, `status`, `jump_path`, `is_frame`, `module_type`, `remark`, `create_at`, `update_at`, `deleted_at`) VALUES (36, 33, 'wdk/project/delete', '文档库删除项目', NULL, 2, 1, NULL, 0, 'sys_admin', NULL, '2022-04-24 10:24:01', '2022-04-24 10:24:01', NULL);
+INSERT INTO `menu` (`id`, `parent_id`, `rule`, `name`, `condition`, `menu_type`, `status`, `jump_path`, `is_frame`, `module_type`, `remark`, `create_at`, `update_at`, `deleted_at`) VALUES (33, 32, 'wdk/project/list', '项目管理', NULL, 1, 1, NULL, 0, 'sys_admin', NULL, '2022-04-24 10:18:56', '2022-04-24 10:18:56', NULL);
+INSERT INTO `menu` (`id`, `parent_id`, `rule`, `name`, `condition`, `menu_type`, `status`, `jump_path`, `is_frame`, `module_type`, `remark`, `create_at`, `update_at`, `deleted_at`) VALUES (34, 33, 'wdk/project/add', '添加项目', NULL, 2, 1, NULL, 0, 'sys_admin', NULL, '2022-04-24 10:20:38', '2022-04-24 10:20:38', NULL);
+INSERT INTO `menu` (`id`, `parent_id`, `rule`, `name`, `condition`, `menu_type`, `status`, `jump_path`, `is_frame`, `module_type`, `remark`, `create_at`, `update_at`, `deleted_at`) VALUES (35, 33, 'wdk/project/edit', '修改项目', NULL, 2, 1, NULL, 0, 'sys_admin', NULL, '2022-04-24 10:22:56', '2022-04-24 10:22:56', NULL);
+INSERT INTO `menu` (`id`, `parent_id`, `rule`, `name`, `condition`, `menu_type`, `status`, `jump_path`, `is_frame`, `module_type`, `remark`, `create_at`, `update_at`, `deleted_at`) VALUES (36, 33, 'wdk/project/delete', '删除项目', NULL, 2, 1, NULL, 0, 'sys_admin', NULL, '2022-04-24 10:24:01', '2022-04-24 10:24:01', NULL);
 COMMIT;
 
 -- ----------------------------
@@ -345,7 +345,7 @@ COMMIT;
 DROP TABLE IF EXISTS `wdk_attachment_record`;
 CREATE TABLE `wdk_attachment_record` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '附件上传记录ID',
-  `remark` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '备注',
+  `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '备注',
   `create_at` datetime DEFAULT NULL COMMENT '创建时间',
   `update_at` datetime DEFAULT NULL COMMENT '更新时间',
   `deleted_at` datetime DEFAULT NULL COMMENT '软删除时间',
@@ -401,7 +401,7 @@ CREATE TABLE `wdk_audit_record` (
   `file_id` bigint unsigned NOT NULL COMMENT '需要审核的文件ID',
   `status` tinyint unsigned NOT NULL COMMENT '审核状态 1:审核中 2:已通过 3:未通过',
   `audit_time` datetime DEFAULT NULL COMMENT '审核时间',
-  `audit_name` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '审核员姓名',
+  `audit_name` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '审核员姓名',
   `create_at` datetime DEFAULT NULL COMMENT '创建时间',
   `update_at` datetime DEFAULT NULL COMMENT '更新时间',
   `deleted_at` datetime DEFAULT NULL COMMENT '软删除时间',
@@ -423,7 +423,7 @@ CREATE TABLE `wdk_file` (
   `project_id` bigint unsigned NOT NULL COMMENT '所属项目ID',
   `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '文件名',
   `create_by` bigint unsigned NOT NULL COMMENT '上传者用户ID',
-  `create_name` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '上传者姓名',
+  `create_name` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '上传者姓名',
   `audit_status` tinyint unsigned NOT NULL COMMENT '审核状态 0:不需要审核 1:审核中 2:已通过 3:未通过',
   `audit_names` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '审核人员们的姓名',
   `audit_end_time` datetime DEFAULT NULL COMMENT '审核完成时间',
@@ -451,8 +451,8 @@ CREATE TABLE `wdk_file_comment` (
   `audit_uid` bigint unsigned NOT NULL COMMENT '审核员用户ID',
   `file_id` bigint unsigned NOT NULL COMMENT '审核的文件ID',
   `page` int unsigned NOT NULL COMMENT '文件页码',
-  `audit_name` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '审核人员姓名',
-  `comment` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '每页评价内容',
+  `audit_name` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '审核人员姓名',
+  `comment` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '每页评价内容',
   `create_at` datetime DEFAULT NULL COMMENT '创建时间',
   `update_at` datetime DEFAULT NULL COMMENT '更新时间',
   `deleted_at` datetime DEFAULT NULL COMMENT '软删除时间',
@@ -487,10 +487,10 @@ COMMIT;
 DROP TABLE IF EXISTS `wdk_filetype_cfg`;
 CREATE TABLE `wdk_filetype_cfg` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '上传文件类型ID',
-  `name` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '类型名称',
+  `name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '类型名称',
   `multiple` tinyint unsigned NOT NULL COMMENT '是否同时存在多个文件 0:否 1:是',
   `audit` tinyint unsigned NOT NULL COMMENT '是否需要审核 0:不需要 1:需要',
-  `step` tinyint unsigned NOT NULL COMMENT '所属项目阶段 1:合同签约 2:项目启动会 3:服务中 4:合同结束 5:复盘',
+  `step` tinyint unsigned NOT NULL COMMENT '所属项目阶段 0:未开始 1:合同签约 2:项目启动会 3:服务中 4:合同结束 5:复盘',
   `create_at` datetime DEFAULT NULL COMMENT '创建时间',
   `update_at` datetime DEFAULT NULL COMMENT '更新时间',
   `deleted_at` datetime DEFAULT NULL COMMENT '软删除时间',
@@ -523,7 +523,7 @@ CREATE TABLE `wdk_project` (
   `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '项目名称',
   `type` tinyint unsigned NOT NULL COMMENT '项目性质 0:蓝绿体系 1:非绿',
   `origin` tinyint unsigned NOT NULL COMMENT '项目来源 0:物业公司 1:分子公司 2:老客户 3:自拓',
-  `step` tinyint unsigned NOT NULL COMMENT '项目阶段 1:合同签约 2:项目启动会 3:服务中 4:合同结束 5:复盘',
+  `step` tinyint unsigned NOT NULL COMMENT '项目阶段 0:未开始 1:合同签约 2:项目启动会 3:服务中 4:合同结束 5:复盘',
   `file_upload_status` tinyint unsigned NOT NULL COMMENT '项目文件上传状态 0:未传完 1:已传完',
   `business_type` tinyint unsigned NOT NULL COMMENT '业务类型 0:物业 1:专项 2:全过程',
   `deep_culture` tinyint unsigned NOT NULL COMMENT '是否为深耕 0:否 1:是',
@@ -531,11 +531,13 @@ CREATE TABLE `wdk_project` (
   `entrust_company` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '委托方公司',
   `sign_company` tinyint unsigned NOT NULL COMMENT '我方签订公司 0:绿城房地产咨询集团有限公司 1:浙江幸福绿城房地产咨询有限公司 2:浙江美好绿城房地产咨询有限公司',
   `principal_uid` bigint unsigned NOT NULL COMMENT '负责人用户ID',
-  `principal_name` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '负责人姓名',
+  `principal_name` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '负责人姓名',
   `dept_id` bigint unsigned NOT NULL COMMENT '项目所属部门ID',
   `region` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '地区(省/市/县)',
-  `start_time` datetime DEFAULT NULL COMMENT '项目开始时间',
-  `end_time` datetime DEFAULT NULL COMMENT '项目结束时间',
+  `start_time` datetime NOT NULL COMMENT '项目开始时间',
+  `end_time` datetime NOT NULL COMMENT '项目结束时间',
+  `create_by` bigint unsigned NOT NULL COMMENT '项目创建者用户ID',
+  `updated_by` bigint unsigned NOT NULL COMMENT '项目修改者用户ID',
   `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '备注',
   `create_at` datetime DEFAULT NULL COMMENT '项目创建时间',
   `update_at` datetime DEFAULT NULL COMMENT '项目更新时间',
@@ -556,8 +558,8 @@ COMMIT;
 DROP TABLE IF EXISTS `wdk_service_photo`;
 CREATE TABLE `wdk_service_photo` (
   `id` bigint unsigned NOT NULL COMMENT '服务记录ID',
-  `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '照片名称',
-  `url` text COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '照片文件url',
+  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '照片名称',
+  `url` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '照片文件url',
   KEY `id_index` (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -574,10 +576,10 @@ DROP TABLE IF EXISTS `wdk_service_record`;
 CREATE TABLE `wdk_service_record` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '服务记录ID',
   `service_time` datetime NOT NULL COMMENT '服务时间',
-  `xch_name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '行程涵文件名',
-  `xch_origin_url` text COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '原始行程涵url',
-  `xch_pdf_url` text COLLATE utf8mb4_unicode_ci COMMENT 'pdf行程涵url',
-  `remark` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '备注',
+  `xch_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '行程涵文件名',
+  `xch_origin_url` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '原始行程涵url',
+  `xch_pdf_url` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT 'pdf行程涵url',
+  `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '备注',
   `create_at` datetime DEFAULT NULL COMMENT '创建时间',
   `update_at` datetime DEFAULT NULL COMMENT '更新时间',
   `deleted_at` datetime DEFAULT NULL COMMENT '软删除时间',

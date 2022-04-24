@@ -15,6 +15,8 @@ const (
 	MenuKey = CachePrefix + "menu"
 	// RoleKey 缓存角色key
 	RoleKey = CachePrefix + "role"
+	// WdkProjectKey 缓存角色key
+	WdkProjectKey = CachePrefix + "wdkproject"
 )
 
 // 用户状态
@@ -61,4 +63,28 @@ const (
 	DataScopeDept         = 3 // 本部门数据权限
 	DataScopeDeptAndBelow = 4 // 本部门及以下数据权限
 	DataScopeSelf         = 5 // 仅本人数据权限
+)
+
+// 文档库项目阶段
+const (
+	WdkPStepNotStart      = 0 // 未开始
+	WdkPStepContractAward = 1 // 合同签约
+	WdkPStepProjectStart  = 2 // 项目启动会
+	WdkPStepInService     = 3 // 服务中
+	WdkPStepContractStop  = 4 // 合同结束
+	WdkPStepReview        = 5 // 复盘
+)
+
+// 文档库项目文件上传状态
+const (
+	WdkPFileUpStatusNotComplete = 0 // 未传完
+	WdkPFileUpStatusComplete    = 1 // 已传完
+)
+
+// 文档库项目服务状态
+const (
+	WdkPSStatusInService = 0 // 服务中
+	WdkPSStatusPause     = 1 // 暂停
+	WdkPSStatusStop      = 2 // 提前终止
+	WdkPSStatusComplete  = 3 // 正常结束
 )

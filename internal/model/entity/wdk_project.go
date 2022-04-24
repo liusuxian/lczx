@@ -14,7 +14,7 @@ type WdkProject struct {
 	Name             string      `json:"name"             description:"项目名称"`                                                       // 项目名称
 	Type             uint        `json:"type"             description:"项目性质 0:蓝绿体系 1:非绿"`                                           // 项目性质 0:蓝绿体系 1:非绿
 	Origin           uint        `json:"origin"           description:"项目来源 0:物业公司 1:分子公司 2:老客户 3:自拓"`                              // 项目来源 0:物业公司 1:分子公司 2:老客户 3:自拓
-	Step             uint        `json:"step"             description:"项目阶段 1:合同签约 2:项目启动会 3:服务中 4:合同结束 5:复盘"`                      // 项目阶段 1:合同签约 2:项目启动会 3:服务中 4:合同结束 5:复盘
+	Step             uint        `json:"step"             description:"项目阶段 0:未开始 1:合同签约 2:项目启动会 3:服务中 4:合同结束 5:复盘"`                // 项目阶段 0:未开始 1:合同签约 2:项目启动会 3:服务中 4:合同结束 5:复盘
 	FileUploadStatus uint        `json:"fileUploadStatus" description:"项目文件上传状态 0:未传完 1:已传完"`                                       // 项目文件上传状态 0:未传完 1:已传完
 	BusinessType     uint        `json:"businessType"     description:"业务类型 0:物业 1:专项 2:全过程"`                                       // 业务类型 0:物业 1:专项 2:全过程
 	DeepCulture      uint        `json:"deepCulture"      description:"是否为深耕 0:否 1:是"`                                              // 是否为深耕 0:否 1:是
@@ -27,6 +27,8 @@ type WdkProject struct {
 	Region           string      `json:"region"           description:"地区(省/市/县)"`                                                  // 地区(省/市/县)
 	StartTime        *gtime.Time `json:"startTime"        description:"项目开始时间"`                                                     // 项目开始时间
 	EndTime          *gtime.Time `json:"endTime"          description:"项目结束时间"`                                                     // 项目结束时间
+	CreateBy         uint64      `json:"createBy"         description:"项目创建者用户ID"`                                                  // 项目创建者用户ID
+	UpdatedBy        uint64      `json:"updatedBy"        description:"项目修改者用户ID"`                                                  // 项目修改者用户ID
 	Remark           string      `json:"remark"           description:"备注"`                                                         // 备注
 	CreateAt         *gtime.Time `json:"createAt"         description:"项目创建时间"`                                                     // 项目创建时间
 	UpdateAt         *gtime.Time `json:"updateAt"         description:"项目更新时间"`                                                     // 项目更新时间

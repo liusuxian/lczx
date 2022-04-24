@@ -23,7 +23,7 @@ type WdkFiletypeCfgColumns struct {
 	Name      string // 类型名称
 	Multiple  string // 是否同时存在多个文件 0:否 1:是
 	Audit     string // 是否需要审核 0:不需要 1:需要
-	Step      string // 所属项目阶段 1:合同签约 2:项目启动会 3:服务中 4:合同结束 5:复盘
+	Step      string // 所属项目阶段 0:未开始 1:合同签约 2:项目启动会 3:服务中 4:合同结束 5:复盘
 	CreateAt  string // 创建时间
 	UpdateAt  string // 更新时间
 	DeletedAt string // 软删除时间

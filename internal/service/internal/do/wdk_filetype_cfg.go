@@ -16,7 +16,7 @@ type WdkFiletypeCfg struct {
 	Name      interface{} // 类型名称
 	Multiple  interface{} // 是否同时存在多个文件 0:否 1:是
 	Audit     interface{} // 是否需要审核 0:不需要 1:需要
-	Step      interface{} // 所属项目阶段 1:合同签约 2:项目启动会 3:服务中 4:合同结束 5:复盘
+	Step      interface{} // 所属项目阶段 0:未开始 1:合同签约 2:项目启动会 3:服务中 4:合同结束 5:复盘
 	CreateAt  *gtime.Time // 创建时间
 	UpdateAt  *gtime.Time // 更新时间
 	DeletedAt *gtime.Time // 软删除时间

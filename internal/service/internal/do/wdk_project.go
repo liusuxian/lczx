@@ -16,7 +16,7 @@ type WdkProject struct {
 	Name             interface{} // 项目名称
 	Type             interface{} // 项目性质 0:蓝绿体系 1:非绿
 	Origin           interface{} // 项目来源 0:物业公司 1:分子公司 2:老客户 3:自拓
-	Step             interface{} // 项目阶段 1:合同签约 2:项目启动会 3:服务中 4:合同结束 5:复盘
+	Step             interface{} // 项目阶段 0:未开始 1:合同签约 2:项目启动会 3:服务中 4:合同结束 5:复盘
 	FileUploadStatus interface{} // 项目文件上传状态 0:未传完 1:已传完
 	BusinessType     interface{} // 业务类型 0:物业 1:专项 2:全过程
 	DeepCulture      interface{} // 是否为深耕 0:否 1:是
@@ -29,6 +29,8 @@ type WdkProject struct {
 	Region           interface{} // 地区(省/市/县)
 	StartTime        *gtime.Time // 项目开始时间
 	EndTime          *gtime.Time // 项目结束时间
+	CreateBy         interface{} // 项目创建者用户ID
+	UpdatedBy        interface{} // 项目修改者用户ID
 	Remark           interface{} // 备注
 	CreateAt         *gtime.Time // 项目创建时间
 	UpdateAt         *gtime.Time // 项目更新时间
