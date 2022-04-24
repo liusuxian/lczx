@@ -16,7 +16,7 @@ type WdkProject struct {
 	Origin           uint        `json:"origin"           description:"项目来源 0:物业公司 1:分子公司 2:老客户 3:自拓"`                              // 项目来源 0:物业公司 1:分子公司 2:老客户 3:自拓
 	Step             uint        `json:"step"             description:"项目阶段 1:合同签约 2:项目启动会 3:服务中 4:合同结束 5:复盘"`                      // 项目阶段 1:合同签约 2:项目启动会 3:服务中 4:合同结束 5:复盘
 	FileUploadStatus uint        `json:"fileUploadStatus" description:"项目文件上传状态 0:未传完 1:已传完"`                                       // 项目文件上传状态 0:未传完 1:已传完
-	BusinessType     uint        `json:"businessType"     description:"业务类型 0:物业 1:专项 3:全过程"`                                       // 业务类型 0:物业 1:专项 3:全过程
+	BusinessType     uint        `json:"businessType"     description:"业务类型 0:物业 1:专项 2:全过程"`                                       // 业务类型 0:物业 1:专项 2:全过程
 	DeepCulture      uint        `json:"deepCulture"      description:"是否为深耕 0:否 1:是"`                                              // 是否为深耕 0:否 1:是
 	Status           uint        `json:"status"           description:"服务状态 0:服务中 1:暂停 2:提前终止 3:正常结束"`                              // 服务状态 0:服务中 1:暂停 2:提前终止 3:正常结束
 	EntrustCompany   string      `json:"entrustCompany"   description:"委托方公司"`                                                      // 委托方公司

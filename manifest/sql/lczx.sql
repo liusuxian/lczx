@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 24/04/2022 10:25:35
+ Date: 24/04/2022 10:40:41
 */
 
 SET NAMES utf8mb4;
@@ -525,7 +525,7 @@ CREATE TABLE `wdk_project` (
   `origin` tinyint unsigned NOT NULL COMMENT '项目来源 0:物业公司 1:分子公司 2:老客户 3:自拓',
   `step` tinyint unsigned NOT NULL COMMENT '项目阶段 1:合同签约 2:项目启动会 3:服务中 4:合同结束 5:复盘',
   `file_upload_status` tinyint unsigned NOT NULL COMMENT '项目文件上传状态 0:未传完 1:已传完',
-  `business_type` tinyint unsigned NOT NULL COMMENT '业务类型 0:物业 1:专项 3:全过程',
+  `business_type` tinyint unsigned NOT NULL COMMENT '业务类型 0:物业 1:专项 2:全过程',
   `deep_culture` tinyint unsigned NOT NULL COMMENT '是否为深耕 0:否 1:是',
   `status` tinyint unsigned NOT NULL COMMENT '服务状态 0:服务中 1:暂停 2:提前终止 3:正常结束',
   `entrust_company` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '委托方公司',

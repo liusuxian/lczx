@@ -25,7 +25,7 @@ type WdkProjectColumns struct {
 	Origin           string // 项目来源 0:物业公司 1:分子公司 2:老客户 3:自拓
 	Step             string // 项目阶段 1:合同签约 2:项目启动会 3:服务中 4:合同结束 5:复盘
 	FileUploadStatus string // 项目文件上传状态 0:未传完 1:已传完
-	BusinessType     string // 业务类型 0:物业 1:专项 3:全过程
+	BusinessType     string // 业务类型 0:物业 1:专项 2:全过程
 	DeepCulture      string // 是否为深耕 0:否 1:是
 	Status           string // 服务状态 0:服务中 1:暂停 2:提前终止 3:正常结束
 	EntrustCompany   string // 委托方公司
