@@ -43,7 +43,7 @@ func (s *sUser) GetUserByPassportAndPassword(ctx context.Context, passport, pass
 		return nil, gerror.New("密码错误")
 	}
 	// 账号状态
-	if user.Status == consts.UserStatusDisabled {
+	if user.Status == 0 {
 		return nil, gerror.New("账号已被禁用")
 	}
 	user.Password = ""

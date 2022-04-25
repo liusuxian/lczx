@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 25/04/2022 11:04:01
+ Date: 25/04/2022 15:16:36
 */
 
 SET NAMES utf8mb4;
@@ -507,7 +507,6 @@ CREATE TABLE `wdk_filetype_cfg` (
   `step` tinyint unsigned NOT NULL COMMENT '所属项目阶段 0:未开始 1:合同签约 2:项目启动会 3:服务中 4:合同结束 5:复盘',
   `create_at` datetime DEFAULT NULL COMMENT '创建时间',
   `update_at` datetime DEFAULT NULL COMMENT '更新时间',
-  `deleted_at` datetime DEFAULT NULL COMMENT '软删除时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name_index` (`name`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -516,16 +515,16 @@ CREATE TABLE `wdk_filetype_cfg` (
 -- Records of wdk_filetype_cfg
 -- ----------------------------
 BEGIN;
-INSERT INTO `wdk_filetype_cfg` (`id`, `name`, `multiple`, `audit`, `step`, `create_at`, `update_at`, `deleted_at`) VALUES (1, '合同扫描文件', 0, 0, 1, '2022-04-22 10:38:11', '2022-04-22 10:38:11', NULL);
-INSERT INTO `wdk_filetype_cfg` (`id`, `name`, `multiple`, `audit`, `step`, `create_at`, `update_at`, `deleted_at`) VALUES (2, '年度服务计划书', 0, 0, 2, '2022-04-22 10:38:44', '2022-04-22 10:38:44', NULL);
-INSERT INTO `wdk_filetype_cfg` (`id`, `name`, `multiple`, `audit`, `step`, `create_at`, `update_at`, `deleted_at`) VALUES (3, '总结报告', 0, 0, 4, '2022-04-22 10:39:02', '2022-04-22 10:39:02', NULL);
-INSERT INTO `wdk_filetype_cfg` (`id`, `name`, `multiple`, `audit`, `step`, `create_at`, `update_at`, `deleted_at`) VALUES (4, '项目移交', 0, 0, 4, '2022-04-22 10:39:19', '2022-04-22 10:39:19', NULL);
-INSERT INTO `wdk_filetype_cfg` (`id`, `name`, `multiple`, `audit`, `step`, `create_at`, `update_at`, `deleted_at`) VALUES (5, '复盘报告', 0, 0, 5, '2022-04-22 10:40:05', '2022-04-22 10:40:05', NULL);
-INSERT INTO `wdk_filetype_cfg` (`id`, `name`, `multiple`, `audit`, `step`, `create_at`, `update_at`, `deleted_at`) VALUES (6, '文件签收单', 1, 0, 3, '2022-04-22 10:40:43', '2022-04-22 10:40:43', NULL);
-INSERT INTO `wdk_filetype_cfg` (`id`, `name`, `multiple`, `audit`, `step`, `create_at`, `update_at`, `deleted_at`) VALUES (7, '满意度调查表', 1, 0, 3, '2022-04-22 10:41:37', '2022-04-22 10:41:37', NULL);
-INSERT INTO `wdk_filetype_cfg` (`id`, `name`, `multiple`, `audit`, `step`, `create_at`, `update_at`, `deleted_at`) VALUES (8, '规划设计报告', 1, 1, 3, '2022-04-22 10:42:59', '2022-04-22 10:42:59', NULL);
-INSERT INTO `wdk_filetype_cfg` (`id`, `name`, `multiple`, `audit`, `step`, `create_at`, `update_at`, `deleted_at`) VALUES (9, '建筑图纸报告', 1, 1, 3, '2022-04-22 10:43:17', '2022-04-22 10:43:17', NULL);
-INSERT INTO `wdk_filetype_cfg` (`id`, `name`, `multiple`, `audit`, `step`, `create_at`, `update_at`, `deleted_at`) VALUES (10, '水电报告', 1, 1, 3, '2022-04-22 10:43:40', '2022-04-22 10:43:40', NULL);
+INSERT INTO `wdk_filetype_cfg` (`id`, `name`, `multiple`, `audit`, `step`, `create_at`, `update_at`) VALUES (1, '合同扫描文件', 0, 0, 1, '2022-04-22 10:38:11', '2022-04-22 10:38:11');
+INSERT INTO `wdk_filetype_cfg` (`id`, `name`, `multiple`, `audit`, `step`, `create_at`, `update_at`) VALUES (2, '年度服务计划书', 0, 0, 2, '2022-04-22 10:38:44', '2022-04-22 10:38:44');
+INSERT INTO `wdk_filetype_cfg` (`id`, `name`, `multiple`, `audit`, `step`, `create_at`, `update_at`) VALUES (3, '总结报告', 0, 0, 4, '2022-04-22 10:39:02', '2022-04-22 10:39:02');
+INSERT INTO `wdk_filetype_cfg` (`id`, `name`, `multiple`, `audit`, `step`, `create_at`, `update_at`) VALUES (4, '项目移交', 0, 0, 4, '2022-04-22 10:39:19', '2022-04-22 10:39:19');
+INSERT INTO `wdk_filetype_cfg` (`id`, `name`, `multiple`, `audit`, `step`, `create_at`, `update_at`) VALUES (5, '复盘报告', 0, 0, 5, '2022-04-22 10:40:05', '2022-04-22 10:40:05');
+INSERT INTO `wdk_filetype_cfg` (`id`, `name`, `multiple`, `audit`, `step`, `create_at`, `update_at`) VALUES (6, '文件签收单', 1, 0, 3, '2022-04-22 10:40:43', '2022-04-22 10:40:43');
+INSERT INTO `wdk_filetype_cfg` (`id`, `name`, `multiple`, `audit`, `step`, `create_at`, `update_at`) VALUES (7, '满意度调查表', 1, 0, 3, '2022-04-22 10:41:37', '2022-04-22 10:41:37');
+INSERT INTO `wdk_filetype_cfg` (`id`, `name`, `multiple`, `audit`, `step`, `create_at`, `update_at`) VALUES (8, '规划设计报告', 1, 1, 3, '2022-04-22 10:42:59', '2022-04-22 10:42:59');
+INSERT INTO `wdk_filetype_cfg` (`id`, `name`, `multiple`, `audit`, `step`, `create_at`, `update_at`) VALUES (9, '建筑图纸报告', 1, 1, 3, '2022-04-22 10:43:17', '2022-04-22 10:43:17');
+INSERT INTO `wdk_filetype_cfg` (`id`, `name`, `multiple`, `audit`, `step`, `create_at`, `update_at`) VALUES (10, '水电报告', 1, 1, 3, '2022-04-22 10:43:40', '2022-04-22 10:43:40');
 COMMIT;
 
 -- ----------------------------

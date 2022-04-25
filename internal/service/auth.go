@@ -14,7 +14,6 @@ import (
 	"github.com/mssola/user_agent"
 	v1 "lczx/api/v1"
 	"lczx/internal/code"
-	"lczx/internal/consts"
 	"lczx/internal/model/entity"
 	"lczx/utility/logger"
 	"lczx/utility/response"
@@ -172,7 +171,7 @@ func (s *sAuth) loginBefore(req *ghttp.Request) (string, any) {
 			Location: location,
 			Browser:  explorer,
 			Os:       os,
-			Status:   consts.LoginFailed,
+			Status:   0,
 			Msg:      err.Error(),
 			Time:     gtime.Now(),
 			Module:   "系统登录",
@@ -189,7 +188,7 @@ func (s *sAuth) loginBefore(req *ghttp.Request) (string, any) {
 			Location: location,
 			Browser:  explorer,
 			Os:       os,
-			Status:   consts.LoginFailed,
+			Status:   0,
 			Msg:      "内部错误: " + err.Error(),
 			Time:     gtime.Now(),
 			Module:   "系统登录",
@@ -205,7 +204,7 @@ func (s *sAuth) loginBefore(req *ghttp.Request) (string, any) {
 		Location: location,
 		Browser:  explorer,
 		Os:       os,
-		Status:   consts.LoginSucc,
+		Status:   1,
 		Msg:      "登录成功",
 		Time:     gtime.Now(),
 		Module:   "系统登录",

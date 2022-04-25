@@ -3,15 +3,12 @@ package service
 import (
 	"context"
 	"github.com/gogf/gf/v2/container/gmap"
-	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/util/gconv"
 	v1 "lczx/api/v1"
-	"lczx/internal/consts"
 	"lczx/internal/model/entity"
 	"lczx/internal/service/internal/dao"
 	"lczx/internal/service/internal/do"
-	"time"
 )
 
 type sWdkProject struct{}
@@ -136,19 +133,15 @@ func (s *sWdkProject) AddWdkProject(ctx context.Context, req *v1.WdkProjectAddRe
 	}
 	// 写入文档库项目数据
 	user := Context().Get(ctx).User
-	_, err = dao.WdkProject.Ctx(ctx).Cache(gdb.CacheOption{
-		Duration: -1,
-		Name:     consts.WdkProjectKey,
-		Force:    false,
-	}).Data(do.WdkProject{
+	_, err = dao.WdkProject.Ctx(ctx).Data(do.WdkProject{
 		Name:             req.Name,
 		Type:             req.Type,
 		Origin:           req.Origin,
-		Step:             consts.WdkPStepNotStart,
-		FileUploadStatus: consts.WdkPFileUpStatusNotComplete,
+		Step:             0,
+		FileUploadStatus: 0,
 		BusinessType:     req.BusinessType,
 		DeepCulture:      req.DeepCulture,
-		Status:           consts.WdkPSStatusInService,
+		Status:           0,
 		EntrustCompany:   req.EntrustCompany,
 		SignCompany:      req.SignCompany,
 		PrincipalUid:     req.PrincipalUid,
@@ -209,11 +202,7 @@ func (s *sWdkProject) EditWdkProject(ctx context.Context, req *v1.WdkProjectEdit
 	}
 	// 更新文档库项目数据
 	user := Context().Get(ctx).User
-	_, err = dao.WdkProject.Ctx(ctx).Cache(gdb.CacheOption{
-		Duration: -1,
-		Name:     consts.WdkProjectKey,
-		Force:    false,
-	}).Data(do.WdkProject{
+	_, err = dao.WdkProject.Ctx(ctx).Data(do.WdkProject{
 		Name:           req.Name,
 		Type:           req.Type,
 		Origin:         req.Origin,
@@ -236,33 +225,7 @@ func (s *sWdkProject) EditWdkProject(ctx context.Context, req *v1.WdkProjectEdit
 
 // DeleteWdkProject 删除文档库项目
 func (s *sWdkProject) DeleteWdkProject(ctx context.Context, ids []uint64) (err error) {
-	_, err = dao.WdkProject.Ctx(ctx).Cache(gdb.CacheOption{
-		Duration: -1,
-		Name:     consts.WdkProjectKey,
-		Force:    false,
-	}).WhereIn(dao.WdkProject.Columns().Id, ids).Delete()
-	return
-}
-
-// GetAllWdkProjects 获取所有的文档库项目
-func (s *sWdkProject) GetAllWdkProjects(ctx context.Context) (wdkProjects []*entity.WdkProject, err error) {
-	// 从缓存获取
-	wdkProjectsCacheVal := Cache().GetCache(ctx, consts.WdkProjectKey)
-	if wdkProjectsCacheVal != nil {
-		err = gconv.Structs(wdkProjectsCacheVal, &wdkProjects)
-		if err != nil {
-			return
-		}
-		if wdkProjects != nil {
-			return
-		}
-	}
-	// 从数据库获取
-	err = dao.WdkProject.Ctx(ctx).Cache(gdb.CacheOption{
-		Duration: time.Hour * 2,
-		Name:     consts.WdkProjectKey,
-		Force:    false,
-	}).OrderAsc(dao.WdkProject.Columns().Id).Scan(&wdkProjects)
+	_, err = dao.WdkProject.Ctx(ctx).WhereIn(dao.WdkProject.Columns().Id, ids).Delete()
 	return
 }
 

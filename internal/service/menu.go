@@ -41,7 +41,7 @@ func (s *sMenu) GetMenuList(ctx context.Context, req *v1.MenuListReq) (list []*e
 
 // AddMenu 新增菜单
 func (s *sMenu) AddMenu(ctx context.Context, req *v1.MenuAddReq) (err error) {
-	if req.ParentId == 0 && req.MenuType != consts.MenuTypeDir {
+	if req.ParentId == 0 && req.MenuType != 0 {
 		err = gerror.Newf(`父规则ID[%d]只能添加目录类型`, req.ParentId)
 		return
 	}
@@ -58,19 +58,19 @@ func (s *sMenu) AddMenu(ctx context.Context, req *v1.MenuAddReq) (err error) {
 			err = gerror.Newf(`父规则ID[%d]不存在`, req.ParentId)
 			return
 		}
-		if parentMenu.Status == consts.MenuStatusDisabled {
+		if parentMenu.Status == 0 {
 			err = gerror.Newf(`父规则ID[%d]已停用`, req.ParentId)
 			return
 		}
-		if parentMenu.MenuType == consts.MenuTypeDir && req.MenuType == consts.MenuTypeButton {
+		if parentMenu.MenuType == 0 && req.MenuType == 2 {
 			err = gerror.Newf(`父规则菜单类型[%d]不能添加按钮类型`, parentMenu.MenuType)
 			return
 		}
-		if parentMenu.MenuType == consts.MenuTypeMenu && req.MenuType != consts.MenuTypeButton {
+		if parentMenu.MenuType == 1 && req.MenuType != 2 {
 			err = gerror.Newf(`父规则菜单类型[%d]只能添加按钮类型`, parentMenu.MenuType)
 			return
 		}
-		if parentMenu.MenuType == consts.MenuTypeButton {
+		if parentMenu.MenuType == 2 {
 			err = gerror.Newf(`父规则菜单类型[%d]不能添加任何类型`, parentMenu.MenuType)
 			return
 		}
@@ -107,7 +107,7 @@ func (s *sMenu) AddMenu(ctx context.Context, req *v1.MenuAddReq) (err error) {
 
 // EditMenu 编辑菜单
 func (s *sMenu) EditMenu(ctx context.Context, req *v1.MenuEditReq) (err error) {
-	if req.ParentId == 0 && req.MenuType != consts.MenuTypeDir {
+	if req.ParentId == 0 && req.MenuType != 0 {
 		err = gerror.Newf(`父规则ID[%d]只能添加目录类型`, req.ParentId)
 		return
 	}
@@ -124,19 +124,19 @@ func (s *sMenu) EditMenu(ctx context.Context, req *v1.MenuEditReq) (err error) {
 			err = gerror.Newf(`父规则ID[%d]不存在`, req.ParentId)
 			return
 		}
-		if parentMenu.Status == consts.MenuStatusDisabled {
+		if parentMenu.Status == 0 {
 			err = gerror.Newf(`父规则ID[%d]已停用`, req.ParentId)
 			return
 		}
-		if parentMenu.MenuType == consts.MenuTypeDir && req.MenuType == consts.MenuTypeButton {
+		if parentMenu.MenuType == 0 && req.MenuType == 2 {
 			err = gerror.Newf(`父规则菜单类型[%d]不能添加按钮类型`, parentMenu.MenuType)
 			return
 		}
-		if parentMenu.MenuType == consts.MenuTypeMenu && req.MenuType != consts.MenuTypeButton {
+		if parentMenu.MenuType == 1 && req.MenuType != 2 {
 			err = gerror.Newf(`父规则菜单类型[%d]只能添加按钮类型`, parentMenu.MenuType)
 			return
 		}
-		if parentMenu.MenuType == consts.MenuTypeButton {
+		if parentMenu.MenuType == 2 {
 			err = gerror.Newf(`父规则菜单类型[%d]不能添加任何类型`, parentMenu.MenuType)
 			return
 		}
@@ -221,7 +221,7 @@ func (s *sMenu) GetIsMenus(ctx context.Context) (list []*entity.Menu, err error)
 
 	list = make([]*entity.Menu, 0, len(allMenus))
 	for _, m := range allMenus {
-		if m.MenuType == consts.MenuTypeDir || m.MenuType == consts.MenuTypeMenu {
+		if m.MenuType == 0 || m.MenuType == 1 {
 			list = append(list, m)
 		}
 	}
@@ -296,7 +296,7 @@ func (s *sMenu) GetStatusEnableMenus(ctx context.Context) (menuList []*entity.Me
 
 	menuList = make([]*entity.Menu, 0, len(allMenus))
 	for _, m := range allMenus {
-		if m.Status == consts.MenuStatusEnable {
+		if m.Status == 1 {
 			menuList = append(menuList, m)
 		}
 	}

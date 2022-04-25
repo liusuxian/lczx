@@ -9,7 +9,6 @@ import (
 	"github.com/gogf/gf/v2/text/gstr"
 	"github.com/gogf/gf/v2/util/gconv"
 	"lczx/internal/code"
-	"lczx/internal/consts"
 	"lczx/internal/model"
 	"lczx/internal/model/entity"
 	"lczx/utility/logger"
@@ -154,7 +153,7 @@ func (s *sMiddleware) Auth(req *ghttp.Request) {
 	// 只验证存在数据库中的规则
 	if menu != nil {
 		// 检查菜单状态是否为已停用
-		if menu.Status == consts.MenuStatusDisabled {
+		if menu.Status == 0 {
 			response.RespJsonExitByGcode(req, code.MenuStatusDisabled)
 		}
 		// 若存在不需要验证的条件则跳过

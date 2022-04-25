@@ -53,26 +53,28 @@ func (s *sRole) GetRoleList(ctx context.Context, req *v1.RoleListReq) (total int
 
 // AddRole 新增角色
 func (s *sRole) AddRole(ctx context.Context, req *v1.RoleAddReq) (err error) {
-	// 检查角色名称是否可用
-	var available bool
-	available, err = s.IsRoleNameAvailable(ctx, req.Name)
-	if err != nil {
-		return
-	}
-	if !available {
-		err = gerror.Newf(`角色名称[%s]已存在`, req.Name)
-		return
-	}
 	// 开启事务
 	err = dao.Role.Ctx(ctx).Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
+		// 检查角色名称是否可用
+		var available bool
+		var terr error
+		available, terr = s.IsRoleNameAvailable(ctx, req.Name)
+		if terr != nil {
+			return terr
+		}
+		if !available {
+			terr = gerror.Newf(`角色名称[%s]已存在`, req.Name)
+			return terr
+		}
 		// 保存角色
-		roleId, err := s.SaveRole(ctx, req)
-		if err != nil {
-			return err
+		var roleId uint64
+		roleId, terr = s.SaveRole(ctx, req)
+		if terr != nil {
+			return terr
 		}
 		// 添加角色权限
-		err = s.AddRoleRule(ctx, req.MenuIds, roleId)
-		return err
+		terr = s.AddRoleRule(ctx, req.MenuIds, roleId)
+		return terr
 	})
 	if err != nil {
 		return
@@ -84,38 +86,39 @@ func (s *sRole) AddRole(ctx context.Context, req *v1.RoleAddReq) (err error) {
 
 // EditRole 编辑角色
 func (s *sRole) EditRole(ctx context.Context, req *v1.RoleEditReq) (err error) {
-	// 检查角色信息是否存在
-	var role *entity.Role
-	role, err = s.GetRoleById(ctx, req.Id)
-	if err != nil {
-		return
-	}
-	if role == nil {
-		err = gerror.Newf(`角色ID[%d]不存在`, req.Id)
-		return
-	}
-	// 检查角色名称是否可用
-	if role.Name != req.Name {
-		var available bool
-		available, err = s.IsRoleNameAvailable(ctx, req.Name)
-		if err != nil {
-			return
-		}
-		if !available {
-			err = gerror.Newf(`角色名称[%s]已存在`, req.Name)
-			return
-		}
-	}
 	// 开启事务
 	err = dao.Role.Ctx(ctx).Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
+		// 检查角色信息是否存在
+		var role *entity.Role
+		var terr error
+		role, terr = s.GetRoleById(ctx, req.Id)
+		if terr != nil {
+			return terr
+		}
+		if role == nil {
+			terr = gerror.Newf(`角色ID[%d]不存在`, req.Id)
+			return terr
+		}
+		// 检查角色名称是否可用
+		if role.Name != req.Name {
+			var available bool
+			available, terr = s.IsRoleNameAvailable(ctx, req.Name)
+			if terr != nil {
+				return terr
+			}
+			if !available {
+				terr = gerror.Newf(`角色名称[%s]已存在`, req.Name)
+				return terr
+			}
+		}
 		// 更新角色
-		err := s.UpdateRole(ctx, req)
-		if err != nil {
-			return err
+		terr = s.UpdateRole(ctx, req)
+		if terr != nil {
+			return terr
 		}
 		// 修改角色权限
-		err = s.EditRoleRule(ctx, req.MenuIds, req.Id)
-		return err
+		terr = s.EditRoleRule(ctx, req.MenuIds, req.Id)
+		return terr
 	})
 	if err != nil {
 		return
@@ -139,22 +142,23 @@ func (s *sRole) SetRoleStatus(ctx context.Context, req *v1.RoleSetStatusReq) (er
 func (s *sRole) SetRoleDataScope(ctx context.Context, req *v1.RoleSetDataScopeReq) (err error) {
 	err = dao.Role.Ctx(ctx).Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		// 更新数据权限
-		_, err := dao.Role.Ctx(ctx).Data(do.Role{DataScope: req.DataScope}).Where(do.Role{Id: req.Id}).Update()
-		if err != nil {
-			return err
+		var terr error
+		_, terr = dao.Role.Ctx(ctx).Data(do.Role{DataScope: req.DataScope}).Where(do.Role{Id: req.Id}).Update()
+		if terr != nil {
+			return terr
 		}
 		// 处理自定义数据权限
-		if req.DataScope == consts.DataScopeCustom {
-			_, err = dao.RoleDept.Ctx(ctx).Where(do.RoleDept{RoleId: req.Id}).Delete()
-			if err != nil {
-				return err
+		if req.DataScope == 2 {
+			_, terr = dao.RoleDept.Ctx(ctx).Where(do.RoleDept{RoleId: req.Id}).Delete()
+			if terr != nil {
+				return terr
 			}
 			data := g.List{}
 			for _, deptId := range req.DeptIds {
 				data = append(data, g.Map{"role_id": req.Id, "dept_id": deptId})
 			}
-			_, err = dao.RoleDept.Ctx(ctx).Data(data).Insert()
-			return err
+			_, terr = dao.RoleDept.Ctx(ctx).Data(data).Batch(len(data)).Insert()
+			return terr
 		}
 		return nil
 	})
@@ -170,26 +174,27 @@ func (s *sRole) SetRoleDataScope(ctx context.Context, req *v1.RoleSetDataScopeRe
 func (s *sRole) DeleteRoleByIds(ctx context.Context, ids []uint64) (err error) {
 	err = dao.Role.Ctx(ctx).Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		// 删除角色
-		_, err := dao.Role.Ctx(ctx).WhereIn(dao.Role.Columns().Id, ids).Delete()
-		if err != nil {
-			return err
+		var terr error
+		_, terr = dao.Role.Ctx(ctx).WhereIn(dao.Role.Columns().Id, ids).Delete()
+		if terr != nil {
+			return terr
 		}
 		// 删除角色的权限和管理的部门数据权限
 		var enforcer *casbin.SyncedEnforcer
-		enforcer, err = Casbin(ctx).GetEnforcer()
-		if err != nil {
-			return err
+		enforcer, terr = Casbin(ctx).GetEnforcer()
+		if terr != nil {
+			return terr
 		}
 		// 删除角色的权限
 		for _, id := range ids {
-			_, err = enforcer.RemoveFilteredPolicy(0, gconv.String(id))
-			if err != nil {
-				return err
+			_, terr = enforcer.RemoveFilteredPolicy(0, gconv.String(id))
+			if terr != nil {
+				return terr
 			}
 		}
 		// 删除管理的部门数据权限
-		_, err = dao.RoleDept.Ctx(ctx).WhereIn(dao.RoleDept.Columns().RoleId, ids).Delete()
-		return err
+		_, terr = dao.RoleDept.Ctx(ctx).WhereIn(dao.RoleDept.Columns().RoleId, ids).Delete()
+		return terr
 	})
 	if err != nil {
 		return
@@ -210,7 +215,7 @@ func (s *sRole) GetEnableRoles(ctx context.Context) (roles []*entity.Role, err e
 
 	roles = make([]*entity.Role, 0, len(allRoles))
 	for _, r := range allRoles {
-		if r.Status == consts.RoleStatusEnable {
+		if r.Status == 1 {
 			roles = append(roles, r)
 		}
 	}
@@ -276,7 +281,7 @@ func (s *sRole) SaveRole(ctx context.Context, req *v1.RoleAddReq) (roleId uint64
 	id, err = dao.Role.Ctx(ctx).Data(do.Role{
 		Name:      req.Name,
 		Status:    req.Status,
-		DataScope: consts.DataScopeDept,
+		DataScope: 3,
 		Remark:    req.Remark,
 	}).InsertAndGetId()
 	roleId = gconv.Uint64(id)

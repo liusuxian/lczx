@@ -31,3 +31,14 @@ func (c *cWdkFiletype) List(ctx context.Context, req *v1.WdkFiletypeListReq) (re
 	}
 	return
 }
+
+// Add 新增文档库上传文件类型
+func (c *cWdkFiletype) Add(ctx context.Context, req *v1.WdkFiletypeAddReq) (res *v1.WdkFiletypeAddRes, err error) {
+	err = service.WdkFiletype().AddWdkFiletype(ctx, req)
+	if err != nil {
+		err = gerror.WrapCode(code.AddWdkFiletypeFailed, err)
+		return
+	}
+
+	return
+}

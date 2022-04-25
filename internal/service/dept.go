@@ -56,7 +56,7 @@ func (s *sDept) AddDept(ctx context.Context, req *v1.DeptAddReq) (err error) {
 			err = gerror.Newf(`父部门ID[%d]不存在`, req.ParentId)
 			return
 		}
-		if parentDept.Status == consts.DeptStatusDisabled {
+		if parentDept.Status == 0 {
 			err = gerror.Newf(`父部门ID[%d]已停用`, req.ParentId)
 			return
 		}
@@ -106,7 +106,7 @@ func (s *sDept) EditDept(ctx context.Context, req *v1.DeptEditReq) (err error) {
 			err = gerror.Newf(`父部门ID[%d]不存在`, req.ParentId)
 			return
 		}
-		if parentDept.Status == consts.DeptStatusDisabled {
+		if parentDept.Status == 0 {
 			err = gerror.Newf(`父部门ID[%d]已停用`, req.ParentId)
 			return
 		}
@@ -190,7 +190,7 @@ func (s *sDept) GetStatusEnableDepts(ctx context.Context) (depts []*entity.Dept,
 
 	depts = make([]*entity.Dept, 0, len(allDepts))
 	for _, v := range allDepts {
-		if v.Status == consts.DeptStatusEnable {
+		if v.Status == 1 {
 			depts = append(depts, v)
 		}
 	}
