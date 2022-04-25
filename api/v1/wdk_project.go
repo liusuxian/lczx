@@ -61,7 +61,7 @@ type WdkProjectAddRes struct {
 
 // WdkProjectInfoReq 文档库项目信息请求参数
 type WdkProjectInfoReq struct {
-	g.Meta `path:"/info" tags:"WdkProjectEdit" method:"put" summary:"You first wdk/project/info api"`
+	g.Meta `path:"/info" tags:"WdkProjectInfo" method:"get" summary:"You first wdk/project/info api"`
 	Id     uint64 `json:"id" v:"required|regex:^[1-9]\\d*$#文档库项目ID不能为空|文档库项目ID必须为正整数" dc:"文档库项目ID"` // 文档库项目ID
 }
 
