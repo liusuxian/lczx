@@ -11,6 +11,7 @@ import (
 	"lczx/internal/model/entity"
 	"lczx/internal/service/internal/dao"
 	"lczx/internal/service/internal/do"
+	"time"
 )
 
 type sWdkProject struct{}
@@ -240,6 +241,28 @@ func (s *sWdkProject) DeleteWdkProject(ctx context.Context, ids []uint64) (err e
 		Name:     consts.WdkProjectKey,
 		Force:    false,
 	}).WhereIn(dao.WdkProject.Columns().Id, ids).Delete()
+	return
+}
+
+// GetAllWdkProjects 获取所有的文档库项目
+func (s *sWdkProject) GetAllWdkProjects(ctx context.Context) (wdkProjects []*entity.WdkProject, err error) {
+	// 从缓存获取
+	wdkProjectsCacheVal := Cache().GetCache(ctx, consts.WdkProjectKey)
+	if wdkProjectsCacheVal != nil {
+		err = gconv.Structs(wdkProjectsCacheVal, &wdkProjects)
+		if err != nil {
+			return
+		}
+		if wdkProjects != nil {
+			return
+		}
+	}
+	// 从数据库获取
+	err = dao.WdkProject.Ctx(ctx).Cache(gdb.CacheOption{
+		Duration: time.Hour * 2,
+		Name:     consts.WdkProjectKey,
+		Force:    false,
+	}).OrderAsc(dao.WdkProject.Columns().Id).Scan(&wdkProjects)
 	return
 }
 
