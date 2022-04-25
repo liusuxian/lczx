@@ -26,7 +26,6 @@ type RoleColumns struct {
 	Remark    string // 备注
 	CreateAt  string // 创建时间
 	UpdateAt  string // 更新时间
-	DeletedAt string // 软删除时间
 }
 
 //  roleColumns holds the columns for table role.
@@ -38,7 +37,6 @@ var roleColumns = RoleColumns{
 	Remark:    "remark",
 	CreateAt:  "create_at",
 	UpdateAt:  "update_at",
-	DeletedAt: "deleted_at",
 }
 
 // NewRoleDao creates and returns a new DAO object for table data access.

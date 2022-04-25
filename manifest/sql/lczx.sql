@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 25/04/2022 10:34:08
+ Date: 25/04/2022 11:04:01
 */
 
 SET NAMES utf8mb4;
@@ -237,7 +237,6 @@ CREATE TABLE `role` (
   `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '备注',
   `create_at` datetime DEFAULT NULL COMMENT '创建时间',
   `update_at` datetime DEFAULT NULL COMMENT '更新时间',
-  `deleted_at` datetime DEFAULT NULL COMMENT '软删除时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name_index` (`name`),
   KEY `status_index` (`status`)
@@ -247,7 +246,7 @@ CREATE TABLE `role` (
 -- Records of role
 -- ----------------------------
 BEGIN;
-INSERT INTO `role` (`id`, `name`, `status`, `data_scope`, `remark`, `create_at`, `update_at`, `deleted_at`) VALUES (1, '超级管理员', 1, 3, '', '2022-04-19 14:30:16', '2022-04-19 14:30:16', NULL);
+INSERT INTO `role` (`id`, `name`, `status`, `data_scope`, `remark`, `create_at`, `update_at`) VALUES (1, '超级管理员', 1, 3, '', '2022-04-19 14:30:16', '2022-04-19 14:30:16');
 COMMIT;
 
 -- ----------------------------
