@@ -28,7 +28,7 @@ func (c *cDept) List(ctx context.Context, req *v1.DeptListReq) (res *v1.DeptList
 	}
 
 	treeInfos := make([]*v1.DeptTreeInfo, 0, len(list))
-	idsMap := gmap.New(true)
+	idsMap := gmap.New()
 	for _, v := range list {
 		service.Dept().FindSonIdsByParentId(list, v.Id, idsMap)
 		if !idsMap.Contains(v.Id) {

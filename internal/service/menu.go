@@ -160,7 +160,7 @@ func (s *sMenu) EditMenu(ctx context.Context, req *v1.MenuEditReq) (err error) {
 		}
 	}
 	// 获取规则ID下所有的子规则ID
-	idsMap := gmap.New(true)
+	idsMap := gmap.New()
 	s.FindSonIdsByParentId(allMenus, req.Id, idsMap)
 	if idsMap.Contains(req.ParentId) {
 		err = gerror.Newf(`父规则ID[%d]是规则ID[%d]的子规则ID`, req.ParentId, req.Id)
@@ -195,7 +195,7 @@ func (s *sMenu) DeleteMenu(ctx context.Context, ids []uint64) (err error) {
 		return
 	}
 	// 获取所有的子规则ID
-	idsMap := gmap.New(true)
+	idsMap := gmap.New()
 	for _, id := range ids {
 		idsMap.Set(id, true)
 		s.FindSonIdsByParentId(allMenus, id, idsMap)

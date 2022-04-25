@@ -26,7 +26,7 @@ func (c *cMenu) List(ctx context.Context, req *v1.MenuListReq) (res *v1.MenuList
 	}
 
 	treeInfos := make([]*v1.MenuTreeInfo, 0, len(list))
-	idsMap := gmap.New(true)
+	idsMap := gmap.New()
 	for _, v := range list {
 		service.Menu().FindSonIdsByParentId(list, v.Id, idsMap)
 		if !idsMap.Contains(v.Id) {

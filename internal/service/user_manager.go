@@ -43,7 +43,7 @@ func (s *sUserManager) NotCheckAuthUserIds() *gset.Set {
 
 // GetUserList 获取用户列表
 func (s *sUserManager) GetUserList(ctx context.Context, req *v1.UserListReq) (total int, list []*entity.User, err error) {
-	deptIdsMap := gmap.New(true)
+	deptIdsMap := gmap.New()
 	if req.DeptId != "" {
 		// 获取部门状态为正常的部门列表
 		var depts []*entity.Dept
@@ -156,7 +156,7 @@ func (s *sUserManager) AddUser(ctx context.Context, req *v1.UserAddReq) (err err
 		if err != nil {
 			return err
 		}
-		roleIdsMap := gmap.New(true)
+		roleIdsMap := gmap.New()
 		for _, r := range enableRoles {
 			roleIdsMap.Set(r.Id, true)
 		}
@@ -229,7 +229,7 @@ func (s *sUserManager) EditUser(ctx context.Context, req *v1.UserEditReq) (err e
 		if err != nil {
 			return err
 		}
-		roleIdsMap := gmap.New(true)
+		roleIdsMap := gmap.New()
 		for _, r := range enableRoles {
 			roleIdsMap.Set(r.Id, true)
 		}

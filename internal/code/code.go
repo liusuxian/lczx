@@ -61,4 +61,6 @@ var (
 	GetWdkProjectFailed     = gcode.New(1602, "获取文档库项目信息失败", "") // 获取文档库项目信息失败
 	EditWdkProjectFailed    = gcode.New(1603, "修改文档库项目失败", "")   // 修改文档库项目失败
 	DeleteWdkProjectFailed  = gcode.New(1604, "删除文档库项目失败", "")   // 删除文档库项目失败
+
+	GetWdkFiletypeListFailed = gcode.New(1700, "获取文档库上传文件类型列表失败", "") // 获取文档库上传文件类型列表失败
 )

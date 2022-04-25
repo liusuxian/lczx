@@ -63,7 +63,7 @@ func (s *sWdkProject) GetWdkProjectList(ctx context.Context, req *v1.WdkProjectL
 	if req.PrincipalName != "" {
 		model = model.WhereLike(columns.PrincipalName, "%"+req.PrincipalName+"%")
 	}
-	deptIdsMap := gmap.New(true)
+	deptIdsMap := gmap.New()
 	if req.DeptId != "" {
 		// 获取部门状态为正常的部门列表
 		var depts []*entity.Dept

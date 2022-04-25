@@ -116,6 +116,10 @@ var (
 					group.Group("/project", func(group *ghttp.RouterGroup) {
 						group.Bind(controller.WdkProject)
 					})
+					// 上传文件类型管理
+					group.Group("/filetype", func(group *ghttp.RouterGroup) {
+						group.Bind(controller.WdkFiletype)
+					})
 				})
 			})
 			// 每2小时执行一次检查在线用户

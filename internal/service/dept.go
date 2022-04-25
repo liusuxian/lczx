@@ -134,7 +134,7 @@ func (s *sDept) EditDept(ctx context.Context, req *v1.DeptEditReq) (err error) {
 		}
 	}
 	// 获取部门ID下所有的子部门ID
-	idsMap := gmap.New(true)
+	idsMap := gmap.New()
 	s.FindSonIdsByParentId(allDepts, req.Id, idsMap)
 	if idsMap.Contains(req.ParentId) {
 		err = gerror.Newf(`父部门ID[%d]是部门ID[%d]的子部门ID`, req.ParentId, req.Id)
@@ -164,7 +164,7 @@ func (s *sDept) DeleteDept(ctx context.Context, ids []uint64) (err error) {
 		return
 	}
 	// 获取所有的子部门ID
-	idsMap := gmap.New(true)
+	idsMap := gmap.New()
 	for _, id := range ids {
 		idsMap.Set(id, true)
 		s.FindSonIdsByParentId(allDepts, id, idsMap)
