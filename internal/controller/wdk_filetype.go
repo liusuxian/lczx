@@ -56,7 +56,7 @@ func (c *cWdkFiletype) Info(ctx context.Context, req *v1.WdkFiletypeInfoReq) (re
 	return
 }
 
-// Edit 编辑文档库项目
+// Edit 编辑文档库上传文件类型
 func (c *cWdkFiletype) Edit(ctx context.Context, req *v1.WdkFiletypeEditReq) (res *v1.WdkFiletypeEditRes, err error) {
 	err = service.WdkFiletype().EditWdkFiletype(ctx, req)
 	if err != nil {
@@ -67,7 +67,7 @@ func (c *cWdkFiletype) Edit(ctx context.Context, req *v1.WdkFiletypeEditReq) (re
 	return
 }
 
-// Delete 删除文档库项目
+// Delete 删除文档库上传文件类型
 func (c *cWdkFiletype) Delete(ctx context.Context, req *v1.WdkFiletypeDeleteReq) (res *v1.WdkFiletypeDeleteRes, err error) {
 	err = service.WdkFiletype().DeleteWdkFiletype(ctx, req.Ids)
 	if err != nil {
