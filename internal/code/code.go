@@ -64,4 +64,7 @@ var (
 
 	GetWdkFiletypeListFailed = gcode.New(1700, "获取文档库上传文件类型列表失败", "") // 获取文档库上传文件类型列表失败
 	AddWdkFiletypeFailed     = gcode.New(1701, "添加文档库上传文件类型失败", "")   // 添加文档库上传文件类型失败
+	GetWdkFiletypeFailed     = gcode.New(1702, "获取文档库上传文件类型信息失败", "") // 获取文档库上传文件类型信息失败
+	EditWdkFiletypeFailed    = gcode.New(1703, "修改文档库上传文件类型失败", "")   // 修改文档库上传文件类型失败
+	DeleteWdkFiletypeFailed  = gcode.New(1704, "删除文档库上传文件类型失败", "")   // 删除文档库上传文件类型失败
 )

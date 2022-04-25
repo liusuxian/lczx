@@ -59,9 +59,9 @@ type WdkFiletypeInfoRes struct {
 
 // WdkFiletypeEditReq 文档库编辑上传文件类型请求参数
 type WdkFiletypeEditReq struct {
-	g.Meta    `path:"/edit" tags:"WdkFiletypeEdit" method:"put" summary:"You first wdk/filetype/add api"`
-	Id        uint64   `json:"id" v:"required|regex:^[1-9]\\d*$#上传文件类型ID不能为空|上传文件类型ID必须为正整数" dc:"上传文件类型ID"`                                         // 上传文件类型ID
-	Name      uint     `json:"name" v:"required|regex:^[\u4e00-\u9fa5]{0,20}$#类型名称不能为空|类型名称必须为中文且长度不能超过20" dc:"类型名称"`                               // 类型名称
+	g.Meta    `path:"/edit" tags:"WdkFiletypeEdit" method:"put" summary:"You first wdk/filetype/edit api"`
+	Id        uint64   `json:"id" v:"required|regex:^[1-9]\\d*$#文档库上传文件类型ID不能为空|文档库上传文件类型ID必须为正整数" dc:"文档库上传文件类型ID"`                                // 上传文件类型ID
+	Name      string   `json:"name" v:"required|regex:^[\u4e00-\u9fa5]{0,20}$#类型名称不能为空|类型名称必须为中文且长度不能超过20" dc:"类型名称"`                               // 类型名称
 	Multiple  uint     `json:"multiple" v:"required|in:0,1#是否同时存在多个文件不能为空|是否同时存在多个文件只能是0,1" dc:"是否同时存在多个文件 0:否 1:是"`                                // 是否同时存在多个文件 0:否 1:是
 	Audit     uint     `json:"audit" v:"required|in:0,1#是否需要审核不能为空|是否需要审核只能是0,1" dc:"是否需要审核 0:不需要 1:需要"`                                            // 是否需要审核 0:不需要 1:需要
 	Step      uint     `json:"step" v:"required|in:0,1,2,3,4,5#所属项目阶段不能为空|所属项目阶段只能是0,1,2,3,4,5" dc:"所属项目阶段 0:未开始 1:合同签约 2:项目启动会 3:服务中 4:合同结束 5:复盘"` // 所属项目阶段 0:未开始 1:合同签约 2:项目启动会 3:服务中 4:合同结束 5:复盘

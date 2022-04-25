@@ -156,6 +156,12 @@ func (s *sWdkProject) AddWdkProject(ctx context.Context, req *v1.WdkProjectAddRe
 	return
 }
 
+// GetWdkProjectById 通过文档库项目ID获取文档库项目信息
+func (s *sWdkProject) GetWdkProjectById(ctx context.Context, id uint64) (wdkProject *entity.WdkProject, err error) {
+	err = dao.WdkProject.Ctx(ctx).Where(do.WdkProject{Id: id}).Scan(&wdkProject)
+	return
+}
+
 // EditWdkProject 编辑文档库项目
 func (s *sWdkProject) EditWdkProject(ctx context.Context, req *v1.WdkProjectEditReq) (err error) {
 	// 检查项目时间
@@ -236,10 +242,4 @@ func (s *sWdkProject) IsWdkProjectNameAvailable(ctx context.Context, name string
 		return false, err
 	}
 	return count == 0, nil
-}
-
-// GetWdkProjectById 通过文档库项目ID获取文档库项目信息
-func (s *sWdkProject) GetWdkProjectById(ctx context.Context, id uint64) (wdkProject *entity.WdkProject, err error) {
-	err = dao.WdkProject.Ctx(ctx).Where(do.WdkProject{Id: id}).Scan(&wdkProject)
-	return
 }

@@ -42,3 +42,38 @@ func (c *cWdkFiletype) Add(ctx context.Context, req *v1.WdkFiletypeAddReq) (res 
 
 	return
 }
+
+// Info 文档库上传文件类型信息
+func (c *cWdkFiletype) Info(ctx context.Context, req *v1.WdkFiletypeInfoReq) (res *v1.WdkFiletypeInfoRes, err error) {
+	var wdkFiletype *v1.WdkFiletypeInfo
+	wdkFiletype, err = service.WdkFiletype().GetWdkFiletypeById(ctx, req.Id)
+	if err != nil {
+		err = gerror.WrapCode(code.GetWdkFiletypeFailed, err)
+		return
+	}
+
+	res = &v1.WdkFiletypeInfoRes{Info: wdkFiletype}
+	return
+}
+
+// Edit 编辑文档库项目
+func (c *cWdkFiletype) Edit(ctx context.Context, req *v1.WdkFiletypeEditReq) (res *v1.WdkFiletypeEditRes, err error) {
+	err = service.WdkFiletype().EditWdkFiletype(ctx, req)
+	if err != nil {
+		err = gerror.WrapCode(code.EditWdkFiletypeFailed, err)
+		return
+	}
+
+	return
+}
+
+// Delete 删除文档库项目
+func (c *cWdkFiletype) Delete(ctx context.Context, req *v1.WdkFiletypeDeleteReq) (res *v1.WdkFiletypeDeleteRes, err error) {
+	err = service.WdkFiletype().DeleteWdkFiletype(ctx, req.Ids)
+	if err != nil {
+		err = gerror.WrapCode(code.DeleteWdkFiletypeFailed, err)
+		return
+	}
+
+	return
+}
