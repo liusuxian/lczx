@@ -71,3 +71,17 @@ func (s *sWdkAttachment) AddWdkAttachmentRecord(ctx context.Context, req *v1.Wdk
 	})
 	return
 }
+
+// DeleteWdkAttachmentRecord 删除文档库上传附件记录
+func (s *sWdkAttachment) DeleteWdkAttachmentRecord(ctx context.Context, ids []uint64) (err error) {
+	err = dao.WdkAttachmentRecord.Ctx(ctx).Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
+		var terr error
+		_, terr = dao.WdkAttachmentRecord.Ctx(ctx).WhereIn(dao.WdkAttachmentRecord.Columns().Id, ids).Delete()
+		if terr != nil {
+			return terr
+		}
+		_, terr = dao.WdkAttachmentFile.Ctx(ctx).WhereIn(dao.WdkAttachmentFile.Columns().Id, ids).Delete()
+		return terr
+	})
+	return
+}

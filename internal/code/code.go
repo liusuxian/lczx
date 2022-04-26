@@ -68,6 +68,7 @@ var (
 	EditWdkFiletypeFailed    = gcode.New(1703, "修改文档库上传文件类型失败", "")   // 修改文档库上传文件类型失败
 	DeleteWdkFiletypeFailed  = gcode.New(1704, "删除文档库上传文件类型失败", "")   // 删除文档库上传文件类型失败
 
-	GetWdkAttachmentRecordFailed = gcode.New(1800, "获取文档库上传附件记录失败", "") // 获取文档库上传附件记录失败
-	AddWdkAttachmentRecordFailed = gcode.New(1801, "添加文档库上传附件记录失败", "") // 添加文档库上传附件记录失败
+	GetWdkAttachmentRecordFailed    = gcode.New(1800, "获取文档库上传附件记录失败", "") // 获取文档库上传附件记录失败
+	AddWdkAttachmentRecordFailed    = gcode.New(1801, "添加文档库上传附件记录失败", "") // 添加文档库上传附件记录失败
+	DeleteWdkAttachmentRecordFailed = gcode.New(1802, "删除文档库上传附件记录失败", "") // 删除文档库上传附件记录失败
 )
