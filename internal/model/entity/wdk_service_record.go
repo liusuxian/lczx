@@ -18,6 +18,4 @@ type WdkServiceRecord struct {
 	XchPdfUrl    string      `json:"xchPdfUrl"    description:"pdf行程涵url"` // pdf行程涵url
 	Remark       string      `json:"remark"       description:"备注"`        // 备注
 	CreateAt     *gtime.Time `json:"createAt"     description:"创建时间"`      // 创建时间
-	UpdateAt     *gtime.Time `json:"updateAt"     description:"更新时间"`      // 更新时间
-	DeletedAt    *gtime.Time `json:"deletedAt"    description:"软删除时间"`     // 软删除时间
 }

@@ -23,8 +23,6 @@ type WdkAttachmentRecordColumns struct {
 	ProjectId string // 所属项目ID
 	Remark    string // 备注
 	CreateAt  string // 创建时间
-	UpdateAt  string // 更新时间
-	DeletedAt string // 软删除时间
 }
 
 //  wdkAttachmentRecordColumns holds the columns for table wdk_attachment_record.
@@ -33,8 +31,6 @@ var wdkAttachmentRecordColumns = WdkAttachmentRecordColumns{
 	ProjectId: "project_id",
 	Remark:    "remark",
 	CreateAt:  "create_at",
-	UpdateAt:  "update_at",
-	DeletedAt: "deleted_at",
 }
 
 // NewWdkAttachmentRecordDao creates and returns a new DAO object for table data access.

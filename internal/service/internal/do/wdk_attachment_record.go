@@ -16,6 +16,4 @@ type WdkAttachmentRecord struct {
 	ProjectId interface{} // 所属项目ID
 	Remark    interface{} // 备注
 	CreateAt  *gtime.Time // 创建时间
-	UpdateAt  *gtime.Time // 更新时间
-	DeletedAt *gtime.Time // 软删除时间
 }

@@ -8,19 +8,19 @@ import (
 	"lczx/internal/service/internal/dao/internal"
 )
 
-// internalWdkAuditRecordDao is internal type for wrapping internal DAO implements.
-type internalWdkAuditRecordDao = *internal.WdkAuditRecordDao
+// internalWdkReportTypeDao is internal type for wrapping internal DAO implements.
+type internalWdkReportTypeDao = *internal.WdkReportTypeDao
 
-// wdkAuditRecordDao is the data access object for table wdk_audit_record.
+// wdkReportTypeDao is the data access object for table wdk_report_type.
 // You can define custom methods on it to extend its functionality as you wish.
-type wdkAuditRecordDao struct {
-	internalWdkAuditRecordDao
+type wdkReportTypeDao struct {
+	internalWdkReportTypeDao
 }
 
 var (
-	// WdkAuditRecord is globally public accessible object for table wdk_audit_record operations.
-	WdkAuditRecord = wdkAuditRecordDao{
-		internal.NewWdkAuditRecordDao(),
+	// WdkReportType is globally public accessible object for table wdk_report_type operations.
+	WdkReportType = wdkReportTypeDao{
+		internal.NewWdkReportTypeDao(),
 	}
 )
 

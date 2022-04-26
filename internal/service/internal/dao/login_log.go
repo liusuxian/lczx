@@ -8,10 +8,13 @@ import (
 	"lczx/internal/service/internal/dao/internal"
 )
 
+// internalLoginLogDao is internal type for wrapping internal DAO implements.
+type internalLoginLogDao = *internal.LoginLogDao
+
 // loginLogDao is the data access object for table login_log.
 // You can define custom methods on it to extend its functionality as you wish.
 type loginLogDao struct {
-	*internal.LoginLogDao
+	internalLoginLogDao
 }
 
 var (

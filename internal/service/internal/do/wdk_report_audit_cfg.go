@@ -8,10 +8,10 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 )
 
-// WdkAuditCfg is the golang structure of table wdk_audit_cfg for DAO operations like Where/Data.
-type WdkAuditCfg struct {
-	g.Meta    `orm:"table:wdk_audit_cfg, do:true"`
-	TypeId    interface{} // 上传文件类型ID
+// WdkReportAuditCfg is the golang structure of table wdk_report_audit_cfg for DAO operations like Where/Data.
+type WdkReportAuditCfg struct {
+	g.Meta    `orm:"table:wdk_report_audit_cfg, do:true"`
+	Id        interface{} // 报告类型ID
 	AuditUid  interface{} // 审核员用户ID
 	AuditName interface{} // 审核员姓名
 }

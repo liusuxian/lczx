@@ -8,19 +8,19 @@ import (
 	"lczx/internal/service/internal/dao/internal"
 )
 
-// internalWdkFileCommentDao is internal type for wrapping internal DAO implements.
-type internalWdkFileCommentDao = *internal.WdkFileCommentDao
+// internalWdkReportDao is internal type for wrapping internal DAO implements.
+type internalWdkReportDao = *internal.WdkReportDao
 
-// wdkFileCommentDao is the data access object for table wdk_file_comment.
+// wdkReportDao is the data access object for table wdk_report.
 // You can define custom methods on it to extend its functionality as you wish.
-type wdkFileCommentDao struct {
-	internalWdkFileCommentDao
+type wdkReportDao struct {
+	internalWdkReportDao
 }
 
 var (
-	// WdkFileComment is globally public accessible object for table wdk_file_comment operations.
-	WdkFileComment = wdkFileCommentDao{
-		internal.NewWdkFileCommentDao(),
+	// WdkReport is globally public accessible object for table wdk_report operations.
+	WdkReport = wdkReportDao{
+		internal.NewWdkReportDao(),
 	}
 )
 

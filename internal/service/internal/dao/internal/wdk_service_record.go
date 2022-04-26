@@ -27,8 +27,6 @@ type WdkServiceRecordColumns struct {
 	XchPdfUrl    string // pdf行程涵url
 	Remark       string // 备注
 	CreateAt     string // 创建时间
-	UpdateAt     string // 更新时间
-	DeletedAt    string // 软删除时间
 }
 
 //  wdkServiceRecordColumns holds the columns for table wdk_service_record.
@@ -41,8 +39,6 @@ var wdkServiceRecordColumns = WdkServiceRecordColumns{
 	XchPdfUrl:    "xch_pdf_url",
 	Remark:       "remark",
 	CreateAt:     "create_at",
-	UpdateAt:     "update_at",
-	DeletedAt:    "deleted_at",
 }
 
 // NewWdkServiceRecordDao creates and returns a new DAO object for table data access.

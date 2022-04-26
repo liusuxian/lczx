@@ -8,14 +8,13 @@ import (
 	"github.com/gogf/gf/v2/os/gtime"
 )
 
-// WdkAuditRecord is the golang structure for table wdk_audit_record.
-type WdkAuditRecord struct {
+// WdkReportAuditRecord is the golang structure for table wdk_report_audit_record.
+type WdkReportAuditRecord struct {
 	AuditUid  uint64      `json:"auditUid"  description:"审核员用户ID"`                // 审核员用户ID
-	FileId    uint64      `json:"fileId"    description:"需要审核的文件ID"`              // 需要审核的文件ID
-	Status    uint        `json:"status"    description:"审核状态 1:审核中 2:已通过 3:未通过"` // 审核状态 1:审核中 2:已通过 3:未通过
-	AuditTime *gtime.Time `json:"auditTime" description:"审核时间"`                   // 审核时间
+	ReportId  uint64      `json:"reportId"  description:"审核的报告ID"`                // 审核的报告ID
+	Status    uint        `json:"status"    description:"审核状态 0:未通过 1:审核中 2:已通过"` // 审核状态 0:未通过 1:审核中 2:已通过
 	AuditName string      `json:"auditName" description:"审核员姓名"`                  // 审核员姓名
+	AuditTime *gtime.Time `json:"auditTime" description:"审核时间"`                   // 审核时间
 	CreateAt  *gtime.Time `json:"createAt"  description:"创建时间"`                   // 创建时间
 	UpdateAt  *gtime.Time `json:"updateAt"  description:"更新时间"`                   // 更新时间
-	DeletedAt *gtime.Time `json:"deletedAt" description:"软删除时间"`                  // 软删除时间
 }

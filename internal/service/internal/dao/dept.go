@@ -8,10 +8,13 @@ import (
 	"lczx/internal/service/internal/dao/internal"
 )
 
+// internalDeptDao is internal type for wrapping internal DAO implements.
+type internalDeptDao = *internal.DeptDao
+
 // deptDao is the data access object for table dept.
 // You can define custom methods on it to extend its functionality as you wish.
 type deptDao struct {
-	*internal.DeptDao
+	internalDeptDao
 }
 
 var (

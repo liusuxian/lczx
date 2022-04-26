@@ -10,68 +10,66 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 )
 
-// WdkFileCommentDao is the data access object for table wdk_file_comment.
-type WdkFileCommentDao struct {
-	table   string                // table is the underlying table name of the DAO.
-	group   string                // group is the database configuration group name of current DAO.
-	columns WdkFileCommentColumns // columns contains all the column names of Table for convenient usage.
+// WdkReportCommentDao is the data access object for table wdk_report_comment.
+type WdkReportCommentDao struct {
+	table   string                  // table is the underlying table name of the DAO.
+	group   string                  // group is the database configuration group name of current DAO.
+	columns WdkReportCommentColumns // columns contains all the column names of Table for convenient usage.
 }
 
-// WdkFileCommentColumns defines and stores column names for table wdk_file_comment.
-type WdkFileCommentColumns struct {
+// WdkReportCommentColumns defines and stores column names for table wdk_report_comment.
+type WdkReportCommentColumns struct {
 	AuditUid  string // 审核员用户ID
-	FileId    string // 审核的文件ID
+	ReportId  string // 审核报告ID
 	Page      string // 文件页码
 	AuditName string // 审核人员姓名
 	Comment   string // 每页评价内容
 	CreateAt  string // 创建时间
 	UpdateAt  string // 更新时间
-	DeletedAt string // 软删除时间
 }
 
-//  wdkFileCommentColumns holds the columns for table wdk_file_comment.
-var wdkFileCommentColumns = WdkFileCommentColumns{
+//  wdkReportCommentColumns holds the columns for table wdk_report_comment.
+var wdkReportCommentColumns = WdkReportCommentColumns{
 	AuditUid:  "audit_uid",
-	FileId:    "file_id",
+	ReportId:  "report_id",
 	Page:      "page",
 	AuditName: "audit_name",
 	Comment:   "comment",
 	CreateAt:  "create_at",
 	UpdateAt:  "update_at",
-	DeletedAt: "deleted_at",
 }
 
-// NewWdkFileCommentDao creates and returns a new DAO object for table data access.
-func NewWdkFileCommentDao() *WdkFileCommentDao {
-	return &WdkFileCommentDao{
+// NewWdkReportCommentDao creates and returns a new DAO object for table data access.
+func NewWdkReportCommentDao() *WdkReportCommentDao {
+	return &WdkReportCommentDao{
 		group:   "default",
-		table:   "wdk_file_comment",
-		columns: wdkFileCommentColumns,
+		table:   "wdk_report_comment",
+		columns: wdkReportCommentColumns,
 	}
 }
 
 // DB retrieves and returns the underlying raw database management object of current DAO.
-func (dao *WdkFileCommentDao) DB() gdb.DB {
+func (dao *WdkReportCommentDao) DB() gdb.DB {
 	return g.DB(dao.group)
 }
 
 // Table returns the table name of current dao.
-func (dao *WdkFileCommentDao) Table() string {
+func (dao *WdkReportCommentDao) Table() string {
 	return dao.table
 }
 
 // Columns returns all column names of current dao.
-func (dao *WdkFileCommentDao) Columns() WdkFileCommentColumns {
+func (dao *WdkReportCommentDao) Columns() WdkReportCommentColumns {
 	return dao.columns
 }
 
 // Group returns the configuration group name of database of current dao.
-func (dao *WdkFileCommentDao) Group() string {
+func (dao *WdkReportCommentDao) Group() string {
 	return dao.group
 }
 
 // Ctx creates and returns the Model for current DAO, It automatically sets the context for current operation.
-func (dao *WdkFileCommentDao) Ctx(ctx context.Context) *gdb.Model {
+func (dao *WdkReportCommentDao) Ctx(ctx context.Context) *gdb.Model {
 	return dao.DB().Model(dao.table).Safe().Ctx(ctx)
 }
 
@@ -81,6 +79,6 @@ func (dao *WdkFileCommentDao) Ctx(ctx context.Context) *gdb.Model {
 //
 // Note that, you should not Commit or Rollback the transaction in function f
 // as it is automatically handled by this function.
-func (dao *WdkFileCommentDao) Transaction(ctx context.Context, f func(ctx context.Context, tx *gdb.TX) error) (err error) {
+func (dao *WdkReportCommentDao) Transaction(ctx context.Context, f func(ctx context.Context, tx *gdb.TX) error) (err error) {
 	return dao.Ctx(ctx).Transaction(ctx, f)
 }

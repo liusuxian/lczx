@@ -8,10 +8,13 @@ import (
 	"lczx/internal/service/internal/dao/internal"
 )
 
+// internalUserOnlineDao is internal type for wrapping internal DAO implements.
+type internalUserOnlineDao = *internal.UserOnlineDao
+
 // userOnlineDao is the data access object for table user_online.
 // You can define custom methods on it to extend its functionality as you wish.
 type userOnlineDao struct {
-	*internal.UserOnlineDao
+	internalUserOnlineDao
 }
 
 var (

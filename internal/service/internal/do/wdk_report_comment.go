@@ -9,15 +9,14 @@ import (
 	"github.com/gogf/gf/v2/os/gtime"
 )
 
-// WdkFileComment is the golang structure of table wdk_file_comment for DAO operations like Where/Data.
-type WdkFileComment struct {
-	g.Meta    `orm:"table:wdk_file_comment, do:true"`
+// WdkReportComment is the golang structure of table wdk_report_comment for DAO operations like Where/Data.
+type WdkReportComment struct {
+	g.Meta    `orm:"table:wdk_report_comment, do:true"`
 	AuditUid  interface{} // 审核员用户ID
-	FileId    interface{} // 审核的文件ID
+	ReportId  interface{} // 审核报告ID
 	Page      interface{} // 文件页码
 	AuditName interface{} // 审核人员姓名
 	Comment   interface{} // 每页评价内容
 	CreateAt  *gtime.Time // 创建时间
 	UpdateAt  *gtime.Time // 更新时间
-	DeletedAt *gtime.Time // 软删除时间
 }

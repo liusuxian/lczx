@@ -19,40 +19,30 @@ type WdkFileDao struct {
 
 // WdkFileColumns defines and stores column names for table wdk_file.
 type WdkFileColumns struct {
-	FileId       string // 上传文件ID
-	ProjectId    string // 所属项目ID
-	Name         string // 文件名
-	CreateBy     string // 上传者用户ID
-	CreateName   string // 上传者姓名
-	AuditStatus  string // 审核状态 0:不需要审核 1:审核中 2:已通过 3:未通过
-	AuditNames   string // 审核人员们的姓名
-	AuditEndTime string // 审核完成时间
-	Step         string // 所属项目阶段 0:未开始 1:合同签约 2:项目启动会 3:服务中 4:合同结束 5:复盘
-	Excellence   string // 是否是优秀报告 0:无该属性 1:被推荐为优秀报告 2:未被评选为优秀报告 3:已被评选为优秀报告
-	OriginUrl    string // 原始文件url
-	PdfUrl       string // pdf文件url
-	CreateAt     string // 上传时间
-	UpdateAt     string // 更新时间
-	DeletedAt    string // 软删除时间
+	Id         string // 上传文件ID
+	ProjectId  string // 所属项目ID
+	Name       string // 文件名称
+	Type       string // 文件类型 0:合同扫描文件 1:年度服务计划书 2:总结报告 3:项目移交 4:复盘报告 5:文件签收单 6:满意度调查表
+	CreateBy   string // 上传者用户ID
+	CreateName string // 上传者姓名
+	OriginUrl  string // 原始文件url
+	PdfUrl     string // pdf文件url
+	CreateAt   string // 上传时间
+	UpdateAt   string // 更新时间
 }
 
 //  wdkFileColumns holds the columns for table wdk_file.
 var wdkFileColumns = WdkFileColumns{
-	FileId:       "file_id",
-	ProjectId:    "project_id",
-	Name:         "name",
-	CreateBy:     "create_by",
-	CreateName:   "create_name",
-	AuditStatus:  "audit_status",
-	AuditNames:   "audit_names",
-	AuditEndTime: "audit_end_time",
-	Step:         "step",
-	Excellence:   "excellence",
-	OriginUrl:    "origin_url",
-	PdfUrl:       "pdf_url",
-	CreateAt:     "create_at",
-	UpdateAt:     "update_at",
-	DeletedAt:    "deleted_at",
+	Id:         "id",
+	ProjectId:  "project_id",
+	Name:       "name",
+	Type:       "type",
+	CreateBy:   "create_by",
+	CreateName: "create_name",
+	OriginUrl:  "origin_url",
+	PdfUrl:     "pdf_url",
+	CreateAt:   "create_at",
+	UpdateAt:   "update_at",
 }
 
 // NewWdkFileDao creates and returns a new DAO object for table data access.
