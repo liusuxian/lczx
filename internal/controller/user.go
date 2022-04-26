@@ -94,7 +94,7 @@ func (c *cUser) UploadAvatar(ctx context.Context, req *v1.UserUploadAvatarReq) (
 	}
 	// 设置用户头像
 	user := service.Context().Get(ctx).User
-	err = service.User().SetAvatar(ctx, user.Id, fileInfo.FileUrl)
+	err = service.User().SetAvatar(ctx, user.Id, fileInfo.OriginFileUrl)
 	if err != nil {
 		err = gerror.WrapCode(code.SetUserAvatarFailed, err)
 		return

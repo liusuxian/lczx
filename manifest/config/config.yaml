@@ -129,7 +129,7 @@ casbin:
 upload:
   type: 1                                                                                                                                     # 上传方式。1: 阿里云OSS
   imgList: [ "jpg", "jpeg", "png", "gif" ]                                                                                                    # 允许上传的图片类型
-  fileList: [ "doc", "docx", "xls", "xlsx", "ppt", "pptx", "pdf", "txt" ]                                                                     # 允许上传的文件类型
+  fileList: [ "doc", "docx", "xls", "xlsx", "ppt", "pptx", "pdf" ]                                                                     # 允许上传的文件类型
   maxSize: 5120                                                                                                                               # 最大文件上传大小(MB)。默认为5*1024=5G=5120MB
   aliyunOSS:
     bucket: "lczx-sys"

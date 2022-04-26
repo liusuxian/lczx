@@ -8,10 +8,11 @@ import (
 
 // FileInfo 上传的文件信息
 type FileInfo struct {
-	FileName string `json:"fileName" dc:"文件名"`  // 文件名
-	FileSize int64  `json:"fileSize" dc:"文件大小"` // 文件大小
-	FileUrl  string `json:"fileUrl" dc:"文件Url"` // 文件Url
-	FileType string `json:"fileType" dc:"文件类型"` // 文件类型
+	FileName      string `json:"fileName" dc:"文件名"`          // 文件名
+	FileSize      int64  `json:"fileSize" dc:"文件大小"`         // 文件大小
+	OriginFileUrl string `json:"originFileUrl" dc:"原始文件Url"` // 原始文件Url
+	PdfFileUrl    string `json:"pdfFileUrl" dc:"pdf文件Url"`   // pdf文件Url
+	FileType      string `json:"fileType" dc:"文件类型"`         // 文件类型
 }
 
 // FileUploadAdapter 文件上传适配器接口

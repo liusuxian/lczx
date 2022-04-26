@@ -12,6 +12,7 @@ import (
 	"github.com/gogf/gf/v2/util/grand"
 	"io"
 	"lczx/utility/crypto"
+	"lczx/utility/utils"
 	"strconv"
 	"strings"
 )
@@ -81,17 +82,18 @@ func (u FileUploadOSSAdapter) uploadByType(file *ghttp.UploadFile, dirPath strin
 		return
 	}
 	// 执行上传
-	var filepath string
-	filepath, err = u.uploadAction(file, dirPath)
+	var originFilepath, pdfFilepath string
+	originFilepath, pdfFilepath, err = u.uploadAction(file, fType, dirPath)
 	if err != nil {
 		return
 	}
 
 	fileInfo = &FileInfo{
-		FileName: file.Filename,
-		FileSize: file.Size,
-		FileUrl:  u.getUrl(filepath),
-		FileType: file.Header.Get("Content-type"),
+		FileName:      file.Filename,
+		FileSize:      file.Size,
+		OriginFileUrl: u.getUrl(originFilepath),
+		PdfFileUrl:    u.getUrl(pdfFilepath),
+		FileType:      file.Header.Get("Content-type"),
 	}
 	return
 }
@@ -125,17 +127,18 @@ func (u FileUploadOSSAdapter) uploadBathByType(files []*ghttp.UploadFile, dirPat
 	// 循环执行上传
 	fileInfos = make([]*FileInfo, 0, len(files))
 	for _, file := range files {
-		var filepath string
-		filepath, err = u.uploadAction(file, dirPath)
+		var originFilepath, pdfFilepath string
+		originFilepath, pdfFilepath, err = u.uploadAction(file, fType, dirPath)
 		if err != nil {
 			return
 		}
 
 		fileInfo := &FileInfo{
-			FileName: file.Filename,
-			FileSize: file.Size,
-			FileUrl:  u.getUrl(filepath),
-			FileType: file.Header.Get("Content-type"),
+			FileName:      file.Filename,
+			FileSize:      file.Size,
+			OriginFileUrl: u.getUrl(originFilepath),
+			PdfFileUrl:    u.getUrl(pdfFilepath),
+			FileType:      file.Header.Get("Content-type"),
 		}
 		fileInfos = append(fileInfos, fileInfo)
 	}
@@ -159,11 +162,7 @@ func (u FileUploadOSSAdapter) getUrl(filepath string) string {
 }
 
 // 上传到阿里云OSS操作
-func (u FileUploadOSSAdapter) uploadAction(file *ghttp.UploadFile, dirPath string) (filepath string, err error) {
-	// 文件名处理
-	filename := strings.ToLower(strconv.FormatInt(gtime.TimestampNano(), 36) + grand.S(10))
-	filename = filename + gfile.Ext(file.Filename)
-	filepath = dirPath + "/" + filename
+func (u FileUploadOSSAdapter) uploadAction(file *ghttp.UploadFile, fType string, dirPath string) (originFilepath, pdfFilepath string, err error) {
 	// 解密 accessKeyID
 	var accessKeyID []byte
 	accessKeyID, err = crypto.AesDecrypt(u.AccessKeyID)
@@ -188,25 +187,6 @@ func (u FileUploadOSSAdapter) uploadAction(file *ghttp.UploadFile, dirPath strin
 	if err != nil {
 		return
 	}
-	// 设置Option
-	options := []oss.Option{
-		// 指定该Object被下载时网页的缓存行为。
-		// oss.CacheControl("no-cache"),
-		// 指定该Object被下载时的名称。
-		oss.ContentDisposition("attachment;filename=" + file.Filename),
-		// 指定该Object被下载时的内容编码格式。
-		// oss.ContentEncoding("UTF-8"),
-		// 指定过期时间。
-		// oss.Expires(time.Date(2023, time.January, 30, 23, 0, 0, 0, time.UTC)),
-		// 指定对返回的Key进行编码，目前支持URL编码。
-		oss.EncodingType("url"),
-		// 指定Object的存储类型。
-		oss.ObjectStorageClass(oss.StorageStandard),
-		// 指定Object的访问权限。
-		// oss.ObjectACL("private"),
-		// 指定CopyObject操作时是否覆盖同名目标Object。此处设置为true，表示禁止覆盖同名Object。
-		oss.ForbidOverWrite(true),
-	}
 	// 打开文件
 	var fd io.ReadCloser
 	fd, err = file.Open()
@@ -214,7 +194,55 @@ func (u FileUploadOSSAdapter) uploadAction(file *ghttp.UploadFile, dirPath strin
 		return
 	}
 	defer fd.Close()
-	// 上传文件
-	err = bucket.PutObject(filepath, fd, options...)
+	// 文件名处理
+	filename := strings.ToLower(strconv.FormatInt(gtime.TimestampNano(), 36) + grand.S(10))
+	fileFullname := filename + gfile.Ext(file.Filename)
+	originFilepath = dirPath + "/" + fileFullname
+	// 上传原始文件
+	err = bucket.PutObject(originFilepath, fd)
+	if err != nil {
+		return
+	}
+	// 原始文件转pdf文件
+	extName := gfile.ExtName(file.Filename)
+	if fType == "file" && extName == "pdf" {
+		pdfFilepath = dirPath + "/" + filename + ".pdf"
+		return
+	}
+	if fType == "file" {
+		// 下载原始文件
+		downloadFilepath := "./cache/download/" + fileFullname
+		err = bucket.DownloadFile(originFilepath, downloadFilepath, 100*1024, oss.Routines(3), oss.Checkpoint(true, ""))
+		if err != nil {
+			return
+		}
+		// 转pdf
+		var resultPath string
+		resultPath, err = utils.ConvertToPDF(downloadFilepath)
+		if err != nil {
+			// 删除下载的原始文件
+			_ = gfile.Remove(downloadFilepath)
+			return
+		}
+		// 上传pdf文件
+		if resultPath != "" {
+			tmpPdfFilepath := dirPath + "/" + filename + ".pdf"
+			// 上传文件
+			err = bucket.PutObjectFromFile(tmpPdfFilepath, resultPath)
+			if err != nil {
+				// 删除下载的原始文件
+				_ = gfile.Remove(downloadFilepath)
+				// 删除转换的pdf文件
+				_ = gfile.Remove(resultPath)
+				return
+			}
+			// 删除下载的原始文件
+			_ = gfile.Remove(downloadFilepath)
+			// 删除转换的pdf文件
+			_ = gfile.Remove(resultPath)
+			pdfFilepath = tmpPdfFilepath
+			return
+		}
+	}
 	return
 }

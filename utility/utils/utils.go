@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"github.com/gogf/gf/v2/crypto/gmd5"
@@ -10,7 +11,9 @@ import (
 	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/text/gstr"
 	"lczx/utility/logger"
+	"log"
 	"net"
+	"os/exec"
 )
 
 // GetClientIp 获取客户端IP
@@ -82,6 +85,23 @@ func Reverse[T any](s []T) {
 	for i, j := 0, len(s)-1; i < j; i, j = i+1, j-1 {
 		s[i], s[j] = s[j], s[i]
 	}
+}
+
+// 执行shell命令
+func interactiveToexec(commandName string, params []string) error {
+	cmd := exec.Command(commandName, params...)
+	log.Println("interactiveToexec cmd: ", cmd)
+	_, err := cmd.Output()
+	cmd.Stderr = bytes.NewBuffer(nil)
+	return err
+}
+
+// Doexec 直接通过字符串执行shell命令，不拼接命令
+func Doexec(cmdStr string) error {
+	cmd := exec.Command("bash", "-c", cmdStr)
+	log.Println("Doexec cmd: ", cmd)
+	_, err := cmd.CombinedOutput()
+	return err
 }
 
 // RedisKey 组装redis key

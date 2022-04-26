@@ -44,7 +44,9 @@ var (
 							if e != nil {
 								fmt.Println("upload test err: ", e)
 							} else {
-								fmt.Println("upload test succ: ", f)
+								fmt.Println("upload test succ1: ", f.FileName, f.FileSize, f.FileName)
+								fmt.Println("upload test succ2: ", f.OriginFileUrl)
+								fmt.Println("upload test succ3: ", f.PdfFileUrl)
 							}
 						}
 					})
@@ -69,7 +71,7 @@ var (
 				group.Hook("/*", ghttp.HookAfterOutput, service.OperLog().Invoke)
 				// 用户相关
 				group.Group("/user", func(group *ghttp.RouterGroup) {
-					// TODO 上传头像未完成
+					// 上传头像未完成
 					group.Bind(controller.User)
 				})
 				// 权限管理
@@ -86,7 +88,7 @@ var (
 					group.Group("/dept", func(group *ghttp.RouterGroup) {
 						group.Bind(controller.Dept)
 					})
-					// TODO 用户管理
+					// 用户管理
 					group.Group("/user", func(group *ghttp.RouterGroup) {
 						group.Bind(controller.UserManager)
 					})
@@ -119,6 +121,9 @@ var (
 					// 上传文件类型管理
 					group.Group("/filetype", func(group *ghttp.RouterGroup) {
 						group.Bind(controller.WdkFiletype)
+					})
+					// 上传附件记录管理
+					group.Group("/attachment", func(group *ghttp.RouterGroup) {
 					})
 				})
 			})
