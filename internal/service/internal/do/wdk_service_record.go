@@ -13,6 +13,7 @@ import (
 type WdkServiceRecord struct {
 	g.Meta       `orm:"table:wdk_service_record, do:true"`
 	Id           interface{} // 服务记录ID
+	ProjectId    interface{} // 所属项目ID
 	ServiceTime  *gtime.Time // 服务时间
 	XchName      interface{} // 行程涵文件名
 	XchOriginUrl interface{} // 原始行程涵url

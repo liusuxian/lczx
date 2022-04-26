@@ -19,26 +19,24 @@ type WdkFiletypeCfgDao struct {
 
 // WdkFiletypeCfgColumns defines and stores column names for table wdk_filetype_cfg.
 type WdkFiletypeCfgColumns struct {
-	Id        string // 上传文件类型ID
-	Name      string // 类型名称
-	Multiple  string // 是否同时存在多个文件 0:否 1:是
-	Audit     string // 是否需要审核 0:不需要 1:需要
-	Step      string // 所属项目阶段 0:未开始 1:合同签约 2:项目启动会 3:服务中 4:合同结束 5:复盘
-	CreateAt  string // 创建时间
-	UpdateAt  string // 更新时间
-	DeletedAt string // 软删除时间
+	Id       string // 上传文件类型ID
+	Name     string // 类型名称
+	Multiple string // 是否同时存在多个文件 0:否 1:是
+	Audit    string // 是否需要审核 0:不需要 1:需要
+	Step     string // 所属项目阶段 0:未开始 1:合同签约 2:项目启动会 3:服务中 4:合同结束 5:复盘
+	CreateAt string // 创建时间
+	UpdateAt string // 更新时间
 }
 
 //  wdkFiletypeCfgColumns holds the columns for table wdk_filetype_cfg.
 var wdkFiletypeCfgColumns = WdkFiletypeCfgColumns{
-	Id:        "id",
-	Name:      "name",
-	Multiple:  "multiple",
-	Audit:     "audit",
-	Step:      "step",
-	CreateAt:  "create_at",
-	UpdateAt:  "update_at",
-	DeletedAt: "deleted_at",
+	Id:       "id",
+	Name:     "name",
+	Multiple: "multiple",
+	Audit:    "audit",
+	Step:     "step",
+	CreateAt: "create_at",
+	UpdateAt: "update_at",
 }
 
 // NewWdkFiletypeCfgDao creates and returns a new DAO object for table data access.

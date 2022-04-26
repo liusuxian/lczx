@@ -13,6 +13,7 @@ import (
 type WdkAttachmentRecord struct {
 	g.Meta    `orm:"table:wdk_attachment_record, do:true"`
 	Id        interface{} // 附件上传记录ID
+	ProjectId interface{} // 所属项目ID
 	Remark    interface{} // 备注
 	CreateAt  *gtime.Time // 创建时间
 	UpdateAt  *gtime.Time // 更新时间

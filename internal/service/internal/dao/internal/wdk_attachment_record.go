@@ -20,6 +20,7 @@ type WdkAttachmentRecordDao struct {
 // WdkAttachmentRecordColumns defines and stores column names for table wdk_attachment_record.
 type WdkAttachmentRecordColumns struct {
 	Id        string // 附件上传记录ID
+	ProjectId string // 所属项目ID
 	Remark    string // 备注
 	CreateAt  string // 创建时间
 	UpdateAt  string // 更新时间
@@ -29,6 +30,7 @@ type WdkAttachmentRecordColumns struct {
 //  wdkAttachmentRecordColumns holds the columns for table wdk_attachment_record.
 var wdkAttachmentRecordColumns = WdkAttachmentRecordColumns{
 	Id:        "id",
+	ProjectId: "project_id",
 	Remark:    "remark",
 	CreateAt:  "create_at",
 	UpdateAt:  "update_at",

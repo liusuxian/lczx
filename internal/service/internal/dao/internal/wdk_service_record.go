@@ -20,6 +20,7 @@ type WdkServiceRecordDao struct {
 // WdkServiceRecordColumns defines and stores column names for table wdk_service_record.
 type WdkServiceRecordColumns struct {
 	Id           string // 服务记录ID
+	ProjectId    string // 所属项目ID
 	ServiceTime  string // 服务时间
 	XchName      string // 行程涵文件名
 	XchOriginUrl string // 原始行程涵url
@@ -33,6 +34,7 @@ type WdkServiceRecordColumns struct {
 //  wdkServiceRecordColumns holds the columns for table wdk_service_record.
 var wdkServiceRecordColumns = WdkServiceRecordColumns{
 	Id:           "id",
+	ProjectId:    "project_id",
 	ServiceTime:  "service_time",
 	XchName:      "xch_name",
 	XchOriginUrl: "xch_origin_url",
