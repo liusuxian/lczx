@@ -7,6 +7,7 @@ import (
 	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/os/gcmd"
 	"github.com/gogf/gf/v2/os/gcron"
+	v1 "lczx/api/v1"
 	"lczx/internal/controller"
 	"lczx/internal/service"
 	"lczx/internal/upload"
@@ -37,16 +38,41 @@ var (
 				})
 				// 测试上传文件
 				group.Group("/upload", func(group *ghttp.RouterGroup) {
-					group.POST("/test", func(req *ghttp.Request) {
-						file := req.GetUploadFile("upload-test")
-						if file != nil {
-							f, e := upload.Upload.UploadFile(file, "wdk")
+					// 测试上传头像
+					group.POST("/avatar", func(req *ghttp.Request) {
+						// 获取上传文件信息
+						avatar := req.GetUploadFile("upload-avatar")
+						if avatar != nil {
+							f, e := upload.Upload.UploadImg(avatar, "user/avatar")
 							if e != nil {
-								fmt.Println("upload test err: ", e)
+								fmt.Println("upload avatar err1: ", e)
 							} else {
-								fmt.Println("upload test FileInfo: ", f.FileName, f.FileSize, f.FileType)
-								fmt.Println("upload test OriginFileUrl: ", f.OriginFileUrl)
-								fmt.Println("upload test PdfFileUrl: ", f.PdfFileUrl)
+								fmt.Println("upload avatar res: ", f)
+								// 设置用户头像
+								e = service.User().SetAvatar(ctx, 1, f.OriginFileUrl)
+								if e != nil {
+									fmt.Println("upload avatar err2: ", e)
+								}
+							}
+						}
+					})
+					// 测试上传附件
+					group.POST("/attachment", func(req *ghttp.Request) {
+						// 获取上传文件信息
+						files := req.GetUploadFiles("upload-attachment")
+						if len(files) > 0 && len(files) <= 4 {
+							fs, e := upload.Upload.UploadFiles(files, "wdk/attachment")
+							if e != nil {
+								fmt.Println("upload attachment err1: ", e)
+							} else {
+								fmt.Println("upload attachment res: ", fs)
+								// 新增文档库上传附件记录
+								e = service.WdkAttachment().AddWdkAttachmentRecord(ctx, &v1.WdkAttachmentRecordAddReq{
+									ProjectId: 1,
+								}, fs)
+								if e != nil {
+									fmt.Println("upload attachment err2: ", e)
+								}
 							}
 						}
 					})
