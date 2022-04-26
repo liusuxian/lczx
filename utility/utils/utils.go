@@ -58,8 +58,8 @@ func GetCityByIp(ctx context.Context, ip string) string {
 		return "内网IP"
 	}
 	url := "https://whois.pconline.com.cn/ipJson.jsp?json=true&ip=" + ip
-	bytes := g.Client().GetBytes(ctx, url)
-	src := string(bytes)
+	byteList := g.Client().GetBytes(ctx, url)
+	src := string(byteList)
 	srcCharset := "GBK"
 	tmp, _ := gcharset.ToUTF8(srcCharset, src)
 	json, err := gjson.DecodeToJson(tmp)

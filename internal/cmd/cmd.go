@@ -124,6 +124,7 @@ var (
 					})
 					// 上传附件记录管理
 					group.Group("/attachment", func(group *ghttp.RouterGroup) {
+						group.Bind(controller.WdkAttachment)
 					})
 				})
 			})
