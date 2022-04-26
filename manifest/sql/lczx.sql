@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 25/04/2022 17:24:19
+ Date: 26/04/2022 09:30:29
 */
 
 SET NAMES utf8mb4;
@@ -361,11 +361,12 @@ COMMIT;
 DROP TABLE IF EXISTS `wdk_attachment_record`;
 CREATE TABLE `wdk_attachment_record` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '附件上传记录ID',
+  `project_id` bigint unsigned NOT NULL COMMENT '所属项目ID',
   `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '备注',
   `create_at` datetime DEFAULT NULL COMMENT '创建时间',
   `update_at` datetime DEFAULT NULL COMMENT '更新时间',
   `deleted_at` datetime DEFAULT NULL COMMENT '软删除时间',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`,`project_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ----------------------------
@@ -511,7 +512,7 @@ CREATE TABLE `wdk_filetype_cfg` (
   `update_at` datetime DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name_index` (`name`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ----------------------------
 -- Records of wdk_filetype_cfg
@@ -524,9 +525,6 @@ INSERT INTO `wdk_filetype_cfg` (`id`, `name`, `multiple`, `audit`, `step`, `crea
 INSERT INTO `wdk_filetype_cfg` (`id`, `name`, `multiple`, `audit`, `step`, `create_at`, `update_at`) VALUES (5, '复盘报告', 0, 0, 5, '2022-04-22 10:40:05', '2022-04-22 10:40:05');
 INSERT INTO `wdk_filetype_cfg` (`id`, `name`, `multiple`, `audit`, `step`, `create_at`, `update_at`) VALUES (6, '文件签收单', 1, 0, 3, '2022-04-22 10:40:43', '2022-04-22 10:40:43');
 INSERT INTO `wdk_filetype_cfg` (`id`, `name`, `multiple`, `audit`, `step`, `create_at`, `update_at`) VALUES (7, '满意度调查表', 1, 0, 3, '2022-04-22 10:41:37', '2022-04-22 10:41:37');
-INSERT INTO `wdk_filetype_cfg` (`id`, `name`, `multiple`, `audit`, `step`, `create_at`, `update_at`) VALUES (8, '规划设计报告', 1, 1, 3, '2022-04-22 10:42:59', '2022-04-22 10:42:59');
-INSERT INTO `wdk_filetype_cfg` (`id`, `name`, `multiple`, `audit`, `step`, `create_at`, `update_at`) VALUES (9, '建筑图纸报告', 1, 1, 3, '2022-04-22 10:43:17', '2022-04-22 10:43:17');
-INSERT INTO `wdk_filetype_cfg` (`id`, `name`, `multiple`, `audit`, `step`, `create_at`, `update_at`) VALUES (10, '水电报告', 1, 1, 3, '2022-04-22 10:43:40', '2022-04-22 10:43:40');
 COMMIT;
 
 -- ----------------------------
@@ -590,6 +588,7 @@ COMMIT;
 DROP TABLE IF EXISTS `wdk_service_record`;
 CREATE TABLE `wdk_service_record` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '服务记录ID',
+  `project_id` bigint unsigned NOT NULL COMMENT '所属项目ID',
   `service_time` datetime NOT NULL COMMENT '服务时间',
   `xch_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '行程涵文件名',
   `xch_origin_url` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '原始行程涵url',
@@ -598,7 +597,7 @@ CREATE TABLE `wdk_service_record` (
   `create_at` datetime DEFAULT NULL COMMENT '创建时间',
   `update_at` datetime DEFAULT NULL COMMENT '更新时间',
   `deleted_at` datetime DEFAULT NULL COMMENT '软删除时间',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`,`project_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ----------------------------
