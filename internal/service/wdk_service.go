@@ -6,6 +6,7 @@ import (
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	v1 "lczx/api/v1"
+	"lczx/internal/model/entity"
 	"lczx/internal/service/internal/dao"
 	"lczx/internal/service/internal/do"
 	"lczx/internal/upload"
@@ -39,13 +40,19 @@ func (s *sWdkService) AddWdkServiceRecord(ctx context.Context, req *v1.WdkServic
 	err = dao.WdkServiceRecord.Ctx(ctx).Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		// 通过文档库项目ID判断文档库项目信息是否存在
 		var terr error
-		var wdkProjectExists bool
-		wdkProjectExists, terr = WdkProject().WdkProjectExistsById(ctx, req.ProjectId)
+		var wdkProject *entity.WdkProject
+		wdkProject, terr = WdkProject().GetWdkProjectById(ctx, req.ProjectId)
 		if terr != nil {
 			return terr
 		}
-		if !wdkProjectExists {
+		if wdkProject == nil {
 			terr = gerror.Newf(`文档库项目ID[%d]不存在`, req.ProjectId)
+			return terr
+		}
+		// 判断写入权限
+		curUser := Context().Get(ctx).User
+		if curUser.Id != wdkProject.PrincipalUid {
+			terr = gerror.New("抱歉！！！您没有写入权限")
 			return terr
 		}
 		// 写入文档库服务记录数据
@@ -71,20 +78,6 @@ func (s *sWdkService) AddWdkServiceRecord(ctx context.Context, req *v1.WdkServic
 			})
 		}
 		_, terr = dao.WdkServicePhoto.Ctx(ctx).Data(photoData).Batch(len(g.List{})).Insert()
-		return terr
-	})
-	return
-}
-
-// DeleteWdkServiceRecord 删除文档库服务记录
-func (s *sWdkService) DeleteWdkServiceRecord(ctx context.Context, ids []uint64) (err error) {
-	err = dao.WdkServiceRecord.Ctx(ctx).Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
-		var terr error
-		_, terr = dao.WdkServiceRecord.Ctx(ctx).WhereIn(dao.WdkServiceRecord.Columns().Id, ids).Delete()
-		if terr != nil {
-			return terr
-		}
-		_, terr = dao.WdkServicePhoto.Ctx(ctx).WhereIn(dao.WdkServicePhoto.Columns().Id, ids).Delete()
 		return terr
 	})
 	return

@@ -36,13 +36,3 @@ type WdkServiceRecordAddReq struct {
 // WdkServiceRecordAddRes 文档库新增服务记录返回参数
 type WdkServiceRecordAddRes struct {
 }
-
-// WdkServiceRecordDeleteReq 文档库删除服务记录请求参数
-type WdkServiceRecordDeleteReq struct {
-	g.Meta `path:"/delete" tags:"WdkServiceRecordDelete" method:"delete" summary:"You first wdk/service/delete api"`
-	Ids    []uint64 `json:"ids" v:"required|slice_valid:uint64#服务记录ID列表不能为空" dc:"服务记录ID列表"` // 服务记录ID列表
-}
-
-// WdkServiceRecordDeleteRes 文档库删除服务记录返回参数
-type WdkServiceRecordDeleteRes struct {
-}

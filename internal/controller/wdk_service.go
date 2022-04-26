@@ -70,14 +70,3 @@ func (c *cWdkService) Add(ctx context.Context, req *v1.WdkServiceRecordAddReq) (
 
 	return
 }
-
-// Delete 删除文档库服务记录
-func (c *cWdkService) Delete(ctx context.Context, req *v1.WdkServiceRecordDeleteReq) (res *v1.WdkServiceRecordDeleteRes, err error) {
-	err = service.WdkService().DeleteWdkServiceRecord(ctx, req.Ids)
-	if err != nil {
-		err = gerror.WrapCode(code.DeleteWdkServiceRecordFailed, err)
-		return
-	}
-
-	return
-}

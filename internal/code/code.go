@@ -62,19 +62,15 @@ var (
 	EditWdkProjectFailed    = gcode.New(1603, "修改文档库项目失败", "")   // 修改文档库项目失败
 	DeleteWdkProjectFailed  = gcode.New(1604, "删除文档库项目失败", "")   // 删除文档库项目失败
 
-	GetWdkFiletypeListFailed = gcode.New(1700, "获取文档库上传文件类型列表失败", "") // 获取文档库上传文件类型列表失败
-	AddWdkFiletypeFailed     = gcode.New(1701, "添加文档库上传文件类型失败", "")   // 添加文档库上传文件类型失败
-	GetWdkFiletypeFailed     = gcode.New(1702, "获取文档库上传文件类型信息失败", "") // 获取文档库上传文件类型信息失败
-	EditWdkFiletypeFailed    = gcode.New(1703, "修改文档库上传文件类型失败", "")   // 修改文档库上传文件类型失败
-	DeleteWdkFiletypeFailed  = gcode.New(1704, "删除文档库上传文件类型失败", "")   // 删除文档库上传文件类型失败
+	GetWdkReportCfgListFailed = gcode.New(1700, "获取文档库报告类型配置列表失败", "") // 获取文档库报告类型配置列表失败
+	AddWdkReportCfgFailed     = gcode.New(1701, "添加文档库报告类型配置失败", "")   // 添加文档库报告类型配置失败
+	GetWdkReportCfgFailed     = gcode.New(1702, "获取文档库报告类型配置信息失败", "") // 获取文档库报告类型配置信息失败
+	EditWdkReportCfgFailed    = gcode.New(1703, "修改文档库报告类型配置失败", "")   // 修改文档库报告类型配置失败
+	DeleteWdkReportCfgFailed  = gcode.New(1704, "删除文档库报告类型配置失败", "")   // 删除文档库报告类型配置失败
 
-	GetWdkAttachmentRecordFailed    = gcode.New(1800, "获取文档库上传附件记录失败", "") // 获取文档库上传附件记录失败
-	AddWdkAttachmentRecordFailed    = gcode.New(1801, "添加文档库上传附件记录失败", "") // 添加文档库上传附件记录失败
-	DeleteWdkAttachmentRecordFailed = gcode.New(1802, "删除文档库上传附件记录失败", "") // 删除文档库上传附件记录失败
+	GetWdkAttachmentRecordFailed = gcode.New(1800, "获取文档库上传附件记录失败", "") // 获取文档库上传附件记录失败
+	AddWdkAttachmentRecordFailed = gcode.New(1801, "添加文档库上传附件记录失败", "") // 添加文档库上传附件记录失败
 
-	GetWdkServiceRecordFailed    = gcode.New(1900, "获取文档库服务记录失败", "") // 获取文档库服务记录失败
-	AddWdkServiceRecordFailed    = gcode.New(1901, "添加文档库服务记录失败", "") // 添加文档库服务记录失败
-	DeleteWdkServiceRecordFailed = gcode.New(1902, "删除文档库服务记录失败", "") // 删除文档库服务记录失败
-
-	GetWdkFileRecordFailed = gcode.New(2000, "获取文档库上传文件记录失败", "") // 获取文档库上传文件记录失败
+	GetWdkServiceRecordFailed = gcode.New(1900, "获取文档库服务记录失败", "") // 获取文档库服务记录失败
+	AddWdkServiceRecordFailed = gcode.New(1901, "添加文档库服务记录失败", "") // 添加文档库服务记录失败
 )

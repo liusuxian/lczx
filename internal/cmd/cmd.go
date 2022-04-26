@@ -143,9 +143,9 @@ var (
 					group.Group("/project", func(group *ghttp.RouterGroup) {
 						group.Bind(controller.WdkProject)
 					})
-					// 上传文件类型管理
-					group.Group("/filetype", func(group *ghttp.RouterGroup) {
-						group.Bind(controller.WdkFiletype)
+					// 报告类型配置管理
+					group.Group("/reportTypeCfg", func(group *ghttp.RouterGroup) {
+						group.Bind(controller.WdkReportCfg)
 					})
 					// 上传附件记录管理
 					group.Group("/attachment", func(group *ghttp.RouterGroup) {
@@ -154,10 +154,6 @@ var (
 					// 服务记录管理
 					group.Group("/service", func(group *ghttp.RouterGroup) {
 						group.Bind(controller.WdkService)
-					})
-					// 上传文件管理
-					group.Group("/file", func(group *ghttp.RouterGroup) {
-						group.Bind(controller.WdkFile)
 					})
 				})
 			})

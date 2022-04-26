@@ -243,12 +243,3 @@ func (s *sWdkProject) IsWdkProjectNameAvailable(ctx context.Context, name string
 	}
 	return count == 0, nil
 }
-
-// WdkProjectExistsById 通过文档库项目ID判断文档库项目信息是否存在
-func (s *sWdkProject) WdkProjectExistsById(ctx context.Context, id uint64) (bool, error) {
-	count, err := dao.WdkProject.Ctx(ctx).Where(do.WdkProject{Id: id}).Count()
-	if err != nil {
-		return false, err
-	}
-	return count != 0, nil
-}
