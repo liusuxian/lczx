@@ -97,7 +97,6 @@ var (
 				group.Hook("/*", ghttp.HookAfterOutput, service.OperLog().Invoke)
 				// 用户相关
 				group.Group("/user", func(group *ghttp.RouterGroup) {
-					// 上传头像未完成
 					group.Bind(controller.User)
 				})
 				// 权限管理
@@ -155,6 +154,10 @@ var (
 					// 服务记录管理
 					group.Group("/service", func(group *ghttp.RouterGroup) {
 						group.Bind(controller.WdkService)
+					})
+					// 上传文件管理
+					group.Group("/file", func(group *ghttp.RouterGroup) {
+						group.Bind(controller.WdkFile)
 					})
 				})
 			})

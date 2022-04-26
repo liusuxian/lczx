@@ -20,6 +20,7 @@ type WdkFile struct {
 	AuditStatus  interface{} // 审核状态 0:不需要审核 1:审核中 2:已通过 3:未通过
 	AuditNames   interface{} // 审核人员们的姓名
 	AuditEndTime *gtime.Time // 审核完成时间
+	Step         interface{} // 所属项目阶段 0:未开始 1:合同签约 2:项目启动会 3:服务中 4:合同结束 5:复盘
 	Excellence   interface{} // 是否是优秀报告 0:无该属性 1:被推荐为优秀报告 2:未被评选为优秀报告 3:已被评选为优秀报告
 	OriginUrl    interface{} // 原始文件url
 	PdfUrl       interface{} // pdf文件url

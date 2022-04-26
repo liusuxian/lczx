@@ -22,6 +22,7 @@ type WdkAuditFiletypeColumns struct {
 	AuditUid string // 审核员用户ID
 	FileId   string // 审核的文件ID
 	TypeId   string // 审核文件类型ID 详见wdk_filetype_cfg配置
+	TypeName string // 类型名称
 }
 
 //  wdkAuditFiletypeColumns holds the columns for table wdk_audit_filetype.
@@ -29,6 +30,7 @@ var wdkAuditFiletypeColumns = WdkAuditFiletypeColumns{
 	AuditUid: "audit_uid",
 	FileId:   "file_id",
 	TypeId:   "type_id",
+	TypeName: "type_name",
 }
 
 // NewWdkAuditFiletypeDao creates and returns a new DAO object for table data access.

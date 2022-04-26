@@ -6,6 +6,7 @@ package entity
 
 // WdkFiletype is the golang structure for table wdk_filetype.
 type WdkFiletype struct {
-	FileId uint64 `json:"fileId" description:"上传文件ID"`                        // 上传文件ID
-	TypeId uint64 `json:"typeId" description:"上传文件类型ID 详见wdk_filetype_cfg配置"` // 上传文件类型ID 详见wdk_filetype_cfg配置
+	FileId   uint64 `json:"fileId"   description:"上传文件ID"`                        // 上传文件ID
+	TypeId   uint64 `json:"typeId"   description:"上传文件类型ID 详见wdk_filetype_cfg配置"` // 上传文件类型ID 详见wdk_filetype_cfg配置
+	TypeName string `json:"typeName" description:"类型名称"`                          // 类型名称
 }

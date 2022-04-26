@@ -24,7 +24,8 @@ func WdkService() *sWdkService {
 
 // GetWdkServiceRecord 获取文档库服务记录
 func (s *sWdkService) GetWdkServiceRecord(ctx context.Context, projectId uint64) (list []*v1.WdkServiceRecordInfo, err error) {
-	err = dao.WdkServiceRecord.Ctx(ctx).Where(do.WdkServiceRecord{ProjectId: projectId}).ScanList(&list, "Record")
+	err = dao.WdkServiceRecord.Ctx(ctx).Where(do.WdkServiceRecord{ProjectId: projectId}).OrderDesc(dao.WdkServiceRecord.Columns().ServiceTime).
+		ScanList(&list, "Record")
 	if err != nil {
 		return
 	}

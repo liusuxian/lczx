@@ -14,4 +14,5 @@ type WdkAuditFiletype struct {
 	AuditUid interface{} // 审核员用户ID
 	FileId   interface{} // 审核的文件ID
 	TypeId   interface{} // 审核文件类型ID 详见wdk_filetype_cfg配置
+	TypeName interface{} // 类型名称
 }

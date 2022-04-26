@@ -75,4 +75,6 @@ var (
 	GetWdkServiceRecordFailed    = gcode.New(1900, "获取文档库服务记录失败", "") // 获取文档库服务记录失败
 	AddWdkServiceRecordFailed    = gcode.New(1901, "添加文档库服务记录失败", "") // 添加文档库服务记录失败
 	DeleteWdkServiceRecordFailed = gcode.New(1902, "删除文档库服务记录失败", "") // 删除文档库服务记录失败
+
+	GetWdkFileRecordFailed = gcode.New(2000, "获取文档库上传文件记录失败", "") // 获取文档库上传文件记录失败
 )

@@ -9,4 +9,5 @@ type WdkAuditFiletype struct {
 	AuditUid uint64 `json:"auditUid" description:"审核员用户ID"`                       // 审核员用户ID
 	FileId   uint64 `json:"fileId"   description:"审核的文件ID"`                       // 审核的文件ID
 	TypeId   uint64 `json:"typeId"   description:"审核文件类型ID 详见wdk_filetype_cfg配置"` // 审核文件类型ID 详见wdk_filetype_cfg配置
+	TypeName string `json:"typeName" description:"类型名称"`                          // 类型名称
 }

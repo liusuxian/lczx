@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 26/04/2022 16:22:44
+ Date: 26/04/2022 17:28:46
 */
 
 SET NAMES utf8mb4;
@@ -412,6 +412,7 @@ CREATE TABLE `wdk_audit_filetype` (
   `audit_uid` bigint unsigned NOT NULL COMMENT '审核员用户ID',
   `file_id` bigint unsigned NOT NULL COMMENT '审核的文件ID',
   `type_id` bigint unsigned NOT NULL COMMENT '审核文件类型ID 详见wdk_filetype_cfg配置',
+  `type_name` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '类型名称',
   PRIMARY KEY (`audit_uid`,`file_id`,`type_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -456,6 +457,7 @@ CREATE TABLE `wdk_file` (
   `audit_status` tinyint unsigned NOT NULL COMMENT '审核状态 0:不需要审核 1:审核中 2:已通过 3:未通过',
   `audit_names` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '审核人员们的姓名',
   `audit_end_time` datetime DEFAULT NULL COMMENT '审核完成时间',
+  `step` tinyint unsigned NOT NULL COMMENT '所属项目阶段 0:未开始 1:合同签约 2:项目启动会 3:服务中 4:合同结束 5:复盘',
   `excellence` tinyint unsigned NOT NULL COMMENT '是否是优秀报告 0:无该属性 1:被推荐为优秀报告 2:未被评选为优秀报告 3:已被评选为优秀报告',
   `origin_url` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '原始文件url',
   `pdf_url` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'pdf文件url',
@@ -501,6 +503,7 @@ DROP TABLE IF EXISTS `wdk_filetype`;
 CREATE TABLE `wdk_filetype` (
   `file_id` bigint unsigned NOT NULL COMMENT '上传文件ID',
   `type_id` bigint unsigned NOT NULL COMMENT '上传文件类型ID 详见wdk_filetype_cfg配置',
+  `type_name` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '类型名称',
   PRIMARY KEY (`file_id`,`type_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 

@@ -27,6 +27,7 @@ type WdkFileColumns struct {
 	AuditStatus  string // 审核状态 0:不需要审核 1:审核中 2:已通过 3:未通过
 	AuditNames   string // 审核人员们的姓名
 	AuditEndTime string // 审核完成时间
+	Step         string // 所属项目阶段 0:未开始 1:合同签约 2:项目启动会 3:服务中 4:合同结束 5:复盘
 	Excellence   string // 是否是优秀报告 0:无该属性 1:被推荐为优秀报告 2:未被评选为优秀报告 3:已被评选为优秀报告
 	OriginUrl    string // 原始文件url
 	PdfUrl       string // pdf文件url
@@ -45,6 +46,7 @@ var wdkFileColumns = WdkFileColumns{
 	AuditStatus:  "audit_status",
 	AuditNames:   "audit_names",
 	AuditEndTime: "audit_end_time",
+	Step:         "step",
 	Excellence:   "excellence",
 	OriginUrl:    "origin_url",
 	PdfUrl:       "pdf_url",

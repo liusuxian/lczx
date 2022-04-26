@@ -19,14 +19,16 @@ type WdkFiletypeDao struct {
 
 // WdkFiletypeColumns defines and stores column names for table wdk_filetype.
 type WdkFiletypeColumns struct {
-	FileId string // 上传文件ID
-	TypeId string // 上传文件类型ID 详见wdk_filetype_cfg配置
+	FileId   string // 上传文件ID
+	TypeId   string // 上传文件类型ID 详见wdk_filetype_cfg配置
+	TypeName string // 类型名称
 }
 
 //  wdkFiletypeColumns holds the columns for table wdk_filetype.
 var wdkFiletypeColumns = WdkFiletypeColumns{
-	FileId: "file_id",
-	TypeId: "type_id",
+	FileId:   "file_id",
+	TypeId:   "type_id",
+	TypeName: "type_name",
 }
 
 // NewWdkFiletypeDao creates and returns a new DAO object for table data access.

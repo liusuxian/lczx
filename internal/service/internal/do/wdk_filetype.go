@@ -10,7 +10,8 @@ import (
 
 // WdkFiletype is the golang structure of table wdk_filetype for DAO operations like Where/Data.
 type WdkFiletype struct {
-	g.Meta `orm:"table:wdk_filetype, do:true"`
-	FileId interface{} // 上传文件ID
-	TypeId interface{} // 上传文件类型ID 详见wdk_filetype_cfg配置
+	g.Meta   `orm:"table:wdk_filetype, do:true"`
+	FileId   interface{} // 上传文件ID
+	TypeId   interface{} // 上传文件类型ID 详见wdk_filetype_cfg配置
+	TypeName interface{} // 类型名称
 }
