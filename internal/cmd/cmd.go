@@ -44,9 +44,9 @@ var (
 							if e != nil {
 								fmt.Println("upload test err: ", e)
 							} else {
-								fmt.Println("upload test succ1: ", f.FileName, f.FileSize, f.FileName)
-								fmt.Println("upload test succ2: ", f.OriginFileUrl)
-								fmt.Println("upload test succ3: ", f.PdfFileUrl)
+								fmt.Println("upload test FileInfo: ", f.FileName, f.FileSize, f.FileType)
+								fmt.Println("upload test OriginFileUrl: ", f.OriginFileUrl)
+								fmt.Println("upload test PdfFileUrl: ", f.PdfFileUrl)
 							}
 						}
 					})

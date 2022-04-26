@@ -82,8 +82,8 @@ func (u FileUploadOSSAdapter) uploadByType(file *ghttp.UploadFile, dirPath strin
 		return
 	}
 	// 执行上传
-	var originFilepath, pdfFilepath string
-	originFilepath, pdfFilepath, err = u.uploadAction(file, fType, dirPath)
+	var originFileUrl, pdfFileUrl string
+	originFileUrl, pdfFileUrl, err = u.uploadAction(file, fType, dirPath)
 	if err != nil {
 		return
 	}
@@ -91,8 +91,8 @@ func (u FileUploadOSSAdapter) uploadByType(file *ghttp.UploadFile, dirPath strin
 	fileInfo = &FileInfo{
 		FileName:      file.Filename,
 		FileSize:      file.Size,
-		OriginFileUrl: u.getUrl(originFilepath),
-		PdfFileUrl:    u.getUrl(pdfFilepath),
+		OriginFileUrl: originFileUrl,
+		PdfFileUrl:    pdfFileUrl,
 		FileType:      file.Header.Get("Content-type"),
 	}
 	return
@@ -127,8 +127,8 @@ func (u FileUploadOSSAdapter) uploadBathByType(files []*ghttp.UploadFile, dirPat
 	// 循环执行上传
 	fileInfos = make([]*FileInfo, 0, len(files))
 	for _, file := range files {
-		var originFilepath, pdfFilepath string
-		originFilepath, pdfFilepath, err = u.uploadAction(file, fType, dirPath)
+		var originFileUrl, pdfFileUrl string
+		originFileUrl, pdfFileUrl, err = u.uploadAction(file, fType, dirPath)
 		if err != nil {
 			return
 		}
@@ -136,8 +136,8 @@ func (u FileUploadOSSAdapter) uploadBathByType(files []*ghttp.UploadFile, dirPat
 		fileInfo := &FileInfo{
 			FileName:      file.Filename,
 			FileSize:      file.Size,
-			OriginFileUrl: u.getUrl(originFilepath),
-			PdfFileUrl:    u.getUrl(pdfFilepath),
+			OriginFileUrl: originFileUrl,
+			PdfFileUrl:    pdfFileUrl,
 			FileType:      file.Header.Get("Content-type"),
 		}
 		fileInfos = append(fileInfos, fileInfo)
@@ -162,7 +162,7 @@ func (u FileUploadOSSAdapter) getUrl(filepath string) string {
 }
 
 // 上传到阿里云OSS操作
-func (u FileUploadOSSAdapter) uploadAction(file *ghttp.UploadFile, fType string, dirPath string) (originFilepath, pdfFilepath string, err error) {
+func (u FileUploadOSSAdapter) uploadAction(file *ghttp.UploadFile, fType string, dirPath string) (originFileUrl, pdfFileUrl string, err error) {
 	// 解密 accessKeyID
 	var accessKeyID []byte
 	accessKeyID, err = crypto.AesDecrypt(u.AccessKeyID)
@@ -197,16 +197,18 @@ func (u FileUploadOSSAdapter) uploadAction(file *ghttp.UploadFile, fType string,
 	// 文件名处理
 	filename := strings.ToLower(strconv.FormatInt(gtime.TimestampNano(), 36) + grand.S(10))
 	fileFullname := filename + gfile.Ext(file.Filename)
-	originFilepath = dirPath + "/" + fileFullname
+	originFilepath := dirPath + "/" + fileFullname
 	// 上传原始文件
 	err = bucket.PutObject(originFilepath, fd)
 	if err != nil {
 		return
 	}
+	originFileUrl = u.getUrl(originFilepath)
 	// 原始文件转pdf文件
 	extName := gfile.ExtName(file.Filename)
+	pdfFilepath := dirPath + "/" + filename + ".pdf"
 	if fType == "file" && extName == "pdf" {
-		pdfFilepath = dirPath + "/" + filename + ".pdf"
+		pdfFileUrl = u.getUrl(pdfFilepath)
 		return
 	}
 	if fType == "file" {
@@ -226,9 +228,8 @@ func (u FileUploadOSSAdapter) uploadAction(file *ghttp.UploadFile, fType string,
 		}
 		// 上传pdf文件
 		if resultPath != "" {
-			tmpPdfFilepath := dirPath + "/" + filename + ".pdf"
 			// 上传文件
-			err = bucket.PutObjectFromFile(tmpPdfFilepath, resultPath)
+			err = bucket.PutObjectFromFile(pdfFilepath, resultPath)
 			if err != nil {
 				// 删除下载的原始文件
 				_ = gfile.Remove(downloadFilepath)
@@ -240,7 +241,7 @@ func (u FileUploadOSSAdapter) uploadAction(file *ghttp.UploadFile, fType string,
 			_ = gfile.Remove(downloadFilepath)
 			// 删除转换的pdf文件
 			_ = gfile.Remove(resultPath)
-			pdfFilepath = tmpPdfFilepath
+			pdfFileUrl = u.getUrl(pdfFilepath)
 			return
 		}
 	}
