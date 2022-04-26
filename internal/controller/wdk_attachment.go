@@ -31,10 +31,10 @@ func (c *cWdkAttachment) Record(ctx context.Context, req *v1.WdkAttachmentRecord
 
 // Add 新增文档库上传附件记录
 func (c *cWdkAttachment) Add(ctx context.Context, req *v1.WdkAttachmentRecordAddReq) (res *v1.WdkAttachmentRecordAddRes, err error) {
-	// 获取上传文件信息
+	// 获取上传附件信息
 	files := g.RequestFromCtx(ctx).GetUploadFiles(req.UploadName)
 	if len(files) == 0 {
-		err = gerror.WrapCode(code.AddWdkAttachmentRecordFailed, gerror.New("获取上传文件信息失败"))
+		err = gerror.WrapCode(code.AddWdkAttachmentRecordFailed, gerror.New("获取上传附件信息失败"))
 		return
 	}
 	if len(files) > 4 {

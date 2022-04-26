@@ -152,6 +152,10 @@ var (
 					group.Group("/attachment", func(group *ghttp.RouterGroup) {
 						group.Bind(controller.WdkAttachment)
 					})
+					// 服务记录管理
+					group.Group("/service", func(group *ghttp.RouterGroup) {
+						group.Bind(controller.WdkService)
+					})
 				})
 			})
 			// 每2小时执行一次检查在线用户

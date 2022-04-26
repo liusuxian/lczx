@@ -80,10 +80,10 @@ func (c *cUser) Profile(ctx context.Context, req *v1.UserProfileReq) (res *v1.Us
 
 // UploadAvatar 上传用户头像
 func (c *cUser) UploadAvatar(ctx context.Context, req *v1.UserUploadAvatarReq) (res *v1.UserUploadAvatarRes, err error) {
-	// 获取上传文件信息
+	// 获取上传头像图片信息
 	avatar := g.RequestFromCtx(ctx).GetUploadFile(req.UploadName)
 	if avatar == nil {
-		err = gerror.WrapCode(code.SetUserAvatarFailed, gerror.New("获取上传文件信息失败"))
+		err = gerror.WrapCode(code.SetUserAvatarFailed, gerror.New("获取上传头像图片信息失败"))
 		return
 	}
 	// 上传头像

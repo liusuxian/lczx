@@ -25,7 +25,7 @@ type WdkAttachmentRecordInfo struct {
 // WdkAttachmentRecordAddReq 文档库新增上传附件记录请求参数
 type WdkAttachmentRecordAddReq struct {
 	g.Meta     `path:"/add" tags:"WdkAttachmentRecordAdd" method:"post" summary:"You first wdk/attachment/add api"`
-	UploadName string `json:"uploadName" dc:"表单的文件字段名"`                                                     // 表单的文件字段名
+	UploadName string `json:"uploadName" v:"required#表单文件字段名不能为空" dc:"表单文件字段名"`                             // 表单文件字段名
 	ProjectId  uint64 `json:"projectId" v:"required|regex:^[1-9]\\d*$#所属项目ID不能为空|所属项目ID必须为正整数" dc:"所属项目ID"` // 所属项目ID
 	Remark     string `json:"remark" v:"max-length:255#备注长度不能超过255" dc:"备注"`                                // 备注
 }

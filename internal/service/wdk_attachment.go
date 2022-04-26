@@ -34,7 +34,7 @@ func (s *sWdkAttachment) GetWdkAttachmentRecord(ctx context.Context, projectId u
 }
 
 // AddWdkAttachmentRecord 新增文档库上传附件记录
-func (s *sWdkAttachment) AddWdkAttachmentRecord(ctx context.Context, req *v1.WdkAttachmentRecordAddReq, fileInfos []*upload.FileInfo) (err error) {
+func (s *sWdkAttachment) AddWdkAttachmentRecord(ctx context.Context, req *v1.WdkAttachmentRecordAddReq, Attachments []*upload.FileInfo) (err error) {
 	err = dao.WdkAttachmentRecord.Ctx(ctx).Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		// 通过文档库项目ID判断文档库项目信息是否存在
 		var terr error
@@ -58,7 +58,7 @@ func (s *sWdkAttachment) AddWdkAttachmentRecord(ctx context.Context, req *v1.Wdk
 		}
 		// 写入文档库上传附件数据
 		attachmentFileData := g.List{}
-		for _, file := range fileInfos {
+		for _, file := range Attachments {
 			attachmentFileData = append(attachmentFileData, g.Map{
 				"id":         recordId,
 				"name":       file.FileName,
