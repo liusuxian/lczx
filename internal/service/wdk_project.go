@@ -243,3 +243,9 @@ func (s *sWdkProject) IsWdkProjectNameAvailable(ctx context.Context, name string
 	}
 	return count == 0, nil
 }
+
+// SetWdkProjectStep 设置文档库项目阶段; 项目阶段 0:未开始 1:合同签约 2:项目启动会 3:服务中 4:合同结束 5:复盘
+func (s *sWdkProject) SetWdkProjectStep(ctx context.Context, step uint, id uint64) (err error) {
+	_, err = dao.WdkProject.Ctx(ctx).Data(do.WdkProject{Step: step}).Where(do.WdkProject{Id: id}).Update()
+	return
+}

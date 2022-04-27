@@ -67,6 +67,12 @@ func (s *sWdkService) AddWdkServiceRecord(ctx context.Context, req *v1.WdkServic
 			})
 		}
 		_, terr = dao.WdkServicePhoto.Ctx(ctx).Data(photoData).Batch(len(g.List{})).Insert()
+		if terr != nil {
+			return terr
+		}
+		// 更新所属文档库项目的项目阶段
+		// 项目阶段 0:未开始 1:合同签约 2:项目启动会 3:服务中 4:合同结束 5:复盘
+		terr = WdkProject().SetWdkProjectStep(ctx, 3, req.ProjectId)
 		return terr
 	})
 	return
@@ -78,17 +84,17 @@ func (s *sWdkService) AuthAdd(ctx context.Context, projectId uint64) (err error)
 	var wdkProject *entity.WdkProject
 	wdkProject, err = WdkProject().GetWdkProjectById(ctx, projectId)
 	if err != nil {
-		return err
+		return
 	}
 	if wdkProject == nil {
 		err = gerror.Newf(`文档库项目ID[%d]不存在`, projectId)
-		return err
+		return
 	}
 	// 判断写入权限
 	user := Context().Get(ctx).User
 	if user.Id != wdkProject.PrincipalUid {
 		err = gerror.New("抱歉！！！该项目您没有添加服务记录的权限")
-		return err
+		return
 	}
 	return
 }

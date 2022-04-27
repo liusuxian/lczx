@@ -75,17 +75,17 @@ func (s *sWdkAttachment) AuthAdd(ctx context.Context, projectId uint64) (err err
 	var wdkProject *entity.WdkProject
 	wdkProject, err = WdkProject().GetWdkProjectById(ctx, projectId)
 	if err != nil {
-		return err
+		return
 	}
 	if wdkProject == nil {
 		err = gerror.Newf(`文档库项目ID[%d]不存在`, projectId)
-		return err
+		return
 	}
 	// 判断写入权限
 	user := Context().Get(ctx).User
 	if user.Id != wdkProject.PrincipalUid {
 		err = gerror.New("抱歉！！！该项目您没有上传附件的权限")
-		return err
+		return
 	}
 	return
 }
