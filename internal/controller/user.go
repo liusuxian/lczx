@@ -24,12 +24,12 @@ func (c *cUser) Info(ctx context.Context, req *v1.UserInfoReq) (res *v1.UserInfo
 	// 用户信息
 	var userInfo *entity.User
 	userInfo, err = service.User().GetUserById(ctx, user.Id)
-	userInfo.Password = ""
-	userInfo.Salt = ""
 	if err != nil {
 		err = gerror.WrapCode(code.GetUserFailed, err)
 		return
 	}
+	userInfo.Password = ""
+	userInfo.Salt = ""
 	// 获取用户角色ID列表
 	var roleIds []uint64
 	roleIds, err = service.Role().GetUserRoleIds(ctx, user.Id)

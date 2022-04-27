@@ -37,16 +37,10 @@ func (s *sOperLog) Invoke(req *ghttp.Request) {
 	if curUser == nil {
 		return
 	}
-	var user *entity.User
-	var err error
-	user, err = User().GetUserById(ctx, curUser.Id)
-	if err != nil {
-		logger.Error(ctx, "Invoke GetUserById Error: ", err.Error())
-		return
-	}
 	// 请求地址
 	url := req.Request.URL
 	// 获取所有菜单
+	var err error
 	var allMenus []*entity.Menu
 	allMenus, err = Menu().GetAllMenus(ctx)
 	if err != nil {
@@ -75,7 +69,7 @@ func (s *sOperLog) Invoke(req *ghttp.Request) {
 	// 操作类别
 	data.OperType = 1
 	// 操作人员
-	data.OperName = user.Realname
+	data.OperName = curUser.Realname
 	// 部门名称
 	// 获取部门状态为正常的部门列表
 	var depts []*entity.Dept
@@ -84,7 +78,7 @@ func (s *sOperLog) Invoke(req *ghttp.Request) {
 		logger.Error(ctx, "Invoke GetStatusEnableDepts Error: ", err.Error())
 		return
 	}
-	deptNames := Dept().GetDeptAllNameById(depts, user.DeptId)
+	deptNames := Dept().GetDeptAllNameById(depts, curUser.DeptId)
 	utils.Reverse(deptNames)
 	data.DeptName = gstr.Join(deptNames, "/")
 	// 请求URL

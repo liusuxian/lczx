@@ -58,6 +58,11 @@ func (c *cUserManager) GetEdit(ctx context.Context, req *v1.UserGetEditInfoReq) 
 	user, err = service.User().GetUserById(ctx, req.Id)
 	if err != nil {
 		err = gerror.WrapCode(code.GetEditUserFailed, err)
+		return
+	}
+	if user == nil {
+		err = gerror.WrapCode(code.GetEditUserFailed, gerror.Newf(`用户ID[%d]不存在`, req.Id))
+		return
 	}
 	user.Password = ""
 	user.Salt = ""
@@ -66,12 +71,14 @@ func (c *cUserManager) GetEdit(ctx context.Context, req *v1.UserGetEditInfoReq) 
 	roles, err = service.Role().GetEnableRoles(ctx)
 	if err != nil {
 		err = gerror.WrapCode(code.GetEditUserFailed, err)
+		return
 	}
 	// 获取用户角色ID列表
 	var roleIds []uint64
 	roleIds, err = service.Role().GetUserRoleIds(ctx, user.Id)
 	if err != nil {
 		err = gerror.WrapCode(code.GetEditUserFailed, err)
+		return
 	}
 
 	res = &v1.UserGetEditInfoRes{

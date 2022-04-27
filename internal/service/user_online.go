@@ -106,8 +106,31 @@ func (s *sUserOnline) GetOnlineTokensByIds(ctx context.Context, ids []uint64) (t
 		tokens = append(tokens, tokenVar.String())
 	}
 
-	if tokens != nil {
+	if len(tokens) != 0 {
 		_, err = model.WhereIn(columns.Token, tokens).Delete()
+	}
+	return
+}
+
+// ForceLogoutByPassport 通过用户账号强退用户
+func (s *sUserOnline) ForceLogoutByPassport(ctx context.Context, passportList []string) (err error) {
+	var array []*entity.UserOnline
+	err = dao.UserOnline.Ctx(ctx).WhereIn(dao.UserOnline.Columns().Passport, passportList).Scan(&array)
+	if err != nil {
+		return
+	}
+	ids := make([]uint64, 0, len(array))
+	tokens := make([]string, 0, len(array))
+	for _, v := range array {
+		ids = append(ids, v.Id)
+		tokens = append(tokens, v.Token)
+	}
+	_, err = dao.UserOnline.Ctx(ctx).WhereIn(dao.UserOnline.Columns().Id, ids).Delete()
+	if err != nil {
+		return
+	}
+	for _, token := range tokens {
+		Auth().Token().RemoveToken(ctx, token)
 	}
 	return
 }

@@ -74,6 +74,10 @@ func (s *sUser) GetProfile(ctx context.Context, id uint64) (profileInfo *v1.User
 	if err != nil {
 		return
 	}
+	if user == nil {
+		err = gerror.Newf(`用户ID[%d]不存在`, id)
+		return
+	}
 	user.Password = ""
 	user.Salt = ""
 	// 获取部门状态为正常的部门列表
@@ -134,6 +138,10 @@ func (s *sUser) EditPwd(ctx context.Context, id uint64, oldPassword, newPassword
 	if err != nil {
 		return
 	}
+	if user == nil {
+		err = gerror.Newf(`用户ID[%d]不存在`, id)
+		return
+	}
 	oldEncryptPassword := utils.EncryptPassword(oldPassword, user.Salt)
 	if oldEncryptPassword != user.Password {
 		err = gerror.New("原始密码错误!")
@@ -150,6 +158,11 @@ func (s *sUser) EditPwd(ctx context.Context, id uint64, oldPassword, newPassword
 		Salt:     salt,
 		Password: newEncryptPassword,
 	}).Where(do.User{Id: id}).Update()
+	if err != nil {
+		return
+	}
+	// 通过用户账号强退用户
+	err = UserOnline().ForceLogoutByPassport(ctx, []string{user.Passport})
 	return
 }
 

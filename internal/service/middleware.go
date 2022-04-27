@@ -48,10 +48,7 @@ func (s *sMiddleware) Ctx(req *ghttp.Request) {
 				Id:       user.Id,
 				Passport: user.Passport,
 				Realname: user.Realname,
-				Nickname: user.Nickname,
-				Avatar:   user.Avatar,
 				DeptId:   user.DeptId,
-				Status:   user.Status,
 				IsAdmin:  user.IsAdmin,
 			})
 		}
