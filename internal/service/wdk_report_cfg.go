@@ -58,9 +58,7 @@ func (s *sWdkReportCfg) AddWdkReportCfg(ctx context.Context, req *v1.WdkReportCf
 		}
 		// 写入文档库报告类型配置数据
 		var typeId int64
-		typeId, terr = dao.WdkReportCfg.Ctx(ctx).Data(do.WdkReportCfg{
-			Name: req.Name,
-		}).InsertAndGetId()
+		typeId, terr = dao.WdkReportCfg.Ctx(ctx).Data(do.WdkReportCfg{Name: req.Name}).InsertAndGetId()
 		if terr != nil {
 			return terr
 		}
@@ -121,9 +119,7 @@ func (s *sWdkReportCfg) EditWdkReportCfg(ctx context.Context, req *v1.WdkReportC
 			}
 		}
 		// 更新文档库报告类型配置数据
-		_, terr = dao.WdkReportCfg.Ctx(ctx).Data(do.WdkReportCfg{
-			Name: req.Name,
-		}).Where(do.WdkReportCfg{Id: req.Id}).Update()
+		_, terr = dao.WdkReportCfg.Ctx(ctx).Data(do.WdkReportCfg{Name: req.Name}).Where(do.WdkReportCfg{Id: req.Id}).Update()
 		if terr != nil {
 			return terr
 		}

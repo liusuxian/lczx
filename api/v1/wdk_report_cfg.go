@@ -26,7 +26,7 @@ type WdkReportCfgInfo struct {
 type WdkReportCfgAddReq struct {
 	g.Meta    `path:"/add" tags:"WdkReportCfgAdd" method:"post" summary:"You first wdk/reportTypeCfg/add api"`
 	Name      string   `json:"name" v:"required|regex:^[\u4e00-\u9fa5]{0,20}$#报告类型名称不能为空|报告类型名称必须为中文且长度不能超过20" dc:"报告类型名称"` // 报告类型名称
-	AuditUids []uint64 `json:"auditUids" v:"required-if:audit,1|slice_valid:uint64#文档库报告审核员用户ID列表不能为空" dc:"文档库报告审核员用户ID列表"` // 文档库报告审核员用户ID列表
+	AuditUids []uint64 `json:"auditUids" v:"required|slice_valid:uint64#文档库报告审核员用户ID列表不能为空" dc:"文档库报告审核员用户ID列表"`            // 文档库报告审核员用户ID列表
 }
 
 // WdkReportCfgAddRes 文档库新增报告类型配置返回参数
@@ -49,7 +49,7 @@ type WdkReportCfgEditReq struct {
 	g.Meta    `path:"/edit" tags:"WdkReportCfgEdit" method:"put" summary:"You first wdk/reportTypeCfg/edit api"`
 	Id        uint64   `json:"id" v:"required|regex:^[1-9]\\d*$#报告类型ID不能为空|报告类型ID必须为正整数" dc:"报告类型ID"`                       // 报告类型ID
 	Name      string   `json:"name" v:"required|regex:^[\u4e00-\u9fa5]{0,20}$#报告类型名称不能为空|报告类型名称必须为中文且长度不能超过20" dc:"报告类型名称"` // 报告类型名称
-	AuditUids []uint64 `json:"auditUids" v:"required-if:audit,1|slice_valid:uint64#文档库报告审核员用户ID列表不能为空" dc:"文档库报告审核员用户ID列表"` // 文档库报告审核员用户ID列表
+	AuditUids []uint64 `json:"auditUids" v:"required|slice_valid:uint64#文档库报告审核员用户ID列表不能为空" dc:"文档库报告审核员用户ID列表"`            // 文档库报告审核员用户ID列表
 }
 
 // WdkReportCfgEditRes 文档库编辑报告类型配置返回参数
