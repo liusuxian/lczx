@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/aliyun/aliyun-oss-go-sdk v2.2.2+incompatible
-	github.com/casbin/casbin/v2 v2.43.2
+	github.com/casbin/casbin/v2 v2.44.2
 	github.com/goflyfox/gtoken v1.5.6
 	github.com/gogf/gf/v2 v2.0.6
 	github.com/mojocn/base64Captcha v1.3.5
