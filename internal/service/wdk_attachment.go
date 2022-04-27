@@ -38,21 +38,10 @@ func (s *sWdkAttachment) GetWdkAttachmentRecord(ctx context.Context, projectId u
 // AddWdkAttachmentRecord 新增文档库上传附件记录
 func (s *sWdkAttachment) AddWdkAttachmentRecord(ctx context.Context, req *v1.WdkAttachmentRecordAddReq, Attachments []*upload.FileInfo) (err error) {
 	err = dao.WdkAttachmentRecord.Ctx(ctx).Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
-		// 通过文档库项目ID判断文档库项目信息是否存在
+		// 检查新增文档库上传附件记录权限
 		var terr error
-		var wdkProject *entity.WdkProject
-		wdkProject, terr = WdkProject().GetWdkProjectById(ctx, req.ProjectId)
+		terr = s.AuthAdd(ctx, req.ProjectId)
 		if terr != nil {
-			return terr
-		}
-		if wdkProject == nil {
-			terr = gerror.Newf(`文档库项目ID[%d]不存在`, req.ProjectId)
-			return terr
-		}
-		// 判断写入权限
-		curUser := Context().Get(ctx).User
-		if curUser.Id != wdkProject.PrincipalUid {
-			terr = gerror.New("抱歉！！！您没有写入权限")
 			return terr
 		}
 		// 写入文档库上传附件记录数据
@@ -77,5 +66,26 @@ func (s *sWdkAttachment) AddWdkAttachmentRecord(ctx context.Context, req *v1.Wdk
 		_, terr = dao.WdkAttachmentFile.Ctx(ctx).Data(attachmentFileData).Batch(len(g.List{})).Insert()
 		return terr
 	})
+	return
+}
+
+// AuthAdd 检查新增文档库上传附件记录权限
+func (s *sWdkAttachment) AuthAdd(ctx context.Context, projectId uint64) (err error) {
+	// 通过文档库项目ID判断文档库项目信息是否存在
+	var wdkProject *entity.WdkProject
+	wdkProject, err = WdkProject().GetWdkProjectById(ctx, projectId)
+	if err != nil {
+		return err
+	}
+	if wdkProject == nil {
+		err = gerror.Newf(`文档库项目ID[%d]不存在`, projectId)
+		return err
+	}
+	// 判断写入权限
+	user := Context().Get(ctx).User
+	if user.Id != wdkProject.PrincipalUid {
+		err = gerror.New("抱歉！！！该项目您没有上传附件的权限")
+		return err
+	}
 	return
 }

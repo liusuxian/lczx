@@ -38,21 +38,10 @@ func (s *sWdkService) GetWdkServiceRecord(ctx context.Context, projectId uint64)
 // AddWdkServiceRecord 新增文档库服务记录
 func (s *sWdkService) AddWdkServiceRecord(ctx context.Context, req *v1.WdkServiceRecordAddReq, xch *upload.FileInfo, Photos []*upload.FileInfo) (err error) {
 	err = dao.WdkServiceRecord.Ctx(ctx).Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
-		// 通过文档库项目ID判断文档库项目信息是否存在
+		// 检查新增文档库服务记录权限
 		var terr error
-		var wdkProject *entity.WdkProject
-		wdkProject, terr = WdkProject().GetWdkProjectById(ctx, req.ProjectId)
+		terr = s.AuthAdd(ctx, req.ProjectId)
 		if terr != nil {
-			return terr
-		}
-		if wdkProject == nil {
-			terr = gerror.Newf(`文档库项目ID[%d]不存在`, req.ProjectId)
-			return terr
-		}
-		// 判断写入权限
-		curUser := Context().Get(ctx).User
-		if curUser.Id != wdkProject.PrincipalUid {
-			terr = gerror.New("抱歉！！！您没有写入权限")
 			return terr
 		}
 		// 写入文档库服务记录数据
@@ -80,5 +69,26 @@ func (s *sWdkService) AddWdkServiceRecord(ctx context.Context, req *v1.WdkServic
 		_, terr = dao.WdkServicePhoto.Ctx(ctx).Data(photoData).Batch(len(g.List{})).Insert()
 		return terr
 	})
+	return
+}
+
+// AuthAdd 检查新增文档库服务记录权限
+func (s *sWdkService) AuthAdd(ctx context.Context, projectId uint64) (err error) {
+	// 通过文档库项目ID判断文档库项目信息是否存在
+	var wdkProject *entity.WdkProject
+	wdkProject, err = WdkProject().GetWdkProjectById(ctx, projectId)
+	if err != nil {
+		return err
+	}
+	if wdkProject == nil {
+		err = gerror.Newf(`文档库项目ID[%d]不存在`, projectId)
+		return err
+	}
+	// 判断写入权限
+	user := Context().Get(ctx).User
+	if user.Id != wdkProject.PrincipalUid {
+		err = gerror.New("抱歉！！！该项目您没有添加服务记录的权限")
+		return err
+	}
 	return
 }

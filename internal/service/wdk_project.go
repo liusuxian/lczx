@@ -113,7 +113,7 @@ func (s *sWdkProject) AddWdkProject(ctx context.Context, req *v1.WdkProjectAddRe
 		return
 	}
 	if !available {
-		err = gerror.Newf(`文档库项目名称[%s]已存在`, req.Name)
+		err = gerror.Newf(`文档库项目名称[%s]已存在或已被使用过`, req.Name)
 		return
 	}
 	// 检查负责人是否存在
@@ -187,7 +187,7 @@ func (s *sWdkProject) EditWdkProject(ctx context.Context, req *v1.WdkProjectEdit
 			return
 		}
 		if !available {
-			err = gerror.Newf(`文档库项目名称[%s]已存在`, req.Name)
+			err = gerror.Newf(`文档库项目名称[%s]已存在或已被使用过`, req.Name)
 			return
 		}
 	}
@@ -237,7 +237,7 @@ func (s *sWdkProject) DeleteWdkProject(ctx context.Context, ids []uint64) (err e
 
 // IsWdkProjectNameAvailable 文档库项目名称是否可用
 func (s *sWdkProject) IsWdkProjectNameAvailable(ctx context.Context, name string) (bool, error) {
-	count, err := dao.WdkProject.Ctx(ctx).Where(do.WdkProject{Name: name}).Unscoped().Count()
+	count, err := dao.WdkProject.Ctx(ctx).Where(do.WdkProject{Name: name}).Count()
 	if err != nil {
 		return false, err
 	}

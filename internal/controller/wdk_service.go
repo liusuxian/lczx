@@ -31,6 +31,12 @@ func (c *cWdkService) Record(ctx context.Context, req *v1.WdkServiceRecordReq) (
 
 // Add 新增文档库服务记录
 func (c *cWdkService) Add(ctx context.Context, req *v1.WdkServiceRecordAddReq) (res *v1.WdkServiceRecordAddRes, err error) {
+	// 检查新增文档库服务记录权限
+	err = service.WdkService().AuthAdd(ctx, req.ProjectId)
+	if err != nil {
+		err = gerror.WrapCode(code.AddWdkServiceRecordFailed, err)
+		return
+	}
 	// 获取上传行程函文件信息
 	xchFile := g.RequestFromCtx(ctx).GetUploadFile(req.XchUploadName)
 	if xchFile == nil {
