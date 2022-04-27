@@ -45,14 +45,10 @@ var (
 						if avatar != nil {
 							f, e := upload.Upload.UploadImg(avatar, "user/avatar")
 							if e != nil {
-								fmt.Println("upload avatar err1: ", e)
+								fmt.Println("upload avatar err: ", e)
 							} else {
-								fmt.Println("upload avatar res: ", f)
 								// 设置用户头像
-								e = service.User().SetAvatar(ctx, 1, f.OriginFileUrl)
-								if e != nil {
-									fmt.Println("upload avatar err2: ", e)
-								}
+								_ = service.User().SetAvatar(ctx, 1, f.OriginFileUrl)
 							}
 						}
 					})
@@ -63,16 +59,32 @@ var (
 						if len(files) > 0 && len(files) <= 4 {
 							fs, e := upload.Upload.UploadFiles(files, "wdk/attachment")
 							if e != nil {
-								fmt.Println("upload attachment err1: ", e)
+								fmt.Println("upload attachment err: ", e)
 							} else {
-								fmt.Println("upload attachment res: ", fs)
 								// 新增文档库上传附件记录
-								e = service.WdkAttachment().AddWdkAttachmentRecord(ctx, &v1.WdkAttachmentRecordAddReq{
+								_ = service.WdkAttachment().AddWdkAttachmentRecord(ctx, &v1.WdkAttachmentRecordAddReq{
 									ProjectId: 1,
 								}, fs)
-								if e != nil {
-									fmt.Println("upload attachment err2: ", e)
-								}
+							}
+						}
+					})
+					// 测试上传文件
+					group.POST("/file", func(req *ghttp.Request) {
+						// 获取上传文件信息
+						file := req.GetUploadFile("upload-file")
+						if file != nil {
+							f, e := upload.Upload.UploadFile(file, "wdk/file")
+							if e != nil {
+								fmt.Println("upload file err: ", e)
+							} else {
+								// 新增文档库上传文件记录
+								_ = service.WdkFile().AddWdkFile(ctx, &v1.WdkFileAddReq{ProjectId: 1, Type: 0}, f)
+								_ = service.WdkFile().AddWdkFile(ctx, &v1.WdkFileAddReq{ProjectId: 1, Type: 1}, f)
+								_ = service.WdkFile().AddWdkFile(ctx, &v1.WdkFileAddReq{ProjectId: 1, Type: 2}, f)
+								_ = service.WdkFile().AddWdkFile(ctx, &v1.WdkFileAddReq{ProjectId: 1, Type: 3}, f)
+								_ = service.WdkFile().AddWdkFile(ctx, &v1.WdkFileAddReq{ProjectId: 1, Type: 4}, f)
+								_ = service.WdkFile().AddWdkFile(ctx, &v1.WdkFileAddReq{ProjectId: 1, Type: 5}, f)
+								_ = service.WdkFile().AddWdkFile(ctx, &v1.WdkFileAddReq{ProjectId: 1, Type: 6}, f)
 							}
 						}
 					})
@@ -154,6 +166,10 @@ var (
 					// 服务记录管理
 					group.Group("/service", func(group *ghttp.RouterGroup) {
 						group.Bind(controller.WdkService)
+					})
+					// 上传文件记录管理
+					group.Group("/file", func(group *ghttp.RouterGroup) {
+						group.Bind(controller.WdkFile)
 					})
 				})
 			})

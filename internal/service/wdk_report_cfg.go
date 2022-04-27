@@ -170,3 +170,9 @@ func (s *sWdkReportCfg) IsWdkReportCfgNameAvailable(ctx context.Context, name st
 	}
 	return count == 0, nil
 }
+
+// GetWdkReportCfgCount 获取文档库报告类型配置数量
+func (s *sWdkReportCfg) GetWdkReportCfgCount(ctx context.Context) (count int, err error) {
+	count, err = dao.WdkReportCfg.Ctx(ctx).Count()
+	return
+}

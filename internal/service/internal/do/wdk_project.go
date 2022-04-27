@@ -30,7 +30,9 @@ type WdkProject struct {
 	StartTime        *gtime.Time // 项目开始时间
 	EndTime          *gtime.Time // 项目结束时间
 	CreateBy         interface{} // 项目创建者用户ID
+	CreateName       interface{} // 项目创建者姓名
 	UpdatedBy        interface{} // 项目修改者用户ID
+	UpdatedName      interface{} // 项目修改者姓名
 	Remark           interface{} // 备注
 	CreateAt         *gtime.Time // 项目创建时间
 	UpdateAt         *gtime.Time // 项目更新时间

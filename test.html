@@ -30,6 +30,11 @@
     <input type="file" name="upload-attachment" multiple="multiple"/>
     <input type="submit" value="上传附件" style="background-color: #7ED321;width: 76px;height: 36px;color: #FFFFFF"/>
 </form>
+<br><br>
+<form enctype="multipart/form-data" action="http://127.0.0.1/upload/file" method="post">
+    <input type="file" name="upload-file"/>
+    <input type="submit" value="上传文件" style="background-color: #7ED321;width: 76px;height: 36px;color: #FFFFFF"/>
+</form>
 <script type="text/javascript">
     window.onload = function () {
         let request = new XMLHttpRequest()

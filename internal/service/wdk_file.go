@@ -28,11 +28,56 @@ func (s *sWdkFile) GetWdkFileRecord(ctx context.Context, projectId uint64) (list
 	return
 }
 
-//
+// AddWdkFile 新增文档库上传文件记录
 func (s *sWdkFile) AddWdkFile(ctx context.Context, req *v1.WdkFileAddReq, file *upload.FileInfo) (err error) {
 	err = dao.WdkFile.Ctx(ctx).Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
-		//
-		return nil
+		// 检查新增文档库上传文件记录权限
+		var terr error
+		terr = s.AuthAdd(ctx, req.ProjectId)
+		if terr != nil {
+			return terr
+		}
+		// 获取上传文件类型是否已存在
+		var wdkFileInfo *entity.WdkFile
+		terr = dao.WdkFile.Ctx(ctx).Where(do.WdkFile{ProjectId: req.ProjectId, Type: req.Type}).Scan(&wdkFileInfo)
+		if terr != nil {
+			return terr
+		}
+		// 不存在则新增
+		if wdkFileInfo == nil {
+			// 写入文档库上传文件记录数据
+			user := Context().Get(ctx).User
+			_, terr = dao.WdkFile.Ctx(ctx).Data(do.WdkFile{
+				ProjectId:  req.ProjectId,
+				Name:       file.FileName,
+				Type:       req.Type,
+				CreateBy:   user.Id,
+				CreateName: user.Realname,
+				OriginUrl:  file.OriginFileUrl,
+				PdfUrl:     file.PdfFileUrl,
+			}).Insert()
+		} else {
+			// 存在则更新
+			_, terr = dao.WdkFile.Ctx(ctx).Data(do.WdkFile{
+				Name:      file.FileName,
+				OriginUrl: file.OriginFileUrl,
+				PdfUrl:    file.PdfFileUrl,
+			}).Where(do.WdkFile{
+				ProjectId: wdkFileInfo.ProjectId,
+				Type:      wdkFileInfo.Type,
+			}).Update()
+		}
+		if terr != nil {
+			return terr
+		}
+		// 设置所属文档库项目阶段
+		terr = WdkProject().SetWdkProjectStep(ctx, req.ProjectId, req.Type)
+		if terr != nil {
+			return terr
+		}
+		// 设置所属文档库项目文件上传状态为是
+		terr = WdkProject().SetWdkProjectFileUploadStatus(ctx, req.ProjectId)
+		return terr
 	})
 	return
 }
@@ -55,5 +100,11 @@ func (s *sWdkFile) AuthAdd(ctx context.Context, projectId uint64) (err error) {
 		err = gerror.New("抱歉！！！该项目您没有上传文件的权限")
 		return
 	}
+	return
+}
+
+// GetWdkFileCountByProjectId 通过项目ID获取文档库项目上传文件记录数量
+func (s *sWdkFile) GetWdkFileCountByProjectId(ctx context.Context, projectId uint64) (count int, err error) {
+	count, err = dao.WdkFile.Ctx(ctx).Where(do.WdkFile{ProjectId: projectId}).Count()
 	return
 }

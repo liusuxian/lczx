@@ -70,9 +70,8 @@ func (s *sWdkService) AddWdkServiceRecord(ctx context.Context, req *v1.WdkServic
 		if terr != nil {
 			return terr
 		}
-		// 更新所属文档库项目的项目阶段
-		// 项目阶段 0:未开始 1:合同签约 2:项目启动会 3:服务中 4:合同结束 5:复盘
-		terr = WdkProject().SetWdkProjectStep(ctx, 3, req.ProjectId)
+		// 设置所属文档库项目阶段
+		terr = WdkProject().SetWdkProjectStep(ctx, req.ProjectId, 7)
 		return terr
 	})
 	return

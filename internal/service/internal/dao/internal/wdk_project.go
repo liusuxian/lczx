@@ -37,7 +37,9 @@ type WdkProjectColumns struct {
 	StartTime        string // 项目开始时间
 	EndTime          string // 项目结束时间
 	CreateBy         string // 项目创建者用户ID
+	CreateName       string // 项目创建者姓名
 	UpdatedBy        string // 项目修改者用户ID
+	UpdatedName      string // 项目修改者姓名
 	Remark           string // 备注
 	CreateAt         string // 项目创建时间
 	UpdateAt         string // 项目更新时间
@@ -64,7 +66,9 @@ var wdkProjectColumns = WdkProjectColumns{
 	StartTime:        "start_time",
 	EndTime:          "end_time",
 	CreateBy:         "create_by",
+	CreateName:       "create_name",
 	UpdatedBy:        "updated_by",
+	UpdatedName:      "updated_name",
 	Remark:           "remark",
 	CreateAt:         "create_at",
 	UpdateAt:         "update_at",

@@ -28,7 +28,9 @@ type WdkProject struct {
 	StartTime        *gtime.Time `json:"startTime"        description:"项目开始时间"`                                                     // 项目开始时间
 	EndTime          *gtime.Time `json:"endTime"          description:"项目结束时间"`                                                     // 项目结束时间
 	CreateBy         uint64      `json:"createBy"         description:"项目创建者用户ID"`                                                  // 项目创建者用户ID
+	CreateName       string      `json:"createName"       description:"项目创建者姓名"`                                                    // 项目创建者姓名
 	UpdatedBy        uint64      `json:"updatedBy"        description:"项目修改者用户ID"`                                                  // 项目修改者用户ID
+	UpdatedName      string      `json:"updatedName"      description:"项目修改者姓名"`                                                    // 项目修改者姓名
 	Remark           string      `json:"remark"           description:"备注"`                                                         // 备注
 	CreateAt         *gtime.Time `json:"createAt"         description:"项目创建时间"`                                                     // 项目创建时间
 	UpdateAt         *gtime.Time `json:"updateAt"         description:"项目更新时间"`                                                     // 项目更新时间

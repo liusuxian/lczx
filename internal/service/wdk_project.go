@@ -151,6 +151,7 @@ func (s *sWdkProject) AddWdkProject(ctx context.Context, req *v1.WdkProjectAddRe
 		StartTime:        req.StartTime,
 		EndTime:          req.EndTime,
 		CreateBy:         user.Id,
+		CreateName:       user.Realname,
 		Remark:           req.Remark,
 	}).Insert()
 	return
@@ -224,6 +225,7 @@ func (s *sWdkProject) EditWdkProject(ctx context.Context, req *v1.WdkProjectEdit
 		StartTime:      req.StartTime,
 		EndTime:        req.EndTime,
 		UpdatedBy:      user.Id,
+		UpdatedName:    user.Realname,
 		Remark:         req.Remark,
 	}).Where(do.WdkProject{Id: req.Id}).Update()
 	return
@@ -244,8 +246,50 @@ func (s *sWdkProject) IsWdkProjectNameAvailable(ctx context.Context, name string
 	return count == 0, nil
 }
 
-// SetWdkProjectStep 设置文档库项目阶段; 项目阶段 0:未开始 1:合同签约 2:项目启动会 3:服务中 4:合同结束 5:复盘
-func (s *sWdkProject) SetWdkProjectStep(ctx context.Context, step uint, id uint64) (err error) {
-	_, err = dao.WdkProject.Ctx(ctx).Data(do.WdkProject{Step: step}).Where(do.WdkProject{Id: id}).Update()
+// SetWdkProjectFileUploadStatus 设置文档库项目文件上传状态为是
+func (s *sWdkProject) SetWdkProjectFileUploadStatus(ctx context.Context, id uint64) (err error) {
+	var fileCount int
+	fileCount, err = WdkFile().GetWdkFileCountByProjectId(ctx, id)
+	if err != nil {
+		return err
+	}
+	var reportCount int
+	reportCount, err = WdkReport().GetWdkReportCountByProjectId(ctx, id)
+	if err != nil {
+		return err
+	}
+	var reportCfgCount int
+	reportCfgCount, err = WdkReportCfg().GetWdkReportCfgCount(ctx)
+	if err != nil {
+		return err
+	}
+	if (fileCount + reportCount) >= reportCfgCount+7 {
+		_, err = dao.WdkProject.Ctx(ctx).Data(do.WdkProject{FileUploadStatus: 1}).Where(do.WdkProject{Id: id}).Update()
+		if err != nil {
+			return err
+		}
+	}
+	return
+}
+
+// SetWdkProjectStep 设置文档库项目阶段
+func (s *sWdkProject) SetWdkProjectStep(ctx context.Context, id uint64, fType uint) (err error) {
+	// 文件类型 0:合同扫描文件 1:年度服务计划书 2:总结报告 3:项目移交 4:复盘报告 5:文件签收单 6:满意度调查表 7:服务记录
+	// 项目阶段 0:未开始 1:合同签约 2:项目启动会 3:服务中 4:合同结束 5:复盘
+	step := 0
+	switch fType {
+	case 0:
+		step = 1
+	case 1:
+		step = 2
+	case 2, 3:
+		step = 4
+	case 4:
+		step = 5
+	case 5, 6, 7:
+		step = 3
+	}
+	_, err = dao.WdkProject.Ctx(ctx).Data(do.WdkProject{Step: step}).Where(do.WdkProject{Id: id}).
+		WhereLT(dao.WdkProject.Columns().Step, step).Update()
 	return
 }
