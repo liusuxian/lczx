@@ -126,11 +126,6 @@ func (s *sWdkProject) AddWdkProject(ctx context.Context, req *v1.WdkProjectAddRe
 		err = gerror.Newf(`负责人用户ID[%d]不存在`, req.PrincipalUid)
 		return
 	}
-	// 检查项目负责人所属部门和项目所属部门是否一致
-	if req.DeptId != principalUser.DeptId {
-		err = gerror.Newf(`项目负责人所属部门ID[%d]与项目所属部门ID[%d]不一致`, principalUser.DeptId, req.DeptId)
-		return
-	}
 	// 写入文档库项目数据
 	user := Context().Get(ctx).User
 	_, err = dao.WdkProject.Ctx(ctx).Data(do.WdkProject{
@@ -144,9 +139,9 @@ func (s *sWdkProject) AddWdkProject(ctx context.Context, req *v1.WdkProjectAddRe
 		Status:           0,
 		EntrustCompany:   req.EntrustCompany,
 		SignCompany:      req.SignCompany,
-		PrincipalUid:     req.PrincipalUid,
+		PrincipalUid:     principalUser.Id,
 		PrincipalName:    principalUser.Realname,
-		DeptId:           req.DeptId,
+		DeptId:           principalUser.DeptId,
 		Region:           req.Region,
 		StartTime:        req.StartTime,
 		EndTime:          req.EndTime,
@@ -202,11 +197,6 @@ func (s *sWdkProject) EditWdkProject(ctx context.Context, req *v1.WdkProjectEdit
 		err = gerror.Newf(`负责人用户ID[%d]不存在`, req.PrincipalUid)
 		return
 	}
-	// 检查项目负责人所属部门和项目所属部门是否一致
-	if req.DeptId != principalUser.DeptId {
-		err = gerror.Newf(`项目负责人所属部门ID[%d]与项目所属部门ID[%d]不一致`, principalUser.DeptId, req.DeptId)
-		return
-	}
 	// 更新文档库项目数据
 	user := Context().Get(ctx).User
 	_, err = dao.WdkProject.Ctx(ctx).Data(do.WdkProject{
@@ -218,9 +208,9 @@ func (s *sWdkProject) EditWdkProject(ctx context.Context, req *v1.WdkProjectEdit
 		Status:         req.Status,
 		EntrustCompany: req.EntrustCompany,
 		SignCompany:    req.SignCompany,
-		PrincipalUid:   req.PrincipalUid,
+		PrincipalUid:   principalUser.Id,
 		PrincipalName:  principalUser.Realname,
-		DeptId:         req.DeptId,
+		DeptId:         principalUser.DeptId,
 		Region:         req.Region,
 		StartTime:      req.StartTime,
 		EndTime:        req.EndTime,

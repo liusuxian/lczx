@@ -17,7 +17,7 @@ var (
 
 type cWdkFile struct{}
 
-// Record 文档库上传附件记录
+// Record 文档库上传文件记录
 func (c *cWdkFile) Record(ctx context.Context, req *v1.WdkFileRecordReq) (res *v1.WdkFileRecordRes, err error) {
 	var list []*entity.WdkFile
 	list, err = service.WdkFile().GetWdkFileRecord(ctx, req.ProjectId)
@@ -30,7 +30,7 @@ func (c *cWdkFile) Record(ctx context.Context, req *v1.WdkFileRecordReq) (res *v
 	return
 }
 
-// Add 新增文档库上传附件记录
+// Add 新增文档库上传文件记录
 func (c *cWdkFile) Add(ctx context.Context, req *v1.WdkFileAddReq) (res *v1.WdkFileAddRes, err error) {
 	// 检查新增文档库上传文件记录权限
 	err = service.WdkFile().AuthAdd(ctx, req.ProjectId)
