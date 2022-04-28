@@ -18,7 +18,7 @@ type cWdkService struct{}
 
 // Record 文档库服务记录
 func (c *cWdkService) Record(ctx context.Context, req *v1.WdkServiceRecordReq) (res *v1.WdkServiceRecordRes, err error) {
-	var list []*v1.WdkServiceRecordInfo
+	var list []*v1.WdkServiceInfo
 	list, err = service.WdkService().GetWdkServiceRecord(ctx, req.ProjectId)
 	if err != nil {
 		err = gerror.WrapCode(code.GetWdkServiceRecordFailed, err)
@@ -30,7 +30,7 @@ func (c *cWdkService) Record(ctx context.Context, req *v1.WdkServiceRecordReq) (
 }
 
 // Add 新增文档库服务记录
-func (c *cWdkService) Add(ctx context.Context, req *v1.WdkServiceRecordAddReq) (res *v1.WdkServiceRecordAddRes, err error) {
+func (c *cWdkService) Add(ctx context.Context, req *v1.WdkServiceAddReq) (res *v1.WdkServiceAddRes, err error) {
 	// 检查新增文档库服务记录权限
 	err = service.WdkService().AuthAdd(ctx, req.ProjectId)
 	if err != nil {

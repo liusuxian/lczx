@@ -24,7 +24,7 @@ func WdkFile() *sWdkFile {
 
 // GetWdkFileRecord 获取文档库上传文件记录
 func (s *sWdkFile) GetWdkFileRecord(ctx context.Context, projectId uint64) (list []*entity.WdkFile, err error) {
-	err = dao.WdkFile.Ctx(ctx).Where(do.WdkFile{ProjectId: projectId}).Scan(&list)
+	err = dao.WdkFile.Ctx(ctx).Where(do.WdkFile{ProjectId: projectId}).OrderAsc(dao.WdkFile.Columns().Type).Scan(&list)
 	return
 }
 

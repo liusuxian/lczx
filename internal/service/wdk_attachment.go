@@ -24,9 +24,9 @@ func WdkAttachment() *sWdkAttachment {
 }
 
 // GetWdkAttachmentRecord 获取文档库上传附件记录
-func (s *sWdkAttachment) GetWdkAttachmentRecord(ctx context.Context, projectId uint64) (list []*v1.WdkAttachmentRecordInfo, err error) {
-	err = dao.WdkAttachmentRecord.Ctx(ctx).Where(do.WdkAttachmentRecord{ProjectId: projectId}).OrderDesc(dao.WdkAttachmentRecord.Columns().CreateAt).
-		ScanList(&list, "Record")
+func (s *sWdkAttachment) GetWdkAttachmentRecord(ctx context.Context, projectId uint64) (list []*v1.WdkAttachmentInfo, err error) {
+	err = dao.WdkAttachmentRecord.Ctx(ctx).Where(do.WdkAttachmentRecord{ProjectId: projectId}).
+		OrderDesc(dao.WdkAttachmentRecord.Columns().CreateAt).ScanList(&list, "Record")
 	if err != nil {
 		return
 	}
@@ -36,7 +36,7 @@ func (s *sWdkAttachment) GetWdkAttachmentRecord(ctx context.Context, projectId u
 }
 
 // AddWdkAttachmentRecord 新增文档库上传附件记录
-func (s *sWdkAttachment) AddWdkAttachmentRecord(ctx context.Context, req *v1.WdkAttachmentRecordAddReq, Attachments []*upload.FileInfo) (err error) {
+func (s *sWdkAttachment) AddWdkAttachmentRecord(ctx context.Context, req *v1.WdkAttachmentAddReq, Attachments []*upload.FileInfo) (err error) {
 	err = dao.WdkAttachmentRecord.Ctx(ctx).Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		// 检查新增文档库上传附件记录权限
 		var terr error

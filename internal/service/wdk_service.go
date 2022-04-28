@@ -24,9 +24,9 @@ func WdkService() *sWdkService {
 }
 
 // GetWdkServiceRecord 获取文档库服务记录
-func (s *sWdkService) GetWdkServiceRecord(ctx context.Context, projectId uint64) (list []*v1.WdkServiceRecordInfo, err error) {
-	err = dao.WdkServiceRecord.Ctx(ctx).Where(do.WdkServiceRecord{ProjectId: projectId}).OrderDesc(dao.WdkServiceRecord.Columns().ServiceTime).
-		ScanList(&list, "Record")
+func (s *sWdkService) GetWdkServiceRecord(ctx context.Context, projectId uint64) (list []*v1.WdkServiceInfo, err error) {
+	err = dao.WdkServiceRecord.Ctx(ctx).Where(do.WdkServiceRecord{ProjectId: projectId}).
+		OrderDesc(dao.WdkServiceRecord.Columns().ServiceTime).ScanList(&list, "Record")
 	if err != nil {
 		return
 	}
@@ -36,7 +36,7 @@ func (s *sWdkService) GetWdkServiceRecord(ctx context.Context, projectId uint64)
 }
 
 // AddWdkServiceRecord 新增文档库服务记录
-func (s *sWdkService) AddWdkServiceRecord(ctx context.Context, req *v1.WdkServiceRecordAddReq, xch *upload.FileInfo, Photos []*upload.FileInfo) (err error) {
+func (s *sWdkService) AddWdkServiceRecord(ctx context.Context, req *v1.WdkServiceAddReq, xch *upload.FileInfo, Photos []*upload.FileInfo) (err error) {
 	err = dao.WdkServiceRecord.Ctx(ctx).Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		// 检查新增文档库服务记录权限
 		var terr error
