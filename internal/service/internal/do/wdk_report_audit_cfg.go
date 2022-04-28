@@ -13,5 +13,6 @@ type WdkReportAuditCfg struct {
 	g.Meta    `orm:"table:wdk_report_audit_cfg, do:true"`
 	Id        interface{} // 报告类型ID
 	AuditUid  interface{} // 审核员用户ID
+	TypeName  interface{} // 报告类型名称
 	AuditName interface{} // 审核员姓名
 }

@@ -74,7 +74,12 @@ func (s *sWdkReportCfg) AddWdkReportCfg(ctx context.Context, req *v1.WdkReportCf
 			if user == nil {
 				return gerror.Newf(`文档库报告审核员用户ID[%d]不存在`, auid)
 			}
-			auditUserData = append(auditUserData, g.Map{"id": typeId, "audit_uid": user.Id, "audit_name": user.Realname})
+			auditUserData = append(auditUserData, g.Map{
+				"id":         typeId,
+				"audit_uid":  user.Id,
+				"type_name":  req.Name,
+				"audit_name": user.Realname,
+			})
 		}
 		_, terr = dao.WdkReportAuditCfg.Ctx(ctx).Data(auditUserData).Batch(len(g.List{})).Insert()
 		return terr
@@ -140,7 +145,12 @@ func (s *sWdkReportCfg) EditWdkReportCfg(ctx context.Context, req *v1.WdkReportC
 			if user == nil {
 				return gerror.Newf(`文档库报告审核员用户ID[%d]不存在`, auid)
 			}
-			auditUserData = append(auditUserData, g.Map{"id": req.Id, "audit_uid": user.Id, "audit_name": user.Realname})
+			auditUserData = append(auditUserData, g.Map{
+				"id":         req.Id,
+				"audit_uid":  user.Id,
+				"type_name":  req.Name,
+				"audit_name": user.Realname,
+			})
 		}
 		_, terr = dao.WdkReportAuditCfg.Ctx(ctx).Data(auditUserData).Batch(len(g.List{})).Insert()
 		return terr

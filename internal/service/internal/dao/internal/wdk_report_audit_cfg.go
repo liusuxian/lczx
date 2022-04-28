@@ -21,6 +21,7 @@ type WdkReportAuditCfgDao struct {
 type WdkReportAuditCfgColumns struct {
 	Id        string // 报告类型ID
 	AuditUid  string // 审核员用户ID
+	TypeName  string // 报告类型名称
 	AuditName string // 审核员姓名
 }
 
@@ -28,6 +29,7 @@ type WdkReportAuditCfgColumns struct {
 var wdkReportAuditCfgColumns = WdkReportAuditCfgColumns{
 	Id:        "id",
 	AuditUid:  "audit_uid",
+	TypeName:  "type_name",
 	AuditName: "audit_name",
 }
 

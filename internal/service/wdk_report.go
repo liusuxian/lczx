@@ -59,22 +59,15 @@ func (s *sWdkReport) AddWdkReport(ctx context.Context, req *v1.WdkReportAddReq, 
 		if len(typeIds) != len(reportCfgInfos) {
 			return gerror.Newf("报告类型ID列表[%s]不存在", gstr.JoinAny(req.TypeIds, ","))
 		}
-		// 处理审核人员们的姓名
-		auditNameList := make([]string, 0, len(typeIds))
-		for _, rCfgInfo := range reportCfgInfos {
-			for _, raCfg := range rCfgInfo.ReportAuditCfg {
-				auditNameList = append(auditNameList, raCfg.AuditName)
-			}
-		}
-		auditNameSet := gset.NewFrom(auditNameList)
-		auditNames := gstr.JoinAny(auditNameSet.Slice(), ",")
+		// 获取文档库上传报告的审核人员们的姓名和数量
+		auditNames, auditCount := s.GetWdkReportAuditNamesAndCount(reportCfgInfos)
 		// 写入文档库上传报告记录数据
 		var reportId int64
 		user := Context().Get(ctx).User
 		//user := &model.ContextUser{
 		//	Id:       1,
 		//	Realname: "超级管理员",
-		//	IsAdmin:  1,
+		//	IsAdmin:  0,
 		//}
 		if user.IsAdmin == 1 {
 			// 管理员不需要走审核流程
@@ -85,6 +78,7 @@ func (s *sWdkReport) AddWdkReport(ctx context.Context, req *v1.WdkReportAddReq, 
 				CreateName:   user.Realname,
 				AuditStatus:  3,
 				AuditNames:   auditNames,
+				AuditCount:   auditCount,
 				Excellence:   0,
 				AuditEndTime: gtime.Now(),
 				OriginUrl:    report.OriginFileUrl,
@@ -99,6 +93,7 @@ func (s *sWdkReport) AddWdkReport(ctx context.Context, req *v1.WdkReportAddReq, 
 				CreateName:  user.Realname,
 				AuditStatus: 1,
 				AuditNames:  auditNames,
+				AuditCount:  auditCount,
 				Excellence:  0,
 				OriginUrl:   report.OriginFileUrl,
 				PdfUrl:      report.PdfFileUrl,
@@ -121,6 +116,34 @@ func (s *sWdkReport) AddWdkReport(ctx context.Context, req *v1.WdkReportAddReq, 
 			return terr
 		}
 		// 写入文档库上传报告审核数据
+		if user.IsAdmin != 1 {
+			reportAuditData := g.List{}
+			reportAuditTypeData := g.List{}
+			for _, reportCfgInfo := range reportCfgInfos {
+				for _, reportAuditCfgInfo := range reportCfgInfo.ReportAuditCfg {
+					reportAuditData = append(reportAuditData, g.Map{
+						"audit_uid":  reportAuditCfgInfo.AuditUid,
+						"report_id":  reportId,
+						"status":     1,
+						"audit_name": reportAuditCfgInfo.AuditName,
+					})
+					reportAuditTypeData = append(reportAuditTypeData, g.Map{
+						"audit_uid": reportAuditCfgInfo.AuditUid,
+						"report_id": reportId,
+						"type_id":   reportAuditCfgInfo.Id,
+						"type_name": reportAuditCfgInfo.TypeName,
+					})
+				}
+			}
+			_, terr = dao.WdkReportAuditRecord.Ctx(ctx).Data(reportAuditData).Batch(len(g.List{})).Insert()
+			if terr != nil {
+				return terr
+			}
+			_, terr = dao.WdkReportAuditType.Ctx(ctx).Data(reportAuditTypeData).Batch(len(g.List{})).Insert()
+			if terr != nil {
+				return terr
+			}
+		}
 		// 设置所属文档库项目阶段
 		terr = WdkProject().SetWdkProjectStep(ctx, req.ProjectId, 8)
 		if terr != nil {
@@ -160,7 +183,16 @@ func (s *sWdkReport) GetWdkReportCountByProjectId(ctx context.Context, projectId
 	return
 }
 
-func (s *sWdkReport) SetWdkReport(ctx context.Context, projectId uint64) (count int, err error) {
-	count, err = dao.WdkReport.Ctx(ctx).Where(do.WdkReport{ProjectId: projectId}).Count()
+// GetWdkReportAuditNamesAndCount 获取文档库上传报告的审核人员们的姓名和数量
+func (s *sWdkReport) GetWdkReportAuditNamesAndCount(reportCfgInfos []*v1.WdkReportCfgInfo) (auditNames string, auditCount int) {
+	auditNameList := make([]string, 0, len(reportCfgInfos))
+	for _, reportCfgInfo := range reportCfgInfos {
+		for _, reportAuditCfgInfo := range reportCfgInfo.ReportAuditCfg {
+			auditNameList = append(auditNameList, reportAuditCfgInfo.AuditName)
+		}
+	}
+	auditNameSet := gset.NewFrom(auditNameList)
+	auditNames = gstr.JoinAny(auditNameSet.Slice(), ",")
+	auditCount = auditNameSet.Size()
 	return
 }

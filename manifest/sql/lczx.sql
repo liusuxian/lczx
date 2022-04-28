@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 28/04/2022 22:12:09
+ Date: 29/04/2022 01:12:03
 */
 
 SET NAMES utf8mb4;
@@ -456,7 +456,8 @@ CREATE TABLE `wdk_report` (
   `create_by` bigint unsigned NOT NULL COMMENT '上传者用户ID',
   `create_name` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '上传者姓名',
   `audit_status` tinyint unsigned NOT NULL COMMENT '审核状态 0:未通过 1:审核中 2:已通过 3:后台管理员自动通过',
-  `audit_names` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '审核人员们的姓名',
+  `audit_names` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '审核人员们的姓名',
+  `audit_count` int unsigned NOT NULL COMMENT '审核人员数量',
   `excellence` tinyint unsigned NOT NULL COMMENT '是否是优秀报告 0:未被评选为优秀报告 1:被推荐为优秀报告 2:已被评选为优秀报告',
   `audit_end_time` datetime DEFAULT NULL COMMENT '审核完成时间',
   `origin_url` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '原始文件url',
@@ -480,6 +481,7 @@ DROP TABLE IF EXISTS `wdk_report_audit_cfg`;
 CREATE TABLE `wdk_report_audit_cfg` (
   `id` bigint unsigned NOT NULL COMMENT '报告类型ID',
   `audit_uid` bigint unsigned NOT NULL COMMENT '审核员用户ID',
+  `type_name` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '报告类型名称',
   `audit_name` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '审核员姓名',
   PRIMARY KEY (`id`,`audit_uid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

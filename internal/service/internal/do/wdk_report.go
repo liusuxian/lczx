@@ -19,6 +19,7 @@ type WdkReport struct {
 	CreateName   interface{} // 上传者姓名
 	AuditStatus  interface{} // 审核状态 0:未通过 1:审核中 2:已通过 3:后台管理员自动通过
 	AuditNames   interface{} // 审核人员们的姓名
+	AuditCount   interface{} // 审核人员数量
 	Excellence   interface{} // 是否是优秀报告 0:未被评选为优秀报告 1:被推荐为优秀报告 2:已被评选为优秀报告
 	AuditEndTime *gtime.Time // 审核完成时间
 	OriginUrl    interface{} // 原始文件url
