@@ -55,7 +55,7 @@ func (c *cWdkAttachment) Add(ctx context.Context, req *v1.WdkAttachmentAddReq) (
 		return
 	}
 	// 新增文档库上传附件记录
-	err = service.WdkAttachment().AddWdkAttachmentRecord(ctx, req, fileInfos)
+	err = service.WdkAttachment().AddWdkAttachment(ctx, req, fileInfos)
 	if err != nil {
 		err = gerror.WrapCode(code.AddWdkAttachmentRecordFailed, err)
 		return

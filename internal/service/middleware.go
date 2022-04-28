@@ -146,7 +146,6 @@ func (s *sMiddleware) Auth(req *ghttp.Request) {
 			break
 		}
 	}
-	logger.Debug(ctx, "menu: ", menu)
 	// 只验证存在数据库中的规则
 	if menu != nil {
 		// 检查菜单状态是否为已停用
@@ -163,12 +162,10 @@ func (s *sMiddleware) Auth(req *ghttp.Request) {
 			// 判断权限操作
 			var enforcer *casbin.SyncedEnforcer
 			enforcer, err = Casbin(ctx).GetEnforcer()
-			logger.Debug(ctx, "enforcer: ", enforcer)
 			if err != nil {
 				response.RespJsonExitByGcode(req, code.GetAccessAuthFailed)
 			}
 			groupPolicy := enforcer.GetFilteredGroupingPolicy(0, gconv.String(user.Id))
-			logger.Debug(ctx, "groupPolicy: ", groupPolicy)
 			if len(groupPolicy) == 0 {
 				response.RespJsonExitByGcode(req, code.NotAccessAuth)
 			}

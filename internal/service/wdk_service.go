@@ -35,8 +35,8 @@ func (s *sWdkService) GetWdkServiceRecord(ctx context.Context, projectId uint64)
 	return
 }
 
-// AddWdkServiceRecord 新增文档库服务记录
-func (s *sWdkService) AddWdkServiceRecord(ctx context.Context, req *v1.WdkServiceAddReq, xch *upload.FileInfo, Photos []*upload.FileInfo) (err error) {
+// AddWdkService 新增文档库服务记录
+func (s *sWdkService) AddWdkService(ctx context.Context, req *v1.WdkServiceAddReq, xch *upload.FileInfo, Photos []*upload.FileInfo) (err error) {
 	err = dao.WdkServiceRecord.Ctx(ctx).Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		// 检查新增文档库服务记录权限
 		var terr error

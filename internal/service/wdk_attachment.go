@@ -35,8 +35,8 @@ func (s *sWdkAttachment) GetWdkAttachmentRecord(ctx context.Context, projectId u
 	return
 }
 
-// AddWdkAttachmentRecord 新增文档库上传附件记录
-func (s *sWdkAttachment) AddWdkAttachmentRecord(ctx context.Context, req *v1.WdkAttachmentAddReq, Attachments []*upload.FileInfo) (err error) {
+// AddWdkAttachment 新增文档库上传附件记录
+func (s *sWdkAttachment) AddWdkAttachment(ctx context.Context, req *v1.WdkAttachmentAddReq, Attachments []*upload.FileInfo) (err error) {
 	err = dao.WdkAttachmentRecord.Ctx(ctx).Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		// 检查新增文档库上传附件记录权限
 		var terr error

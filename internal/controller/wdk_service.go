@@ -68,7 +68,7 @@ func (c *cWdkService) Add(ctx context.Context, req *v1.WdkServiceAddReq) (res *v
 		return
 	}
 	// 新增文档库服务记录
-	err = service.WdkService().AddWdkServiceRecord(ctx, req, xch, photos)
+	err = service.WdkService().AddWdkService(ctx, req, xch, photos)
 	if err != nil {
 		err = gerror.WrapCode(code.AddWdkServiceRecordFailed, err)
 		return

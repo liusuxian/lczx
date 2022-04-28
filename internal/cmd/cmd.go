@@ -62,7 +62,7 @@ var (
 								fmt.Println("upload attachment err: ", e)
 							} else {
 								// 新增文档库上传附件记录
-								_ = service.WdkAttachment().AddWdkAttachmentRecord(ctx, &v1.WdkAttachmentRecordAddReq{
+								_ = service.WdkAttachment().AddWdkAttachment(ctx, &v1.WdkAttachmentAddReq{
 									ProjectId: 1,
 								}, fs)
 							}
