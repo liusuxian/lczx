@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 27/04/2022 16:17:50
+ Date: 28/04/2022 22:12:09
 */
 
 SET NAMES utf8mb4;
@@ -428,9 +428,9 @@ CREATE TABLE `wdk_project` (
   `start_time` datetime NOT NULL COMMENT '项目开始时间',
   `end_time` datetime NOT NULL COMMENT '项目结束时间',
   `create_by` bigint unsigned NOT NULL COMMENT '项目创建者用户ID',
-  `create_name` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '项目创建者姓名',
+  `create_name` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '项目创建者姓名',
   `updated_by` bigint unsigned DEFAULT NULL COMMENT '项目修改者用户ID',
-  `updated_name` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '项目修改者姓名',
+  `updated_name` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '项目修改者姓名',
   `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '备注',
   `create_at` datetime DEFAULT NULL COMMENT '项目创建时间',
   `update_at` datetime DEFAULT NULL COMMENT '项目更新时间',
@@ -455,7 +455,7 @@ CREATE TABLE `wdk_report` (
   `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '报告名称',
   `create_by` bigint unsigned NOT NULL COMMENT '上传者用户ID',
   `create_name` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '上传者姓名',
-  `audit_status` tinyint unsigned NOT NULL COMMENT '审核状态 0:未通过 1:审核中 2:已通过',
+  `audit_status` tinyint unsigned NOT NULL COMMENT '审核状态 0:未通过 1:审核中 2:已通过 3:后台管理员自动通过',
   `audit_names` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '审核人员们的姓名',
   `excellence` tinyint unsigned NOT NULL COMMENT '是否是优秀报告 0:未被评选为优秀报告 1:被推荐为优秀报告 2:已被评选为优秀报告',
   `audit_end_time` datetime DEFAULT NULL COMMENT '审核完成时间',
@@ -497,7 +497,7 @@ DROP TABLE IF EXISTS `wdk_report_audit_record`;
 CREATE TABLE `wdk_report_audit_record` (
   `audit_uid` bigint unsigned NOT NULL COMMENT '审核员用户ID',
   `report_id` bigint unsigned NOT NULL COMMENT '审核的报告ID',
-  `status` tinyint unsigned NOT NULL COMMENT '审核状态 0:未通过 1:审核中 2:已通过',
+  `status` tinyint unsigned NOT NULL COMMENT '审核状态 0:未通过 1:审核中 2:已通过 3:后台管理员自动通过',
   `audit_name` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '审核员姓名',
   `audit_time` datetime DEFAULT NULL COMMENT '审核时间',
   `create_at` datetime DEFAULT NULL COMMENT '创建时间',

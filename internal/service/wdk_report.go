@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/errors/gerror"
+	"github.com/gogf/gf/v2/os/gtime"
 	v1 "lczx/api/v1"
 	"lczx/internal/model/entity"
 	"lczx/internal/service/internal/dao"
@@ -42,6 +43,40 @@ func (s *sWdkReport) AddWdkReport(ctx context.Context, req *v1.WdkReportAddReq, 
 		// 检查新增文档库上传报告记录权限
 		var terr error
 		terr = s.AuthAdd(ctx, req.ProjectId)
+		if terr != nil {
+			return terr
+		}
+		// 写入文档库上传报告记录数据
+		var recordId int64
+		user := Context().Get(ctx).User
+		if user.IsAdmin == 1 {
+			// 管理员不需要走审核流程
+			recordId, terr = dao.WdkReport.Ctx(ctx).Data(do.WdkReport{
+				ProjectId:    req.ProjectId,
+				Name:         report.FileName,
+				CreateBy:     user.Id,
+				CreateName:   user.Realname,
+				AuditStatus:  2,
+				Excellence:   0,
+				AuditEndTime: gtime.Now(),
+				OriginUrl:    report.OriginFileUrl,
+				PdfUrl:       report.PdfFileUrl,
+			}).InsertAndGetId()
+		} else {
+
+			recordId, terr = dao.WdkReport.Ctx(ctx).Data(do.WdkReport{
+				ProjectId:   req.ProjectId,
+				Name:        report.FileName,
+				CreateBy:    user.Id,
+				CreateName:  user.Realname,
+				AuditStatus: 1,
+				// AuditNames:   "",
+				Excellence: 0,
+				OriginUrl:  report.OriginFileUrl,
+				PdfUrl:     report.PdfFileUrl,
+			}).InsertAndGetId()
+		}
+
 		if terr != nil {
 			return terr
 		}

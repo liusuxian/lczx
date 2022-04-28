@@ -14,7 +14,7 @@ type WdkReportAuditRecord struct {
 	g.Meta    `orm:"table:wdk_report_audit_record, do:true"`
 	AuditUid  interface{} // 审核员用户ID
 	ReportId  interface{} // 审核的报告ID
-	Status    interface{} // 审核状态 0:未通过 1:审核中 2:已通过
+	Status    interface{} // 审核状态 0:未通过 1:审核中 2:已通过 3:后台管理员自动通过
 	AuditName interface{} // 审核员姓名
 	AuditTime *gtime.Time // 审核时间
 	CreateAt  *gtime.Time // 创建时间

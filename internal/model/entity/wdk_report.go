@@ -15,7 +15,7 @@ type WdkReport struct {
 	Name         string      `json:"name"         description:"报告名称"`                                       // 报告名称
 	CreateBy     uint64      `json:"createBy"     description:"上传者用户ID"`                                    // 上传者用户ID
 	CreateName   string      `json:"createName"   description:"上传者姓名"`                                      // 上传者姓名
-	AuditStatus  uint        `json:"auditStatus"  description:"审核状态 0:未通过 1:审核中 2:已通过"`                     // 审核状态 0:未通过 1:审核中 2:已通过
+	AuditStatus  uint        `json:"auditStatus"  description:"审核状态 0:未通过 1:审核中 2:已通过 3:后台管理员自动通过"`         // 审核状态 0:未通过 1:审核中 2:已通过 3:后台管理员自动通过
 	AuditNames   string      `json:"auditNames"   description:"审核人员们的姓名"`                                   // 审核人员们的姓名
 	Excellence   uint        `json:"excellence"   description:"是否是优秀报告 0:未被评选为优秀报告 1:被推荐为优秀报告 2:已被评选为优秀报告"` // 是否是优秀报告 0:未被评选为优秀报告 1:被推荐为优秀报告 2:已被评选为优秀报告
 	AuditEndTime *gtime.Time `json:"auditEndTime" description:"审核完成时间"`                                     // 审核完成时间

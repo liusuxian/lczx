@@ -24,7 +24,7 @@ type WdkReportColumns struct {
 	Name         string // 报告名称
 	CreateBy     string // 上传者用户ID
 	CreateName   string // 上传者姓名
-	AuditStatus  string // 审核状态 0:未通过 1:审核中 2:已通过
+	AuditStatus  string // 审核状态 0:未通过 1:审核中 2:已通过 3:后台管理员自动通过
 	AuditNames   string // 审核人员们的姓名
 	Excellence   string // 是否是优秀报告 0:未被评选为优秀报告 1:被推荐为优秀报告 2:已被评选为优秀报告
 	AuditEndTime string // 审核完成时间

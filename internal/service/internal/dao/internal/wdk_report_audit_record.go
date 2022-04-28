@@ -21,7 +21,7 @@ type WdkReportAuditRecordDao struct {
 type WdkReportAuditRecordColumns struct {
 	AuditUid  string // 审核员用户ID
 	ReportId  string // 审核的报告ID
-	Status    string // 审核状态 0:未通过 1:审核中 2:已通过
+	Status    string // 审核状态 0:未通过 1:审核中 2:已通过 3:后台管理员自动通过
 	AuditName string // 审核员姓名
 	AuditTime string // 审核时间
 	CreateAt  string // 创建时间
