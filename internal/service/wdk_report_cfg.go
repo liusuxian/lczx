@@ -81,7 +81,7 @@ func (s *sWdkReportCfg) AddWdkReportCfg(ctx context.Context, req *v1.WdkReportCf
 				"audit_name": user.Realname,
 			})
 		}
-		_, terr = dao.WdkReportAuditCfg.Ctx(ctx).Data(auditUserData).Batch(len(g.List{})).Insert()
+		_, terr = dao.WdkReportAuditCfg.Ctx(ctx).Data(auditUserData).Batch(len(auditUserData)).Insert()
 		return terr
 	})
 	return
@@ -152,7 +152,7 @@ func (s *sWdkReportCfg) EditWdkReportCfg(ctx context.Context, req *v1.WdkReportC
 				"audit_name": user.Realname,
 			})
 		}
-		_, terr = dao.WdkReportAuditCfg.Ctx(ctx).Data(auditUserData).Batch(len(g.List{})).Insert()
+		_, terr = dao.WdkReportAuditCfg.Ctx(ctx).Data(auditUserData).Batch(len(auditUserData)).Insert()
 		return terr
 	})
 	return

@@ -66,7 +66,7 @@ func (s *sWdkService) AddWdkService(ctx context.Context, req *v1.WdkServiceAddRe
 				"url":  file.OriginFileUrl,
 			})
 		}
-		_, terr = dao.WdkServicePhoto.Ctx(ctx).Data(photoData).Batch(len(g.List{})).Insert()
+		_, terr = dao.WdkServicePhoto.Ctx(ctx).Data(photoData).Batch(len(photoData)).Insert()
 		if terr != nil {
 			return terr
 		}

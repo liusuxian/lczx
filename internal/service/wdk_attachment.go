@@ -63,7 +63,7 @@ func (s *sWdkAttachment) AddWdkAttachment(ctx context.Context, req *v1.WdkAttach
 				"pdf_url":    file.PdfFileUrl,
 			})
 		}
-		_, terr = dao.WdkAttachmentFile.Ctx(ctx).Data(attachmentFileData).Batch(len(g.List{})).Insert()
+		_, terr = dao.WdkAttachmentFile.Ctx(ctx).Data(attachmentFileData).Batch(len(attachmentFileData)).Insert()
 		return terr
 	})
 	return
