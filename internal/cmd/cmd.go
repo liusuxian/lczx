@@ -88,6 +88,23 @@ var (
 							}
 						}
 					})
+					// 测试上传报告
+					group.POST("/report", func(req *ghttp.Request) {
+						// 获取上传文件信息
+						report := req.GetUploadFile("upload-report")
+						if report != nil {
+							f, e := upload.Upload.UploadFile(report, "wdk/report")
+							if e != nil {
+								fmt.Println("upload file err: ", e)
+							} else {
+								// 新增文档库上传报告记录
+								_ = service.WdkReport().AddWdkReport(ctx, &v1.WdkReportAddReq{
+									ProjectId: 1,
+									TypeIds:   []uint64{1, 2, 3},
+								}, f)
+							}
+						}
+					})
 				})
 			})
 			// 认证接口

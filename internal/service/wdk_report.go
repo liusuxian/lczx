@@ -4,7 +4,9 @@ import (
 	"context"
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/errors/gerror"
+	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gtime"
+	"github.com/gogf/gf/v2/text/gstr"
 	v1 "lczx/api/v1"
 	"lczx/internal/model/entity"
 	"lczx/internal/service/internal/dao"
@@ -46,42 +48,68 @@ func (s *sWdkReport) AddWdkReport(ctx context.Context, req *v1.WdkReportAddReq, 
 		if terr != nil {
 			return terr
 		}
+		// 通过报告类型ID列表获取报告类型配置
+		var reportCfgInfos []*v1.WdkReportCfgInfo
+		reportCfgInfos, terr = WdkReportCfg().GetWdkReportCfgByIds(ctx, req.TypeIds)
+		if terr != nil {
+			return terr
+		}
+		if len(req.TypeIds) != len(reportCfgInfos) {
+			return gerror.Newf("报告类型ID列表[%s]不存在", gstr.JoinAny(req.TypeIds, ", "))
+		}
+		// 处理审核人员们的姓名
+		auditNameList := make([]string, 0, len(reportCfgInfos))
+		for _, rCfgInfo := range reportCfgInfos {
+			for _, raCfg := range rCfgInfo.ReportAuditCfg {
+				auditNameList = append(auditNameList, raCfg.AuditName)
+			}
+		}
+		auditNames := gstr.Join(auditNameList, ", ")
 		// 写入文档库上传报告记录数据
-		var recordId int64
+		var reportId int64
 		user := Context().Get(ctx).User
 		if user.IsAdmin == 1 {
 			// 管理员不需要走审核流程
-			recordId, terr = dao.WdkReport.Ctx(ctx).Data(do.WdkReport{
+			reportId, terr = dao.WdkReport.Ctx(ctx).Data(do.WdkReport{
 				ProjectId:    req.ProjectId,
 				Name:         report.FileName,
 				CreateBy:     user.Id,
 				CreateName:   user.Realname,
-				AuditStatus:  2,
+				AuditStatus:  3,
+				AuditNames:   auditNames,
 				Excellence:   0,
 				AuditEndTime: gtime.Now(),
 				OriginUrl:    report.OriginFileUrl,
 				PdfUrl:       report.PdfFileUrl,
 			}).InsertAndGetId()
 		} else {
-
-			recordId, terr = dao.WdkReport.Ctx(ctx).Data(do.WdkReport{
+			// 非管理员需要走审核流程
+			reportId, terr = dao.WdkReport.Ctx(ctx).Data(do.WdkReport{
 				ProjectId:   req.ProjectId,
 				Name:        report.FileName,
 				CreateBy:    user.Id,
 				CreateName:  user.Realname,
 				AuditStatus: 1,
-				// AuditNames:   "",
-				Excellence: 0,
-				OriginUrl:  report.OriginFileUrl,
-				PdfUrl:     report.PdfFileUrl,
+				AuditNames:  auditNames,
+				Excellence:  0,
+				OriginUrl:   report.OriginFileUrl,
+				PdfUrl:      report.PdfFileUrl,
 			}).InsertAndGetId()
 		}
-
 		if terr != nil {
 			return terr
 		}
-
-		return nil
+		// 写入文档库上传报告类型数据
+		reportTypeData := g.List{}
+		for _, v := range reportCfgInfos {
+			reportTypeData = append(reportTypeData, g.Map{
+				"id":        reportId,
+				"type_id":   v.ReportCfg.Id,
+				"type_name": v.ReportCfg.Name,
+			})
+		}
+		_, terr = dao.WdkReportType.Ctx(ctx).Data(reportTypeData).Batch(len(g.List{})).Insert()
+		return terr
 	})
 	return
 }
