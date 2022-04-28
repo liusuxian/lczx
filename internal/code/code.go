@@ -74,4 +74,5 @@ var (
 	AddWdkServiceRecordFailed    = gcode.New(1803, "添加文档库服务记录失败", "")   // 添加文档库服务记录失败
 	GetWdkFileRecordFailed       = gcode.New(1804, "获取文档库上传文件记录失败", "") // 获取文档库上传文件记录失败
 	AddWdkFileRecordFailed       = gcode.New(1805, "添加文档库上传文件记录失败", "") // 添加文档库上传文件记录失败
+	GetWdkReportRecordFailed     = gcode.New(1806, "获取文档库上传报告记录失败", "") // 获取文档库上传报告记录失败
 )

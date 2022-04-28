@@ -95,7 +95,7 @@ var (
 						if report != nil {
 							f, e := upload.Upload.UploadFile(report, "wdk/report")
 							if e != nil {
-								fmt.Println("upload file err: ", e)
+								fmt.Println("upload report err: ", e)
 							} else {
 								// 新增文档库上传报告记录
 								_ = service.WdkReport().AddWdkReport(ctx, &v1.WdkReportAddReq{
@@ -187,6 +187,10 @@ var (
 					// 上传文件记录管理
 					group.Group("/file", func(group *ghttp.RouterGroup) {
 						group.Bind(controller.WdkFile)
+					})
+					// 上传报告记录管理
+					group.Group("/report", func(group *ghttp.RouterGroup) {
+						group.Bind(controller.WdkReport)
 					})
 				})
 			})

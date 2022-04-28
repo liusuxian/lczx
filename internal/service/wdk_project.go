@@ -264,7 +264,7 @@ func (s *sWdkProject) SetWdkProjectFileUploadStatus(ctx context.Context, id uint
 
 // SetWdkProjectStep 设置文档库项目阶段
 func (s *sWdkProject) SetWdkProjectStep(ctx context.Context, id uint64, fType uint) (err error) {
-	// 文件类型 0:合同扫描文件 1:年度服务计划书 2:总结报告 3:项目移交 4:复盘报告 5:文件签收单 6:满意度调查表 7:服务记录
+	// 文件类型 0:合同扫描文件 1:年度服务计划书 2:总结报告 3:项目移交 4:复盘报告 5:文件签收单 6:满意度调查表 7:服务记录 8:咨询报告
 	// 项目阶段 0:未开始 1:合同签约 2:项目启动会 3:服务中 4:合同结束 5:复盘
 	step := 0
 	switch fType {
@@ -276,7 +276,7 @@ func (s *sWdkProject) SetWdkProjectStep(ctx context.Context, id uint64, fType ui
 		step = 4
 	case 4:
 		step = 5
-	case 5, 6, 7:
+	case 5, 6, 7, 8:
 		step = 3
 	}
 	_, err = dao.WdkProject.Ctx(ctx).Data(do.WdkProject{Step: step}).Where(do.WdkProject{Id: id}).

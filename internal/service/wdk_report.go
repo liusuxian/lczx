@@ -2,11 +2,13 @@ package service
 
 import (
 	"context"
+	"github.com/gogf/gf/v2/container/gset"
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gtime"
 	"github.com/gogf/gf/v2/text/gstr"
+	"github.com/gogf/gf/v2/util/gconv"
 	v1 "lczx/api/v1"
 	"lczx/internal/model/entity"
 	"lczx/internal/service/internal/dao"
@@ -27,10 +29,8 @@ func WdkReport() *sWdkReport {
 
 // GetWdkReportRecord 获取文档库上传报告记录
 func (s *sWdkReport) GetWdkReportRecord(ctx context.Context, projectId uint64) (list []*v1.WdkReportInfo, err error) {
-	err = dao.WdkReport.Ctx(ctx).Where(do.WdkReport{
-		ProjectId:   projectId,
-		AuditStatus: 2,
-	}).ScanList(&list, "Report")
+	err = dao.WdkReport.Ctx(ctx).Where(do.WdkReport{ProjectId: projectId}).
+		WhereIn(dao.WdkReport.Columns().AuditStatus, []uint{2, 3}).ScanList(&list, "Report")
 	if err != nil {
 		return
 	}
@@ -49,25 +49,33 @@ func (s *sWdkReport) AddWdkReport(ctx context.Context, req *v1.WdkReportAddReq, 
 			return terr
 		}
 		// 通过报告类型ID列表获取报告类型配置
+		typeIdSet := gset.NewFrom(req.TypeIds)
+		typeIds := typeIdSet.Slice()
 		var reportCfgInfos []*v1.WdkReportCfgInfo
-		reportCfgInfos, terr = WdkReportCfg().GetWdkReportCfgByIds(ctx, req.TypeIds)
+		reportCfgInfos, terr = WdkReportCfg().GetWdkReportCfgByIds(ctx, gconv.Uint64s(typeIds))
 		if terr != nil {
 			return terr
 		}
-		if len(req.TypeIds) != len(reportCfgInfos) {
-			return gerror.Newf("报告类型ID列表[%s]不存在", gstr.JoinAny(req.TypeIds, ", "))
+		if len(typeIds) != len(reportCfgInfos) {
+			return gerror.Newf("报告类型ID列表[%s]不存在", gstr.JoinAny(req.TypeIds, ","))
 		}
 		// 处理审核人员们的姓名
-		auditNameList := make([]string, 0, len(reportCfgInfos))
+		auditNameList := make([]string, 0, len(typeIds))
 		for _, rCfgInfo := range reportCfgInfos {
 			for _, raCfg := range rCfgInfo.ReportAuditCfg {
 				auditNameList = append(auditNameList, raCfg.AuditName)
 			}
 		}
-		auditNames := gstr.Join(auditNameList, ", ")
+		auditNameSet := gset.NewFrom(auditNameList)
+		auditNames := gstr.JoinAny(auditNameSet.Slice(), ",")
 		// 写入文档库上传报告记录数据
 		var reportId int64
 		user := Context().Get(ctx).User
+		//user := &model.ContextUser{
+		//	Id:       1,
+		//	Realname: "超级管理员",
+		//	IsAdmin:  1,
+		//}
 		if user.IsAdmin == 1 {
 			// 管理员不需要走审核流程
 			reportId, terr = dao.WdkReport.Ctx(ctx).Data(do.WdkReport{
@@ -109,6 +117,17 @@ func (s *sWdkReport) AddWdkReport(ctx context.Context, req *v1.WdkReportAddReq, 
 			})
 		}
 		_, terr = dao.WdkReportType.Ctx(ctx).Data(reportTypeData).Batch(len(g.List{})).Insert()
+		if terr != nil {
+			return terr
+		}
+		// 写入文档库上传报告审核数据
+		// 设置所属文档库项目阶段
+		terr = WdkProject().SetWdkProjectStep(ctx, req.ProjectId, 8)
+		if terr != nil {
+			return terr
+		}
+		// 设置所属文档库项目文件上传状态为是
+		terr = WdkProject().SetWdkProjectFileUploadStatus(ctx, req.ProjectId)
 		return terr
 	})
 	return
@@ -137,6 +156,11 @@ func (s *sWdkReport) AuthAdd(ctx context.Context, projectId uint64) (err error) 
 
 // GetWdkReportCountByProjectId 通过项目ID获取文档库项目上传报告记录数量
 func (s *sWdkReport) GetWdkReportCountByProjectId(ctx context.Context, projectId uint64) (count int, err error) {
+	count, err = dao.WdkReport.Ctx(ctx).Where(do.WdkReport{ProjectId: projectId}).Count()
+	return
+}
+
+func (s *sWdkReport) SetWdkReport(ctx context.Context, projectId uint64) (count int, err error) {
 	count, err = dao.WdkReport.Ctx(ctx).Where(do.WdkReport{ProjectId: projectId}).Count()
 	return
 }
