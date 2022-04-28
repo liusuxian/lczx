@@ -65,8 +65,8 @@ func (s *sWdkReport) AddWdkReport(ctx context.Context, req *v1.WdkReportAddReq, 
 		var reportId int64
 		user := Context().Get(ctx).User
 		//user := &model.ContextUser{
-		//	Id:       1,
-		//	Realname: "超级管理员",
+		//	Id:       3,
+		//	Realname: "普通用户",
 		//	IsAdmin:  0,
 		//}
 		if user.IsAdmin == 1 {
@@ -111,35 +111,13 @@ func (s *sWdkReport) AddWdkReport(ctx context.Context, req *v1.WdkReportAddReq, 
 				"type_name": v.ReportCfg.Name,
 			})
 		}
-		_, terr = dao.WdkReportType.Ctx(ctx).Data(reportTypeData).Batch(len(g.List{})).Insert()
+		_, terr = dao.WdkReportType.Ctx(ctx).Data(reportTypeData).Batch(len(reportTypeData)).Insert()
 		if terr != nil {
 			return terr
 		}
 		// 写入文档库上传报告审核数据
 		if user.IsAdmin != 1 {
-			reportAuditData := g.List{}
-			reportAuditTypeData := g.List{}
-			for _, reportCfgInfo := range reportCfgInfos {
-				for _, reportAuditCfgInfo := range reportCfgInfo.ReportAuditCfg {
-					reportAuditData = append(reportAuditData, g.Map{
-						"audit_uid":  reportAuditCfgInfo.AuditUid,
-						"report_id":  reportId,
-						"status":     1,
-						"audit_name": reportAuditCfgInfo.AuditName,
-					})
-					reportAuditTypeData = append(reportAuditTypeData, g.Map{
-						"audit_uid": reportAuditCfgInfo.AuditUid,
-						"report_id": reportId,
-						"type_id":   reportAuditCfgInfo.Id,
-						"type_name": reportAuditCfgInfo.TypeName,
-					})
-				}
-			}
-			_, terr = dao.WdkReportAuditRecord.Ctx(ctx).Data(reportAuditData).Batch(len(g.List{})).Insert()
-			if terr != nil {
-				return terr
-			}
-			_, terr = dao.WdkReportAuditType.Ctx(ctx).Data(reportAuditTypeData).Batch(len(g.List{})).Insert()
+			terr = s.AddWdkReportAuditRecord(ctx, reportCfgInfos, gconv.Uint64(reportId))
 			if terr != nil {
 				return terr
 			}
@@ -194,5 +172,38 @@ func (s *sWdkReport) GetWdkReportAuditNamesAndCount(reportCfgInfos []*v1.WdkRepo
 	auditNameSet := gset.NewFrom(auditNameList)
 	auditNames = gstr.JoinAny(auditNameSet.Slice(), ",")
 	auditCount = auditNameSet.Size()
+	return
+}
+
+// AddWdkReportAuditRecord 新增文档库上传报告审核记录
+func (s *sWdkReport) AddWdkReportAuditRecord(ctx context.Context, reportCfgInfos []*v1.WdkReportCfgInfo, reportId uint64) (err error) {
+	reportAuditRecords := make([]entity.WdkReportAuditRecord, 0, len(reportCfgInfos))
+	reportAuditTypes := make([]entity.WdkReportAuditType, 0, len(reportCfgInfos))
+	for _, reportCfgInfo := range reportCfgInfos {
+		for _, reportAuditCfgInfo := range reportCfgInfo.ReportAuditCfg {
+			reportAuditRecords = append(reportAuditRecords, entity.WdkReportAuditRecord{
+				AuditUid:  reportAuditCfgInfo.AuditUid,
+				ReportId:  reportId,
+				Status:    1,
+				AuditName: reportAuditCfgInfo.AuditName,
+			})
+			reportAuditTypes = append(reportAuditTypes, entity.WdkReportAuditType{
+				AuditUid: reportAuditCfgInfo.AuditUid,
+				ReportId: reportId,
+				TypeId:   reportAuditCfgInfo.Id,
+				TypeName: reportAuditCfgInfo.TypeName,
+			})
+		}
+	}
+	reportAuditRecordData := gconv.Maps(gset.NewFrom(reportAuditRecords).Slice())
+	reportAuditTypeData := gconv.Maps(gset.NewFrom(reportAuditTypes).Slice())
+	_, err = dao.WdkReportAuditRecord.Ctx(ctx).Data(reportAuditRecordData).Batch(len(reportAuditRecordData)).Insert()
+	if err != nil {
+		return err
+	}
+	_, err = dao.WdkReportAuditType.Ctx(ctx).Data(reportAuditTypeData).Batch(len(reportAuditTypeData)).Insert()
+	if err != nil {
+		return err
+	}
 	return
 }
