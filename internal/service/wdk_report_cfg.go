@@ -176,3 +176,15 @@ func (s *sWdkReportCfg) GetWdkReportCfgCount(ctx context.Context) (count int, er
 	count, err = dao.WdkReportCfg.Ctx(ctx).Count()
 	return
 }
+
+// GetWdkReportCfgByIds 通过报告类型ID列表获取报告类型配置
+func (s *sWdkReportCfg) GetWdkReportCfgByIds(ctx context.Context, ids []uint64) (reportCfgInfos []*v1.WdkReportCfgInfo, err error) {
+	err = dao.WdkReportCfg.Ctx(ctx).WhereIn(dao.WdkReportCfg.Columns().Id, ids).OrderAsc(dao.WdkReportCfg.Columns().Id).
+		ScanList(&reportCfgInfos, "ReportCfg")
+	if err != nil {
+		return
+	}
+	err = dao.WdkReportAuditCfg.Ctx(ctx).Where(dao.WdkReportAuditCfg.Columns().Id, gdb.ListItemValuesUnique(reportCfgInfos, "ReportCfg", "Id")).
+		ScanList(&reportCfgInfos, "ReportAuditCfg", "ReportCfg", "Id:Id")
+	return
+}
