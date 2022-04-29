@@ -151,9 +151,9 @@ func (s *sUserManager) AddUser(ctx context.Context, req *v1.UserAddReq) (err err
 		if terr != nil {
 			return terr
 		}
-		// 获取全部可用的角色
+		// 通过角色ID列表获取可用角色
 		var enableRoles []*entity.Role
-		enableRoles, terr = Role().GetEnableRoles(ctx)
+		enableRoles, terr = Role().GetEnableRolesByIds(ctx, req.RoleIds)
 		if terr != nil {
 			return terr
 		}
@@ -225,9 +225,9 @@ func (s *sUserManager) EditUser(ctx context.Context, req *v1.UserEditReq) (err e
 		if terr != nil {
 			return terr
 		}
-		// 获取全部可用的角色
+		// 通过角色ID列表获取可用角色
 		var enableRoles []*entity.Role
-		enableRoles, terr = Role().GetEnableRoles(ctx)
+		enableRoles, terr = Role().GetEnableRolesByIds(ctx, req.RoleIds)
 		if terr != nil {
 			return terr
 		}
@@ -283,14 +283,6 @@ func (s *sUserManager) SetUserStatus(ctx context.Context, id uint64, status uint
 func (s *sUserManager) DeleteUser(ctx context.Context, ids []uint64) (err error) {
 	err = dao.User.Ctx(ctx).Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		var terr error
-		var userList []*entity.User
-		terr = dao.User.Ctx(ctx).WhereIn(dao.User.Columns().Id, ids).Scan(&userList)
-		if terr != nil {
-			return terr
-		}
-		if len(userList) == 0 {
-			return nil
-		}
 		_, terr = dao.User.Ctx(ctx).WhereIn(dao.User.Columns().Id, ids).Delete()
 		if terr != nil {
 			return terr

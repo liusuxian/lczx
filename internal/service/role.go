@@ -452,3 +452,9 @@ func (s *sRole) EditUserRoles(ctx context.Context, roleIds []uint64, userId uint
 	}
 	return
 }
+
+// GetEnableRolesByIds 通过角色ID列表获取可用角色
+func (s *sRole) GetEnableRolesByIds(ctx context.Context, ids []uint64) (roles []*entity.Role, err error) {
+	err = dao.Role.Ctx(ctx).WhereIn(dao.Role.Columns().Id, ids).Where(do.Role{Status: 1}).Scan(&roles)
+	return
+}
