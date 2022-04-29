@@ -6,7 +6,6 @@ import (
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
-	"github.com/gogf/gf/v2/util/gconv"
 	v1 "lczx/api/v1"
 	"lczx/internal/model/entity"
 	"lczx/internal/service/internal/dao"
@@ -63,17 +62,17 @@ func (s *sWdkReportCfg) AddWdkReportCfg(ctx context.Context, req *v1.WdkReportCf
 			return terr
 		}
 		// 处理客户端发送过来的文档库报告审核员用户ID列表
-		auditUidsSet := gset.NewFrom(req.AuditUids)
+		auditUidSet := gset.NewFrom(req.AuditUids)
+		var userList []*entity.User
+		terr = dao.User.Ctx(ctx).WhereIn(dao.User.Columns().Id, auditUidSet.Slice()).Scan(&userList)
+		if terr != nil {
+			return terr
+		}
+		if len(userList) == 0 {
+			return gerror.Newf(`文档库报告审核员用户ID列表%v不存在`, req.AuditUids)
+		}
 		auditUserData := g.List{}
-		for _, auid := range auditUidsSet.Slice() {
-			var user *entity.User
-			user, terr = User().GetUserById(ctx, gconv.Uint64(auid))
-			if terr != nil {
-				return terr
-			}
-			if user == nil {
-				return gerror.Newf(`文档库报告审核员用户ID[%d]不存在`, auid)
-			}
+		for _, user := range userList {
 			auditUserData = append(auditUserData, g.Map{
 				"id":         typeId,
 				"audit_uid":  user.Id,
@@ -134,17 +133,17 @@ func (s *sWdkReportCfg) EditWdkReportCfg(ctx context.Context, req *v1.WdkReportC
 			return terr
 		}
 		// 处理客户端发送过来的文档库报告审核员用户ID列表
-		auditUidsSet := gset.NewFrom(req.AuditUids)
+		auditUidSet := gset.NewFrom(req.AuditUids)
+		var userList []*entity.User
+		terr = dao.User.Ctx(ctx).WhereIn(dao.User.Columns().Id, auditUidSet.Slice()).Scan(&userList)
+		if terr != nil {
+			return terr
+		}
+		if len(userList) == 0 {
+			return gerror.Newf(`文档库报告审核员用户ID列表%v不存在`, req.AuditUids)
+		}
 		auditUserData := g.List{}
-		for _, auid := range auditUidsSet.Slice() {
-			var user *entity.User
-			user, terr = User().GetUserById(ctx, gconv.Uint64(auid))
-			if terr != nil {
-				return terr
-			}
-			if user == nil {
-				return gerror.Newf(`文档库报告审核员用户ID[%d]不存在`, auid)
-			}
+		for _, user := range userList {
 			auditUserData = append(auditUserData, g.Map{
 				"id":         req.Id,
 				"audit_uid":  user.Id,
