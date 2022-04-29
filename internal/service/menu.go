@@ -11,7 +11,6 @@ import (
 	"lczx/internal/model/entity"
 	"lczx/internal/service/internal/dao"
 	"lczx/internal/service/internal/do"
-	"time"
 )
 
 type sMenu struct{}
@@ -229,7 +228,7 @@ func (s *sMenu) GetAllMenus(ctx context.Context) (menus []*entity.Menu, err erro
 	}
 	// 从数据库获取
 	err = dao.Menu.Ctx(ctx).Cache(gdb.CacheOption{
-		Duration: time.Hour * 2,
+		Duration: 0,
 		Name:     consts.MenuKey,
 		Force:    false,
 	}).OrderAsc(dao.Menu.Columns().Id).Scan(&menus)

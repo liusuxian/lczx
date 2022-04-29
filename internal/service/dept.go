@@ -12,7 +12,6 @@ import (
 	"lczx/internal/model/entity"
 	"lczx/internal/service/internal/dao"
 	"lczx/internal/service/internal/do"
-	"time"
 )
 
 type sDept struct{}
@@ -192,7 +191,7 @@ func (s *sDept) GetAllDepts(ctx context.Context) (depts []*entity.Dept, err erro
 	}
 	// 从数据库获取
 	err = dao.Dept.Ctx(ctx).Cache(gdb.CacheOption{
-		Duration: time.Hour * 2,
+		Duration: 0,
 		Name:     consts.DeptKey,
 		Force:    false,
 	}).OrderAsc(dao.Dept.Columns().Id).Scan(&depts)

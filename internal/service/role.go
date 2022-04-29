@@ -13,7 +13,6 @@ import (
 	"lczx/internal/model/entity"
 	"lczx/internal/service/internal/dao"
 	"lczx/internal/service/internal/do"
-	"time"
 )
 
 type sRole struct{}
@@ -237,7 +236,7 @@ func (s *sRole) GetAllRoles(ctx context.Context) (roles []*entity.Role, err erro
 	}
 	// 从数据库获取
 	err = dao.Role.Ctx(ctx).Cache(gdb.CacheOption{
-		Duration: time.Hour * 2,
+		Duration: 0,
 		Name:     consts.RoleKey,
 		Force:    false,
 	}).OrderAsc(dao.Role.Columns().Id).Scan(&roles)
