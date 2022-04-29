@@ -192,6 +192,10 @@ var (
 					group.Group("/report", func(group *ghttp.RouterGroup) {
 						group.Bind(controller.WdkReport)
 					})
+					// 报告审核记录管理
+					group.Group("/reportAudit", func(group *ghttp.RouterGroup) {
+						group.Bind(controller.WdkReportAudit)
+					})
 				})
 			})
 			// 每2小时执行一次检查在线用户
