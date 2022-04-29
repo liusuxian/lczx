@@ -36,7 +36,7 @@ func (s *sWdkService) GetWdkServiceRecord(ctx context.Context, projectId uint64)
 }
 
 // AddWdkService 新增文档库服务记录
-func (s *sWdkService) AddWdkService(ctx context.Context, req *v1.WdkServiceAddReq, xch *upload.FileInfo, Photos []*upload.FileInfo) (err error) {
+func (s *sWdkService) AddWdkService(ctx context.Context, req *v1.WdkServiceAddReq, xch *upload.FileInfo, photos []*upload.FileInfo) (err error) {
 	err = dao.WdkServiceRecord.Ctx(ctx).Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		// 检查新增文档库服务记录权限
 		var terr error
@@ -44,29 +44,8 @@ func (s *sWdkService) AddWdkService(ctx context.Context, req *v1.WdkServiceAddRe
 		if terr != nil {
 			return terr
 		}
-		// 写入文档库服务记录数据
-		var recordId int64
-		recordId, terr = dao.WdkServiceRecord.Ctx(ctx).Data(do.WdkServiceRecord{
-			ProjectId:    req.ProjectId,
-			ServiceTime:  req.ServiceTime,
-			XchName:      xch.FileName,
-			XchOriginUrl: xch.OriginFileUrl,
-			XchPdfUrl:    xch.PdfFileUrl,
-			Remark:       req.Remark,
-		}).InsertAndGetId()
-		if terr != nil {
-			return terr
-		}
-		// 写入文档库服务记录照片数据
-		photoData := g.List{}
-		for _, file := range Photos {
-			photoData = append(photoData, g.Map{
-				"id":   recordId,
-				"name": file.FileName,
-				"url":  file.OriginFileUrl,
-			})
-		}
-		_, terr = dao.WdkServicePhoto.Ctx(ctx).Data(photoData).Batch(len(photoData)).Insert()
+		// 保存文档库服务记录
+		terr = s.saveWdkServiceRecord(ctx, req, xch, photos)
 		if terr != nil {
 			return terr
 		}
@@ -95,5 +74,32 @@ func (s *sWdkService) AuthAdd(ctx context.Context, projectId uint64) (err error)
 		err = gerror.New("抱歉！！！该项目您没有添加服务记录的权限")
 		return
 	}
+	return
+}
+
+// saveWdkServiceRecord 保存文档库服务记录
+func (s *sWdkService) saveWdkServiceRecord(ctx context.Context, req *v1.WdkServiceAddReq, xch *upload.FileInfo, photos []*upload.FileInfo) (err error) {
+	var recordId int64
+	recordId, err = dao.WdkServiceRecord.Ctx(ctx).Data(do.WdkServiceRecord{
+		ProjectId:    req.ProjectId,
+		ServiceTime:  req.ServiceTime,
+		XchName:      xch.FileName,
+		XchOriginUrl: xch.OriginFileUrl,
+		XchPdfUrl:    xch.PdfFileUrl,
+		Remark:       req.Remark,
+	}).FieldsEx(dao.WdkServiceRecord.Columns().Id).InsertAndGetId()
+	if err != nil {
+		return
+	}
+	// 保存文档库服务照片数据
+	photoData := g.List{}
+	for _, file := range photos {
+		photoData = append(photoData, g.Map{
+			"id":   recordId,
+			"name": file.FileName,
+			"url":  file.OriginFileUrl,
+		})
+	}
+	_, err = dao.WdkServicePhoto.Ctx(ctx).Data(photoData).Batch(len(photoData)).Insert()
 	return
 }

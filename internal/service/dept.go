@@ -75,18 +75,8 @@ func (s *sDept) AddDept(ctx context.Context, req *v1.DeptAddReq) (err error) {
 		err = gerror.Newf(`部门名称[%s]已存在`, req.Name)
 		return
 	}
-	// 写入部门数据
-	user := Context().Get(ctx).User
-	_, err = dao.Dept.Ctx(ctx).Cache(gdb.CacheOption{
-		Duration: -1,
-		Name:     consts.DeptKey,
-		Force:    false,
-	}).Data(do.Dept{
-		ParentId:  req.ParentId,
-		Name:      req.Name,
-		Status:    req.Status,
-		CreatedBy: user.Id,
-	}).Insert()
+	// 保存部门数据
+	err = s.saveDept(ctx, req)
 	return
 }
 
@@ -141,17 +131,7 @@ func (s *sDept) EditDept(ctx context.Context, req *v1.DeptEditReq) (err error) {
 		return
 	}
 	// 更新部门数据
-	user := Context().Get(ctx).User
-	_, err = dao.Dept.Ctx(ctx).Cache(gdb.CacheOption{
-		Duration: -1,
-		Name:     consts.DeptKey,
-		Force:    false,
-	}).Data(do.Dept{
-		ParentId:  req.ParentId,
-		Name:      req.Name,
-		Status:    req.Status,
-		UpdatedBy: user.Id,
-	}).Where(do.Dept{Id: req.Id}).Update()
+	err = s.updateDept(ctx, req)
 	return
 }
 
@@ -295,5 +275,37 @@ func (s *sDept) GetDeptById(deptList []*entity.Dept, id uint64) (dept *entity.De
 			return
 		}
 	}
+	return
+}
+
+// saveDept 保存部门数据
+func (s *sDept) saveDept(ctx context.Context, req *v1.DeptAddReq) (err error) {
+	user := Context().Get(ctx).User
+	_, err = dao.Dept.Ctx(ctx).Cache(gdb.CacheOption{
+		Duration: -1,
+		Name:     consts.DeptKey,
+		Force:    false,
+	}).Data(do.Dept{
+		ParentId:  req.ParentId,
+		Name:      req.Name,
+		Status:    req.Status,
+		CreatedBy: user.Id,
+	}).FieldsEx(dao.Dept.Columns().Id).Insert()
+	return
+}
+
+// updateDept 更新部门数据
+func (s *sDept) updateDept(ctx context.Context, req *v1.DeptEditReq) (err error) {
+	user := Context().Get(ctx).User
+	_, err = dao.Dept.Ctx(ctx).Cache(gdb.CacheOption{
+		Duration: -1,
+		Name:     consts.DeptKey,
+		Force:    false,
+	}).Data(do.Dept{
+		ParentId:  req.ParentId,
+		Name:      req.Name,
+		Status:    req.Status,
+		UpdatedBy: user.Id,
+	}).Where(do.Dept{Id: req.Id}).Update()
 	return
 }

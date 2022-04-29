@@ -126,29 +126,8 @@ func (s *sWdkProject) AddWdkProject(ctx context.Context, req *v1.WdkProjectAddRe
 		err = gerror.Newf(`负责人用户ID[%d]不存在`, req.PrincipalUid)
 		return
 	}
-	// 写入文档库项目数据
-	user := Context().Get(ctx).User
-	_, err = dao.WdkProject.Ctx(ctx).Data(do.WdkProject{
-		Name:             req.Name,
-		Type:             req.Type,
-		Origin:           req.Origin,
-		Step:             0,
-		FileUploadStatus: 0,
-		BusinessType:     req.BusinessType,
-		DeepCulture:      req.DeepCulture,
-		Status:           0,
-		EntrustCompany:   req.EntrustCompany,
-		SignCompany:      req.SignCompany,
-		PrincipalUid:     principalUser.Id,
-		PrincipalName:    principalUser.Realname,
-		DeptId:           principalUser.DeptId,
-		Region:           req.Region,
-		StartTime:        req.StartTime,
-		EndTime:          req.EndTime,
-		CreateBy:         user.Id,
-		CreateName:       user.Realname,
-		Remark:           req.Remark,
-	}).Insert()
+	// 保存文档库项目数据
+	err = s.saveWdkProject(ctx, req, principalUser)
 	return
 }
 
@@ -198,26 +177,7 @@ func (s *sWdkProject) EditWdkProject(ctx context.Context, req *v1.WdkProjectEdit
 		return
 	}
 	// 更新文档库项目数据
-	user := Context().Get(ctx).User
-	_, err = dao.WdkProject.Ctx(ctx).Data(do.WdkProject{
-		Name:           req.Name,
-		Type:           req.Type,
-		Origin:         req.Origin,
-		BusinessType:   req.BusinessType,
-		DeepCulture:    req.DeepCulture,
-		Status:         req.Status,
-		EntrustCompany: req.EntrustCompany,
-		SignCompany:    req.SignCompany,
-		PrincipalUid:   principalUser.Id,
-		PrincipalName:  principalUser.Realname,
-		DeptId:         principalUser.DeptId,
-		Region:         req.Region,
-		StartTime:      req.StartTime,
-		EndTime:        req.EndTime,
-		UpdatedBy:      user.Id,
-		UpdatedName:    user.Realname,
-		Remark:         req.Remark,
-	}).Where(do.WdkProject{Id: req.Id}).Update()
+	err = s.updateWdkProject(ctx, req, principalUser)
 	return
 }
 
@@ -281,5 +241,57 @@ func (s *sWdkProject) SetWdkProjectStep(ctx context.Context, id uint64, fType ui
 	}
 	_, err = dao.WdkProject.Ctx(ctx).Data(do.WdkProject{Step: step}).Where(do.WdkProject{Id: id}).
 		WhereLT(dao.WdkProject.Columns().Step, step).Update()
+	return
+}
+
+// saveWdkProject 保存文档库项目数据
+func (s *sWdkProject) saveWdkProject(ctx context.Context, req *v1.WdkProjectAddReq, principalUser *entity.User) (err error) {
+	user := Context().Get(ctx).User
+	_, err = dao.WdkProject.Ctx(ctx).Data(do.WdkProject{
+		Name:             req.Name,
+		Type:             req.Type,
+		Origin:           req.Origin,
+		Step:             0,
+		FileUploadStatus: 0,
+		BusinessType:     req.BusinessType,
+		DeepCulture:      req.DeepCulture,
+		Status:           0,
+		EntrustCompany:   req.EntrustCompany,
+		SignCompany:      req.SignCompany,
+		PrincipalUid:     principalUser.Id,
+		PrincipalName:    principalUser.Realname,
+		DeptId:           principalUser.DeptId,
+		Region:           req.Region,
+		StartTime:        req.StartTime,
+		EndTime:          req.EndTime,
+		CreateBy:         user.Id,
+		CreateName:       user.Realname,
+		Remark:           req.Remark,
+	}).FieldsEx(dao.WdkProject.Columns().Id).Insert()
+	return
+}
+
+// updateWdkProject 更新文档库项目数据
+func (s *sWdkProject) updateWdkProject(ctx context.Context, req *v1.WdkProjectEditReq, principalUser *entity.User) (err error) {
+	user := Context().Get(ctx).User
+	_, err = dao.WdkProject.Ctx(ctx).Data(do.WdkProject{
+		Name:           req.Name,
+		Type:           req.Type,
+		Origin:         req.Origin,
+		BusinessType:   req.BusinessType,
+		DeepCulture:    req.DeepCulture,
+		Status:         req.Status,
+		EntrustCompany: req.EntrustCompany,
+		SignCompany:    req.SignCompany,
+		PrincipalUid:   principalUser.Id,
+		PrincipalName:  principalUser.Realname,
+		DeptId:         principalUser.DeptId,
+		Region:         req.Region,
+		StartTime:      req.StartTime,
+		EndTime:        req.EndTime,
+		UpdatedBy:      user.Id,
+		UpdatedName:    user.Realname,
+		Remark:         req.Remark,
+	}).Where(do.WdkProject{Id: req.Id}).Update()
 	return
 }

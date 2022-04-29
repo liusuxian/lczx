@@ -39,33 +39,18 @@ func (s *sWdkFile) AddWdkFile(ctx context.Context, req *v1.WdkFileAddReq, file *
 		}
 		// 获取上传文件类型是否已存在
 		var wdkFileInfo *entity.WdkFile
-		terr = dao.WdkFile.Ctx(ctx).Where(do.WdkFile{ProjectId: req.ProjectId, Type: req.Type}).Scan(&wdkFileInfo)
+		wdkFileInfo, terr = s.GetWdkFileByProjectIdAndType(ctx, req.ProjectId, req.Type)
 		if terr != nil {
 			return terr
 		}
-		// 不存在则新增
 		if wdkFileInfo == nil {
-			// 写入文档库上传文件记录数据
-			user := Context().Get(ctx).User
-			_, terr = dao.WdkFile.Ctx(ctx).Data(do.WdkFile{
-				ProjectId:  req.ProjectId,
-				Name:       file.FileName,
-				Type:       req.Type,
-				CreateBy:   user.Id,
-				CreateName: user.Realname,
-				OriginUrl:  file.OriginFileUrl,
-				PdfUrl:     file.PdfFileUrl,
-			}).Insert()
+			// 不存在则新增
+			// 保存文档库上传文件数据
+			terr = s.saveWdkFile(ctx, req, file)
 		} else {
 			// 存在则更新
-			_, terr = dao.WdkFile.Ctx(ctx).Data(do.WdkFile{
-				Name:      file.FileName,
-				OriginUrl: file.OriginFileUrl,
-				PdfUrl:    file.PdfFileUrl,
-			}).Where(do.WdkFile{
-				ProjectId: wdkFileInfo.ProjectId,
-				Type:      wdkFileInfo.Type,
-			}).Update()
+			// 更新文档库上传文件数据
+			terr = s.updateWdkFile(ctx, req, file)
 		}
 		if terr != nil {
 			return terr
@@ -106,5 +91,39 @@ func (s *sWdkFile) AuthAdd(ctx context.Context, projectId uint64) (err error) {
 // GetWdkFileCountByProjectId 通过项目ID获取文档库项目上传文件记录数量
 func (s *sWdkFile) GetWdkFileCountByProjectId(ctx context.Context, projectId uint64) (count int, err error) {
 	count, err = dao.WdkFile.Ctx(ctx).Where(do.WdkFile{ProjectId: projectId}).Count()
+	return
+}
+
+// GetWdkFileByProjectIdAndType 通过项目ID和文件类型获取文档库项目上传文件信息
+func (s *sWdkFile) GetWdkFileByProjectIdAndType(ctx context.Context, projectId uint64, fileType uint) (wdkFileInfo *entity.WdkFile, err error) {
+	err = dao.WdkFile.Ctx(ctx).Where(do.WdkFile{ProjectId: projectId, Type: fileType}).Scan(&wdkFileInfo)
+	return
+}
+
+// saveWdkFile 保存文档库上传文件数据
+func (s *sWdkFile) saveWdkFile(ctx context.Context, req *v1.WdkFileAddReq, file *upload.FileInfo) (err error) {
+	user := Context().Get(ctx).User
+	_, err = dao.WdkFile.Ctx(ctx).Data(do.WdkFile{
+		ProjectId:  req.ProjectId,
+		Name:       file.FileName,
+		Type:       req.Type,
+		CreateBy:   user.Id,
+		CreateName: user.Realname,
+		OriginUrl:  file.OriginFileUrl,
+		PdfUrl:     file.PdfFileUrl,
+	}).FieldsEx(dao.WdkFile.Columns().Id).Insert()
+	return
+}
+
+// updateWdkFile 更新文档库上传文件数据
+func (s *sWdkFile) updateWdkFile(ctx context.Context, req *v1.WdkFileAddReq, file *upload.FileInfo) (err error) {
+	_, err = dao.WdkFile.Ctx(ctx).Data(do.WdkFile{
+		Name:      file.FileName,
+		OriginUrl: file.OriginFileUrl,
+		PdfUrl:    file.PdfFileUrl,
+	}).Where(do.WdkFile{
+		ProjectId: req.ProjectId,
+		Type:      req.Type,
+	}).Update()
 	return
 }

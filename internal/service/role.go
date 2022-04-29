@@ -67,13 +67,13 @@ func (s *sRole) AddRole(ctx context.Context, req *v1.RoleAddReq) (err error) {
 			return terr
 		}
 		// 保存角色
-		var roleId uint64
-		roleId, terr = s.SaveRole(ctx, req)
+		var roleId int64
+		roleId, terr = s.saveRole(ctx, req)
 		if terr != nil {
 			return terr
 		}
 		// 添加角色权限
-		terr = s.AddRoleRule(ctx, req.MenuIds, roleId)
+		terr = s.AddRoleRule(ctx, req.MenuIds, gconv.Uint64(roleId))
 		return terr
 	})
 	if err != nil {
@@ -112,7 +112,7 @@ func (s *sRole) EditRole(ctx context.Context, req *v1.RoleEditReq) (err error) {
 			}
 		}
 		// 更新角色
-		terr = s.UpdateRole(ctx, req)
+		terr = s.updateRole(ctx, req)
 		if terr != nil {
 			return terr
 		}
@@ -275,29 +275,6 @@ func (s *sRole) IsRoleNameAvailable(ctx context.Context, name string) (bool, err
 	return count == 0, nil
 }
 
-// SaveRole 保存角色
-func (s *sRole) SaveRole(ctx context.Context, req *v1.RoleAddReq) (roleId uint64, err error) {
-	var id int64
-	id, err = dao.Role.Ctx(ctx).Data(do.Role{
-		Name:      req.Name,
-		Status:    req.Status,
-		DataScope: 3,
-		Remark:    req.Remark,
-	}).InsertAndGetId()
-	roleId = gconv.Uint64(id)
-	return
-}
-
-// UpdateRole 更新角色
-func (s *sRole) UpdateRole(ctx context.Context, req *v1.RoleEditReq) (err error) {
-	_, err = dao.Role.Ctx(ctx).Data(do.Role{
-		Name:   req.Name,
-		Status: req.Status,
-		Remark: req.Remark,
-	}).Where(do.Role{Id: req.Id}).Update()
-	return
-}
-
 // AddRoleRule 添加角色权限
 func (s *sRole) AddRoleRule(ctx context.Context, iRule any, roleId uint64) (err error) {
 	var enforcer *casbin.SyncedEnforcer
@@ -456,5 +433,26 @@ func (s *sRole) EditUserRoles(ctx context.Context, roleIds []uint64, userId uint
 // GetEnableRolesByIds 通过角色ID列表获取可用角色
 func (s *sRole) GetEnableRolesByIds(ctx context.Context, ids []uint64) (roles []*entity.Role, err error) {
 	err = dao.Role.Ctx(ctx).WhereIn(dao.Role.Columns().Id, ids).Where(do.Role{Status: 1}).Scan(&roles)
+	return
+}
+
+// saveRole 保存角色
+func (s *sRole) saveRole(ctx context.Context, req *v1.RoleAddReq) (roleId int64, err error) {
+	roleId, err = dao.Role.Ctx(ctx).Data(do.Role{
+		Name:      req.Name,
+		Status:    req.Status,
+		DataScope: 3,
+		Remark:    req.Remark,
+	}).FieldsEx(dao.Role.Columns().Id).InsertAndGetId()
+	return
+}
+
+// updateRole 更新角色
+func (s *sRole) updateRole(ctx context.Context, req *v1.RoleEditReq) (err error) {
+	_, err = dao.Role.Ctx(ctx).Data(do.Role{
+		Name:   req.Name,
+		Status: req.Status,
+		Remark: req.Remark,
+	}).Where(do.Role{Id: req.Id}).Update()
 	return
 }

@@ -6,6 +6,7 @@ import (
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
+	"github.com/gogf/gf/v2/util/gconv"
 	v1 "lczx/api/v1"
 	"lczx/internal/model/entity"
 	"lczx/internal/service/internal/dao"
@@ -57,7 +58,8 @@ func (s *sWdkReportCfg) AddWdkReportCfg(ctx context.Context, req *v1.WdkReportCf
 		}
 		// 写入文档库报告类型配置数据
 		var typeId int64
-		typeId, terr = dao.WdkReportCfg.Ctx(ctx).Data(do.WdkReportCfg{Name: req.Name}).InsertAndGetId()
+		typeId, terr = dao.WdkReportCfg.Ctx(ctx).Data(do.WdkReportCfg{Name: req.Name}).
+			FieldsEx(dao.WdkReportCfg.Columns().Id).InsertAndGetId()
 		if terr != nil {
 			return terr
 		}
@@ -71,16 +73,7 @@ func (s *sWdkReportCfg) AddWdkReportCfg(ctx context.Context, req *v1.WdkReportCf
 		if len(userList) == 0 {
 			return gerror.Newf(`文档库报告审核员用户ID列表%v不存在`, req.AuditUids)
 		}
-		auditUserData := g.List{}
-		for _, user := range userList {
-			auditUserData = append(auditUserData, g.Map{
-				"id":         typeId,
-				"audit_uid":  user.Id,
-				"type_name":  req.Name,
-				"audit_name": user.Realname,
-			})
-		}
-		_, terr = dao.WdkReportAuditCfg.Ctx(ctx).Data(auditUserData).Batch(len(auditUserData)).Insert()
+		terr = s.saveWdkReportAuditCfg(ctx, userList, gconv.Uint64(typeId), req.Name)
 		return terr
 	})
 	return
@@ -142,16 +135,7 @@ func (s *sWdkReportCfg) EditWdkReportCfg(ctx context.Context, req *v1.WdkReportC
 		if len(userList) == 0 {
 			return gerror.Newf(`文档库报告审核员用户ID列表%v不存在`, req.AuditUids)
 		}
-		auditUserData := g.List{}
-		for _, user := range userList {
-			auditUserData = append(auditUserData, g.Map{
-				"id":         req.Id,
-				"audit_uid":  user.Id,
-				"type_name":  req.Name,
-				"audit_name": user.Realname,
-			})
-		}
-		_, terr = dao.WdkReportAuditCfg.Ctx(ctx).Data(auditUserData).Batch(len(auditUserData)).Insert()
+		terr = s.saveWdkReportAuditCfg(ctx, userList, req.Id, req.Name)
 		return terr
 	})
 	return
@@ -195,5 +179,20 @@ func (s *sWdkReportCfg) GetWdkReportCfgByIds(ctx context.Context, ids []uint64) 
 	}
 	err = dao.WdkReportAuditCfg.Ctx(ctx).Where(dao.WdkReportAuditCfg.Columns().Id, gdb.ListItemValuesUnique(reportCfgInfos, "ReportCfg", "Id")).
 		ScanList(&reportCfgInfos, "ReportAuditCfg", "ReportCfg", "Id:Id")
+	return
+}
+
+// saveWdkReportAuditCfg 保存文档库报告审核配置
+func (s *sWdkReportCfg) saveWdkReportAuditCfg(ctx context.Context, userList []*entity.User, id uint64, name string) (err error) {
+	auditUserData := g.List{}
+	for _, user := range userList {
+		auditUserData = append(auditUserData, g.Map{
+			"id":         id,
+			"audit_uid":  user.Id,
+			"type_name":  name,
+			"audit_name": user.Realname,
+		})
+	}
+	_, err = dao.WdkReportAuditCfg.Ctx(ctx).Data(auditUserData).Batch(len(auditUserData)).Insert()
 	return
 }

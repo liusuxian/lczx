@@ -85,23 +85,8 @@ func (s *sMenu) AddMenu(ctx context.Context, req *v1.MenuAddReq) (err error) {
 		err = gerror.Newf(`权限规则[%s]已存在`, req.Rule)
 		return
 	}
-	// 写入菜单数据
-	_, err = dao.Menu.Ctx(ctx).Cache(gdb.CacheOption{
-		Duration: -1,
-		Name:     consts.MenuKey,
-		Force:    false,
-	}).Data(do.Menu{
-		ParentId:   req.ParentId,
-		Rule:       req.Rule,
-		Name:       req.Name,
-		Condition:  req.Condition,
-		MenuType:   req.MenuType,
-		Status:     req.Status,
-		JumpPath:   req.JumpPath,
-		IsFrame:    req.IsFrame,
-		ModuleType: req.ModuleType,
-		Remark:     req.Remark,
-	}).Insert()
+	// 保存菜单数据
+	err = s.saveMenu(ctx, req)
 	return
 }
 
@@ -167,22 +152,7 @@ func (s *sMenu) EditMenu(ctx context.Context, req *v1.MenuEditReq) (err error) {
 		return
 	}
 	// 更新菜单数据
-	_, err = dao.Menu.Ctx(ctx).Cache(gdb.CacheOption{
-		Duration: -1,
-		Name:     consts.MenuKey,
-		Force:    false,
-	}).Data(do.Menu{
-		ParentId:   req.ParentId,
-		Rule:       req.Rule,
-		Name:       req.Name,
-		Condition:  req.Condition,
-		MenuType:   req.MenuType,
-		Status:     req.Status,
-		JumpPath:   req.JumpPath,
-		IsFrame:    req.IsFrame,
-		ModuleType: req.ModuleType,
-		Remark:     req.Remark,
-	}).Where(do.Menu{Id: req.Id}).Update()
+	err = s.updateMenu(ctx, req)
 	return
 }
 
@@ -311,5 +281,47 @@ func (s *sMenu) GetMenuById(menuList []*entity.Menu, id uint64) (menu *entity.Me
 			return
 		}
 	}
+	return
+}
+
+// saveMenu 保存菜单数据
+func (s *sMenu) saveMenu(ctx context.Context, req *v1.MenuAddReq) (err error) {
+	_, err = dao.Menu.Ctx(ctx).Cache(gdb.CacheOption{
+		Duration: -1,
+		Name:     consts.MenuKey,
+		Force:    false,
+	}).Data(do.Menu{
+		ParentId:   req.ParentId,
+		Rule:       req.Rule,
+		Name:       req.Name,
+		Condition:  req.Condition,
+		MenuType:   req.MenuType,
+		Status:     req.Status,
+		JumpPath:   req.JumpPath,
+		IsFrame:    req.IsFrame,
+		ModuleType: req.ModuleType,
+		Remark:     req.Remark,
+	}).FieldsEx(dao.Menu.Columns().Id).Insert()
+	return
+}
+
+// updateMenu 更新菜单数据
+func (s *sMenu) updateMenu(ctx context.Context, req *v1.MenuEditReq) (err error) {
+	_, err = dao.Menu.Ctx(ctx).Cache(gdb.CacheOption{
+		Duration: -1,
+		Name:     consts.MenuKey,
+		Force:    false,
+	}).Data(do.Menu{
+		ParentId:   req.ParentId,
+		Rule:       req.Rule,
+		Name:       req.Name,
+		Condition:  req.Condition,
+		MenuType:   req.MenuType,
+		Status:     req.Status,
+		JumpPath:   req.JumpPath,
+		IsFrame:    req.IsFrame,
+		ModuleType: req.ModuleType,
+		Remark:     req.Remark,
+	}).Where(do.Menu{Id: req.Id}).Update()
 	return
 }

@@ -132,22 +132,9 @@ func (s *sUserManager) AddUser(ctx context.Context, req *v1.UserAddReq) (err err
 			terr = gerror.Newf(`部门ID[%d]不存在`, req.DeptId)
 			return terr
 		}
-		// 写入用户数据
+		// 保存用户数据
 		var userId int64
-		userId, terr = dao.User.Ctx(ctx).Data(do.User{
-			Passport: req.Passport,
-			Password: password,
-			Salt:     salt,
-			Realname: req.Realname,
-			Nickname: req.Nickname,
-			DeptId:   req.DeptId,
-			Gender:   req.Gender,
-			Status:   req.Status,
-			IsAdmin:  req.IsAdmin,
-			Mobile:   req.Mobile,
-			Email:    req.Email,
-			Remark:   req.Remark,
-		}).FieldsEx(dao.User.Columns().Id).InsertAndGetId()
+		userId, terr = s.saveUser(ctx, req, password, salt)
 		if terr != nil {
 			return terr
 		}
@@ -214,17 +201,7 @@ func (s *sUserManager) EditUser(ctx context.Context, req *v1.UserEditReq) (err e
 			return terr
 		}
 		// 更新用户数据
-		_, terr = dao.User.Ctx(ctx).Data(do.User{
-			Realname: req.Realname,
-			Nickname: req.Nickname,
-			DeptId:   req.DeptId,
-			Gender:   req.Gender,
-			Status:   req.Status,
-			IsAdmin:  req.IsAdmin,
-			Mobile:   req.Mobile,
-			Email:    req.Email,
-			Remark:   req.Remark,
-		}).Where(do.User{Id: req.Id}).Update()
+		terr = s.updateUser(ctx, req)
 		if terr != nil {
 			return terr
 		}
@@ -346,5 +323,40 @@ func (s *sUserManager) GetProfileList(ctx context.Context, userList []*entity.Us
 		}
 		profileInfos[k].Roles = roles
 	}
+	return
+}
+
+// saveUser 保存用户数据
+func (s *sUserManager) saveUser(ctx context.Context, req *v1.UserAddReq, password, salt string) (userId int64, err error) {
+	userId, err = dao.User.Ctx(ctx).Data(do.User{
+		Passport: req.Passport,
+		Password: password,
+		Salt:     salt,
+		Realname: req.Realname,
+		Nickname: req.Nickname,
+		DeptId:   req.DeptId,
+		Gender:   req.Gender,
+		Status:   req.Status,
+		IsAdmin:  req.IsAdmin,
+		Mobile:   req.Mobile,
+		Email:    req.Email,
+		Remark:   req.Remark,
+	}).FieldsEx(dao.User.Columns().Id).InsertAndGetId()
+	return
+}
+
+// updateUser 更新用户数据
+func (s *sUserManager) updateUser(ctx context.Context, req *v1.UserEditReq) (err error) {
+	_, err = dao.User.Ctx(ctx).Data(do.User{
+		Realname: req.Realname,
+		Nickname: req.Nickname,
+		DeptId:   req.DeptId,
+		Gender:   req.Gender,
+		Status:   req.Status,
+		IsAdmin:  req.IsAdmin,
+		Mobile:   req.Mobile,
+		Email:    req.Email,
+		Remark:   req.Remark,
+	}).Where(do.User{Id: req.Id}).Update()
 	return
 }
