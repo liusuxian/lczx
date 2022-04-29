@@ -243,11 +243,6 @@ func (s *sUserManager) EditUser(ctx context.Context, req *v1.UserEditReq) (err e
 		}
 		// 修改用户角色信息
 		terr = Role().EditUserRoles(ctx, req.RoleIds, req.Id)
-		if terr != nil {
-			return terr
-		}
-		// 通过用户账号强退用户
-		terr = UserOnline().ForceLogoutByPassport(ctx, []string{user.Passport})
 		return terr
 	})
 	if err != nil {
@@ -260,15 +255,6 @@ func (s *sUserManager) EditUser(ctx context.Context, req *v1.UserEditReq) (err e
 
 // ResetUserPwd 重置用户密码
 func (s *sUserManager) ResetUserPwd(ctx context.Context, id uint64, newPassword string) (err error) {
-	var user *entity.User
-	user, err = User().GetUserById(ctx, id)
-	if err != nil {
-		return
-	}
-	if user == nil {
-		err = gerror.Newf(`用户ID[%d]不存在`, id)
-		return
-	}
 	// 生成随机密码盐
 	salt := grand.S(10)
 	newEncryptPassword := utils.EncryptPassword(newPassword, salt)
@@ -280,35 +266,16 @@ func (s *sUserManager) ResetUserPwd(ctx context.Context, id uint64, newPassword 
 		Salt:     salt,
 		Password: newEncryptPassword,
 	}).Where(do.User{Id: id}).Update()
-	if err != nil {
-		return
-	}
-	// 通过用户账号强退用户
-	err = UserOnline().ForceLogoutByPassport(ctx, []string{user.Passport})
 	return
 }
 
 // SetUserStatus 设置用户状态
 func (s *sUserManager) SetUserStatus(ctx context.Context, id uint64, status uint) (err error) {
-	var user *entity.User
-	user, err = User().GetUserById(ctx, id)
-	if err != nil {
-		return
-	}
-	if user == nil {
-		err = gerror.Newf(`用户ID[%d]不存在`, id)
-		return
-	}
 	_, err = dao.User.Ctx(ctx).Cache(gdb.CacheOption{
 		Duration: -1,
 		Name:     User().UserCacheKey(id),
 		Force:    false,
 	}).Data(do.User{Status: status}).Where(do.User{Id: id}).Update()
-	if err != nil {
-		return
-	}
-	// 通过用户账号强退用户
-	err = UserOnline().ForceLogoutByPassport(ctx, []string{user.Passport})
 	return
 }
 
@@ -340,13 +307,7 @@ func (s *sUserManager) DeleteUser(ctx context.Context, ids []uint64) (err error)
 				return terr
 			}
 		}
-		// 通过用户账号强退用户
-		passportList := make([]string, 0, len(userList))
-		for _, u := range userList {
-			passportList = append(passportList, u.Passport)
-		}
-		terr = UserOnline().ForceLogoutByPassport(ctx, passportList)
-		return terr
+		return nil
 	})
 	if err != nil {
 		return

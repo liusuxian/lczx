@@ -158,11 +158,6 @@ func (s *sUser) EditPwd(ctx context.Context, id uint64, oldPassword, newPassword
 		Salt:     salt,
 		Password: newEncryptPassword,
 	}).Where(do.User{Id: id}).Update()
-	if err != nil {
-		return
-	}
-	// 通过用户账号强退用户
-	err = UserOnline().ForceLogoutByPassport(ctx, []string{user.Passport})
 	return
 }
 
