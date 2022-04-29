@@ -56,8 +56,8 @@ func (s *sWdkReport) AddWdkReport(ctx context.Context, req *v1.WdkReportAddReq, 
 		if terr != nil {
 			return terr
 		}
-		if len(typeIds) != len(reportCfgInfos) {
-			return gerror.Newf("报告类型ID列表[%s]不存在", gstr.JoinAny(req.TypeIds, ","))
+		if len(reportCfgInfos) == 0 {
+			return gerror.Newf("报告类型ID列表%v不存在", req.TypeIds)
 		}
 		// 获取文档库上传报告的审核人员们的姓名和数量
 		auditNames, auditCount := s.GetWdkReportAuditNamesAndCount(reportCfgInfos)
