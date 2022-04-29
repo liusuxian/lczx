@@ -39,7 +39,7 @@ func (s *sWdkReport) GetWdkReportRecord(ctx context.Context, projectId uint64) (
 	return
 }
 
-// AddWdkReport 检查新增文档库上传报告记录权限
+// AddWdkReport 新增文档库上传报告记录
 func (s *sWdkReport) AddWdkReport(ctx context.Context, req *v1.WdkReportAddReq, report *upload.FileInfo) (err error) {
 	err = dao.WdkReport.Ctx(ctx).Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		// 检查新增文档库上传报告记录权限
@@ -64,11 +64,6 @@ func (s *sWdkReport) AddWdkReport(ctx context.Context, req *v1.WdkReportAddReq, 
 		// 写入文档库上传报告记录数据
 		var reportId int64
 		user := Context().Get(ctx).User
-		//user := &model.ContextUser{
-		//	Id:       3,
-		//	Realname: "普通用户",
-		//	IsAdmin:  0,
-		//}
 		if user.IsAdmin == 1 {
 			// 管理员不需要走审核流程
 			reportId, terr = dao.WdkReport.Ctx(ctx).Data(do.WdkReport{
