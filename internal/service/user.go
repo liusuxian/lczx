@@ -2,20 +2,16 @@ package service
 
 import (
 	"context"
-	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/os/gtime"
 	"github.com/gogf/gf/v2/text/gstr"
-	"github.com/gogf/gf/v2/util/gconv"
 	"github.com/gogf/gf/v2/util/grand"
 	v1 "lczx/api/v1"
-	"lczx/internal/consts"
 	"lczx/internal/model/entity"
 	"lczx/internal/service/internal/dao"
 	"lczx/internal/service/internal/do"
 	"lczx/utility/logger"
 	"lczx/utility/utils"
-	"time"
 )
 
 type sUser struct{}
@@ -53,11 +49,7 @@ func (s *sUser) GetUserByPassportAndPassword(ctx context.Context, passport, pass
 
 // UpdateUserLogin 更新用户登录信息
 func (s *sUser) UpdateUserLogin(ctx context.Context, id uint64, ip string) {
-	_, err := dao.User.Ctx(ctx).Cache(gdb.CacheOption{
-		Duration: -1,
-		Name:     s.UserCacheKey(id),
-		Force:    false,
-	}).Unscoped().Data(do.User{
+	_, err := dao.User.Ctx(ctx).Unscoped().Data(do.User{
 		LastLoginIp:   ip,
 		LastLoginTime: gtime.Now(),
 	}).Where(do.User{Id: id}).Update()
@@ -108,21 +100,13 @@ func (s *sUser) GetProfile(ctx context.Context, id uint64) (profileInfo *v1.User
 
 // SetAvatar 设置用户头像
 func (s *sUser) SetAvatar(ctx context.Context, id uint64, avatarUrl string) (err error) {
-	_, err = dao.User.Ctx(ctx).Cache(gdb.CacheOption{
-		Duration: -1,
-		Name:     s.UserCacheKey(id),
-		Force:    false,
-	}).Data(do.User{Avatar: avatarUrl}).Where(do.User{Id: id}).Update()
+	_, err = dao.User.Ctx(ctx).Data(do.User{Avatar: avatarUrl}).Where(do.User{Id: id}).Update()
 	return
 }
 
 // EditProfile 编辑个人中心信息
 func (s *sUser) EditProfile(ctx context.Context, id uint64, req *v1.UserProfileEditReq) (err error) {
-	_, err = dao.User.Ctx(ctx).Cache(gdb.CacheOption{
-		Duration: -1,
-		Name:     s.UserCacheKey(id),
-		Force:    false,
-	}).Data(do.User{
+	_, err = dao.User.Ctx(ctx).Data(do.User{
 		Nickname: req.Nickname,
 		Mobile:   req.Mobile,
 		Email:    req.Email,
@@ -150,11 +134,7 @@ func (s *sUser) EditPwd(ctx context.Context, id uint64, oldPassword, newPassword
 	// 生成随机密码盐
 	salt := grand.S(10)
 	newEncryptPassword := utils.EncryptPassword(newPassword, salt)
-	_, err = dao.User.Ctx(ctx).Cache(gdb.CacheOption{
-		Duration: -1,
-		Name:     s.UserCacheKey(id),
-		Force:    false,
-	}).Data(do.User{
+	_, err = dao.User.Ctx(ctx).Data(do.User{
 		Salt:     salt,
 		Password: newEncryptPassword,
 	}).Where(do.User{Id: id}).Update()
@@ -169,30 +149,6 @@ func (s *sUser) GetUserByPassport(ctx context.Context, passport string) (user *e
 
 // GetUserById 通过用户ID获取用户信息
 func (s *sUser) GetUserById(ctx context.Context, id uint64) (user *entity.User, err error) {
-	// 从缓存获取
-	userCacheKey := s.UserCacheKey(id)
-	userCacheVal := Cache().GetCache(ctx, userCacheKey)
-	if userCacheVal != nil {
-		var userList []*entity.User
-		err = gconv.Structs(userCacheVal, &userList)
-		if err != nil {
-			return
-		}
-		if userList != nil && len(userList) > 0 {
-			user = userList[0]
-			return
-		}
-	}
-	// 从数据库获取
-	err = dao.User.Ctx(ctx).Cache(gdb.CacheOption{
-		Duration: time.Hour * 2,
-		Name:     userCacheKey,
-		Force:    false,
-	}).Where(do.User{Id: id}).Scan(&user)
+	err = dao.User.Ctx(ctx).Where(do.User{Id: id}).Scan(&user)
 	return
-}
-
-// UserCacheKey 用户缓存key
-func (s *sUser) UserCacheKey(id uint64) string {
-	return consts.CachePrefix + "user:" + gconv.String(id)
 }

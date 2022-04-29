@@ -157,6 +157,9 @@ func (s *sUserManager) AddUser(ctx context.Context, req *v1.UserAddReq) (err err
 		if terr != nil {
 			return terr
 		}
+		if len(enableRoles) == 0 {
+			return gerror.Newf(`角色ID列表%v不存在`, req.RoleIds)
+		}
 		roleIdsMap := gmap.New()
 		for _, r := range enableRoles {
 			roleIdsMap.Set(r.Id, true)
@@ -231,6 +234,9 @@ func (s *sUserManager) EditUser(ctx context.Context, req *v1.UserEditReq) (err e
 		if terr != nil {
 			return terr
 		}
+		if len(enableRoles) == 0 {
+			return gerror.Newf(`角色ID列表%v不存在`, req.RoleIds)
+		}
 		roleIdsMap := gmap.New()
 		for _, r := range enableRoles {
 			roleIdsMap.Set(r.Id, true)
@@ -245,11 +251,6 @@ func (s *sUserManager) EditUser(ctx context.Context, req *v1.UserEditReq) (err e
 		terr = Role().EditUserRoles(ctx, req.RoleIds, req.Id)
 		return terr
 	})
-	if err != nil {
-		return
-	}
-	// 清除用户缓存
-	err = Cache().ClearCache(ctx, User().UserCacheKey(req.Id))
 	return
 }
 
@@ -258,11 +259,7 @@ func (s *sUserManager) ResetUserPwd(ctx context.Context, id uint64, newPassword 
 	// 生成随机密码盐
 	salt := grand.S(10)
 	newEncryptPassword := utils.EncryptPassword(newPassword, salt)
-	_, err = dao.User.Ctx(ctx).Cache(gdb.CacheOption{
-		Duration: -1,
-		Name:     User().UserCacheKey(id),
-		Force:    false,
-	}).Data(do.User{
+	_, err = dao.User.Ctx(ctx).Data(do.User{
 		Salt:     salt,
 		Password: newEncryptPassword,
 	}).Where(do.User{Id: id}).Update()
@@ -271,11 +268,7 @@ func (s *sUserManager) ResetUserPwd(ctx context.Context, id uint64, newPassword 
 
 // SetUserStatus 设置用户状态
 func (s *sUserManager) SetUserStatus(ctx context.Context, id uint64, status uint) (err error) {
-	_, err = dao.User.Ctx(ctx).Cache(gdb.CacheOption{
-		Duration: -1,
-		Name:     User().UserCacheKey(id),
-		Force:    false,
-	}).Data(do.User{Status: status}).Where(do.User{Id: id}).Update()
+	_, err = dao.User.Ctx(ctx).Data(do.User{Status: status}).Where(do.User{Id: id}).Update()
 	return
 }
 
@@ -301,15 +294,6 @@ func (s *sUserManager) DeleteUser(ctx context.Context, ids []uint64) (err error)
 		}
 		return nil
 	})
-	if err != nil {
-		return
-	}
-	// 清除用户缓存
-	userCacheKeys := make([]any, 0, len(ids))
-	for _, v := range ids {
-		userCacheKeys = append(userCacheKeys, User().UserCacheKey(v))
-	}
-	err = Cache().ClearCache(ctx, userCacheKeys...)
 	return
 }
 

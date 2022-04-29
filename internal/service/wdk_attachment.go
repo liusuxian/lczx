@@ -44,26 +44,14 @@ func (s *sWdkAttachment) AddWdkAttachment(ctx context.Context, req *v1.WdkAttach
 		if terr != nil {
 			return terr
 		}
-		// 写入文档库上传附件记录数据
+		// 保存文档库上传附件记录数据
 		var recordId int64
-		recordId, terr = dao.WdkAttachmentRecord.Ctx(ctx).Data(do.WdkAttachmentRecord{
-			ProjectId: req.ProjectId,
-			Remark:    req.Remark,
-		}).InsertAndGetId()
+		recordId, terr = s.SaveWdkAttachmentRecord(ctx, req)
 		if terr != nil {
 			return terr
 		}
-		// 写入文档库上传附件数据
-		attachmentFileData := g.List{}
-		for _, file := range Attachments {
-			attachmentFileData = append(attachmentFileData, g.Map{
-				"id":         recordId,
-				"name":       file.FileName,
-				"origin_url": file.OriginFileUrl,
-				"pdf_url":    file.PdfFileUrl,
-			})
-		}
-		_, terr = dao.WdkAttachmentFile.Ctx(ctx).Data(attachmentFileData).Batch(len(attachmentFileData)).Insert()
+		// 保存文档库上传附件文件数据
+		terr = s.SaveWdkAttachmentFile(ctx, recordId, Attachments)
 		return terr
 	})
 	return
@@ -87,5 +75,29 @@ func (s *sWdkAttachment) AuthAdd(ctx context.Context, projectId uint64) (err err
 		err = gerror.New("抱歉！！！该项目您没有上传附件的权限")
 		return
 	}
+	return
+}
+
+// SaveWdkAttachmentRecord 保存文档库上传附件记录数据
+func (s *sWdkAttachment) SaveWdkAttachmentRecord(ctx context.Context, req *v1.WdkAttachmentAddReq) (recordId int64, err error) {
+	recordId, err = dao.WdkAttachmentRecord.Ctx(ctx).Data(do.WdkAttachmentRecord{
+		ProjectId: req.ProjectId,
+		Remark:    req.Remark,
+	}).InsertAndGetId()
+	return
+}
+
+// SaveWdkAttachmentFile 保存文档库上传附件文件数据
+func (s *sWdkAttachment) SaveWdkAttachmentFile(ctx context.Context, recordId int64, Attachments []*upload.FileInfo) (err error) {
+	attachmentFileData := g.List{}
+	for _, file := range Attachments {
+		attachmentFileData = append(attachmentFileData, g.Map{
+			"id":         recordId,
+			"name":       file.FileName,
+			"origin_url": file.OriginFileUrl,
+			"pdf_url":    file.PdfFileUrl,
+		})
+	}
+	_, err = dao.WdkAttachmentFile.Ctx(ctx).Data(attachmentFileData).Batch(len(attachmentFileData)).Insert()
 	return
 }
