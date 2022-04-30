@@ -20,8 +20,8 @@ type cUser struct{}
 
 // Info 获取用户信息
 func (c *cUser) Info(ctx context.Context, req *v1.UserInfoReq) (res *v1.UserInfoRes, err error) {
-	user := service.Context().Get(ctx).User
 	// 用户信息
+	user := service.Context().Get(ctx).User
 	var userInfo *entity.User
 	userInfo, err = service.User().GetUserById(ctx, user.Id)
 	if err != nil {
@@ -66,9 +66,8 @@ func (c *cUser) Info(ctx context.Context, req *v1.UserInfoReq) (res *v1.UserInfo
 
 // Profile 获取个人中心信息
 func (c *cUser) Profile(ctx context.Context, req *v1.UserProfileReq) (res *v1.UserProfileRes, err error) {
-	user := service.Context().Get(ctx).User
 	var profileInfo *v1.UserProfileInfo
-	profileInfo, err = service.User().GetProfile(ctx, user.Id)
+	profileInfo, err = service.User().GetProfile(ctx)
 	if err != nil {
 		err = gerror.WrapCode(code.GetUserProfileFailed, err)
 		return
@@ -94,8 +93,7 @@ func (c *cUser) UploadAvatar(ctx context.Context, req *v1.UserUploadAvatarReq) (
 		return
 	}
 	// 设置用户头像
-	user := service.Context().Get(ctx).User
-	err = service.User().SetAvatar(ctx, user.Id, fileInfo.OriginFileUrl)
+	err = service.User().SetAvatar(ctx, fileInfo.OriginFileUrl)
 	if err != nil {
 		err = gerror.WrapCode(code.SetUserAvatarFailed, err)
 		return
@@ -107,8 +105,7 @@ func (c *cUser) UploadAvatar(ctx context.Context, req *v1.UserUploadAvatarReq) (
 
 // ProfileEdit 编辑个人中心信息
 func (c *cUser) ProfileEdit(ctx context.Context, req *v1.UserProfileEditReq) (res *v1.UserProfileEditRes, err error) {
-	user := service.Context().Get(ctx).User
-	err = service.User().EditProfile(ctx, user.Id, req)
+	err = service.User().EditProfile(ctx, req)
 	if err != nil {
 		err = gerror.WrapCode(code.EditUserProfileFailed, err)
 		return
@@ -119,8 +116,7 @@ func (c *cUser) ProfileEdit(ctx context.Context, req *v1.UserProfileEditReq) (re
 
 // PwdEdit 修改用户密码
 func (c *cUser) PwdEdit(ctx context.Context, req *v1.UserPwdEditReq) (res *v1.UserPwdEditRes, err error) {
-	user := service.Context().Get(ctx).User
-	err = service.User().EditPwd(ctx, user.Id, req.OldPassword, req.NewPassword)
+	err = service.User().EditPwd(ctx, req.OldPassword, req.NewPassword)
 	if err != nil {
 		err = gerror.WrapCode(code.EditPwdFailed, err)
 		return

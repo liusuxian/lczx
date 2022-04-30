@@ -59,19 +59,20 @@ func (s *sUser) UpdateUserLogin(ctx context.Context, id uint64, ip string) {
 }
 
 // GetProfile 获取个人中心信息
-func (s *sUser) GetProfile(ctx context.Context, id uint64) (profileInfo *v1.UserProfileInfo, err error) {
+func (s *sUser) GetProfile(ctx context.Context) (profileInfo *v1.UserProfileInfo, err error) {
 	// 用户信息
-	var user *entity.User
-	user, err = s.GetUserById(ctx, id)
+	curUser := Context().Get(ctx).User
+	var userInfo *entity.User
+	userInfo, err = s.GetUserById(ctx, curUser.Id)
 	if err != nil {
 		return
 	}
-	if user == nil {
-		err = gerror.Newf(`用户ID[%d]不存在`, id)
+	if userInfo == nil {
+		err = gerror.Newf(`用户ID[%d]不存在`, curUser.Id)
 		return
 	}
-	user.Password = ""
-	user.Salt = ""
+	userInfo.Password = ""
+	userInfo.Salt = ""
 	// 获取部门状态为正常的部门列表
 	var depts []*entity.Dept
 	depts, err = Dept().GetStatusEnableDepts(ctx)
@@ -79,19 +80,19 @@ func (s *sUser) GetProfile(ctx context.Context, id uint64) (profileInfo *v1.User
 		return
 	}
 	// 获取部门信息
-	deptNames := Dept().GetDeptAllNameById(depts, user.DeptId)
+	deptNames := Dept().GetDeptAllNameById(depts, userInfo.DeptId)
 	utils.Reverse(deptNames)
-	dept := Dept().GetDeptById(depts, user.DeptId)
+	dept := Dept().GetDeptById(depts, userInfo.DeptId)
 	dept.Name = gstr.Join(deptNames, "/")
 	// 获取用户角色
 	var roles []*entity.Role
-	roles, err = Role().GetUserRoles(ctx, user.Id)
+	roles, err = Role().GetUserRoles(ctx, userInfo.Id)
 	if err != nil {
 		return
 	}
 
 	profileInfo = &v1.UserProfileInfo{
-		User:  user,
+		User:  userInfo,
 		Dept:  dept,
 		Roles: roles,
 	}
@@ -99,35 +100,38 @@ func (s *sUser) GetProfile(ctx context.Context, id uint64) (profileInfo *v1.User
 }
 
 // SetAvatar 设置用户头像
-func (s *sUser) SetAvatar(ctx context.Context, id uint64, avatarUrl string) (err error) {
-	_, err = dao.User.Ctx(ctx).Data(do.User{Avatar: avatarUrl}).Where(do.User{Id: id}).Update()
+func (s *sUser) SetAvatar(ctx context.Context, avatarUrl string) (err error) {
+	user := Context().Get(ctx).User
+	_, err = dao.User.Ctx(ctx).Data(do.User{Avatar: avatarUrl}).Where(do.User{Id: user.Id}).Update()
 	return
 }
 
 // EditProfile 编辑个人中心信息
-func (s *sUser) EditProfile(ctx context.Context, id uint64, req *v1.UserProfileEditReq) (err error) {
+func (s *sUser) EditProfile(ctx context.Context, req *v1.UserProfileEditReq) (err error) {
+	user := Context().Get(ctx).User
 	_, err = dao.User.Ctx(ctx).Data(do.User{
 		Nickname: req.Nickname,
 		Mobile:   req.Mobile,
 		Email:    req.Email,
 		Gender:   req.Gender,
-	}).Where(do.User{Id: id}).Update()
+	}).Where(do.User{Id: user.Id}).Update()
 	return
 }
 
 // EditPwd 修改用户密码
-func (s *sUser) EditPwd(ctx context.Context, id uint64, oldPassword, newPassword string) (err error) {
-	var user *entity.User
-	user, err = s.GetUserById(ctx, id)
+func (s *sUser) EditPwd(ctx context.Context, oldPassword, newPassword string) (err error) {
+	curUser := Context().Get(ctx).User
+	var userInfo *entity.User
+	userInfo, err = s.GetUserById(ctx, curUser.Id)
 	if err != nil {
 		return
 	}
-	if user == nil {
-		err = gerror.Newf(`用户ID[%d]不存在`, id)
+	if userInfo == nil {
+		err = gerror.Newf(`用户ID[%d]不存在`, curUser.Id)
 		return
 	}
-	oldEncryptPassword := utils.EncryptPassword(oldPassword, user.Salt)
-	if oldEncryptPassword != user.Password {
+	oldEncryptPassword := utils.EncryptPassword(oldPassword, userInfo.Salt)
+	if oldEncryptPassword != userInfo.Password {
 		err = gerror.New("原始密码错误!")
 		return
 	}
@@ -137,7 +141,7 @@ func (s *sUser) EditPwd(ctx context.Context, id uint64, oldPassword, newPassword
 	_, err = dao.User.Ctx(ctx).Data(do.User{
 		Salt:     salt,
 		Password: newEncryptPassword,
-	}).Where(do.User{Id: id}).Update()
+	}).Where(do.User{Id: userInfo.Id}).Update()
 	return
 }
 
