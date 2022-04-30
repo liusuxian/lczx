@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 30/04/2022 15:38:39
+ Date: 30/04/2022 15:55:41
 */
 
 SET NAMES utf8mb4;
@@ -478,7 +478,7 @@ DROP TABLE IF EXISTS `wdk_report_audit`;
 CREATE TABLE `wdk_report_audit` (
   `id` bigint unsigned NOT NULL COMMENT '报告ID',
   `audit_uid` bigint unsigned NOT NULL COMMENT '审核员用户ID',
-  `audit_name` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '审核员姓名',
+  `audit_name` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '审核员姓名',
   `status` tinyint unsigned NOT NULL COMMENT '审核状态 0:未通过 1:审核中 2:已通过',
   `audit_time` datetime DEFAULT NULL COMMENT '审核时间',
   `create_at` datetime DEFAULT NULL COMMENT '创建时间',
@@ -517,7 +517,7 @@ DROP TABLE IF EXISTS `wdk_report_audit_type`;
 CREATE TABLE `wdk_report_audit_type` (
   `id` bigint unsigned NOT NULL COMMENT '报告ID',
   `audit_uid` bigint unsigned NOT NULL COMMENT '审核员用户ID',
-  `type_id` tinyint unsigned NOT NULL COMMENT '报告类型ID',
+  `type_id` bigint unsigned NOT NULL COMMENT '报告类型ID',
   `type_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '报告类型名称',
   PRIMARY KEY (`id`,`audit_uid`,`type_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

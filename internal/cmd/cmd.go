@@ -38,56 +38,6 @@ var (
 				})
 				// 测试上传文件
 				group.Group("/upload", func(group *ghttp.RouterGroup) {
-					// 测试上传头像
-					group.POST("/avatar", func(req *ghttp.Request) {
-						// 获取上传文件信息
-						avatar := req.GetUploadFile("upload-avatar")
-						if avatar != nil {
-							f, e := upload.Upload.UploadImg(avatar, "user/avatar")
-							if e != nil {
-								fmt.Println("upload avatar err: ", e)
-							} else {
-								// 设置用户头像
-								_ = service.User().SetAvatar(ctx, 1, f.OriginFileUrl)
-							}
-						}
-					})
-					// 测试上传附件
-					group.POST("/attachment", func(req *ghttp.Request) {
-						// 获取上传文件信息
-						files := req.GetUploadFiles("upload-attachment")
-						if len(files) > 0 && len(files) <= 4 {
-							fs, e := upload.Upload.UploadFiles(files, "wdk/attachment")
-							if e != nil {
-								fmt.Println("upload attachment err: ", e)
-							} else {
-								// 新增文档库上传附件记录
-								_ = service.WdkAttachment().AddWdkAttachment(ctx, &v1.WdkAttachmentAddReq{
-									ProjectId: 1,
-								}, fs)
-							}
-						}
-					})
-					// 测试上传文件
-					group.POST("/file", func(req *ghttp.Request) {
-						// 获取上传文件信息
-						file := req.GetUploadFile("upload-file")
-						if file != nil {
-							f, e := upload.Upload.UploadFile(file, "wdk/file")
-							if e != nil {
-								fmt.Println("upload file err: ", e)
-							} else {
-								// 新增文档库上传文件记录
-								_ = service.WdkFile().AddWdkFile(ctx, &v1.WdkFileAddReq{ProjectId: 1, Type: 0}, f)
-								_ = service.WdkFile().AddWdkFile(ctx, &v1.WdkFileAddReq{ProjectId: 1, Type: 1}, f)
-								_ = service.WdkFile().AddWdkFile(ctx, &v1.WdkFileAddReq{ProjectId: 1, Type: 2}, f)
-								_ = service.WdkFile().AddWdkFile(ctx, &v1.WdkFileAddReq{ProjectId: 1, Type: 3}, f)
-								_ = service.WdkFile().AddWdkFile(ctx, &v1.WdkFileAddReq{ProjectId: 1, Type: 4}, f)
-								_ = service.WdkFile().AddWdkFile(ctx, &v1.WdkFileAddReq{ProjectId: 1, Type: 5}, f)
-								_ = service.WdkFile().AddWdkFile(ctx, &v1.WdkFileAddReq{ProjectId: 1, Type: 6}, f)
-							}
-						}
-					})
 					// 测试上传报告
 					group.POST("/report", func(req *ghttp.Request) {
 						// 获取上传文件信息

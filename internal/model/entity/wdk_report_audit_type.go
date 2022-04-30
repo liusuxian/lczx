@@ -8,6 +8,6 @@ package entity
 type WdkReportAuditType struct {
 	Id       uint64 `json:"id"       description:"报告ID"`    // 报告ID
 	AuditUid uint64 `json:"auditUid" description:"审核员用户ID"` // 审核员用户ID
-	TypeId   uint   `json:"typeId"   description:"报告类型ID"`  // 报告类型ID
+	TypeId   uint64 `json:"typeId"   description:"报告类型ID"`  // 报告类型ID
 	TypeName string `json:"typeName" description:"报告类型名称"`  // 报告类型名称
 }
