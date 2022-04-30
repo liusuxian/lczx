@@ -19,38 +19,34 @@ type WdkReportDao struct {
 
 // WdkReportColumns defines and stores column names for table wdk_report.
 type WdkReportColumns struct {
-	Id           string // 报告ID
-	ProjectId    string // 所属项目ID
-	Name         string // 报告名称
-	CreateBy     string // 上传者用户ID
-	CreateName   string // 上传者姓名
-	AuditStatus  string // 审核状态 0:未通过 1:审核中 2:已通过 3:后台管理员自动通过
-	AuditNames   string // 审核人员们的姓名
-	AuditCount   string // 审核人员数量
-	Excellence   string // 是否是优秀报告 0:未被评选为优秀报告 1:被推荐为优秀报告 2:已被评选为优秀报告
-	AuditEndTime string // 审核完成时间
-	OriginUrl    string // 原始文件url
-	PdfUrl       string // pdf文件url
-	CreateAt     string // 上传时间
-	UpdateAt     string // 更新时间
+	Id          string // 报告ID
+	ProjectId   string // 所属项目ID
+	Name        string // 报告名称
+	CreateBy    string // 上传者用户ID
+	CreateName  string // 上传者姓名
+	AuditStatus string // 审核状态 0:未通过 1:审核中 2:已通过 3:后台管理员自动通过
+	Excellence  string // 是否是优秀报告 0:未被评选为优秀报告 1:被推荐为优秀报告 2:已被评选为优秀报告
+	AuditTime   string // 审核时间
+	OriginUrl   string // 原始文件url
+	PdfUrl      string // pdf文件url
+	CreateAt    string // 上传时间
+	UpdateAt    string // 更新时间
 }
 
 //  wdkReportColumns holds the columns for table wdk_report.
 var wdkReportColumns = WdkReportColumns{
-	Id:           "id",
-	ProjectId:    "project_id",
-	Name:         "name",
-	CreateBy:     "create_by",
-	CreateName:   "create_name",
-	AuditStatus:  "audit_status",
-	AuditNames:   "audit_names",
-	AuditCount:   "audit_count",
-	Excellence:   "excellence",
-	AuditEndTime: "audit_end_time",
-	OriginUrl:    "origin_url",
-	PdfUrl:       "pdf_url",
-	CreateAt:     "create_at",
-	UpdateAt:     "update_at",
+	Id:          "id",
+	ProjectId:   "project_id",
+	Name:        "name",
+	CreateBy:    "create_by",
+	CreateName:  "create_name",
+	AuditStatus: "audit_status",
+	Excellence:  "excellence",
+	AuditTime:   "audit_time",
+	OriginUrl:   "origin_url",
+	PdfUrl:      "pdf_url",
+	CreateAt:    "create_at",
+	UpdateAt:    "update_at",
 }
 
 // NewWdkReportDao creates and returns a new DAO object for table data access.

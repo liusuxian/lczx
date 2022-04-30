@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 29/04/2022 01:12:03
+ Date: 30/04/2022 15:38:39
 */
 
 SET NAMES utf8mb4;
@@ -456,20 +456,38 @@ CREATE TABLE `wdk_report` (
   `create_by` bigint unsigned NOT NULL COMMENT '上传者用户ID',
   `create_name` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '上传者姓名',
   `audit_status` tinyint unsigned NOT NULL COMMENT '审核状态 0:未通过 1:审核中 2:已通过 3:后台管理员自动通过',
-  `audit_names` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '审核人员们的姓名',
-  `audit_count` int unsigned NOT NULL COMMENT '审核人员数量',
   `excellence` tinyint unsigned NOT NULL COMMENT '是否是优秀报告 0:未被评选为优秀报告 1:被推荐为优秀报告 2:已被评选为优秀报告',
-  `audit_end_time` datetime DEFAULT NULL COMMENT '审核完成时间',
+  `audit_time` datetime DEFAULT NULL COMMENT '审核时间',
   `origin_url` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '原始文件url',
   `pdf_url` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT 'pdf文件url',
   `create_at` datetime DEFAULT NULL COMMENT '上传时间',
   `update_at` datetime DEFAULT NULL COMMENT '更新时间',
-  PRIMARY KEY (`id`,`project_id`),
-  UNIQUE KEY `name_index` (`name`) USING BTREE
+  PRIMARY KEY (`id`,`project_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ----------------------------
 -- Records of wdk_report
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
+-- Table structure for wdk_report_audit
+-- ----------------------------
+DROP TABLE IF EXISTS `wdk_report_audit`;
+CREATE TABLE `wdk_report_audit` (
+  `id` bigint unsigned NOT NULL COMMENT '报告ID',
+  `audit_uid` bigint unsigned NOT NULL COMMENT '审核员用户ID',
+  `audit_name` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '审核员姓名',
+  `status` tinyint unsigned NOT NULL COMMENT '审核状态 0:未通过 1:审核中 2:已通过',
+  `audit_time` datetime DEFAULT NULL COMMENT '审核时间',
+  `create_at` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_at` datetime DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`,`audit_uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ----------------------------
+-- Records of wdk_report_audit
 -- ----------------------------
 BEGIN;
 COMMIT;
@@ -481,7 +499,7 @@ DROP TABLE IF EXISTS `wdk_report_audit_cfg`;
 CREATE TABLE `wdk_report_audit_cfg` (
   `id` bigint unsigned NOT NULL COMMENT '报告类型ID',
   `audit_uid` bigint unsigned NOT NULL COMMENT '审核员用户ID',
-  `type_name` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '报告类型名称',
+  `type_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '报告类型名称',
   `audit_name` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '审核员姓名',
   PRIMARY KEY (`id`,`audit_uid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -493,36 +511,15 @@ BEGIN;
 COMMIT;
 
 -- ----------------------------
--- Table structure for wdk_report_audit_record
--- ----------------------------
-DROP TABLE IF EXISTS `wdk_report_audit_record`;
-CREATE TABLE `wdk_report_audit_record` (
-  `audit_uid` bigint unsigned NOT NULL COMMENT '审核员用户ID',
-  `report_id` bigint unsigned NOT NULL COMMENT '审核的报告ID',
-  `status` tinyint unsigned NOT NULL COMMENT '审核状态 0:未通过 1:审核中 2:已通过 3:后台管理员自动通过',
-  `audit_name` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '审核员姓名',
-  `audit_time` datetime DEFAULT NULL COMMENT '审核时间',
-  `create_at` datetime DEFAULT NULL COMMENT '创建时间',
-  `update_at` datetime DEFAULT NULL COMMENT '更新时间',
-  PRIMARY KEY (`audit_uid`,`report_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- ----------------------------
--- Records of wdk_report_audit_record
--- ----------------------------
-BEGIN;
-COMMIT;
-
--- ----------------------------
 -- Table structure for wdk_report_audit_type
 -- ----------------------------
 DROP TABLE IF EXISTS `wdk_report_audit_type`;
 CREATE TABLE `wdk_report_audit_type` (
+  `id` bigint unsigned NOT NULL COMMENT '报告ID',
   `audit_uid` bigint unsigned NOT NULL COMMENT '审核员用户ID',
-  `report_id` bigint unsigned NOT NULL COMMENT '审核的报告ID',
-  `type_id` bigint unsigned NOT NULL COMMENT '审核的报告类型ID',
-  `type_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '审核的报告类型名称',
-  PRIMARY KEY (`audit_uid`,`report_id`,`type_id`)
+  `type_id` tinyint unsigned NOT NULL COMMENT '报告类型ID',
+  `type_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '报告类型名称',
+  PRIMARY KEY (`id`,`audit_uid`,`type_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ----------------------------

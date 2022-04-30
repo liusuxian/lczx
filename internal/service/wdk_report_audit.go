@@ -40,6 +40,7 @@ func (s *sWdkReportAudit) GetWdkReportAuditList(ctx context.Context, req *v1.Wdk
 	if err != nil {
 		return
 	}
+	//////
 	for _, v := range list {
 		err = dao.WdkReportAuditType.Ctx(ctx).Where(do.WdkReportAuditType{
 			AuditUid: v.ReportAuditRecord.AuditUid,

@@ -19,16 +19,16 @@ type WdkReportAuditTypeDao struct {
 
 // WdkReportAuditTypeColumns defines and stores column names for table wdk_report_audit_type.
 type WdkReportAuditTypeColumns struct {
+	Id       string // 报告ID
 	AuditUid string // 审核员用户ID
-	ReportId string // 审核的报告ID
-	TypeId   string // 审核的报告类型ID
-	TypeName string // 审核的报告类型名称
+	TypeId   string // 报告类型ID
+	TypeName string // 报告类型名称
 }
 
 //  wdkReportAuditTypeColumns holds the columns for table wdk_report_audit_type.
 var wdkReportAuditTypeColumns = WdkReportAuditTypeColumns{
+	Id:       "id",
 	AuditUid: "audit_uid",
-	ReportId: "report_id",
 	TypeId:   "type_id",
 	TypeName: "type_name",
 }

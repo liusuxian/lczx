@@ -11,8 +11,8 @@ import (
 // WdkReportAuditType is the golang structure of table wdk_report_audit_type for DAO operations like Where/Data.
 type WdkReportAuditType struct {
 	g.Meta   `orm:"table:wdk_report_audit_type, do:true"`
+	Id       interface{} // 报告ID
 	AuditUid interface{} // 审核员用户ID
-	ReportId interface{} // 审核的报告ID
-	TypeId   interface{} // 审核的报告类型ID
-	TypeName interface{} // 审核的报告类型名称
+	TypeId   interface{} // 报告类型ID
+	TypeName interface{} // 报告类型名称
 }

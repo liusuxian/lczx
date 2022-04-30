@@ -6,8 +6,8 @@ package entity
 
 // WdkReportAuditType is the golang structure for table wdk_report_audit_type.
 type WdkReportAuditType struct {
-	AuditUid uint64 `json:"auditUid" description:"审核员用户ID"`   // 审核员用户ID
-	ReportId uint64 `json:"reportId" description:"审核的报告ID"`   // 审核的报告ID
-	TypeId   uint64 `json:"typeId"   description:"审核的报告类型ID"` // 审核的报告类型ID
-	TypeName string `json:"typeName" description:"审核的报告类型名称"` // 审核的报告类型名称
+	Id       uint64 `json:"id"       description:"报告ID"`    // 报告ID
+	AuditUid uint64 `json:"auditUid" description:"审核员用户ID"` // 审核员用户ID
+	TypeId   uint   `json:"typeId"   description:"报告类型ID"`  // 报告类型ID
+	TypeName string `json:"typeName" description:"报告类型名称"`  // 报告类型名称
 }
