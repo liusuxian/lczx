@@ -21,17 +21,14 @@ func WdkReportAudit() *sWdkReportAudit {
 
 // GetWdkReportAuditList 获取文档库报告审核列表
 func (s *sWdkReportAudit) GetWdkReportAuditList(ctx context.Context, req *v1.WdkReportAuditListReq) (total int, list []*v1.WdkReportAuditInfo, err error) {
-	model := dao.WdkReportAudit.Ctx(ctx)
-	columns := dao.WdkReportAudit.Columns()
 	user := Context().Get(ctx).User
+	model := dao.WdkReportAudit.Ctx(ctx).Where(do.WdkReportAudit{AuditUid: user.Id, Status: req.Status})
+	columns := dao.WdkReportAudit.Columns()
 	total, err = model.Count()
 	if err != nil {
 		return
 	}
-	err = model.Page(req.CurPage, req.PageSize).OrderAsc(columns.CreateAt).Where(do.WdkReportAudit{
-		AuditUid: user.Id,
-		Status:   req.Status,
-	}).ScanList(&list, "ReportAudit")
+	err = model.Page(req.CurPage, req.PageSize).OrderAsc(columns.CreateAt).ScanList(&list, "ReportAudit")
 	if err != nil {
 		return
 	}
@@ -40,7 +37,40 @@ func (s *sWdkReportAudit) GetWdkReportAuditList(ctx context.Context, req *v1.Wdk
 	if err != nil {
 		return
 	}
+	err = dao.WdkProject.Ctx(ctx).Where(dao.WdkProject.Columns().Id, gdb.ListItemValuesUnique(list, "Report", "ProjectId")).
+		ScanList(&list, "Project", "Report", "Id:ProjectId")
+	if err != nil {
+		return
+	}
 	err = dao.WdkReportAuditType.Ctx(ctx).Where(dao.WdkReportAuditType.Columns().Id, gdb.ListItemValuesUnique(list, "ReportAudit", "Id")).
 		Where(do.WdkReportAuditType{AuditUid: user.Id}).ScanList(&list, "ReportAuditType", "ReportAudit", "Id:Id")
+	return
+}
+
+// GetWdkReportBeAuditedList 获取文档库报告被审核列表
+func (s *sWdkReportAudit) GetWdkReportBeAuditedList(ctx context.Context, req *v1.WdkReportBeAuditedListReq) (total int, list []*v1.WdkReportBeAuditedInfo, err error) {
+	user := Context().Get(ctx).User
+	model := dao.WdkReport.Ctx(ctx).Where(do.WdkReport{CreateBy: user.Id, AuditStatus: req.Status})
+	columns := dao.WdkReport.Columns()
+	total, err = model.Count()
+	if err != nil {
+		return
+	}
+	err = model.Page(req.CurPage, req.PageSize).OrderDesc(columns.CreateAt).ScanList(&list, "Report")
+	if err != nil {
+		return
+	}
+	err = dao.WdkProject.Ctx(ctx).Where(dao.WdkProject.Columns().Id, gdb.ListItemValuesUnique(list, "Report", "ProjectId")).
+		ScanList(&list, "Project", "Report", "Id:ProjectId")
+	if err != nil {
+		return
+	}
+	err = dao.WdkReportAudit.Ctx(ctx).Where(dao.WdkReportAudit.Columns().Id, gdb.ListItemValuesUnique(list, "Report", "Id")).
+		ScanList(&list, "ReportAudit", "Report", "Id:Id")
+	if err != nil {
+		return
+	}
+	err = dao.WdkReportAuditType.Ctx(ctx).Where(dao.WdkReportAuditType.Columns().Id, gdb.ListItemValuesUnique(list, "Report", "Id")).
+		ScanList(&list, "ReportAuditType", "Report", "Id:Id")
 	return
 }

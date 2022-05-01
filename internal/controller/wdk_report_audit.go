@@ -31,3 +31,21 @@ func (c *cWdkReportAudit) List(ctx context.Context, req *v1.WdkReportAuditListRe
 	}
 	return
 }
+
+// BeAuditedList 文档库报告被审核记录列表
+func (c *cWdkReportAudit) BeAuditedList(ctx context.Context, req *v1.WdkReportBeAuditedListReq) (res *v1.WdkReportBeAuditedListRes, err error) {
+	var total int
+	var list []*v1.WdkReportBeAuditedInfo
+	total, list, err = service.WdkReportAudit().GetWdkReportBeAuditedList(ctx, req)
+	if err != nil {
+		err = gerror.WrapCode(code.GetWdkReportBeAuditedListFailed, err)
+		return
+	}
+
+	res = &v1.WdkReportBeAuditedListRes{
+		CurPage: req.CurPage,
+		Total:   total,
+		List:    list,
+	}
+	return
+}
