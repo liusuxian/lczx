@@ -569,6 +569,23 @@ BEGIN;
 COMMIT;
 
 -- ----------------------------
+-- Table structure for wdk_report_type
+-- ----------------------------
+DROP TABLE IF EXISTS `wdk_report_type`;
+CREATE TABLE `wdk_report_type` (
+  `id` bigint unsigned NOT NULL COMMENT '报告ID',
+  `type_id` bigint unsigned NOT NULL COMMENT '报告类型ID',
+  `type_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '报告类型名称',
+  PRIMARY KEY (`id`,`type_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ----------------------------
+-- Records of wdk_report_type
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for wdk_service_photo
 -- ----------------------------
 DROP TABLE IF EXISTS `wdk_service_photo`;
