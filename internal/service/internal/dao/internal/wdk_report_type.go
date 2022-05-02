@@ -19,16 +19,22 @@ type WdkReportTypeDao struct {
 
 // WdkReportTypeColumns defines and stores column names for table wdk_report_type.
 type WdkReportTypeColumns struct {
-	Id       string // 报告ID
-	TypeId   string // 报告类型ID
-	TypeName string // 报告类型名称
+	Id          string // 报告ID
+	TypeId      string // 报告类型ID
+	TypeName    string // 报告类型名称
+	ReportName  string // 报告名称
+	ProjectId   string // 所属项目ID
+	ProjectName string // 所属项目名称
 }
 
 //  wdkReportTypeColumns holds the columns for table wdk_report_type.
 var wdkReportTypeColumns = WdkReportTypeColumns{
-	Id:       "id",
-	TypeId:   "type_id",
-	TypeName: "type_name",
+	Id:          "id",
+	TypeId:      "type_id",
+	TypeName:    "type_name",
+	ReportName:  "report_name",
+	ProjectId:   "project_id",
+	ProjectName: "project_name",
 }
 
 // NewWdkReportTypeDao creates and returns a new DAO object for table data access.

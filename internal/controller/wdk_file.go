@@ -33,7 +33,7 @@ func (c *cWdkFile) Record(ctx context.Context, req *v1.WdkFileRecordReq) (res *v
 // Add 新增文档库上传文件记录
 func (c *cWdkFile) Add(ctx context.Context, req *v1.WdkFileAddReq) (res *v1.WdkFileAddRes, err error) {
 	// 检查新增文档库上传文件记录权限
-	err = service.WdkFile().AuthAdd(ctx, req.ProjectId)
+	_, err = service.WdkFile().AuthAdd(ctx, req.ProjectId)
 	if err != nil {
 		err = gerror.WrapCode(code.AddWdkFileRecordFailed, err)
 		return

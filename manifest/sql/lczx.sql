@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 02/05/2022 17:36:53
+ Date: 02/05/2022 18:34:50
 */
 
 SET NAMES utf8mb4;
@@ -592,6 +592,9 @@ CREATE TABLE `wdk_report_type` (
   `id` bigint unsigned NOT NULL COMMENT '报告ID',
   `type_id` bigint unsigned NOT NULL COMMENT '报告类型ID',
   `type_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '报告类型名称',
+  `report_name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '报告名称',
+  `project_id` bigint unsigned NOT NULL COMMENT '所属项目ID',
+  `project_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '所属项目名称',
   PRIMARY KEY (`id`,`type_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 

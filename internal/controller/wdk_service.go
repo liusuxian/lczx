@@ -32,7 +32,7 @@ func (c *cWdkService) Record(ctx context.Context, req *v1.WdkServiceRecordReq) (
 // Add 新增文档库服务记录
 func (c *cWdkService) Add(ctx context.Context, req *v1.WdkServiceAddReq) (res *v1.WdkServiceAddRes, err error) {
 	// 检查新增文档库服务记录权限
-	err = service.WdkService().AuthAdd(ctx, req.ProjectId)
+	_, err = service.WdkService().AuthAdd(ctx, req.ProjectId)
 	if err != nil {
 		err = gerror.WrapCode(code.AddWdkServiceRecordFailed, err)
 		return

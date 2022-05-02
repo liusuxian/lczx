@@ -33,13 +33,14 @@ func (s *sWdkFile) AddWdkFile(ctx context.Context, req *v1.WdkFileAddReq, file *
 	err = dao.WdkFile.Ctx(ctx).Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		// 检查新增文档库上传文件记录权限
 		var terr error
-		terr = s.AuthAdd(ctx, req.ProjectId)
+		var wdkProject *entity.WdkProject
+		wdkProject, terr = s.AuthAdd(ctx, req.ProjectId)
 		if terr != nil {
 			return terr
 		}
 		// 获取上传文件类型是否已存在
 		var wdkFileInfo *entity.WdkFile
-		wdkFileInfo, terr = s.GetWdkFileByProjectIdAndType(ctx, req.ProjectId, req.Type)
+		wdkFileInfo, terr = s.GetWdkFileByProjectIdAndType(ctx, wdkProject.Id, req.Type)
 		if terr != nil {
 			return terr
 		}
@@ -51,12 +52,12 @@ func (s *sWdkFile) AddWdkFile(ctx context.Context, req *v1.WdkFileAddReq, file *
 				return terr
 			}
 			// 设置所属文档库项目阶段
-			terr = WdkProject().SetWdkProjectStep(ctx, req.ProjectId, req.Type)
+			terr = WdkProject().SetWdkProjectStep(ctx, wdkProject.Id, req.Type)
 			if terr != nil {
 				return terr
 			}
 			// 设置所属文档库项目文件上传状态为是
-			terr = WdkProject().SetWdkProjectFileUploadStatus(ctx, req.ProjectId)
+			terr = WdkProject().SetWdkProjectFileUploadStatus(ctx, wdkProject.Id)
 			if terr != nil {
 				return terr
 			}
@@ -74,9 +75,8 @@ func (s *sWdkFile) AddWdkFile(ctx context.Context, req *v1.WdkFileAddReq, file *
 }
 
 // AuthAdd 检查新增文档库上传文件记录权限
-func (s *sWdkFile) AuthAdd(ctx context.Context, projectId uint64) (err error) {
+func (s *sWdkFile) AuthAdd(ctx context.Context, projectId uint64) (wdkProject *entity.WdkProject, err error) {
 	// 通过文档库项目ID判断文档库项目信息是否存在
-	var wdkProject *entity.WdkProject
 	wdkProject, err = WdkProject().GetWdkProjectById(ctx, projectId)
 	if err != nil {
 		return

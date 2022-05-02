@@ -40,7 +40,8 @@ func (s *sWdkService) AddWdkService(ctx context.Context, req *v1.WdkServiceAddRe
 	err = dao.WdkServiceRecord.Ctx(ctx).Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		// 检查新增文档库服务记录权限
 		var terr error
-		terr = s.AuthAdd(ctx, req.ProjectId)
+		var wdkProject *entity.WdkProject
+		wdkProject, terr = s.AuthAdd(ctx, req.ProjectId)
 		if terr != nil {
 			return terr
 		}
@@ -50,16 +51,15 @@ func (s *sWdkService) AddWdkService(ctx context.Context, req *v1.WdkServiceAddRe
 			return terr
 		}
 		// 设置所属文档库项目阶段
-		terr = WdkProject().SetWdkProjectStep(ctx, req.ProjectId, 7)
+		terr = WdkProject().SetWdkProjectStep(ctx, wdkProject.Id, 7)
 		return terr
 	})
 	return
 }
 
 // AuthAdd 检查新增文档库服务记录权限
-func (s *sWdkService) AuthAdd(ctx context.Context, projectId uint64) (err error) {
+func (s *sWdkService) AuthAdd(ctx context.Context, projectId uint64) (wdkProject *entity.WdkProject, err error) {
 	// 通过文档库项目ID判断文档库项目信息是否存在
-	var wdkProject *entity.WdkProject
 	wdkProject, err = WdkProject().GetWdkProjectById(ctx, projectId)
 	if err != nil {
 		return

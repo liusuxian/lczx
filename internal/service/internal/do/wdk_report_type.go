@@ -10,8 +10,11 @@ import (
 
 // WdkReportType is the golang structure of table wdk_report_type for DAO operations like Where/Data.
 type WdkReportType struct {
-	g.Meta   `orm:"table:wdk_report_type, do:true"`
-	Id       interface{} // 报告ID
-	TypeId   interface{} // 报告类型ID
-	TypeName interface{} // 报告类型名称
+	g.Meta      `orm:"table:wdk_report_type, do:true"`
+	Id          interface{} // 报告ID
+	TypeId      interface{} // 报告类型ID
+	TypeName    interface{} // 报告类型名称
+	ReportName  interface{} // 报告名称
+	ProjectId   interface{} // 所属项目ID
+	ProjectName interface{} // 所属项目名称
 }

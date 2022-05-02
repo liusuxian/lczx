@@ -40,7 +40,7 @@ func (s *sWdkAttachment) AddWdkAttachment(ctx context.Context, req *v1.WdkAttach
 	err = dao.WdkAttachmentRecord.Ctx(ctx).Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		// 检查新增文档库上传附件记录权限
 		var terr error
-		terr = s.AuthAdd(ctx, req.ProjectId)
+		_, terr = s.AuthAdd(ctx, req.ProjectId)
 		if terr != nil {
 			return terr
 		}
@@ -52,9 +52,8 @@ func (s *sWdkAttachment) AddWdkAttachment(ctx context.Context, req *v1.WdkAttach
 }
 
 // AuthAdd 检查新增文档库上传附件记录权限
-func (s *sWdkAttachment) AuthAdd(ctx context.Context, projectId uint64) (err error) {
+func (s *sWdkAttachment) AuthAdd(ctx context.Context, projectId uint64) (wdkProject *entity.WdkProject, err error) {
 	// 通过文档库项目ID判断文档库项目信息是否存在
-	var wdkProject *entity.WdkProject
 	wdkProject, err = WdkProject().GetWdkProjectById(ctx, projectId)
 	if err != nil {
 		return
