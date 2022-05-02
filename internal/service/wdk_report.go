@@ -67,7 +67,7 @@ func (s *sWdkReport) AddWdkReport(ctx context.Context, req *v1.WdkReportAddReq, 
 			return terr
 		}
 		// 保存文档库上传报告审核信息
-		terr = s.saveWdkReportAudit(ctx, curUser, reportCfgInfos, gconv.Uint64(reportId))
+		terr = s.saveWdkReportAudit(ctx, curUser, reportCfgInfos, gconv.Uint64(reportId), req.ProjectId)
 		if terr != nil {
 			return terr
 		}
@@ -116,11 +116,22 @@ func (s *sWdkReport) GetWdkReportCountByProjectId(ctx context.Context, projectId
 	return
 }
 
+// SetWdkReportRecommendExcellence 设置文档库报告被推荐为优秀报告
+func (s *sWdkReport) SetWdkReportRecommendExcellence(ctx context.Context, id uint64) (err error) {
+	_, err = dao.WdkReport.Ctx(ctx).Data(do.WdkReport{Excellence: 1}).Where(do.WdkReport{Id: id}).Update()
+	return
+}
+
+// SetWdkReportChooseExcellence 设置文档库报告被评选为优秀报告
+func (s *sWdkReport) SetWdkReportChooseExcellence(ctx context.Context, id uint64) (err error) {
+	_, err = dao.WdkReport.Ctx(ctx).Data(do.WdkReport{Excellence: 2}).Where(do.WdkReport{Id: id}).Update()
+	return
+}
+
 // SetWdkReportAuditStatus 设置文档库报告审核状态
-func (s *sWdkReport) SetWdkReportAuditStatus(ctx context.Context, id uint64, status uint, excellence uint, auditTime *gtime.Time) (err error) {
+func (s *sWdkReport) SetWdkReportAuditStatus(ctx context.Context, id uint64, status uint, auditTime *gtime.Time) (err error) {
 	_, err = dao.WdkReport.Ctx(ctx).Data(do.WdkReport{
 		AuditStatus: status,
-		Excellence:  excellence,
 		AuditTime:   auditTime,
 	}).Where(do.WdkReport{Id: id}).Update()
 	return
@@ -171,7 +182,7 @@ func (s *sWdkReport) saveWdkReport(ctx context.Context, user *model.ContextUser,
 }
 
 // saveWdkReportAuditRecord 保存文档库上传报告审核信息
-func (s *sWdkReport) saveWdkReportAudit(ctx context.Context, user *model.ContextUser, reportCfgInfos []*v1.WdkReportCfgInfo, reportId uint64) (err error) {
+func (s *sWdkReport) saveWdkReportAudit(ctx context.Context, user *model.ContextUser, reportCfgInfos []*v1.WdkReportCfgInfo, reportId, projectId uint64) (err error) {
 	if user.IsAdmin != 1 {
 		reportAudits := make([]entity.WdkReportAudit, 0, len(reportCfgInfos))
 		reportAuditTypes := make([]entity.WdkReportAuditType, 0, len(reportCfgInfos))
@@ -180,6 +191,7 @@ func (s *sWdkReport) saveWdkReportAudit(ctx context.Context, user *model.Context
 				reportAudits = append(reportAudits, entity.WdkReportAudit{
 					Id:        reportId,
 					AuditUid:  reportAuditCfgInfo.AuditUid,
+					ProjectId: projectId,
 					AuditName: reportAuditCfgInfo.AuditName,
 					Status:    1,
 				})
