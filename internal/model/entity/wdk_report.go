@@ -12,6 +12,7 @@ import (
 type WdkReport struct {
 	Id          uint64      `json:"id"          description:"报告ID"`                                       // 报告ID
 	ProjectId   uint64      `json:"projectId"   description:"所属项目ID"`                                     // 所属项目ID
+	ProjectName string      `json:"projectName" description:"所属项目名称"`                                     // 所属项目名称
 	Name        string      `json:"name"        description:"报告名称"`                                       // 报告名称
 	CreateBy    uint64      `json:"createBy"    description:"上传者用户ID"`                                    // 上传者用户ID
 	CreateName  string      `json:"createName"  description:"上传者姓名"`                                      // 上传者姓名

@@ -21,6 +21,7 @@ type WdkReportDao struct {
 type WdkReportColumns struct {
 	Id          string // 报告ID
 	ProjectId   string // 所属项目ID
+	ProjectName string // 所属项目名称
 	Name        string // 报告名称
 	CreateBy    string // 上传者用户ID
 	CreateName  string // 上传者姓名
@@ -37,6 +38,7 @@ type WdkReportColumns struct {
 var wdkReportColumns = WdkReportColumns{
 	Id:          "id",
 	ProjectId:   "project_id",
+	ProjectName: "project_name",
 	Name:        "name",
 	CreateBy:    "create_by",
 	CreateName:  "create_name",

@@ -156,6 +156,7 @@ func (s *sWdkReport) saveWdkReport(ctx context.Context, user *model.ContextUser,
 		// 管理员不需要走审核流程
 		reportId, err = dao.WdkReport.Ctx(ctx).Data(do.WdkReport{
 			ProjectId:   wdkProject.Id,
+			ProjectName: wdkProject.Name,
 			Name:        report.FileName,
 			CreateBy:    user.Id,
 			CreateName:  user.Realname,
@@ -169,6 +170,7 @@ func (s *sWdkReport) saveWdkReport(ctx context.Context, user *model.ContextUser,
 		// 非管理员需要走审核流程
 		reportId, err = dao.WdkReport.Ctx(ctx).Data(do.WdkReport{
 			ProjectId:   wdkProject.Id,
+			ProjectName: wdkProject.Name,
 			Name:        report.FileName,
 			CreateBy:    user.Id,
 			CreateName:  user.Realname,
@@ -185,12 +187,9 @@ func (s *sWdkReport) saveWdkReport(ctx context.Context, user *model.ContextUser,
 	reportTypeData := g.List{}
 	for _, v := range reportCfgInfos {
 		reportTypeData = append(reportTypeData, g.Map{
-			"id":           reportId,
-			"type_id":      v.ReportCfg.Id,
-			"type_name":    v.ReportCfg.Name,
-			"report_name":  report.FileName,
-			"project_id":   wdkProject.Id,
-			"project_name": wdkProject.Name,
+			"id":        reportId,
+			"type_id":   v.ReportCfg.Id,
+			"type_name": v.ReportCfg.Name,
 		})
 	}
 	_, err = dao.WdkReportType.Ctx(ctx).Data(reportTypeData).Batch(len(reportTypeData)).Insert()

@@ -14,6 +14,7 @@ type WdkReport struct {
 	g.Meta      `orm:"table:wdk_report, do:true"`
 	Id          interface{} // 报告ID
 	ProjectId   interface{} // 所属项目ID
+	ProjectName interface{} // 所属项目名称
 	Name        interface{} // 报告名称
 	CreateBy    interface{} // 上传者用户ID
 	CreateName  interface{} // 上传者姓名
