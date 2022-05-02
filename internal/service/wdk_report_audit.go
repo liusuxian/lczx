@@ -1,8 +1,10 @@
 package service
 
 import (
+	"context"
 	"github.com/gogf/gf/v2/database/gdb"
-	"golang.org/x/net/context"
+	"github.com/gogf/gf/v2/errors/gerror"
+	"github.com/gogf/gf/v2/os/gtime"
 	v1 "lczx/api/v1"
 	"lczx/internal/service/internal/dao"
 	"lczx/internal/service/internal/do"
@@ -72,5 +74,60 @@ func (s *sWdkReportAudit) GetWdkReportBeAuditedList(ctx context.Context, req *v1
 	}
 	err = dao.WdkReportAuditType.Ctx(ctx).Where(dao.WdkReportAuditType.Columns().Id, gdb.ListItemValuesUnique(list, "Report", "Id")).
 		ScanList(&list, "ReportAuditType", "Report", "Id:Id")
+	return
+}
+
+// HandleWdkReportAudit 处理文档库报告审核
+func (s *sWdkReportAudit) HandleWdkReportAudit(ctx context.Context, req *v1.WdkReportAuditReq) (err error) {
+	user := Context().Get(ctx).User
+	err = dao.WdkReportAudit.Ctx(ctx).Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
+		// 通过报告ID和用户ID判断文档库报告审核信息是否存在
+		var terr error
+		var wdkReportAuditExists bool
+		wdkReportAuditExists, terr = s.WdkReportAuditExistsByIdAndUserId(ctx, req.Id, user.Id)
+		if terr != nil {
+			return terr
+		}
+		if !wdkReportAuditExists {
+			return gerror.Newf(`文档库报告审核信息[%d]不存在`, req.Id)
+		}
+		// 设置文档库报告审核状态
+		auditTime := gtime.Now()
+		terr = s.SetWdkReportAuditStatus(ctx, req.Id, user.Id, req.AuditStatus, auditTime)
+		if terr != nil {
+			return terr
+		}
+
+		// 设置所属文档库项目阶段
+		terr = WdkProject().SetWdkProjectStep(ctx, req.ProjectId, req.Type)
+		if terr != nil {
+			return terr
+		}
+		// 设置所属文档库项目文件上传状态为是
+		terr = WdkProject().SetWdkProjectFileUploadStatus(ctx, req.ProjectId)
+		return nil
+	})
+
+	return
+}
+
+// WdkReportAuditExistsByIdAndUserId 通过报告ID和用户ID判断文档库报告审核信息是否存在
+func (s *sWdkReportAudit) WdkReportAuditExistsByIdAndUserId(ctx context.Context, id uint64, userId uint64) (bool, error) {
+	count, err := dao.WdkReportAudit.Ctx(ctx).Where(do.WdkReportAudit{Id: id, AuditUid: userId}).Count()
+	if err != nil {
+		return false, err
+	}
+	return count != 0, nil
+}
+
+// SetWdkReportAuditStatus 设置文档库报告审核状态
+func (s *sWdkReportAudit) SetWdkReportAuditStatus(ctx context.Context, id uint64, userId uint64, status uint, auditTime *gtime.Time) (err error) {
+	_, err = dao.WdkReportAudit.Ctx(ctx).Data(do.WdkReportAudit{
+		Status:    status,
+		AuditTime: auditTime,
+	}).Where(do.WdkReportAudit{
+		Id:       id,
+		AuditUid: userId,
+	}).Update()
 	return
 }

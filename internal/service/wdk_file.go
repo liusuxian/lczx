@@ -47,22 +47,28 @@ func (s *sWdkFile) AddWdkFile(ctx context.Context, req *v1.WdkFileAddReq, file *
 			// 不存在则新增
 			// 保存文档库上传文件数据
 			terr = s.saveWdkFile(ctx, req, file)
+			if terr != nil {
+				return terr
+			}
+			// 设置所属文档库项目阶段
+			terr = WdkProject().SetWdkProjectStep(ctx, req.ProjectId, req.Type)
+			if terr != nil {
+				return terr
+			}
+			// 设置所属文档库项目文件上传状态为是
+			terr = WdkProject().SetWdkProjectFileUploadStatus(ctx, req.ProjectId)
+			if terr != nil {
+				return terr
+			}
 		} else {
 			// 存在则更新
 			// 更新文档库上传文件数据
 			terr = s.updateWdkFile(ctx, req, file)
+			if terr != nil {
+				return terr
+			}
 		}
-		if terr != nil {
-			return terr
-		}
-		// 设置所属文档库项目阶段
-		terr = WdkProject().SetWdkProjectStep(ctx, req.ProjectId, req.Type)
-		if terr != nil {
-			return terr
-		}
-		// 设置所属文档库项目文件上传状态为是
-		terr = WdkProject().SetWdkProjectFileUploadStatus(ctx, req.ProjectId)
-		return terr
+		return nil
 	})
 	return
 }

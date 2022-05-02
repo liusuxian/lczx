@@ -9,6 +9,7 @@ import (
 	"github.com/gogf/gf/v2/os/gtime"
 	"github.com/gogf/gf/v2/util/gconv"
 	v1 "lczx/api/v1"
+	"lczx/internal/model"
 	"lczx/internal/model/entity"
 	"lczx/internal/service/internal/dao"
 	"lczx/internal/service/internal/do"
@@ -59,24 +60,30 @@ func (s *sWdkReport) AddWdkReport(ctx context.Context, req *v1.WdkReportAddReq, 
 			return gerror.Newf("报告类型ID列表%v不存在", req.TypeIds)
 		}
 		// 保存文档库上传报告记录
+		curUser := Context().Get(ctx).User
 		var reportId int64
-		reportId, terr = s.saveWdkReport(ctx, req, reportCfgInfos, report)
+		reportId, terr = s.saveWdkReport(ctx, curUser, req, reportCfgInfos, report)
 		if terr != nil {
 			return terr
 		}
 		// 保存文档库上传报告审核信息
-		terr = s.saveWdkReportAudit(ctx, reportCfgInfos, gconv.Uint64(reportId))
+		terr = s.saveWdkReportAudit(ctx, curUser, reportCfgInfos, gconv.Uint64(reportId))
 		if terr != nil {
 			return terr
 		}
-		// 设置所属文档库项目阶段
-		terr = WdkProject().SetWdkProjectStep(ctx, req.ProjectId, 8)
-		if terr != nil {
-			return terr
+		if curUser.IsAdmin == 1 {
+			// 设置所属文档库项目阶段
+			terr = WdkProject().SetWdkProjectStep(ctx, req.ProjectId, 8)
+			if terr != nil {
+				return terr
+			}
+			// 设置所属文档库项目文件上传状态为是
+			terr = WdkProject().SetWdkProjectFileUploadStatus(ctx, req.ProjectId)
+			if terr != nil {
+				return terr
+			}
 		}
-		// 设置所属文档库项目文件上传状态为是
-		terr = WdkProject().SetWdkProjectFileUploadStatus(ctx, req.ProjectId)
-		return terr
+		return nil
 	})
 	return
 }
@@ -104,13 +111,23 @@ func (s *sWdkReport) AuthAdd(ctx context.Context, projectId uint64) (err error) 
 
 // GetWdkReportCountByProjectId 通过项目ID获取文档库项目上传报告记录数量
 func (s *sWdkReport) GetWdkReportCountByProjectId(ctx context.Context, projectId uint64) (count int, err error) {
-	count, err = dao.WdkReport.Ctx(ctx).Where(do.WdkReport{ProjectId: projectId}).Count()
+	count, err = dao.WdkReport.Ctx(ctx).Where(do.WdkReport{ProjectId: projectId}).
+		WhereIn(dao.WdkReport.Columns().AuditStatus, []uint{2, 3}).Count()
+	return
+}
+
+// SetWdkReportAuditStatus 设置文档库报告审核状态
+func (s *sWdkReport) SetWdkReportAuditStatus(ctx context.Context, id uint64, status uint, excellence uint, auditTime *gtime.Time) (err error) {
+	_, err = dao.WdkReport.Ctx(ctx).Data(do.WdkReport{
+		AuditStatus: status,
+		Excellence:  excellence,
+		AuditTime:   auditTime,
+	}).Where(do.WdkReport{Id: id}).Update()
 	return
 }
 
 // saveWdkReport 保存文档库上传报告记录
-func (s *sWdkReport) saveWdkReport(ctx context.Context, req *v1.WdkReportAddReq, reportCfgInfos []*v1.WdkReportCfgInfo, report *upload.FileInfo) (reportId int64, err error) {
-	user := Context().Get(ctx).User
+func (s *sWdkReport) saveWdkReport(ctx context.Context, user *model.ContextUser, req *v1.WdkReportAddReq, reportCfgInfos []*v1.WdkReportCfgInfo, report *upload.FileInfo) (reportId int64, err error) {
 	if user.IsAdmin == 1 {
 		// 管理员不需要走审核流程
 		reportId, err = dao.WdkReport.Ctx(ctx).Data(do.WdkReport{
@@ -154,8 +171,7 @@ func (s *sWdkReport) saveWdkReport(ctx context.Context, req *v1.WdkReportAddReq,
 }
 
 // saveWdkReportAuditRecord 保存文档库上传报告审核信息
-func (s *sWdkReport) saveWdkReportAudit(ctx context.Context, reportCfgInfos []*v1.WdkReportCfgInfo, reportId uint64) (err error) {
-	user := Context().Get(ctx).User
+func (s *sWdkReport) saveWdkReportAudit(ctx context.Context, user *model.ContextUser, reportCfgInfos []*v1.WdkReportCfgInfo, reportId uint64) (err error) {
 	if user.IsAdmin != 1 {
 		reportAudits := make([]entity.WdkReportAudit, 0, len(reportCfgInfos))
 		reportAuditTypes := make([]entity.WdkReportAuditType, 0, len(reportCfgInfos))

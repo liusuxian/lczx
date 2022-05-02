@@ -21,6 +21,7 @@ type WdkReportAuditDao struct {
 type WdkReportAuditColumns struct {
 	Id        string // 报告ID
 	AuditUid  string // 审核员用户ID
+	ProjectId string // 所属项目ID
 	AuditName string // 审核员姓名
 	Status    string // 审核状态 0:未通过 1:审核中 2:已通过
 	AuditTime string // 审核时间
@@ -32,6 +33,7 @@ type WdkReportAuditColumns struct {
 var wdkReportAuditColumns = WdkReportAuditColumns{
 	Id:        "id",
 	AuditUid:  "audit_uid",
+	ProjectId: "project_id",
 	AuditName: "audit_name",
 	Status:    "status",
 	AuditTime: "audit_time",
