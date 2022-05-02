@@ -40,11 +40,6 @@ func (s *sWdkReportAudit) GetWdkReportAuditList(ctx context.Context, req *v1.Wdk
 	if err != nil {
 		return
 	}
-	err = dao.WdkProject.Ctx(ctx).Where(dao.WdkProject.Columns().Id, gdb.ListItemValuesUnique(list, "Report", "ProjectId")).
-		ScanList(&list, "Project", "Report", "Id:ProjectId")
-	if err != nil {
-		return
-	}
 	err = dao.WdkReportAuditType.Ctx(ctx).Where(dao.WdkReportAuditType.Columns().Id, gdb.ListItemValuesUnique(list, "ReportAudit", "Id")).
 		Where(do.WdkReportAuditType{AuditUid: user.Id}).ScanList(&list, "ReportAuditType", "ReportAudit", "Id:Id")
 	return
@@ -60,11 +55,6 @@ func (s *sWdkReportAudit) GetWdkReportBeAuditedList(ctx context.Context, req *v1
 		return
 	}
 	err = model.Page(req.CurPage, req.PageSize).OrderDesc(columns.CreateAt).ScanList(&list, "Report")
-	if err != nil {
-		return
-	}
-	err = dao.WdkProject.Ctx(ctx).Where(dao.WdkProject.Columns().Id, gdb.ListItemValuesUnique(list, "Report", "ProjectId")).
-		ScanList(&list, "Project", "Report", "Id:ProjectId")
 	if err != nil {
 		return
 	}

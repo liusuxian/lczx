@@ -23,7 +23,6 @@ type WdkReportAuditListRes struct {
 // WdkReportAuditInfo 文档库报告审核记录信息
 type WdkReportAuditInfo struct {
 	Report          *entity.WdkReport            `json:"report" dc:"文档库报告信息"`            // 文档库报告信息
-	Project         *entity.WdkProject           `json:"project" dc:"所属项目信息"`            // 所属项目信息
 	ReportAudit     *entity.WdkReportAudit       `json:"reportAudit" dc:"文档库报告审核信息"`     // 文档库报告审核信息
 	ReportAuditType []*entity.WdkReportAuditType `json:"reportAuditType" dc:"文档库报告审核类型"` // 文档库报告审核类型
 }
@@ -46,7 +45,6 @@ type WdkReportBeAuditedListRes struct {
 // WdkReportBeAuditedInfo 文档库报告被审核记录信息
 type WdkReportBeAuditedInfo struct {
 	Report          *entity.WdkReport            `json:"report" dc:"文档库报告信息"`              // 文档库报告信息
-	Project         *entity.WdkProject           `json:"project" dc:"所属项目信息"`              // 所属项目信息
 	ReportAudit     []*entity.WdkReportAudit     `json:"reportAudit" dc:"文档库报告审核信息列表"`     // 文档库报告审核信息列表
 	ReportAuditType []*entity.WdkReportAuditType `json:"reportAuditType" dc:"文档库报告审核类型列表"` // 文档库报告审核类型列表
 }

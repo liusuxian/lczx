@@ -89,6 +89,24 @@ func (s *sWdkReport) AddWdkReport(ctx context.Context, req *v1.WdkReportAddReq, 
 	return
 }
 
+func (s *sWdkReport) GetWdkReportExcellenceList(ctx context.Context, req *v1.WdkReportExcellenceListReq) (total int, list []*v1.WdkReportExcellenceInfo, err error) {
+	dao.WdkReport.Ctx(ctx).Where(do.WdkReport{
+		Excellence: req.Excellence,
+	})
+
+	model := dao.WdkReportType.Ctx(ctx)
+	columns := dao.WdkReportType.Columns()
+	if req.TypeId != "" {
+		model = model.Where(columns.TypeId, gconv.Uint(req.TypeId))
+	}
+
+	total, err = model.Count()
+	if err != nil {
+		return
+	}
+	return
+}
+
 // AuthAdd 检查新增文档库上传报告记录权限
 func (s *sWdkReport) AuthAdd(ctx context.Context, projectId uint64) (wdkProject *entity.WdkProject, err error) {
 	// 通过文档库项目ID判断文档库项目信息是否存在

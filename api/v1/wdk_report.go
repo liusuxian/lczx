@@ -47,4 +47,7 @@ type WdkReportExcellenceListReq struct {
 
 // WdkReportExcellenceListRes 文档库优秀报告列表返回参数
 type WdkReportExcellenceListRes struct {
+	CurPage int              `json:"curPage" dc:"当前页码"`     // 当前页码
+	Total   int              `json:"total" dc:"数据总量"`       // 数据总量
+	List    []*WdkReportInfo `json:"list" dc:"文档库上传报告信息列表"` // 文档库上传报告信息列表
 }
