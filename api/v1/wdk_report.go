@@ -51,3 +51,14 @@ type WdkReportExcellenceListRes struct {
 	Total   int              `json:"total" dc:"数据总量"`       // 数据总量
 	List    []*WdkReportInfo `json:"list" dc:"文档库上传报告信息列表"` // 文档库上传报告信息列表
 }
+
+// WdkReportChooseExcellenceReq 文档库报告评选优秀报告请求参数
+type WdkReportChooseExcellenceReq struct {
+	g.Meta     `path:"/chooseExcellence" tags:"WdkReportChooseExcellence" method:"put" summary:"You first wdk/report/chooseExcellence api"`
+	Id         uint64 `json:"id" v:"required|regex:^[1-9]\\d*$#报告ID不能为空|报告ID必须为正整数" dc:"报告ID"`
+	Excellence uint   `json:"excellence" v:"required|in:0,2#是否是优秀报告不能为空|是否是优秀报告只能是0,2" dc:"是否是优秀报告 0:未被评选为优秀报告 2:已被评选为优秀报告"` // 是否是优秀报告 0:未被评选为优秀报告 2:已被评选为优秀报告
+}
+
+// WdkReportChooseExcellenceRes 文档库报告评选优秀报告返回参数
+type WdkReportChooseExcellenceRes struct {
+}

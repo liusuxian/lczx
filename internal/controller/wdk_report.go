@@ -77,3 +77,14 @@ func (c *cWdkReport) ExcellenceList(ctx context.Context, req *v1.WdkReportExcell
 	}
 	return
 }
+
+// ChooseExcellence 文档库报告评选优秀报告
+func (c *cWdkReport) ChooseExcellence(ctx context.Context, req *v1.WdkReportChooseExcellenceReq) (res *v1.WdkReportChooseExcellenceRes, err error) {
+	err = service.WdkReport().SetWdkReportExcellence(ctx, req.Id, req.Excellence)
+	if err != nil {
+		err = gerror.WrapCode(code.WdkReportChooseExcellenceFailed, err)
+		return
+	}
+
+	return
+}
