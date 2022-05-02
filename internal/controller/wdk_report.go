@@ -59,3 +59,21 @@ func (c *cWdkReport) Add(ctx context.Context, req *v1.WdkReportAddReq) (res *v1.
 
 	return
 }
+
+// ExcellenceList 文档库优秀报告列表
+func (c *cWdkReport) ExcellenceList(ctx context.Context, req *v1.WdkReportExcellenceListReq) (res *v1.WdkReportExcellenceListRes, err error) {
+	var total int
+	var list []*v1.WdkReportInfo
+	total, list, err = service.WdkReport().GetWdkReportExcellenceList(ctx, req)
+	if err != nil {
+		err = gerror.WrapCode(code.GetWdkReportExcellenceListFailed, err)
+		return
+	}
+
+	res = &v1.WdkReportExcellenceListRes{
+		CurPage: req.CurPage,
+		Total:   total,
+		List:    list,
+	}
+	return
+}

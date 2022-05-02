@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"github.com/gogf/gf/v2/container/gset"
+	"github.com/gogf/gf/v2/container/gvar"
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
@@ -89,21 +90,41 @@ func (s *sWdkReport) AddWdkReport(ctx context.Context, req *v1.WdkReportAddReq, 
 	return
 }
 
-func (s *sWdkReport) GetWdkReportExcellenceList(ctx context.Context, req *v1.WdkReportExcellenceListReq) (total int, list []*v1.WdkReportExcellenceInfo, err error) {
-	dao.WdkReport.Ctx(ctx).Where(do.WdkReport{
-		Excellence: req.Excellence,
-	})
-
-	model := dao.WdkReportType.Ctx(ctx)
-	columns := dao.WdkReportType.Columns()
+// GetWdkReportExcellenceList 获取文档库优秀报告列表
+func (s *sWdkReport) GetWdkReportExcellenceList(ctx context.Context, req *v1.WdkReportExcellenceListReq) (total int, list []*v1.WdkReportInfo, err error) {
+	var reportIds []uint64
 	if req.TypeId != "" {
-		model = model.Where(columns.TypeId, gconv.Uint(req.TypeId))
+		var array []*gvar.Var
+		array, err = dao.WdkReportType.Ctx(ctx).Fields(dao.WdkReportType.Columns().Id).Where(do.WdkReportType{TypeId: req.TypeId}).Array()
+		if err != nil {
+			return
+		}
+		reportIds = make([]uint64, 0, len(array))
+		for _, v := range array {
+			reportIds = append(reportIds, v.Uint64())
+		}
 	}
-
-	total, err = model.Count()
+	reportModel := dao.WdkReport.Ctx(ctx).Where(do.WdkReport{Excellence: req.Excellence})
+	columns := dao.WdkReport.Columns()
+	if len(reportIds) != 0 {
+		reportModel = reportModel.WhereIn(columns.Id, reportIds)
+	}
+	if req.ReportName != "" {
+		reportModel = reportModel.WhereLike(columns.Name, "%"+req.ReportName+"%")
+	}
+	if req.ProjectName != "" {
+		reportModel = reportModel.WhereLike(columns.ProjectName, "%"+req.ProjectName+"%")
+	}
+	total, err = reportModel.Count()
 	if err != nil {
 		return
 	}
+	err = reportModel.Page(req.CurPage, req.PageSize).OrderDesc(columns.AuditTime).Scan(&list)
+	if err != nil {
+		return
+	}
+	err = dao.WdkReportType.Ctx(ctx).Where(dao.WdkReportType.Columns().Id, gdb.ListItemValuesUnique(list, "Report", "Id")).
+		ScanList(&list, "ReportType", "Report", "Id:Id")
 	return
 }
 
