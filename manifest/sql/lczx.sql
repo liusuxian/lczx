@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 02/05/2022 16:15:33
+ Date: 02/05/2022 17:36:53
 */
 
 SET NAMES utf8mb4;
@@ -495,6 +495,7 @@ CREATE TABLE `wdk_report_audit` (
   `project_id` bigint unsigned NOT NULL COMMENT '所属项目ID',
   `audit_name` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '审核员姓名',
   `status` tinyint unsigned NOT NULL COMMENT '审核状态 0:未通过 1:审核中 2:已通过',
+  `excellence` tinyint unsigned NOT NULL COMMENT '是否被推荐为优秀报告 0:未被推荐为优秀报告 1:已被推荐为优秀报告',
   `audit_time` datetime DEFAULT NULL COMMENT '审核时间',
   `create_at` datetime DEFAULT NULL COMMENT '创建时间',
   `update_at` datetime DEFAULT NULL COMMENT '更新时间',

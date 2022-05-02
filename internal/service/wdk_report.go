@@ -116,22 +116,17 @@ func (s *sWdkReport) GetWdkReportCountByProjectId(ctx context.Context, projectId
 	return
 }
 
-// SetWdkReportRecommendExcellence 设置文档库报告被推荐为优秀报告
-func (s *sWdkReport) SetWdkReportRecommendExcellence(ctx context.Context, id uint64) (err error) {
-	_, err = dao.WdkReport.Ctx(ctx).Data(do.WdkReport{Excellence: 1}).Where(do.WdkReport{Id: id}).Update()
-	return
-}
-
-// SetWdkReportChooseExcellence 设置文档库报告被评选为优秀报告
-func (s *sWdkReport) SetWdkReportChooseExcellence(ctx context.Context, id uint64) (err error) {
-	_, err = dao.WdkReport.Ctx(ctx).Data(do.WdkReport{Excellence: 2}).Where(do.WdkReport{Id: id}).Update()
+// SetWdkReportExcellence 设置文档库报告是否被评选为优秀报告
+func (s *sWdkReport) SetWdkReportExcellence(ctx context.Context, id uint64, excellence uint) (err error) {
+	_, err = dao.WdkReport.Ctx(ctx).Data(do.WdkReport{Excellence: excellence}).Where(do.WdkReport{Id: id}).Update()
 	return
 }
 
 // SetWdkReportAuditCompleteStatus 设置文档库报告审核完成状态
-func (s *sWdkReport) SetWdkReportAuditCompleteStatus(ctx context.Context, id uint64, status uint, auditTime *gtime.Time) (err error) {
+func (s *sWdkReport) SetWdkReportAuditCompleteStatus(ctx context.Context, id uint64, status, excellence uint, auditTime *gtime.Time) (err error) {
 	_, err = dao.WdkReport.Ctx(ctx).Data(do.WdkReport{
 		AuditStatus: status,
+		Excellence:  excellence,
 		AuditTime:   auditTime,
 	}).Where(do.WdkReport{Id: id}).Update()
 	return
@@ -189,11 +184,12 @@ func (s *sWdkReport) saveWdkReportAudit(ctx context.Context, user *model.Context
 		for _, reportCfgInfo := range reportCfgInfos {
 			for _, reportAuditCfgInfo := range reportCfgInfo.ReportAuditCfg {
 				reportAudits = append(reportAudits, entity.WdkReportAudit{
-					Id:        reportId,
-					AuditUid:  reportAuditCfgInfo.AuditUid,
-					ProjectId: projectId,
-					AuditName: reportAuditCfgInfo.AuditName,
-					Status:    1,
+					Id:         reportId,
+					AuditUid:   reportAuditCfgInfo.AuditUid,
+					ProjectId:  projectId,
+					AuditName:  reportAuditCfgInfo.AuditName,
+					Status:     1,
+					Excellence: 0,
 				})
 				reportAuditTypes = append(reportAuditTypes, entity.WdkReportAuditType{
 					Id:       reportId,

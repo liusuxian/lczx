@@ -10,12 +10,13 @@ import (
 
 // WdkReportAudit is the golang structure for table wdk_report_audit.
 type WdkReportAudit struct {
-	Id        uint64      `json:"id"        description:"报告ID"`                   // 报告ID
-	AuditUid  uint64      `json:"auditUid"  description:"审核员用户ID"`                // 审核员用户ID
-	ProjectId uint64      `json:"projectId" description:"所属项目ID"`                 // 所属项目ID
-	AuditName string      `json:"auditName" description:"审核员姓名"`                  // 审核员姓名
-	Status    uint        `json:"status"    description:"审核状态 0:未通过 1:审核中 2:已通过"` // 审核状态 0:未通过 1:审核中 2:已通过
-	AuditTime *gtime.Time `json:"auditTime" description:"审核时间"`                   // 审核时间
-	CreateAt  *gtime.Time `json:"createAt"  description:"创建时间"`                   // 创建时间
-	UpdateAt  *gtime.Time `json:"updateAt"  description:"更新时间"`                   // 更新时间
+	Id         uint64      `json:"id"         description:"报告ID"`                               // 报告ID
+	AuditUid   uint64      `json:"auditUid"   description:"审核员用户ID"`                            // 审核员用户ID
+	ProjectId  uint64      `json:"projectId"  description:"所属项目ID"`                             // 所属项目ID
+	AuditName  string      `json:"auditName"  description:"审核员姓名"`                              // 审核员姓名
+	Status     uint        `json:"status"     description:"审核状态 0:未通过 1:审核中 2:已通过"`             // 审核状态 0:未通过 1:审核中 2:已通过
+	Excellence uint        `json:"excellence" description:"是否被推荐为优秀报告 0:未被推荐为优秀报告 1:已被推荐为优秀报告"` // 是否被推荐为优秀报告 0:未被推荐为优秀报告 1:已被推荐为优秀报告
+	AuditTime  *gtime.Time `json:"auditTime"  description:"审核时间"`                               // 审核时间
+	CreateAt   *gtime.Time `json:"createAt"   description:"创建时间"`                               // 创建时间
+	UpdateAt   *gtime.Time `json:"updateAt"   description:"更新时间"`                               // 更新时间
 }

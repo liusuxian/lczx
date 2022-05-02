@@ -19,26 +19,28 @@ type WdkReportAuditDao struct {
 
 // WdkReportAuditColumns defines and stores column names for table wdk_report_audit.
 type WdkReportAuditColumns struct {
-	Id        string // 报告ID
-	AuditUid  string // 审核员用户ID
-	ProjectId string // 所属项目ID
-	AuditName string // 审核员姓名
-	Status    string // 审核状态 0:未通过 1:审核中 2:已通过
-	AuditTime string // 审核时间
-	CreateAt  string // 创建时间
-	UpdateAt  string // 更新时间
+	Id         string // 报告ID
+	AuditUid   string // 审核员用户ID
+	ProjectId  string // 所属项目ID
+	AuditName  string // 审核员姓名
+	Status     string // 审核状态 0:未通过 1:审核中 2:已通过
+	Excellence string // 是否被推荐为优秀报告 0:未被推荐为优秀报告 1:已被推荐为优秀报告
+	AuditTime  string // 审核时间
+	CreateAt   string // 创建时间
+	UpdateAt   string // 更新时间
 }
 
 //  wdkReportAuditColumns holds the columns for table wdk_report_audit.
 var wdkReportAuditColumns = WdkReportAuditColumns{
-	Id:        "id",
-	AuditUid:  "audit_uid",
-	ProjectId: "project_id",
-	AuditName: "audit_name",
-	Status:    "status",
-	AuditTime: "audit_time",
-	CreateAt:  "create_at",
-	UpdateAt:  "update_at",
+	Id:         "id",
+	AuditUid:   "audit_uid",
+	ProjectId:  "project_id",
+	AuditName:  "audit_name",
+	Status:     "status",
+	Excellence: "excellence",
+	AuditTime:  "audit_time",
+	CreateAt:   "create_at",
+	UpdateAt:   "update_at",
 }
 
 // NewWdkReportAuditDao creates and returns a new DAO object for table data access.

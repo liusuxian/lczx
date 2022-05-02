@@ -11,13 +11,14 @@ import (
 
 // WdkReportAudit is the golang structure of table wdk_report_audit for DAO operations like Where/Data.
 type WdkReportAudit struct {
-	g.Meta    `orm:"table:wdk_report_audit, do:true"`
-	Id        interface{} // 报告ID
-	AuditUid  interface{} // 审核员用户ID
-	ProjectId interface{} // 所属项目ID
-	AuditName interface{} // 审核员姓名
-	Status    interface{} // 审核状态 0:未通过 1:审核中 2:已通过
-	AuditTime *gtime.Time // 审核时间
-	CreateAt  *gtime.Time // 创建时间
-	UpdateAt  *gtime.Time // 更新时间
+	g.Meta     `orm:"table:wdk_report_audit, do:true"`
+	Id         interface{} // 报告ID
+	AuditUid   interface{} // 审核员用户ID
+	ProjectId  interface{} // 所属项目ID
+	AuditName  interface{} // 审核员姓名
+	Status     interface{} // 审核状态 0:未通过 1:审核中 2:已通过
+	Excellence interface{} // 是否被推荐为优秀报告 0:未被推荐为优秀报告 1:已被推荐为优秀报告
+	AuditTime  *gtime.Time // 审核时间
+	CreateAt   *gtime.Time // 创建时间
+	UpdateAt   *gtime.Time // 更新时间
 }
