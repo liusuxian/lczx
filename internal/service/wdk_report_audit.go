@@ -6,6 +6,7 @@ import (
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/os/gtime"
 	v1 "lczx/api/v1"
+	"lczx/internal/model/entity"
 	"lczx/internal/service/internal/dao"
 	"lczx/internal/service/internal/do"
 )
@@ -83,41 +84,84 @@ func (s *sWdkReportAudit) HandleWdkReportAudit(ctx context.Context, req *v1.WdkR
 	err = dao.WdkReportAudit.Ctx(ctx).Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		// 通过报告ID和用户ID判断文档库报告审核信息是否存在
 		var terr error
-		var wdkReportAuditExists bool
-		wdkReportAuditExists, terr = s.WdkReportAuditExistsByIdAndUserId(ctx, req.Id, user.Id)
+		var wdkReportAudit *entity.WdkReportAudit
+		wdkReportAudit, terr = s.GetWdkReportAuditByIdAndUid(ctx, req.Id, user.Id)
 		if terr != nil {
 			return terr
 		}
-		if !wdkReportAuditExists {
+		if wdkReportAudit == nil {
 			return gerror.Newf(`文档库报告审核信息[%d]不存在`, req.Id)
 		}
 		// 设置文档库报告审核状态
 		auditTime := gtime.Now()
-		terr = s.SetWdkReportAuditStatus(ctx, req.Id, user.Id, req.AuditStatus, auditTime)
+		terr = s.SetWdkReportAuditStatus(ctx, wdkReportAudit.Id, wdkReportAudit.AuditUid, req.AuditStatus, auditTime)
 		if terr != nil {
 			return terr
 		}
-
-		// 设置所属文档库项目阶段
-		terr = WdkProject().SetWdkProjectStep(ctx, req.ProjectId, req.Type)
+		// 设置文档库报告被推荐为优秀报告
+		if req.AuditStatus == 2 && req.Excellence == 1 {
+			terr = WdkReport().SetWdkReportRecommendExcellence(ctx, wdkReportAudit.Id)
+			if terr != nil {
+				return terr
+			}
+		}
+		// 获取文档库报告审核完成状态
+		var completeStatus uint
+		completeStatus, terr = s.GetWdkReportAuditCompleteStatus(ctx, wdkReportAudit.Id)
 		if terr != nil {
 			return terr
 		}
-		// 设置所属文档库项目文件上传状态为是
-		terr = WdkProject().SetWdkProjectFileUploadStatus(ctx, req.ProjectId)
+		if completeStatus != 1 {
+			// 设置文档库报告审核完成状态
+			terr = WdkReport().SetWdkReportAuditCompleteStatus(ctx, wdkReportAudit.Id, completeStatus, auditTime)
+			if terr != nil {
+				return terr
+			}
+		}
+		if completeStatus == 2 {
+			// 设置所属文档库项目阶段
+			terr = WdkProject().SetWdkProjectStep(ctx, wdkReportAudit.ProjectId, 8)
+			if terr != nil {
+				return terr
+			}
+			// 设置所属文档库项目文件上传状态为是
+			terr = WdkProject().SetWdkProjectFileUploadStatus(ctx, wdkReportAudit.ProjectId)
+			if terr != nil {
+				return terr
+			}
+		}
 		return nil
 	})
-
 	return
 }
 
-// WdkReportAuditExistsByIdAndUserId 通过报告ID和用户ID判断文档库报告审核信息是否存在
-func (s *sWdkReportAudit) WdkReportAuditExistsByIdAndUserId(ctx context.Context, id uint64, userId uint64) (bool, error) {
-	count, err := dao.WdkReportAudit.Ctx(ctx).Where(do.WdkReportAudit{Id: id, AuditUid: userId}).Count()
+// GetWdkReportAuditByIdAndUid 通过报告ID和用户ID获取文档库报告审核信息
+func (s *sWdkReportAudit) GetWdkReportAuditByIdAndUid(ctx context.Context, id uint64, userId uint64) (wdkReportAudit *entity.WdkReportAudit, err error) {
+	err = dao.WdkReportAudit.Ctx(ctx).Where(do.WdkReportAudit{Id: id, AuditUid: userId}).Scan(&wdkReportAudit)
+	return
+}
+
+// GetWdkReportAuditCompleteStatus 获取文档库报告审核完成状态
+func (s *sWdkReportAudit) GetWdkReportAuditCompleteStatus(ctx context.Context, id uint64) (status uint, err error) {
+	var list []*entity.WdkReportAudit
+	err = dao.WdkReportAudit.Ctx(ctx).Where(do.WdkReportAudit{Id: id}).Scan(&list)
 	if err != nil {
-		return false, err
+		return
 	}
-	return count != 0, nil
+	for _, v := range list {
+		if v.Status == 1 {
+			status = 1
+			return
+		}
+	}
+	for _, v := range list {
+		if v.Status == 0 {
+			status = 0
+			return
+		}
+	}
+	status = 2
+	return
 }
 
 // SetWdkReportAuditStatus 设置文档库报告审核状态

@@ -128,8 +128,8 @@ func (s *sWdkReport) SetWdkReportChooseExcellence(ctx context.Context, id uint64
 	return
 }
 
-// SetWdkReportAuditStatus 设置文档库报告审核状态
-func (s *sWdkReport) SetWdkReportAuditStatus(ctx context.Context, id uint64, status uint, auditTime *gtime.Time) (err error) {
+// SetWdkReportAuditCompleteStatus 设置文档库报告审核完成状态
+func (s *sWdkReport) SetWdkReportAuditCompleteStatus(ctx context.Context, id uint64, status uint, auditTime *gtime.Time) (err error) {
 	_, err = dao.WdkReport.Ctx(ctx).Data(do.WdkReport{
 		AuditStatus: status,
 		AuditTime:   auditTime,
