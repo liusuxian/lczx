@@ -38,7 +38,7 @@ type WdkReportAddRes struct {
 type WdkReportExcellenceListReq struct {
 	g.Meta      `path:"/excellenceList" tags:"WdkReportExcellenceList" method:"get" summary:"You first wdk/report/excellenceList api"`
 	Excellence  uint   `json:"excellence" v:"required|in:1,2#是否是优秀报告不能为空|是否是优秀报告只能是1,2" dc:"是否是优秀报告 1:被推荐为优秀报告 2:已被评选为优秀报告"`  // 是否是优秀报告 1:被推荐为优秀报告 2:已被评选为优秀报告
-	TypeId      uint64 `json:"typeId" v:"regex:^[1-9]\\d*$#报告类型ID必须为正整数" dc:"报告类型ID"`                                         // 报告类型ID
+	TypeId      string `json:"typeId" v:"regex:^[1-9]\\d*$#报告类型ID必须为正整数" dc:"报告类型ID"`                                         // 报告类型ID
 	ReportName  string `json:"reportName" dc:"报告名称"`                                                                          // 报告名称
 	ProjectName string `json:"projectName" v:"regex:^[\u4e00-\u9fa5\\w]{0,100}#所属项目名称只能包含中文、英文、数字和下划线且长度不能超过100" dc:"所属项目名称"` // 所属项目名称
 	CurPage     int    `json:"curPage" v:"required|regex:^[1-9]\\d*$#当前页码不能为空|当前页码必须为正整数" dc:"当前页码"`                          // 当前页码
