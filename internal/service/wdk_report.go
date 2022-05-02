@@ -104,7 +104,7 @@ func (s *sWdkReport) GetWdkReportExcellenceList(ctx context.Context, req *v1.Wdk
 			reportIds = append(reportIds, v.Uint64())
 		}
 	}
-	reportModel := dao.WdkReport.Ctx(ctx).Where(do.WdkReport{Excellence: req.Excellence})
+	reportModel := dao.WdkReport.Ctx(ctx).Where(do.WdkReport{Excellence: req.Excellence, AuditStatus: 2})
 	columns := dao.WdkReport.Columns()
 	if len(reportIds) != 0 {
 		reportModel = reportModel.WhereIn(columns.Id, reportIds)
@@ -119,7 +119,7 @@ func (s *sWdkReport) GetWdkReportExcellenceList(ctx context.Context, req *v1.Wdk
 	if err != nil {
 		return
 	}
-	err = reportModel.Page(req.CurPage, req.PageSize).OrderDesc(columns.AuditTime).Scan(&list)
+	err = reportModel.Page(req.CurPage, req.PageSize).OrderDesc(columns.AuditTime).ScanList(&list, "Report")
 	if err != nil {
 		return
 	}
