@@ -110,8 +110,7 @@ func (s *sUserManager) AddUser(ctx context.Context, req *v1.UserAddReq) (err err
 			return terr
 		}
 		if !available {
-			terr = gerror.Newf(`账号[%s]已存在`, req.Passport)
-			return terr
+			return gerror.Newf(`账号[%s]已存在`, req.Passport)
 		}
 		// 检查用户手机是否可用
 		available, terr = s.IsMobileAvailable(ctx, req.Mobile)
@@ -119,8 +118,7 @@ func (s *sUserManager) AddUser(ctx context.Context, req *v1.UserAddReq) (err err
 			return terr
 		}
 		if !available {
-			terr = gerror.Newf(`手机[%s]已存在`, req.Mobile)
-			return terr
+			return gerror.Newf(`手机[%s]已存在`, req.Mobile)
 		}
 		// 通过部门ID判断部门信息是否存在
 		var deptExists bool
@@ -129,8 +127,7 @@ func (s *sUserManager) AddUser(ctx context.Context, req *v1.UserAddReq) (err err
 			return terr
 		}
 		if !deptExists {
-			terr = gerror.Newf(`部门ID[%d]不存在`, req.DeptId)
-			return terr
+			return gerror.Newf(`部门ID[%d]不存在`, req.DeptId)
 		}
 		// 保存用户数据
 		var userId int64
@@ -176,8 +173,7 @@ func (s *sUserManager) EditUser(ctx context.Context, req *v1.UserEditReq) (err e
 			return terr
 		}
 		if user == nil {
-			terr = gerror.Newf(`用户ID[%d]不存在`, req.Id)
-			return terr
+			return gerror.Newf(`用户ID[%d]不存在`, req.Id)
 		}
 		if user.Mobile != req.Mobile {
 			var available bool
@@ -186,8 +182,7 @@ func (s *sUserManager) EditUser(ctx context.Context, req *v1.UserEditReq) (err e
 				return terr
 			}
 			if !available {
-				terr = gerror.Newf(`手机[%s]已存在`, req.Mobile)
-				return terr
+				return gerror.Newf(`手机[%s]已存在`, req.Mobile)
 			}
 		}
 		// 通过部门ID判断部门信息是否存在
@@ -197,8 +192,7 @@ func (s *sUserManager) EditUser(ctx context.Context, req *v1.UserEditReq) (err e
 			return terr
 		}
 		if !deptExists {
-			terr = gerror.Newf(`部门ID[%d]不存在`, req.DeptId)
-			return terr
+			return gerror.Newf(`部门ID[%d]不存在`, req.DeptId)
 		}
 		// 更新用户数据
 		terr = s.updateUser(ctx, req)

@@ -50,3 +50,15 @@ type WdkReportBeAuditedInfo struct {
 	ReportAudit     []*entity.WdkReportAudit     `json:"reportAudit" dc:"文档库报告审核信息列表"`     // 文档库报告审核信息列表
 	ReportAuditType []*entity.WdkReportAuditType `json:"reportAuditType" dc:"文档库报告审核类型列表"` // 文档库报告审核类型列表
 }
+
+// WdkReportAuditReq 文档库报告审核请求参数
+type WdkReportAuditReq struct {
+	g.Meta      `path:"/audit" tags:"WdkReportAudit" method:"put" summary:"You first wdk/reportAudit/audit api"`
+	Id          uint64 `json:"id" v:"required|regex:^[1-9]\\d*$#报告ID不能为空|报告ID必须为正整数" dc:"报告ID"`                                               // 报告ID
+	AuditStatus uint   `json:"auditStatus" v:"required|in:0,2#审核状态不能为空|审核状态只能是0,2" dc:"审核状态 0:未通过 2:已通过"`                                     // 审核状态 0:未通过 2:已通过
+	Excellence  uint   `json:"excellence" v:"required-if:AuditStatus,2|in:0,1#是否是优秀报告不能为空|是否是优秀报告只能是0,1" dc:"是否是优秀报告 0:未被评选为优秀报告 1:被推荐为优秀报告"` // 是否是优秀报告 0:未被评选为优秀报告 1:被推荐为优秀报告
+}
+
+// WdkReportAuditRes 文档库报告审核返回参数
+type WdkReportAuditRes struct {
+}

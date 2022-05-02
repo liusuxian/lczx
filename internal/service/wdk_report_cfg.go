@@ -53,8 +53,7 @@ func (s *sWdkReportCfg) AddWdkReportCfg(ctx context.Context, req *v1.WdkReportCf
 			return terr
 		}
 		if !available {
-			terr = gerror.Newf(`文档库报告类型名称[%s]已存在`, req.Name)
-			return terr
+			return gerror.Newf(`文档库报告类型名称[%s]已存在`, req.Name)
 		}
 		// 写入文档库报告类型配置数据
 		var typeId int64
@@ -111,8 +110,7 @@ func (s *sWdkReportCfg) EditWdkReportCfg(ctx context.Context, req *v1.WdkReportC
 				return terr
 			}
 			if !available {
-				terr = gerror.Newf(`文档库报告类型名称[%s]已存在`, req.Name)
-				return terr
+				return gerror.Newf(`文档库报告类型名称[%s]已存在`, req.Name)
 			}
 		}
 		// 更新文档库报告类型配置数据

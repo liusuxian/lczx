@@ -62,8 +62,7 @@ func (s *sRole) AddRole(ctx context.Context, req *v1.RoleAddReq) (err error) {
 			return terr
 		}
 		if !available {
-			terr = gerror.Newf(`角色名称[%s]已存在`, req.Name)
-			return terr
+			return gerror.Newf(`角色名称[%s]已存在`, req.Name)
 		}
 		// 保存角色
 		var roleId int64
@@ -95,8 +94,7 @@ func (s *sRole) EditRole(ctx context.Context, req *v1.RoleEditReq) (err error) {
 			return terr
 		}
 		if role == nil {
-			terr = gerror.Newf(`角色ID[%d]不存在`, req.Id)
-			return terr
+			return gerror.Newf(`角色ID[%d]不存在`, req.Id)
 		}
 		// 检查角色名称是否可用
 		if role.Name != req.Name {
@@ -106,8 +104,7 @@ func (s *sRole) EditRole(ctx context.Context, req *v1.RoleEditReq) (err error) {
 				return terr
 			}
 			if !available {
-				terr = gerror.Newf(`角色名称[%s]已存在`, req.Name)
-				return terr
+				return gerror.Newf(`角色名称[%s]已存在`, req.Name)
 			}
 		}
 		// 更新角色
