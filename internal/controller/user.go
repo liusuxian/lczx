@@ -31,11 +31,17 @@ func (c *cUser) Info(ctx context.Context, req *v1.UserInfoReq) (res *v1.UserInfo
 	userInfo.Password = ""
 	userInfo.Salt = ""
 	// 获取用户角色ID列表
-	var roleIds []uint64
-	roleIds, err = service.Role().GetUserRoleIds(ctx, user.Id)
+	var roles []*entity.Role
+	roles, err = service.Role().GetUserRoles(ctx, user.Id)
 	if err != nil {
 		err = gerror.WrapCode(code.GetUserFailed, err)
 		return
+	}
+	roleNames := make([]string, len(roles))
+	roleIds := make([]uint64, len(roles))
+	for k, v := range roles {
+		roleNames[k] = v.Name
+		roleIds[k] = v.Id
 	}
 	// 获取用户菜单
 	var menuList []string
@@ -60,6 +66,7 @@ func (c *cUser) Info(ctx context.Context, req *v1.UserInfoReq) (res *v1.UserInfo
 	res = &v1.UserInfoRes{
 		User:     userInfo,
 		MenuList: menuList,
+		Roles:    roleNames,
 	}
 	return
 }

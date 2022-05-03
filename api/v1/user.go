@@ -9,13 +9,14 @@ import (
 
 // UserInfoReq 获取用户信息请求参数
 type UserInfoReq struct {
-	g.Meta `path:"/info" tags:"UserInfo" method:"post" summary:"You first user/info api"`
+	g.Meta `path:"/info" tags:"UserInfo" method:"get" summary:"You first user/info api"`
 }
 
 // UserInfoRes 获取用户信息返回参数
 type UserInfoRes struct {
 	User     *entity.User `json:"user" dc:"用户信息"`       // 用户信息
 	MenuList []string     `json:"menuList" dc:"用户菜单列表"` // 用户菜单列表
+	Roles    []string     `json:"roles" dc:"角色名称列表"`    // 角色名称列表
 }
 
 // UserProfileReq 获取个人中心信息请求参数
