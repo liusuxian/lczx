@@ -124,13 +124,13 @@ func (s *sDept) EditDept(ctx context.Context, req *v1.DeptEditReq) (err error) {
 	}
 	// 获取部门ID下所有的子部门ID
 	idsMap := gmap.New()
-	s.FindSonIdsByParentId(allDepts, req.Id, idsMap)
+	s.FindSonIdsByParentId(allDepts, dept.Id, idsMap)
 	if idsMap.Contains(req.ParentId) {
 		err = gerror.Newf(`父部门ID[%d]是部门ID[%d]的子部门ID`, req.ParentId, req.Id)
 		return
 	}
 	// 更新部门数据
-	err = s.updateDept(ctx, req)
+	err = s.updateDept(ctx, req, idsMap.Keys())
 	return
 }
 
@@ -294,17 +294,35 @@ func (s *sDept) saveDept(ctx context.Context, req *v1.DeptAddReq) (err error) {
 }
 
 // updateDept 更新部门数据
-func (s *sDept) updateDept(ctx context.Context, req *v1.DeptEditReq) (err error) {
+func (s *sDept) updateDept(ctx context.Context, req *v1.DeptEditReq, ids []any) (err error) {
 	user := Context().Get(ctx).User
-	_, err = dao.Dept.Ctx(ctx).Cache(gdb.CacheOption{
-		Duration: -1,
-		Name:     consts.DeptKey,
-		Force:    false,
-	}).Data(do.Dept{
-		ParentId:  req.ParentId,
-		Name:      req.Name,
-		Status:    req.Status,
-		UpdatedBy: user.Id,
-	}).Where(do.Dept{Id: req.Id}).Update()
+	err = dao.Dept.Ctx(ctx).Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
+		var terr error
+		_, terr = dao.Dept.Ctx(ctx).Data(do.Dept{
+			ParentId:  req.ParentId,
+			Name:      req.Name,
+			Status:    req.Status,
+			UpdatedBy: user.Id,
+		}).Where(do.Dept{Id: req.Id}).Update()
+		if terr != nil {
+			return terr
+		}
+
+		if req.Status == 0 {
+			_, terr = dao.Dept.Ctx(ctx).Data(do.Dept{
+				Status:    req.Status,
+				UpdatedBy: user.Id,
+			}).WhereIn(dao.Dept.Columns().Id, ids).Update()
+			if terr != nil {
+				return terr
+			}
+		}
+		return nil
+	})
+	if err != nil {
+		return
+	}
+	// 清除部门缓存
+	err = Cache().ClearCache(ctx, consts.DeptKey)
 	return
 }

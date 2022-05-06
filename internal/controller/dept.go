@@ -4,12 +4,10 @@ import (
 	"context"
 	"github.com/gogf/gf/v2/container/gmap"
 	"github.com/gogf/gf/v2/errors/gerror"
-	"github.com/gogf/gf/v2/text/gstr"
 	v1 "lczx/api/v1"
 	"lczx/internal/code"
 	"lczx/internal/model/entity"
 	"lczx/internal/service"
-	"lczx/utility/utils"
 )
 
 var (
@@ -64,13 +62,38 @@ func (c *cDept) Info(ctx context.Context, req *v1.DeptInfoReq) (res *v1.DeptInfo
 		err = gerror.WrapCode(code.GetDeptFailed, err)
 		return
 	}
-	// 获取部门信息
-	deptNames := service.Dept().GetDeptAllNameById(allDepts, req.Id)
-	utils.Reverse(deptNames)
+	// 获取部门信息和父部门信息
+	var parentIdStatus uint = 1
 	dept := service.Dept().GetDeptById(allDepts, req.Id)
-	dept.Name = gstr.Join(deptNames, "/")
+	if dept.ParentId != 0 {
+		parentDept := service.Dept().GetDeptById(allDepts, dept.ParentId)
+		parentIdStatus = parentDept.Status
+	}
+	// 获取所有的子部门ID
+	idsMap := gmap.New()
+	idsMap.Set(dept.Id, true)
+	service.Dept().FindSonIdsByParentId(allDepts, dept.Id, idsMap)
+	// 获取部门状态为正常的部门列表
+	var enableDepts []*entity.Dept
+	enableDepts, err = service.Dept().GetStatusEnableDepts(ctx)
+	if err != nil {
+		err = gerror.WrapCode(code.GetDeptFailed, err)
+		return
+	}
+	// 删除自己以及所有的子部门
+	newEnableDepts := make([]*entity.Dept, 0, len(enableDepts))
+	for _, v := range enableDepts {
+		if !idsMap.Contains(v.Id) {
+			newEnableDepts = append(newEnableDepts, v)
+		}
+	}
+	list := service.Dept().GetDeptTree(newEnableDepts, 0)
 
-	res = &v1.DeptInfoRes{Info: dept}
+	res = &v1.DeptInfoRes{
+		Info:           dept,
+		List:           list,
+		ParentIdStatus: parentIdStatus,
+	}
 	return
 }
 

@@ -43,7 +43,9 @@ type DeptInfoReq struct {
 
 // DeptInfoRes 获取部门信息返回参数
 type DeptInfoRes struct {
-	Info *entity.Dept `json:"info" dc:"部门信息"` // 部门信息
+	Info           *entity.Dept    `json:"info" dc:"部门信息"`            // 部门信息
+	List           []*DeptTreeInfo `json:"list" dc:"部门树列表"`           // 部门树列表
+	ParentIdStatus uint            `json:"parentIdStatus" dc:"父部门状态"` // 父部门状态
 }
 
 // DeptEditReq 编辑部门请求参数
