@@ -9,7 +9,6 @@ import (
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gctx"
-	"github.com/gogf/gf/v2/text/gstr"
 	"github.com/gogf/gf/v2/util/gconv"
 	"github.com/gogf/gf/v2/util/grand"
 	v1 "lczx/api/v1"
@@ -304,11 +303,10 @@ func (s *sUserManager) GetProfileList(ctx context.Context, userList []*entity.Us
 			User: u,
 		}
 		// 处理部门信息
-		deptNames := Dept().GetDeptAllNameById(allDepts, u.DeptId)
-		utils.Reverse(deptNames)
 		dept := Dept().GetDeptById(allDepts, u.DeptId)
-		dept.Name = gstr.Join(deptNames, "/")
-		profileInfos[k].Dept = dept
+		deptInfo := Dept().CopyDept(dept)
+		deptInfo.Name = Dept().GetDeptAllNameById(allDepts, u.DeptId)
+		profileInfos[k].Dept = deptInfo
 		// 处理角色信息
 		var roles []*entity.Role
 		roles, err = Role().GetUserRoles(ctx, u.Id)

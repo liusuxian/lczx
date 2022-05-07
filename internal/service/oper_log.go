@@ -78,9 +78,7 @@ func (s *sOperLog) Invoke(req *ghttp.Request) {
 		logger.Error(ctx, "Invoke GetStatusEnableDepts Error: ", err.Error())
 		return
 	}
-	deptNames := Dept().GetDeptAllNameById(depts, curUser.DeptId)
-	utils.Reverse(deptNames)
-	data.DeptName = gstr.Join(deptNames, "/")
+	data.DeptName = Dept().GetDeptAllNameById(depts, curUser.DeptId)
 	// 请求URL
 	rawQuery := url.RawQuery
 	if rawQuery != "" {

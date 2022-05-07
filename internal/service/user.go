@@ -4,7 +4,6 @@ import (
 	"context"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/os/gtime"
-	"github.com/gogf/gf/v2/text/gstr"
 	"github.com/gogf/gf/v2/util/grand"
 	v1 "lczx/api/v1"
 	"lczx/internal/model/entity"
@@ -80,10 +79,9 @@ func (s *sUser) GetProfile(ctx context.Context) (profileInfo *v1.UserProfileInfo
 		return
 	}
 	// 获取部门信息
-	deptNames := Dept().GetDeptAllNameById(depts, userInfo.DeptId)
-	utils.Reverse(deptNames)
 	dept := Dept().GetDeptById(depts, userInfo.DeptId)
-	dept.Name = gstr.Join(deptNames, "/")
+	deptInfo := Dept().CopyDept(dept)
+	deptInfo.Name = Dept().GetDeptAllNameById(depts, userInfo.DeptId)
 	// 获取用户角色
 	var roles []*entity.Role
 	roles, err = Role().GetUserRoles(ctx, userInfo.Id)
@@ -93,7 +91,7 @@ func (s *sUser) GetProfile(ctx context.Context) (profileInfo *v1.UserProfileInfo
 
 	profileInfo = &v1.UserProfileInfo{
 		User:  userInfo,
-		Dept:  dept,
+		Dept:  deptInfo,
 		Roles: roles,
 	}
 	return

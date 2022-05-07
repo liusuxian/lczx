@@ -6,12 +6,14 @@ import (
 	"github.com/gogf/gf/v2/container/gvar"
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/errors/gerror"
+	"github.com/gogf/gf/v2/text/gstr"
 	"github.com/gogf/gf/v2/util/gconv"
 	v1 "lczx/api/v1"
 	"lczx/internal/consts"
 	"lczx/internal/model/entity"
 	"lczx/internal/service/internal/dao"
 	"lczx/internal/service/internal/do"
+	"lczx/utility/utils"
 )
 
 type sDept struct{}
@@ -254,15 +256,36 @@ func (s *sDept) GetDeptIdsByRoleId(ctx context.Context, id uint64) (deptIds []ui
 }
 
 // GetDeptAllNameById 通过部门ID获取部门名称全称
-func (s *sDept) GetDeptAllNameById(deptList []*entity.Dept, id uint64) (deptNames []string) {
-	deptNames = make([]string, 0, len(deptList))
-	for _, d := range deptList {
-		if d.Id == id {
-			deptNames = append(deptNames, d.Name)
-			parent := s.GetDeptAllNameById(deptList, d.ParentId)
-			deptNames = append(deptNames, parent...)
+func (s *sDept) GetDeptAllNameById(deptList []*entity.Dept, id uint64) (deptAllName string) {
+	deptNameList := make([]string, 0, len(deptList))
+	s.GetDeptNameListById(deptList, id, &deptNameList)
+	utils.Reverse(deptNameList)
+	deptAllName = gstr.Join(deptNameList, "/")
+	return
+}
+
+// GetDeptNameListById 通过部门ID获取部门名称列表
+func (s *sDept) GetDeptNameListById(deptList []*entity.Dept, id uint64, deptNameList *[]string) {
+	for _, v := range deptList {
+		if v.Id == id {
+			*deptNameList = append(*deptNameList, v.Name)
+			s.GetDeptNameListById(deptList, v.ParentId, deptNameList)
 		}
 	}
+}
+
+// CopyDept 拷贝部门信息
+func (s *sDept) CopyDept(srcDept *entity.Dept) (dstDept *entity.Dept) {
+	dstDept = new(entity.Dept)
+	dstDept.Id = srcDept.Id
+	dstDept.ParentId = srcDept.ParentId
+	dstDept.Name = srcDept.Name
+	dstDept.Status = srcDept.Status
+	dstDept.CreatedBy = srcDept.CreatedBy
+	dstDept.UpdatedBy = srcDept.UpdatedBy
+	dstDept.CreateAt = srcDept.CreateAt
+	dstDept.UpdateAt = srcDept.UpdateAt
+	dstDept.DeletedAt = srcDept.DeletedAt
 	return
 }
 
