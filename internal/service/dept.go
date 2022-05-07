@@ -260,7 +260,7 @@ func (s *sDept) GetDeptAllNameById(deptList []*entity.Dept, id uint64) (deptAllN
 	deptNameList := make([]string, 0, len(deptList))
 	s.GetDeptNameListById(deptList, id, &deptNameList)
 	utils.Reverse(deptNameList)
-	deptAllName = gstr.Join(deptNameList, "/")
+	deptAllName = gstr.Join(deptNameList, "->")
 	return
 }
 
