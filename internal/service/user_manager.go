@@ -269,7 +269,7 @@ func (s *sUserManager) DeleteUser(ctx context.Context, ids []uint64) (err error)
 
 // IsPassportAvailable 用户账号是否可用
 func (s *sUserManager) IsPassportAvailable(ctx context.Context, passport string) (bool, error) {
-	count, err := dao.User.Ctx(ctx).Where(do.User{Passport: passport}).Count()
+	count, err := dao.User.Ctx(ctx).Where(do.User{Passport: passport}).Unscoped().Count()
 	if err != nil {
 		return false, err
 	}
@@ -278,7 +278,7 @@ func (s *sUserManager) IsPassportAvailable(ctx context.Context, passport string)
 
 // IsMobileAvailable 用户手机是否可用
 func (s *sUserManager) IsMobileAvailable(ctx context.Context, mobile string) (bool, error) {
-	count, err := dao.User.Ctx(ctx).Where(do.User{Mobile: mobile}).Count()
+	count, err := dao.User.Ctx(ctx).Where(do.User{Mobile: mobile}).Unscoped().Count()
 	if err != nil {
 		return false, err
 	}
@@ -314,6 +314,15 @@ func (s *sUserManager) GetProfileList(ctx context.Context, userList []*entity.Us
 			return
 		}
 		profileInfos[k].Roles = roles
+	}
+	return
+}
+
+// SearchByRealname 通过姓名搜索用户
+func (s *sUserManager) SearchByRealname(ctx context.Context, realname string) (list []*entity.User, err error) {
+	err = dao.User.Ctx(ctx).WhereLike(dao.User.Columns().Realname, realname).Scan(&list)
+	if err != nil {
+		return
 	}
 	return
 }

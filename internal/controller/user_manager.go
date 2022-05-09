@@ -132,3 +132,16 @@ func (c *cUserManager) Delete(ctx context.Context, req *v1.UserDeleteReq) (res *
 
 	return
 }
+
+// SearchByRealname 通过姓名搜索用户
+func (c *cUserManager) SearchByRealname(ctx context.Context, req *v1.UserSearchByRealnameReq) (res *v1.UserSearchByRealnameRes, err error) {
+	var userList []*entity.User
+	userList, err = service.UserManager().SearchByRealname(ctx, req.Realname)
+	if err != nil {
+		err = gerror.WrapCode(code.SearchByRealnameFailed, err)
+		return
+	}
+
+	res = &v1.UserSearchByRealnameRes{List: userList}
+	return
+}

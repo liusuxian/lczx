@@ -178,3 +178,14 @@ type UserDeleteReq struct {
 // UserDeleteRes 删除用户返回参数
 type UserDeleteRes struct {
 }
+
+// UserSearchByRealnameReq 通过姓名搜索用户请求参数
+type UserSearchByRealnameReq struct {
+	g.Meta   `path:"/searchByRealname" tags:"UserSearchByRealname" method:"get" summary:"You first auth/user/searchByRealname api"`
+	Realname string `json:"realname" v:"regex:^[\u4e00-\u9fa5]{1,10}$#姓名必须为中文且长度不能超过10" dc:"姓名"` // 姓名
+}
+
+// UserSearchByRealnameRes 通过姓名搜索用户返回参数
+type UserSearchByRealnameRes struct {
+	List []*entity.User `json:"list" dc:"用户列表"` // 用户列表
+}
