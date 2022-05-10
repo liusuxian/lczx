@@ -320,7 +320,7 @@ func (s *sUserManager) GetProfileList(ctx context.Context, userList []*entity.Us
 
 // SearchByRealname 通过姓名搜索用户
 func (s *sUserManager) SearchByRealname(ctx context.Context, realname string) (list []*entity.User, err error) {
-	err = dao.User.Ctx(ctx).WhereLike(dao.User.Columns().Realname, realname).Scan(&list)
+	err = dao.User.Ctx(ctx).WhereLike(dao.User.Columns().Realname, "%"+realname+"%").Scan(&list)
 	if err != nil {
 		return
 	}
