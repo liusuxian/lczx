@@ -246,6 +246,11 @@ func (s *sWdkProject) SetWdkProjectStep(ctx context.Context, id uint64, fType ui
 
 // saveWdkProject 保存文档库项目数据
 func (s *sWdkProject) saveWdkProject(ctx context.Context, req *v1.WdkProjectAddReq, principalUser *entity.User) (err error) {
+	var dept *entity.Dept
+	dept, err = Dept().SelectDeptById(ctx, principalUser.DeptId)
+	if err != nil {
+		return
+	}
 	user := Context().Get(ctx).User
 	_, err = dao.WdkProject.Ctx(ctx).Data(do.WdkProject{
 		Name:             req.Name,
@@ -255,12 +260,13 @@ func (s *sWdkProject) saveWdkProject(ctx context.Context, req *v1.WdkProjectAddR
 		FileUploadStatus: 0,
 		BusinessType:     req.BusinessType,
 		DeepCulture:      req.DeepCulture,
-		Status:           0,
+		Status:           req.Status,
 		EntrustCompany:   req.EntrustCompany,
 		SignCompany:      req.SignCompany,
 		PrincipalUid:     principalUser.Id,
 		PrincipalName:    principalUser.Realname,
-		DeptId:           principalUser.DeptId,
+		DeptId:           dept.Id,
+		DeptName:         dept.Name,
 		Region:           req.Region,
 		StartTime:        req.StartTime,
 		EndTime:          req.EndTime,
@@ -273,6 +279,11 @@ func (s *sWdkProject) saveWdkProject(ctx context.Context, req *v1.WdkProjectAddR
 
 // updateWdkProject 更新文档库项目数据
 func (s *sWdkProject) updateWdkProject(ctx context.Context, req *v1.WdkProjectEditReq, principalUser *entity.User) (err error) {
+	var dept *entity.Dept
+	dept, err = Dept().SelectDeptById(ctx, principalUser.DeptId)
+	if err != nil {
+		return
+	}
 	user := Context().Get(ctx).User
 	_, err = dao.WdkProject.Ctx(ctx).Data(do.WdkProject{
 		Name:           req.Name,
@@ -285,7 +296,8 @@ func (s *sWdkProject) updateWdkProject(ctx context.Context, req *v1.WdkProjectEd
 		SignCompany:    req.SignCompany,
 		PrincipalUid:   principalUser.Id,
 		PrincipalName:  principalUser.Realname,
-		DeptId:         principalUser.DeptId,
+		DeptId:         dept.Id,
+		DeptName:       dept.Name,
 		Region:         req.Region,
 		StartTime:      req.StartTime,
 		EndTime:        req.EndTime,

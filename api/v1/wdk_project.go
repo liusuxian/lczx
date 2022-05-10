@@ -21,7 +21,7 @@ type WdkProjectListReq struct {
 	SignCompany      string      `json:"signCompany" v:"in:0,1,2#我方签订公司只能是0,1,2" dc:"我方签订公司 0:绿城房地产咨询集团有限公司 1:浙江幸福绿城房地产咨询有限公司 2:浙江美好绿城房地产咨询有限公司"` // 我方签订公司 0:绿城房地产咨询集团有限公司 1:浙江幸福绿城房地产咨询有限公司 2:浙江美好绿城房地产咨询有限公司
 	PrincipalName    string      `json:"principalName" v:"regex:^[\u4e00-\u9fa5]{0,10}$#负责人姓名必须为中文且长度不能超过10" dc:"负责人姓名"`                          // 负责人姓名
 	DeptId           string      `json:"deptId" v:"regex:^[1-9]\\d*$#项目所属部门ID必须为正整数" dc:"项目所属部门ID"`                                               // 项目所属部门ID
-	Region           string      `json:"region" v:"regex:^[\u4e00-\u9fa5]{0,50}$#地区(省/市/县)必须为中文且长度不能超过50" dc:"地区(省/市/县)"`                         // 地区(省/市/县)
+	Region           string      `json:"region" v:"max-length:50#地区(省/市/区县)长度不能超过50" dc:"地区(省/市/区县)"`                                             // 地区(省/市/区县)
 	StartTime        *gtime.Time `json:"startTime" v:"datetime#项目开始时间不是有效的日期时间" dc:"项目开始时间"`                                                      // 项目开始时间
 	EndTime          *gtime.Time `json:"endTime" v:"datetime#项目结束时间不是有效的日期时间" dc:"项目结束时间"`                                                        // 项目结束时间
 	SortName         string      `json:"sortName" v:"regex:^[a-zA-Z]\\w*$#排序字段以字母开头，只能包含字母、数字和下划线" dc:"排序字段"`                                     // 排序字段
@@ -45,10 +45,11 @@ type WdkProjectAddReq struct {
 	Origin         uint        `json:"origin" v:"required|in:0,1,2,3#项目来源不能为空|项目来源只能是0,1,2,3" dc:"项目来源 0:物业公司 1:分子公司 2:老客户 3:自拓"`                                   // 项目来源 0:物业公司 1:分子公司 2:老客户 3:自拓
 	BusinessType   uint        `json:"businessType" v:"required|in:0,1,2#业务类型不能为空|业务类型只能是0,1,2" dc:"业务类型 0:物业 1:专项 2:全过程"`                                          // 业务类型 0:物业 1:专项 2:全过程
 	DeepCulture    uint        `json:"deepCulture" v:"required|in:0,1#是否为深耕不能为空|是否为深耕只能是0,1" dc:"是否为深耕 0:否 1:是"`                                                    // 是否为深耕 0:否 1:是
+	Status         uint        `json:"status" v:"required|in:0,1,2,3#服务状态不能为空|服务状态只能是0,1,2,3" dc:"服务状态 0:服务中 1:暂停 2:提前终止 3:正常结束"`                                   // 服务状态 0:服务中 1:暂停 2:提前终止 3:正常结束
 	EntrustCompany string      `json:"entrustCompany" v:"required|regex:^[\u4e00-\u9fa5\\da-zA-Z]{0,50}$#委托方公司不能为空|委托方公司只能包含中文、英文、数字且长度不能超过50" dc:"委托方公司"`          // 委托方公司
 	SignCompany    uint        `json:"signCompany" v:"required|in:0,1,2#我方签订公司不能为空|我方签订公司只能是0,1,2" dc:"我方签订公司 0:绿城房地产咨询集团有限公司 1:浙江幸福绿城房地产咨询有限公司 2:浙江美好绿城房地产咨询有限公司"` // 我方签订公司 0:绿城房地产咨询集团有限公司 1:浙江幸福绿城房地产咨询有限公司 2:浙江美好绿城房地产咨询有限公司
 	PrincipalUid   uint64      `json:"principalUid" v:"required|regex:^[1-9]\\d*$#负责人用户ID不能为空|负责人用户ID必须为正整数" dc:"负责人用户ID"`                                          // 负责人用户ID
-	Region         string      `json:"region" v:"required|regex:^[\u4e00-\u9fa5]{0,50}$#地区(省/市/县)不能为空|地区(省/市/县)必须为中文且长度不能超过50" dc:"地区(省/市/县)"`                      // 地区(省/市/县)
+	Region         string      `json:"region" v:"required|max-length:50#地区(省/市/区县)不能为空|地区(省/市/区县)长度不能超过50" dc:"地区(省/市/区县)"`                                         // 地区(省/市/区县)
 	StartTime      *gtime.Time `json:"startTime" v:"required|datetime#项目开始时间不能为空|项目开始时间不是有效的日期时间" dc:"项目开始时间"`                                                      // 项目开始时间
 	EndTime        *gtime.Time `json:"endTime" v:"required|datetime#项目结束时间不能为空|项目结束时间不是有效的日期时间" dc:"项目结束时间"`                                                        // 项目结束时间
 	Remark         string      `json:"remark" v:"max-length:255#备注长度不能超过255" dc:"备注"`                                                                               // 备注

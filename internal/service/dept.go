@@ -300,6 +300,12 @@ func (s *sDept) GetDeptById(deptList []*entity.Dept, id uint64) (dept *entity.De
 	return
 }
 
+// SelectDeptById 通过部门ID查询部门信息
+func (s *sDept) SelectDeptById(ctx context.Context, id uint64) (dept *entity.Dept, err error) {
+	err = dao.Dept.Ctx(ctx).Where(do.Dept{Id: id}).Scan(&dept)
+	return
+}
+
 // saveDept 保存部门数据
 func (s *sDept) saveDept(ctx context.Context, req *v1.DeptAddReq) (err error) {
 	user := Context().Get(ctx).User
