@@ -24,7 +24,8 @@ type WdkProject struct {
 	PrincipalUid     uint64      `json:"principalUid"     description:"负责人用户ID"`                                                    // 负责人用户ID
 	PrincipalName    string      `json:"principalName"    description:"负责人姓名"`                                                      // 负责人姓名
 	DeptId           uint64      `json:"deptId"           description:"项目所属部门ID"`                                                   // 项目所属部门ID
-	Region           string      `json:"region"           description:"地区(省/市/县)"`                                                  // 地区(省/市/县)
+	DeptName         string      `json:"deptName"         description:"项目所属部门名称"`                                                   // 项目所属部门名称
+	Region           string      `json:"region"           description:"地区(省/市/区县)"`                                                 // 地区(省/市/区县)
 	StartTime        *gtime.Time `json:"startTime"        description:"项目开始时间"`                                                     // 项目开始时间
 	EndTime          *gtime.Time `json:"endTime"          description:"项目结束时间"`                                                     // 项目结束时间
 	CreateBy         uint64      `json:"createBy"         description:"项目创建者用户ID"`                                                  // 项目创建者用户ID

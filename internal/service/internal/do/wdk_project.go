@@ -26,7 +26,8 @@ type WdkProject struct {
 	PrincipalUid     interface{} // 负责人用户ID
 	PrincipalName    interface{} // 负责人姓名
 	DeptId           interface{} // 项目所属部门ID
-	Region           interface{} // 地区(省/市/县)
+	DeptName         interface{} // 项目所属部门名称
+	Region           interface{} // 地区(省/市/区县)
 	StartTime        *gtime.Time // 项目开始时间
 	EndTime          *gtime.Time // 项目结束时间
 	CreateBy         interface{} // 项目创建者用户ID

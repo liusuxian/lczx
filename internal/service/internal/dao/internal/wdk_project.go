@@ -33,7 +33,8 @@ type WdkProjectColumns struct {
 	PrincipalUid     string // 负责人用户ID
 	PrincipalName    string // 负责人姓名
 	DeptId           string // 项目所属部门ID
-	Region           string // 地区(省/市/县)
+	DeptName         string // 项目所属部门名称
+	Region           string // 地区(省/市/区县)
 	StartTime        string // 项目开始时间
 	EndTime          string // 项目结束时间
 	CreateBy         string // 项目创建者用户ID
@@ -62,6 +63,7 @@ var wdkProjectColumns = WdkProjectColumns{
 	PrincipalUid:     "principal_uid",
 	PrincipalName:    "principal_name",
 	DeptId:           "dept_id",
+	DeptName:         "dept_name",
 	Region:           "region",
 	StartTime:        "start_time",
 	EndTime:          "end_time",
