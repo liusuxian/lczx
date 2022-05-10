@@ -9,7 +9,7 @@ import (
 // WdkProjectListReq 文档库项目列表请求参数
 type WdkProjectListReq struct {
 	g.Meta           `path:"/list" tags:"WdkProjectList" method:"get" summary:"You first wdk/project/list api"`
-	Name             string      `json:"name" v:"regex:^[\u4e00-\u9fa5\\w]{0,100}#项目名称只能包含中文、英文、数字和下划线且长度不能超过100" dc:"项目名称"`                      // 项目名称
+	Name             string      `json:"name" v:"regex:^[\u4e00-\u9fa5\\w]{0,100}$#项目名称只能包含中文、英文、数字和下划线且长度不能超过100" dc:"项目名称"`                     // 项目名称
 	Type             string      `json:"type" v:"in:0,1#项目性质只能是0,1" dc:"项目性质 0:蓝绿体系 1:非绿"`                                                        // 项目性质 0:蓝绿体系 1:非绿
 	Origin           string      `json:"origin" v:"in:0,1,2,3#项目来源只能是0,1,2,3" dc:"项目来源 0:物业公司 1:分子公司 2:老客户 3:自拓"`                                 // 项目来源 0:物业公司 1:分子公司 2:老客户 3:自拓
 	Step             string      `json:"step" v:"in:0,1,2,3,4,5#项目阶段只能是0,1,2,3,4,5" dc:"项目阶段 0:未开始 1:合同签约 2:项目启动会 3:服务中 4:合同结束 5:复盘"`             // 项目阶段 0:未开始 1:合同签约 2:项目启动会 3:服务中 4:合同结束 5:复盘
@@ -17,7 +17,7 @@ type WdkProjectListReq struct {
 	BusinessType     string      `json:"businessType" v:"in:0,1,2#业务类型只能是0,1,2" dc:"业务类型 0:物业 1:专项 2:全过程"`                                        // 业务类型 0:物业 1:专项 2:全过程
 	DeepCulture      string      `json:"deepCulture" v:"in:0,1#是否为深耕只能是0,1" dc:"是否为深耕 0:否 1:是"`                                                   // 是否为深耕 0:否 1:是
 	Status           string      `json:"status" v:"in:0,1,2,3#服务状态只能是0,1,2,3" dc:"服务状态 0:服务中 1:暂停 2:提前终止 3:正常结束"`                                 // 服务状态 0:服务中 1:暂停 2:提前终止 3:正常结束
-	EntrustCompany   string      `json:"entrustCompany" v:"regex:^[\u4e00-\u9fa5\\da-zA-Z]{0,50}#委托方公司只能包含中文、英文、数字且长度不能超过50" dc:"委托方公司"`          // 委托方公司
+	EntrustCompany   string      `json:"entrustCompany" v:"regex:^[\u4e00-\u9fa5\\da-zA-Z]{0,50}$#委托方公司只能包含中文、英文、数字且长度不能超过50" dc:"委托方公司"`         // 委托方公司
 	SignCompany      string      `json:"signCompany" v:"in:0,1,2#我方签订公司只能是0,1,2" dc:"我方签订公司 0:绿城房地产咨询集团有限公司 1:浙江幸福绿城房地产咨询有限公司 2:浙江美好绿城房地产咨询有限公司"` // 我方签订公司 0:绿城房地产咨询集团有限公司 1:浙江幸福绿城房地产咨询有限公司 2:浙江美好绿城房地产咨询有限公司
 	PrincipalName    string      `json:"principalName" v:"regex:^[\u4e00-\u9fa5]{0,10}$#负责人姓名必须为中文且长度不能超过10" dc:"负责人姓名"`                          // 负责人姓名
 	DeptId           string      `json:"deptId" v:"regex:^[1-9]\\d*$#项目所属部门ID必须为正整数" dc:"项目所属部门ID"`                                               // 项目所属部门ID
@@ -40,12 +40,12 @@ type WdkProjectListRes struct {
 // WdkProjectAddReq 文档库新增项目请求参数
 type WdkProjectAddReq struct {
 	g.Meta         `path:"/add" tags:"WdkProjectAdd" method:"post" summary:"You first wdk/project/add api"`
-	Name           string      `json:"name" v:"required|regex:^[\u4e00-\u9fa5\\w]{0,100}#项目名称不能为空|项目名称只能包含中文、英文、数字和下划线且长度不能超过100" dc:"项目名称"`                        // 项目名称
+	Name           string      `json:"name" v:"required|regex:^[\u4e00-\u9fa5\\w]{0,100}$#项目名称不能为空|项目名称只能包含中文、英文、数字和下划线且长度不能超过100" dc:"项目名称"`                       // 项目名称
 	Type           uint        `json:"type" v:"required|in:0,1#项目性质不能为空|项目性质只能是0,1" dc:"项目性质 0:蓝绿体系 1:非绿"`                                                          // 项目性质 0:蓝绿体系 1:非绿
 	Origin         uint        `json:"origin" v:"required|in:0,1,2,3#项目来源不能为空|项目来源只能是0,1,2,3" dc:"项目来源 0:物业公司 1:分子公司 2:老客户 3:自拓"`                                   // 项目来源 0:物业公司 1:分子公司 2:老客户 3:自拓
 	BusinessType   uint        `json:"businessType" v:"required|in:0,1,2#业务类型不能为空|业务类型只能是0,1,2" dc:"业务类型 0:物业 1:专项 2:全过程"`                                          // 业务类型 0:物业 1:专项 2:全过程
 	DeepCulture    uint        `json:"deepCulture" v:"required|in:0,1#是否为深耕不能为空|是否为深耕只能是0,1" dc:"是否为深耕 0:否 1:是"`                                                    // 是否为深耕 0:否 1:是
-	EntrustCompany string      `json:"entrustCompany" v:"required|regex:^[\u4e00-\u9fa5\\da-zA-Z]{0,50}#委托方公司不能为空|委托方公司只能包含中文、英文、数字且长度不能超过50" dc:"委托方公司"`           // 委托方公司
+	EntrustCompany string      `json:"entrustCompany" v:"required|regex:^[\u4e00-\u9fa5\\da-zA-Z]{0,50}$#委托方公司不能为空|委托方公司只能包含中文、英文、数字且长度不能超过50" dc:"委托方公司"`          // 委托方公司
 	SignCompany    uint        `json:"signCompany" v:"required|in:0,1,2#我方签订公司不能为空|我方签订公司只能是0,1,2" dc:"我方签订公司 0:绿城房地产咨询集团有限公司 1:浙江幸福绿城房地产咨询有限公司 2:浙江美好绿城房地产咨询有限公司"` // 我方签订公司 0:绿城房地产咨询集团有限公司 1:浙江幸福绿城房地产咨询有限公司 2:浙江美好绿城房地产咨询有限公司
 	PrincipalUid   uint64      `json:"principalUid" v:"required|regex:^[1-9]\\d*$#负责人用户ID不能为空|负责人用户ID必须为正整数" dc:"负责人用户ID"`                                          // 负责人用户ID
 	Region         string      `json:"region" v:"required|regex:^[\u4e00-\u9fa5]{0,50}$#地区(省/市/县)不能为空|地区(省/市/县)必须为中文且长度不能超过50" dc:"地区(省/市/县)"`                      // 地区(省/市/县)
