@@ -2,15 +2,12 @@ package cmd
 
 import (
 	"context"
-	"fmt"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/os/gcmd"
 	"github.com/gogf/gf/v2/os/gcron"
-	v1 "lczx/api/v1"
 	"lczx/internal/controller"
 	"lczx/internal/service"
-	"lczx/internal/upload"
 	"lczx/utility/logger"
 )
 
@@ -35,26 +32,6 @@ var (
 				// 验证码
 				group.Group("/captcha", func(group *ghttp.RouterGroup) {
 					group.Bind(controller.Captcha)
-				})
-				// 测试上传文件
-				group.Group("/upload", func(group *ghttp.RouterGroup) {
-					// 测试上传报告
-					group.POST("/report", func(req *ghttp.Request) {
-						// 获取上传文件信息
-						report := req.GetUploadFile("upload-report")
-						if report != nil {
-							f, e := upload.Upload.UploadFile(report, "wdk/report")
-							if e != nil {
-								fmt.Println("upload report err: ", e)
-							} else {
-								// 新增文档库上传报告记录
-								_ = service.WdkReport().AddWdkReport(ctx, &v1.WdkReportAddReq{
-									ProjectId: 1,
-									TypeIds:   []uint64{1, 2, 3},
-								}, f)
-							}
-						}
-					})
 				})
 			})
 			// 认证接口
@@ -118,6 +95,11 @@ var (
 				})
 				// 文档库
 				group.Group("/wdk", func(group *ghttp.RouterGroup) {
+					// 上传
+					group.Group("/upload", func(group *ghttp.RouterGroup) {
+						// 上传文件
+						group.POST("/file", controller.WdkFile.Add)
+					})
 					// 项目管理
 					group.Group("/project", func(group *ghttp.RouterGroup) {
 						group.Bind(controller.WdkProject)
