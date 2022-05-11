@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 10/05/2022 11:08:33
+ Date: 11/05/2022 14:50:52
 */
 
 SET NAMES utf8mb4;
@@ -217,13 +217,13 @@ INSERT INTO `menu` (`id`, `parent_id`, `rule`, `name`, `condition`, `menu_type`,
 INSERT INTO `menu` (`id`, `parent_id`, `rule`, `name`, `condition`, `menu_type`, `status`, `jump_path`, `is_frame`, `module_type`, `remark`, `create_at`, `update_at`, `deleted_at`) VALUES (39, 37, 'wdk/reportTypeCfg/edit', '修改报告类型', NULL, 2, 1, NULL, 0, 'sys_admin', NULL, '2022-04-25 10:24:08', '2022-04-25 10:24:08', NULL);
 INSERT INTO `menu` (`id`, `parent_id`, `rule`, `name`, `condition`, `menu_type`, `status`, `jump_path`, `is_frame`, `module_type`, `remark`, `create_at`, `update_at`, `deleted_at`) VALUES (40, 37, 'wdk/reportTypeCfg/delete', '删除报告类型', NULL, 2, 1, NULL, 0, 'sys_admin', NULL, '2022-04-25 10:26:56', '2022-04-25 10:26:56', NULL);
 INSERT INTO `menu` (`id`, `parent_id`, `rule`, `name`, `condition`, `menu_type`, `status`, `jump_path`, `is_frame`, `module_type`, `remark`, `create_at`, `update_at`, `deleted_at`) VALUES (41, 32, 'wdk/attachment/record', '附件记录管理', NULL, 1, 1, NULL, 0, 'sys_admin', NULL, '2022-04-26 16:15:17', '2022-04-26 16:15:17', NULL);
-INSERT INTO `menu` (`id`, `parent_id`, `rule`, `name`, `condition`, `menu_type`, `status`, `jump_path`, `is_frame`, `module_type`, `remark`, `create_at`, `update_at`, `deleted_at`) VALUES (42, 41, 'wdk/attachment/add', '上传附件', NULL, 2, 1, NULL, 0, 'sys_admin', NULL, '2022-04-26 16:16:16', '2022-04-26 16:16:16', NULL);
+INSERT INTO `menu` (`id`, `parent_id`, `rule`, `name`, `condition`, `menu_type`, `status`, `jump_path`, `is_frame`, `module_type`, `remark`, `create_at`, `update_at`, `deleted_at`) VALUES (42, 41, 'wdk/upload/attachment', '上传附件', NULL, 2, 1, NULL, 0, 'sys_admin', NULL, '2022-04-26 16:16:16', '2022-04-26 16:16:16', NULL);
 INSERT INTO `menu` (`id`, `parent_id`, `rule`, `name`, `condition`, `menu_type`, `status`, `jump_path`, `is_frame`, `module_type`, `remark`, `create_at`, `update_at`, `deleted_at`) VALUES (43, 32, 'wdk/service/record', '服务记录管理', NULL, 1, 1, NULL, 0, 'sys_admin', NULL, '2022-04-26 16:18:13', '2022-04-26 16:18:13', NULL);
 INSERT INTO `menu` (`id`, `parent_id`, `rule`, `name`, `condition`, `menu_type`, `status`, `jump_path`, `is_frame`, `module_type`, `remark`, `create_at`, `update_at`, `deleted_at`) VALUES (44, 43, 'wdk/service/add', '添加服务记录', NULL, 2, 1, NULL, 0, 'sys_admin', NULL, '2022-04-26 16:19:04', '2022-04-26 16:19:04', NULL);
 INSERT INTO `menu` (`id`, `parent_id`, `rule`, `name`, `condition`, `menu_type`, `status`, `jump_path`, `is_frame`, `module_type`, `remark`, `create_at`, `update_at`, `deleted_at`) VALUES (45, 32, 'wdk/file/record', '文件记录管理', NULL, 1, 1, NULL, 0, 'sys_admin', NULL, '2022-05-01 12:46:40', '2022-05-01 12:46:40', NULL);
-INSERT INTO `menu` (`id`, `parent_id`, `rule`, `name`, `condition`, `menu_type`, `status`, `jump_path`, `is_frame`, `module_type`, `remark`, `create_at`, `update_at`, `deleted_at`) VALUES (46, 45, 'wdk/file/add', '上传文件', NULL, 2, 1, NULL, 0, 'sys_admin', NULL, '2022-05-01 12:47:52', '2022-05-01 12:47:52', NULL);
+INSERT INTO `menu` (`id`, `parent_id`, `rule`, `name`, `condition`, `menu_type`, `status`, `jump_path`, `is_frame`, `module_type`, `remark`, `create_at`, `update_at`, `deleted_at`) VALUES (46, 45, 'wdk/upload/file', '上传文件', NULL, 2, 1, NULL, 0, 'sys_admin', NULL, '2022-05-01 12:47:52', '2022-05-01 12:47:52', NULL);
 INSERT INTO `menu` (`id`, `parent_id`, `rule`, `name`, `condition`, `menu_type`, `status`, `jump_path`, `is_frame`, `module_type`, `remark`, `create_at`, `update_at`, `deleted_at`) VALUES (47, 32, 'wdk/report/record', '报告记录管理', NULL, 1, 1, NULL, 0, 'sys_admin', NULL, '2022-05-01 12:53:20', '2022-05-01 12:53:20', NULL);
-INSERT INTO `menu` (`id`, `parent_id`, `rule`, `name`, `condition`, `menu_type`, `status`, `jump_path`, `is_frame`, `module_type`, `remark`, `create_at`, `update_at`, `deleted_at`) VALUES (48, 47, 'wdk/report/add', '上传报告', NULL, 2, 1, NULL, 0, 'sys_admin', NULL, '2022-05-01 12:54:36', '2022-05-01 12:54:36', NULL);
+INSERT INTO `menu` (`id`, `parent_id`, `rule`, `name`, `condition`, `menu_type`, `status`, `jump_path`, `is_frame`, `module_type`, `remark`, `create_at`, `update_at`, `deleted_at`) VALUES (48, 47, 'wdk/upload/report', '上传报告', NULL, 2, 1, NULL, 0, 'sys_admin', NULL, '2022-05-01 12:54:36', '2022-05-01 12:54:36', NULL);
 INSERT INTO `menu` (`id`, `parent_id`, `rule`, `name`, `condition`, `menu_type`, `status`, `jump_path`, `is_frame`, `module_type`, `remark`, `create_at`, `update_at`, `deleted_at`) VALUES (49, 32, 'wdk/reportAudit/list', '报告审核记录管理', NULL, 1, 1, NULL, 0, 'sys_admin', NULL, '2022-05-01 12:58:32', '2022-05-01 12:58:32', NULL);
 INSERT INTO `menu` (`id`, `parent_id`, `rule`, `name`, `condition`, `menu_type`, `status`, `jump_path`, `is_frame`, `module_type`, `remark`, `create_at`, `update_at`, `deleted_at`) VALUES (50, 32, 'wdk/reportAudit/beAuditedList', '报告被审核记录管理', NULL, 1, 1, NULL, 0, 'sys_admin', NULL, '2022-05-01 13:01:01', '2022-05-01 13:01:01', NULL);
 INSERT INTO `menu` (`id`, `parent_id`, `rule`, `name`, `condition`, `menu_type`, `status`, `jump_path`, `is_frame`, `module_type`, `remark`, `create_at`, `update_at`, `deleted_at`) VALUES (51, 49, 'wdk/reportAudit/audit', '报告审核', NULL, 2, 1, NULL, 0, 'sys_admin', NULL, '2022-05-01 13:24:55', '2022-05-01 13:24:55', NULL);
@@ -438,7 +438,7 @@ CREATE TABLE `wdk_project` (
   `principal_uid` bigint unsigned NOT NULL COMMENT '负责人用户ID',
   `principal_name` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '负责人姓名',
   `dept_id` bigint unsigned NOT NULL COMMENT '项目所属部门ID',
-  `dept_name` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '项目所属部门名称',
+  `dept_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '项目所属部门名称',
   `region` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '地区(省/市/区县)',
   `start_time` datetime NOT NULL COMMENT '项目开始时间',
   `end_time` datetime NOT NULL COMMENT '项目结束时间',
