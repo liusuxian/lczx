@@ -64,6 +64,9 @@ func (c *cWdkFile) Add(req *ghttp.Request) {
 		response.RespJsonExit(req, code.AddWdkFileRecordFailed.Code(), code.AddWdkFileRecordFailed.Message()+": "+err.Error())
 	}
 
-	response.Succ(req, v1.WdkFileAddRes{FileInfo: fileInfo})
+	response.Succ(req, v1.WdkFileAddRes{
+		Type:     wdkFileAddReq.Type,
+		FileInfo: fileInfo,
+	})
 	return
 }

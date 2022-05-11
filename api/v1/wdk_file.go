@@ -26,5 +26,6 @@ type WdkFileAddReq struct {
 
 // WdkFileAddRes 文档库新增上传文件记录返回参数
 type WdkFileAddRes struct {
+	Type     uint             `json:"type" dc:"文件类型"`     // 文件类型
 	FileInfo *upload.FileInfo `json:"fileInfo" dc:"文件信息"` // 文件信息
 }
