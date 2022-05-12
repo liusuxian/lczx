@@ -15,4 +15,6 @@ const (
 	MenuKey = CachePrefix + "menu"
 	// RoleKey 缓存角色key
 	RoleKey = CachePrefix + "role"
+	// WdkReportCfgKey 文档库报告类型配置缓存key
+	WdkReportCfgKey = CachePrefix + "wdkreportcfg"
 )

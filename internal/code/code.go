@@ -63,11 +63,12 @@ var (
 	EditWdkProjectFailed    = gcode.New(1603, "修改文档库项目失败", "")   // 修改文档库项目失败
 	DeleteWdkProjectFailed  = gcode.New(1604, "删除文档库项目失败", "")   // 删除文档库项目失败
 
-	GetWdkReportCfgListFailed = gcode.New(1700, "获取文档库报告类型配置列表失败", "") // 获取文档库报告类型配置列表失败
-	AddWdkReportCfgFailed     = gcode.New(1701, "添加文档库报告类型配置失败", "")   // 添加文档库报告类型配置失败
-	GetWdkReportCfgFailed     = gcode.New(1702, "获取文档库报告类型配置信息失败", "") // 获取文档库报告类型配置信息失败
-	EditWdkReportCfgFailed    = gcode.New(1703, "修改文档库报告类型配置失败", "")   // 修改文档库报告类型配置失败
-	DeleteWdkReportCfgFailed  = gcode.New(1704, "删除文档库报告类型配置失败", "")   // 删除文档库报告类型配置失败
+	GetWdkReportCfgListFailed = gcode.New(1700, "获取文档库报告类型配置列表失败", "")   // 获取文档库报告类型配置列表失败
+	AddWdkReportCfgFailed     = gcode.New(1701, "添加文档库报告类型配置失败", "")     // 添加文档库报告类型配置失败
+	GetWdkReportCfgFailed     = gcode.New(1702, "获取文档库报告类型配置信息失败", "")   // 获取文档库报告类型配置信息失败
+	EditWdkReportCfgFailed    = gcode.New(1703, "修改文档库报告类型配置失败", "")     // 修改文档库报告类型配置失败
+	DeleteWdkReportCfgFailed  = gcode.New(1704, "删除文档库报告类型配置失败", "")     // 删除文档库报告类型配置失败
+	GetWdkAllReportCfgFailed  = gcode.New(1705, "获取文档库全部报告类型配置列表失败", "") // 获取文档库全部报告类型配置列表失败
 
 	GetWdkAttachmentRecordFailed     = gcode.New(1800, "获取文档库上传附件记录失败", "")    // 获取文档库上传附件记录失败
 	AddWdkAttachmentRecordFailed     = gcode.New(1801, "添加文档库上传附件记录失败", "")    // 添加文档库上传附件记录失败

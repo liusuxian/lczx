@@ -5,6 +5,7 @@ import (
 	"github.com/gogf/gf/v2/errors/gerror"
 	v1 "lczx/api/v1"
 	"lczx/internal/code"
+	"lczx/internal/model/entity"
 	"lczx/internal/service"
 )
 
@@ -24,6 +25,19 @@ func (c *cWdkReportCfg) List(ctx context.Context, req *v1.WdkReportCfgListReq) (
 	}
 
 	res = &v1.WdkReportCfgListRes{List: list}
+	return
+}
+
+// All 文档库全部报告类型配置列表
+func (c *cWdkReportCfg) All(ctx context.Context, req *v1.WdkAllReportCfgReq) (res *v1.WdkAllReportCfgRes, err error) {
+	var list []*entity.WdkReportCfg
+	list, err = service.WdkReportCfg().GetWdkAllReportCfg(ctx)
+	if err != nil {
+		err = gerror.WrapCode(code.GetWdkAllReportCfgFailed, err)
+		return
+	}
+
+	res = &v1.WdkAllReportCfgRes{List: list}
 	return
 }
 
