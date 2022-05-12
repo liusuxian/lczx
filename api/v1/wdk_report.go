@@ -3,7 +3,6 @@ package v1
 import (
 	"github.com/gogf/gf/v2/frame/g"
 	"lczx/internal/model/entity"
-	"lczx/internal/upload"
 )
 
 // WdkReportRecordReq 文档库上传报告记录请求参数
@@ -32,8 +31,6 @@ type WdkReportAddReq struct {
 
 // WdkReportAddRes 文档库新增上传报告返回参数
 type WdkReportAddRes struct {
-	TypeIds  []uint64         `json:"typeIds" dc:"报告类型ID列表"` // 报告类型ID列表
-	FileInfo *upload.FileInfo `json:"fileInfo" dc:"文件信息"`    // 文件信息
 }
 
 // WdkReportExcellenceListReq 文档库优秀报告列表请求参数

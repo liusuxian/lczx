@@ -76,10 +76,6 @@ func (c *cWdkReport) Add(req *ghttp.Request) {
 		response.RespJsonExit(req, code.AddWdkReportRecordFailed.Code(), code.AddWdkReportRecordFailed.Message()+": "+err.Error())
 	}
 
-	response.Succ(req, v1.WdkReportAddRes{
-		TypeIds:  wdkReportAddReq.TypeIds,
-		FileInfo: report,
-	})
 	return
 }
 
