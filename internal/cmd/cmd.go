@@ -99,6 +99,8 @@ var (
 					group.Group("/upload", func(group *ghttp.RouterGroup) {
 						// 上传文件
 						group.POST("/file", controller.WdkFile.Add)
+						// 上传报告
+						group.POST("/report", controller.WdkReport.Add)
 					})
 					// 项目管理
 					group.Group("/project", func(group *ghttp.RouterGroup) {
