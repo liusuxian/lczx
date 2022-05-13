@@ -49,3 +49,14 @@ func (c *cWdkReportAudit) BeAuditedList(ctx context.Context, req *v1.WdkReportBe
 	}
 	return
 }
+
+// Audit 文档库报告审核
+func (c *cWdkReportAudit) Audit(ctx context.Context, req *v1.WdkReportAuditReq) (res *v1.WdkReportAuditRes, err error) {
+	err = service.WdkReportAudit().HandleWdkReportAudit(ctx, req)
+	if err != nil {
+		err = gerror.WrapCode(code.HandleWdkReportAuditFailed, err)
+		return
+	}
+
+	return
+}

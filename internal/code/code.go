@@ -82,4 +82,5 @@ var (
 	GetWdkReportBeAuditedListFailed  = gcode.New(1809, "获取文档库报告被审核记录列表失败", "") // 获取文档库报告被审核记录列表失败
 	GetWdkReportExcellenceListFailed = gcode.New(1810, "获取文档库优秀报告列表失败", "")    // 获取文档库优秀报告列表失败
 	WdkReportChooseExcellenceFailed  = gcode.New(1811, "文档库报告评选优秀报告失败", "")    // 文档库报告评选优秀报告失败
+	HandleWdkReportAuditFailed       = gcode.New(1812, "文档库报告审核失败", "")        // 文档库报告审核失败
 )
