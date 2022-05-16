@@ -3,7 +3,9 @@ package service
 import (
 	"context"
 	"github.com/gogf/gf/v2/container/gmap"
+	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/errors/gerror"
+	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/util/gconv"
 	v1 "lczx/api/v1"
 	"lczx/internal/model/entity"
@@ -23,7 +25,7 @@ func WdkProject() *sWdkProject {
 }
 
 // GetWdkProjectList 获取文档库项目列表
-func (s *sWdkProject) GetWdkProjectList(ctx context.Context, req *v1.WdkProjectListReq) (total int, list []*entity.WdkProject, err error) {
+func (s *sWdkProject) GetWdkProjectList(ctx context.Context, req *v1.WdkProjectListReq) (total int, list []*v1.WdkReportInfo, err error) {
 	model := dao.WdkProject.Ctx(ctx)
 	columns := dao.WdkProject.Columns()
 	order := "id DESC"
@@ -45,8 +47,21 @@ func (s *sWdkProject) GetWdkProjectList(ctx context.Context, req *v1.WdkProjectL
 	if req.BusinessType != "" {
 		model = model.Where(columns.BusinessType, gconv.Uint(req.BusinessType))
 	}
-	if req.BusinessForms != "" {
-		model = model.Where(columns.BusinessForms, gconv.Uint(req.BusinessForms))
+	// 处理业态
+	projectIdsMap := gmap.New()
+	if len(req.BusinessForms) != 0 {
+		var wdkProjectBusinessforms []*entity.WdkProjectBusinessforms
+		err = dao.WdkProjectBusinessforms.Ctx(ctx).WhereIn(dao.WdkProjectBusinessforms.Columns().BusinessForms, req.BusinessForms).
+			Scan(wdkProjectBusinessforms)
+		if err != nil {
+			return
+		}
+		for _, v := range wdkProjectBusinessforms {
+			projectIdsMap.Set(v.ProjectId, true)
+		}
+	}
+	if !projectIdsMap.IsEmpty() {
+		model = model.WhereIn(columns.Id, projectIdsMap.Keys())
 	}
 	if req.ContractStatus != "" {
 		model = model.Where(columns.ContractStatus, gconv.Uint(req.ContractStatus))
@@ -104,7 +119,12 @@ func (s *sWdkProject) GetWdkProjectList(ctx context.Context, req *v1.WdkProjectL
 	if err != nil {
 		return
 	}
-	err = model.Page(req.CurPage, req.PageSize).Order(order).Scan(&list)
+	err = model.Page(req.CurPage, req.PageSize).Order(order).ScanList(&list, "Info")
+	if err != nil {
+		return
+	}
+	err = dao.WdkProjectBusinessforms.Ctx(ctx).Where(dao.WdkProjectBusinessforms.Columns().ProjectId, gdb.ListItemValuesUnique(list, "Info", "Id")).
+		ScanList(&list, "Businessforms", "Info", "ProjectId:Id")
 	return
 }
 
@@ -115,28 +135,30 @@ func (s *sWdkProject) AddWdkProject(ctx context.Context, req *v1.WdkProjectAddRe
 		err = gerror.Newf(`项目开始时间[%s]大于等于项目结束时间[%s]`, req.StartTime.String(), req.EndTime.String())
 		return
 	}
-	// 检查文档库项目名称是否可用
-	var available bool
-	available, err = s.IsWdkProjectNameAvailable(ctx, req.Name)
-	if err != nil {
-		return
-	}
-	if !available {
-		err = gerror.Newf(`文档库项目名称[%s]已存在或已被使用过`, req.Name)
-		return
-	}
-	// 检查负责人是否存在
-	var principalUser *entity.User
-	principalUser, err = User().GetUserById(ctx, req.PrincipalUid)
-	if err != nil {
-		return
-	}
-	if principalUser == nil {
-		err = gerror.Newf(`负责人用户ID[%d]不存在`, req.PrincipalUid)
-		return
-	}
-	// 保存文档库项目数据
-	err = s.saveWdkProject(ctx, req, principalUser)
+	err = dao.WdkProject.Ctx(ctx).Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
+		// 检查文档库项目名称是否可用
+		var terr error
+		var available bool
+		available, terr = s.IsWdkProjectNameAvailable(ctx, req.Name)
+		if terr != nil {
+			return terr
+		}
+		if !available {
+			return gerror.Newf(`文档库项目名称[%s]已存在或已被使用过`, req.Name)
+		}
+		// 检查负责人是否存在
+		var principalUser *entity.User
+		principalUser, terr = User().GetUserById(ctx, req.PrincipalUid)
+		if terr != nil {
+			return terr
+		}
+		if principalUser == nil {
+			return gerror.Newf(`负责人用户ID[%d]不存在`, req.PrincipalUid)
+		}
+		// 保存文档库项目数据
+		terr = s.saveWdkProject(ctx, req, principalUser)
+		return terr
+	})
 	return
 }
 
@@ -153,40 +175,41 @@ func (s *sWdkProject) EditWdkProject(ctx context.Context, req *v1.WdkProjectEdit
 		err = gerror.Newf(`项目开始时间[%s]大于等于项目结束时间[%s]`, req.StartTime.String(), req.EndTime.String())
 		return
 	}
-	// 检查文档库项目信息是否存在
-	var wdkProject *entity.WdkProject
-	wdkProject, err = s.GetWdkProjectById(ctx, req.Id)
-	if err != nil {
-		return
-	}
-	if wdkProject == nil {
-		err = gerror.Newf(`文档库项目ID[%d]不存在`, req.Id)
-		return
-	}
-	// 检查文档库项目名称是否可用
-	if wdkProject.Name != req.Name {
-		var available bool
-		available, err = s.IsWdkProjectNameAvailable(ctx, req.Name)
-		if err != nil {
-			return
+	err = dao.WdkProject.Ctx(ctx).Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
+		// 检查文档库项目信息是否存在
+		var terr error
+		var wdkProject *entity.WdkProject
+		wdkProject, terr = s.GetWdkProjectById(ctx, req.Id)
+		if terr != nil {
+			return terr
 		}
-		if !available {
-			err = gerror.Newf(`文档库项目名称[%s]已存在或已被使用过`, req.Name)
-			return
+		if wdkProject == nil {
+			return gerror.Newf(`文档库项目ID[%d]不存在`, req.Id)
 		}
-	}
-	// 检查负责人是否存在
-	var principalUser *entity.User
-	principalUser, err = User().GetUserById(ctx, req.PrincipalUid)
-	if err != nil {
-		return
-	}
-	if principalUser == nil {
-		err = gerror.Newf(`负责人用户ID[%d]不存在`, req.PrincipalUid)
-		return
-	}
-	// 更新文档库项目数据
-	err = s.updateWdkProject(ctx, req, principalUser)
+		// 检查文档库项目名称是否可用
+		if wdkProject.Name != req.Name {
+			var available bool
+			available, terr = s.IsWdkProjectNameAvailable(ctx, req.Name)
+			if terr != nil {
+				return terr
+			}
+			if !available {
+				return gerror.Newf(`文档库项目名称[%s]已存在或已被使用过`, req.Name)
+			}
+		}
+		// 检查负责人是否存在
+		var principalUser *entity.User
+		principalUser, terr = User().GetUserById(ctx, req.PrincipalUid)
+		if terr != nil {
+			return terr
+		}
+		if principalUser == nil {
+			return gerror.Newf(`负责人用户ID[%d]不存在`, req.PrincipalUid)
+		}
+		// 更新文档库项目数据
+		terr = s.updateWdkProject(ctx, req, principalUser, wdkProject)
+		return terr
+	})
 	return
 }
 
@@ -261,14 +284,14 @@ func (s *sWdkProject) saveWdkProject(ctx context.Context, req *v1.WdkProjectAddR
 		return
 	}
 	user := Context().Get(ctx).User
-	_, err = dao.WdkProject.Ctx(ctx).Data(do.WdkProject{
+	var projectId int64
+	projectId, err = dao.WdkProject.Ctx(ctx).Data(do.WdkProject{
 		Name:             req.Name,
 		Type:             req.Type,
 		Origin:           req.Origin,
 		Step:             0,
 		FileUploadStatus: 0,
 		BusinessType:     req.BusinessType,
-		BusinessForms:    req.BusinessForms,
 		ContractStatus:   req.ContractStatus,
 		ContractSum:      req.ContractSum,
 		DeepCulture:      req.DeepCulture,
@@ -285,12 +308,29 @@ func (s *sWdkProject) saveWdkProject(ctx context.Context, req *v1.WdkProjectAddR
 		CreateBy:         user.Id,
 		CreateName:       user.Realname,
 		Remark:           req.Remark,
-	}).FieldsEx(dao.WdkProject.Columns().Id).Insert()
-	return
+	}).FieldsEx(dao.WdkProject.Columns().Id).InsertAndGetId()
+	if err != nil {
+		return
+	}
+	// 保存文档库项目业态类型数据
+	if len(req.BusinessForms) != 0 {
+		businessFormsData := g.List{}
+		for _, v := range req.BusinessForms {
+			businessFormsData = append(businessFormsData, g.Map{
+				"project_id":     projectId,
+				"business_forms": v,
+			})
+		}
+		_, err = dao.WdkProjectBusinessforms.Ctx(ctx).Data(businessFormsData).Batch(len(businessFormsData)).Insert()
+		if err != nil {
+			return
+		}
+	}
+	return nil
 }
 
 // updateWdkProject 更新文档库项目数据
-func (s *sWdkProject) updateWdkProject(ctx context.Context, req *v1.WdkProjectEditReq, principalUser *entity.User) (err error) {
+func (s *sWdkProject) updateWdkProject(ctx context.Context, req *v1.WdkProjectEditReq, principalUser *entity.User, wdkProject *entity.WdkProject) (err error) {
 	var dept *entity.Dept
 	dept, err = Dept().SelectDeptById(ctx, principalUser.DeptId)
 	if err != nil {
@@ -302,7 +342,6 @@ func (s *sWdkProject) updateWdkProject(ctx context.Context, req *v1.WdkProjectEd
 		Type:           req.Type,
 		Origin:         req.Origin,
 		BusinessType:   req.BusinessType,
-		BusinessForms:  req.BusinessForms,
 		ContractStatus: req.ContractStatus,
 		ContractSum:    req.ContractSum,
 		DeepCulture:    req.DeepCulture,
@@ -320,5 +359,27 @@ func (s *sWdkProject) updateWdkProject(ctx context.Context, req *v1.WdkProjectEd
 		UpdatedName:    user.Realname,
 		Remark:         req.Remark,
 	}).Where(do.WdkProject{Id: req.Id}).Update()
-	return
+	if err != nil {
+		return
+	}
+	// 删除旧的文档库项目业态类型数据
+	_, err = dao.WdkProjectBusinessforms.Ctx(ctx).Where(do.WdkProjectBusinessforms{ProjectId: wdkProject.Id}).Delete()
+	if err != nil {
+		return
+	}
+	// 保存文档库项目业态类型数据
+	if len(req.BusinessForms) != 0 {
+		businessFormsData := g.List{}
+		for _, v := range req.BusinessForms {
+			businessFormsData = append(businessFormsData, g.Map{
+				"project_id":     wdkProject.Id,
+				"business_forms": v,
+			})
+		}
+		_, err = dao.WdkProjectBusinessforms.Ctx(ctx).Data(businessFormsData).Batch(len(businessFormsData)).Insert()
+		if err != nil {
+			return
+		}
+	}
+	return nil
 }
