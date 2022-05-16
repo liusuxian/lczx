@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 11/05/2022 14:50:52
+ Date: 16/05/2022 16:29:04
 */
 
 SET NAMES utf8mb4;
@@ -431,6 +431,8 @@ CREATE TABLE `wdk_project` (
   `step` tinyint unsigned NOT NULL COMMENT '项目阶段 0:未开始 1:合同签约 2:项目启动会 3:服务中 4:合同结束 5:复盘',
   `file_upload_status` tinyint unsigned NOT NULL COMMENT '项目文件上传状态 0:未传完 1:已传完',
   `business_type` tinyint unsigned NOT NULL COMMENT '业务类型 0:物业 1:专项 2:全过程',
+  `contract_status` tinyint unsigned NOT NULL COMMENT '签约状态 0:新签 1:续签',
+  `contract_sum` double unsigned NOT NULL COMMENT '合同金额',
   `deep_culture` tinyint unsigned NOT NULL COMMENT '是否为深耕 0:否 1:是',
   `status` tinyint unsigned NOT NULL COMMENT '服务状态 0:服务中 1:暂停 2:提前终止 3:正常结束',
   `entrust_company` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '委托方公司',
@@ -456,6 +458,22 @@ CREATE TABLE `wdk_project` (
 
 -- ----------------------------
 -- Records of wdk_project
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
+-- Table structure for wdk_project_businessforms
+-- ----------------------------
+DROP TABLE IF EXISTS `wdk_project_businessforms`;
+CREATE TABLE `wdk_project_businessforms` (
+  `project_id` bigint unsigned NOT NULL COMMENT '文档库项目ID',
+  `business_forms` tinyint unsigned NOT NULL COMMENT '业态 0:住宅-综合性住宅 1:住宅-高层住宅 2:住宅-多层住宅 3:住宅-联排别墅 4:住宅-独立式住宅 5:非住宅-办公用房 6:非住宅-场馆（体育馆、博物馆、机场） 7:非住宅-综合类 8:非住宅-学校 9:非住宅-工业园 10:非住宅-医院 11:非住宅-商场 12:非住宅-商铺 13:非住宅-车位 14:非住宅-酒店式公寓 15:非住宅-仓储 16:非住宅-经营用房 17:非住宅-物业用房 18:非住宅-配套用房 19:非住宅-车库 20:非住宅-会所 21:非住宅-临停车位 22:非住宅-非机动车位 23:非住宅-社会福利院 24:非住宅-旅游景区',
+  PRIMARY KEY (`project_id`,`business_forms`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ----------------------------
+-- Records of wdk_project_businessforms
 -- ----------------------------
 BEGIN;
 COMMIT;
@@ -561,27 +579,6 @@ CREATE TABLE `wdk_report_cfg` (
 
 -- ----------------------------
 -- Records of wdk_report_cfg
--- ----------------------------
-BEGIN;
-COMMIT;
-
--- ----------------------------
--- Table structure for wdk_report_comment
--- ----------------------------
-DROP TABLE IF EXISTS `wdk_report_comment`;
-CREATE TABLE `wdk_report_comment` (
-  `audit_uid` bigint unsigned NOT NULL COMMENT '审核员用户ID',
-  `report_id` bigint unsigned NOT NULL COMMENT '审核报告ID',
-  `page` int unsigned NOT NULL COMMENT '文件页码',
-  `audit_name` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '审核人员姓名',
-  `comment` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '每页评价内容',
-  `create_at` datetime DEFAULT NULL COMMENT '创建时间',
-  `update_at` datetime DEFAULT NULL COMMENT '更新时间',
-  PRIMARY KEY (`audit_uid`,`report_id`,`page`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- ----------------------------
--- Records of wdk_report_comment
 -- ----------------------------
 BEGIN;
 COMMIT;
