@@ -25,7 +25,7 @@ func WdkProject() *sWdkProject {
 }
 
 // GetWdkProjectList 获取文档库项目列表
-func (s *sWdkProject) GetWdkProjectList(ctx context.Context, req *v1.WdkProjectListReq) (total int, list []*v1.WdkReportInfo, err error) {
+func (s *sWdkProject) GetWdkProjectList(ctx context.Context, req *v1.WdkProjectListReq) (total int, list []*v1.WdkProjectInfo, err error) {
 	model := dao.WdkProject.Ctx(ctx)
 	columns := dao.WdkProject.Columns()
 	order := "id DESC"

@@ -18,7 +18,7 @@ type cWdkProject struct{}
 // List 文档库项目列表
 func (c *cWdkProject) List(ctx context.Context, req *v1.WdkProjectListReq) (res *v1.WdkProjectListRes, err error) {
 	var total int
-	var list []*entity.WdkProject
+	var list []*v1.WdkProjectInfo
 	total, list, err = service.WdkProject().GetWdkProjectList(ctx, req)
 	if err != nil {
 		err = gerror.WrapCode(code.GetWdkProjectListFailed, err)
