@@ -45,6 +45,15 @@ func (s *sWdkProject) GetWdkProjectList(ctx context.Context, req *v1.WdkProjectL
 	if req.BusinessType != "" {
 		model = model.Where(columns.BusinessType, gconv.Uint(req.BusinessType))
 	}
+	if req.BusinessForms != "" {
+		model = model.Where(columns.BusinessForms, gconv.Uint(req.BusinessForms))
+	}
+	if req.ContractStatus != "" {
+		model = model.Where(columns.ContractStatus, gconv.Uint(req.ContractStatus))
+	}
+	if req.ContractSum != "" {
+		model = model.WhereLike(columns.ContractSum, "%"+req.ContractSum+"%")
+	}
 	if req.DeepCulture != "" {
 		model = model.Where(columns.DeepCulture, gconv.Uint(req.DeepCulture))
 	}
@@ -259,6 +268,9 @@ func (s *sWdkProject) saveWdkProject(ctx context.Context, req *v1.WdkProjectAddR
 		Step:             0,
 		FileUploadStatus: 0,
 		BusinessType:     req.BusinessType,
+		BusinessForms:    req.BusinessForms,
+		ContractStatus:   req.ContractStatus,
+		ContractSum:      req.ContractSum,
 		DeepCulture:      req.DeepCulture,
 		Status:           req.Status,
 		EntrustCompany:   req.EntrustCompany,
@@ -290,6 +302,9 @@ func (s *sWdkProject) updateWdkProject(ctx context.Context, req *v1.WdkProjectEd
 		Type:           req.Type,
 		Origin:         req.Origin,
 		BusinessType:   req.BusinessType,
+		BusinessForms:  req.BusinessForms,
+		ContractStatus: req.ContractStatus,
+		ContractSum:    req.ContractSum,
 		DeepCulture:    req.DeepCulture,
 		Status:         req.Status,
 		EntrustCompany: req.EntrustCompany,
