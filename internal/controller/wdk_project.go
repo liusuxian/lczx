@@ -5,7 +5,6 @@ import (
 	"github.com/gogf/gf/v2/errors/gerror"
 	v1 "lczx/api/v1"
 	"lczx/internal/code"
-	"lczx/internal/model/entity"
 	"lczx/internal/service"
 )
 
@@ -46,7 +45,7 @@ func (c *cWdkProject) Add(ctx context.Context, req *v1.WdkProjectAddReq) (res *v
 
 // Info 文档库项目信息
 func (c *cWdkProject) Info(ctx context.Context, req *v1.WdkProjectInfoReq) (res *v1.WdkProjectInfoRes, err error) {
-	var wdkProject *entity.WdkProject
+	var wdkProject *v1.WdkProjectInfo
 	wdkProject, err = service.WdkProject().GetWdkProjectById(ctx, req.Id)
 	if err != nil {
 		err = gerror.WrapCode(code.GetWdkProjectFailed, err)

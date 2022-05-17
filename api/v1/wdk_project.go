@@ -42,7 +42,7 @@ type WdkProjectListRes struct {
 
 // WdkProjectInfo 文档库项目信息
 type WdkProjectInfo struct {
-	Info          *entity.WdkProject                `json:"info" dc:"文档库项目信息"`              // 文档库项目信息
+	ProjectInfo   *entity.WdkProject                `json:"projectInfo" dc:"文档库项目信息"`       // 文档库项目信息
 	Businessforms []*entity.WdkProjectBusinessforms `json:"businessforms" dc:"文档库项目业态信息列表"` // 文档库项目业态信息列表
 }
 
@@ -79,7 +79,7 @@ type WdkProjectInfoReq struct {
 
 // WdkProjectInfoRes 文档库项目信息返回参数
 type WdkProjectInfoRes struct {
-	Info *entity.WdkProject `json:"info" dc:"文档库项目信息"` // 文档库项目信息
+	Info *WdkProjectInfo `json:"info" dc:"文档库项目信息"` // 文档库项目信息
 }
 
 // WdkProjectEditReq 文档库编辑项目请求参数

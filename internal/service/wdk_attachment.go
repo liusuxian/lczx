@@ -6,7 +6,6 @@ import (
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	v1 "lczx/api/v1"
-	"lczx/internal/model/entity"
 	"lczx/internal/service/internal/dao"
 	"lczx/internal/service/internal/do"
 	"lczx/internal/upload"
@@ -52,19 +51,19 @@ func (s *sWdkAttachment) AddWdkAttachment(ctx context.Context, req *v1.WdkAttach
 }
 
 // AuthAdd 检查新增文档库上传附件记录权限
-func (s *sWdkAttachment) AuthAdd(ctx context.Context, projectId uint64) (wdkProject *entity.WdkProject, err error) {
+func (s *sWdkAttachment) AuthAdd(ctx context.Context, projectId uint64) (wdkProject *v1.WdkProjectInfo, err error) {
 	// 通过文档库项目ID判断文档库项目信息是否存在
 	wdkProject, err = WdkProject().GetWdkProjectById(ctx, projectId)
 	if err != nil {
 		return
 	}
-	if wdkProject == nil {
+	if wdkProject == nil || wdkProject.ProjectInfo == nil {
 		err = gerror.Newf(`文档库项目ID[%d]不存在`, projectId)
 		return
 	}
 	// 判断写入权限
 	user := Context().Get(ctx).User
-	if user.Id != wdkProject.PrincipalUid {
+	if user.Id != wdkProject.ProjectInfo.PrincipalUid {
 		err = gerror.New("抱歉！！！该项目您没有上传附件的权限")
 		return
 	}

@@ -6,7 +6,6 @@ import (
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	v1 "lczx/api/v1"
-	"lczx/internal/model/entity"
 	"lczx/internal/service/internal/dao"
 	"lczx/internal/service/internal/do"
 	"lczx/internal/upload"
@@ -40,7 +39,7 @@ func (s *sWdkService) AddWdkService(ctx context.Context, req *v1.WdkServiceAddRe
 	err = dao.WdkServiceRecord.Ctx(ctx).Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		// 检查新增文档库服务记录权限
 		var terr error
-		var wdkProject *entity.WdkProject
+		var wdkProject *v1.WdkProjectInfo
 		wdkProject, terr = s.AuthAdd(ctx, req.ProjectId)
 		if terr != nil {
 			return terr
@@ -51,26 +50,26 @@ func (s *sWdkService) AddWdkService(ctx context.Context, req *v1.WdkServiceAddRe
 			return terr
 		}
 		// 设置所属文档库项目阶段
-		terr = WdkProject().SetWdkProjectStep(ctx, wdkProject.Id, 7)
+		terr = WdkProject().SetWdkProjectStep(ctx, wdkProject.ProjectInfo.Id, 7)
 		return terr
 	})
 	return
 }
 
 // AuthAdd 检查新增文档库服务记录权限
-func (s *sWdkService) AuthAdd(ctx context.Context, projectId uint64) (wdkProject *entity.WdkProject, err error) {
+func (s *sWdkService) AuthAdd(ctx context.Context, projectId uint64) (wdkProject *v1.WdkProjectInfo, err error) {
 	// 通过文档库项目ID判断文档库项目信息是否存在
 	wdkProject, err = WdkProject().GetWdkProjectById(ctx, projectId)
 	if err != nil {
 		return
 	}
-	if wdkProject == nil {
+	if wdkProject == nil || wdkProject.ProjectInfo == nil {
 		err = gerror.Newf(`文档库项目ID[%d]不存在`, projectId)
 		return
 	}
 	// 判断写入权限
 	user := Context().Get(ctx).User
-	if user.Id != wdkProject.PrincipalUid {
+	if user.Id != wdkProject.ProjectInfo.PrincipalUid {
 		err = gerror.New("抱歉！！！该项目您没有添加服务记录的权限")
 		return
 	}

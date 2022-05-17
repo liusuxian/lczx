@@ -33,14 +33,14 @@ func (s *sWdkFile) AddWdkFile(ctx context.Context, req *v1.WdkFileAddReq, file *
 	err = dao.WdkFile.Ctx(ctx).Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		// 检查新增文档库上传文件记录权限
 		var terr error
-		var wdkProject *entity.WdkProject
+		var wdkProject *v1.WdkProjectInfo
 		wdkProject, terr = s.AuthAdd(ctx, req.ProjectId)
 		if terr != nil {
 			return terr
 		}
 		// 获取上传文件类型是否已存在
 		var wdkFileInfo *entity.WdkFile
-		wdkFileInfo, terr = s.GetWdkFileByProjectIdAndType(ctx, wdkProject.Id, req.Type)
+		wdkFileInfo, terr = s.GetWdkFileByProjectIdAndType(ctx, wdkProject.ProjectInfo.Id, req.Type)
 		if terr != nil {
 			return terr
 		}
@@ -52,12 +52,12 @@ func (s *sWdkFile) AddWdkFile(ctx context.Context, req *v1.WdkFileAddReq, file *
 				return terr
 			}
 			// 设置所属文档库项目阶段
-			terr = WdkProject().SetWdkProjectStep(ctx, wdkProject.Id, req.Type)
+			terr = WdkProject().SetWdkProjectStep(ctx, wdkProject.ProjectInfo.Id, req.Type)
 			if terr != nil {
 				return terr
 			}
 			// 设置所属文档库项目文件上传状态为是
-			terr = WdkProject().SetWdkProjectFileUploadStatus(ctx, wdkProject.Id)
+			terr = WdkProject().SetWdkProjectFileUploadStatus(ctx, wdkProject.ProjectInfo.Id)
 			if terr != nil {
 				return terr
 			}
@@ -75,19 +75,19 @@ func (s *sWdkFile) AddWdkFile(ctx context.Context, req *v1.WdkFileAddReq, file *
 }
 
 // AuthAdd 检查新增文档库上传文件记录权限
-func (s *sWdkFile) AuthAdd(ctx context.Context, projectId uint64) (wdkProject *entity.WdkProject, err error) {
+func (s *sWdkFile) AuthAdd(ctx context.Context, projectId uint64) (wdkProject *v1.WdkProjectInfo, err error) {
 	// 通过文档库项目ID判断文档库项目信息是否存在
 	wdkProject, err = WdkProject().GetWdkProjectById(ctx, projectId)
 	if err != nil {
 		return
 	}
-	if wdkProject == nil {
+	if wdkProject == nil || wdkProject.ProjectInfo == nil {
 		err = gerror.Newf(`文档库项目ID[%d]不存在`, projectId)
 		return
 	}
 	// 判断写入权限
 	user := Context().Get(ctx).User
-	if user.Id != wdkProject.PrincipalUid && user.IsAdmin != 1 {
+	if user.Id != wdkProject.ProjectInfo.PrincipalUid && user.IsAdmin != 1 {
 		err = gerror.New("抱歉！！！该项目您没有上传文件的权限")
 		return
 	}

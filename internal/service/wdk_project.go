@@ -119,12 +119,12 @@ func (s *sWdkProject) GetWdkProjectList(ctx context.Context, req *v1.WdkProjectL
 	if err != nil {
 		return
 	}
-	err = model.Page(req.CurPage, req.PageSize).Order(order).ScanList(&list, "Info")
+	err = model.Page(req.CurPage, req.PageSize).Order(order).ScanList(&list, "ProjectInfo")
 	if err != nil {
 		return
 	}
-	err = dao.WdkProjectBusinessforms.Ctx(ctx).Where(dao.WdkProjectBusinessforms.Columns().ProjectId, gdb.ListItemValuesUnique(list, "Info", "Id")).
-		ScanList(&list, "Businessforms", "Info", "ProjectId:Id")
+	err = dao.WdkProjectBusinessforms.Ctx(ctx).Where(dao.WdkProjectBusinessforms.Columns().ProjectId, gdb.ListItemValuesUnique(list, "ProjectInfo", "Id")).
+		ScanList(&list, "Businessforms", "ProjectInfo", "ProjectId:Id")
 	return
 }
 
@@ -163,8 +163,12 @@ func (s *sWdkProject) AddWdkProject(ctx context.Context, req *v1.WdkProjectAddRe
 }
 
 // GetWdkProjectById 通过文档库项目ID获取文档库项目信息
-func (s *sWdkProject) GetWdkProjectById(ctx context.Context, id uint64) (wdkProject *entity.WdkProject, err error) {
-	err = dao.WdkProject.Ctx(ctx).Where(do.WdkProject{Id: id}).Scan(&wdkProject)
+func (s *sWdkProject) GetWdkProjectById(ctx context.Context, id uint64) (wdkProject *v1.WdkProjectInfo, err error) {
+	err = dao.WdkProject.Ctx(ctx).Where(do.WdkProject{Id: id}).Scan(&wdkProject.ProjectInfo)
+	if err != nil {
+		return
+	}
+	err = dao.WdkProjectBusinessforms.Ctx(ctx).Where(do.WdkProjectBusinessforms{ProjectId: id}).Scan(&wdkProject.Businessforms)
 	return
 }
 
@@ -178,16 +182,16 @@ func (s *sWdkProject) EditWdkProject(ctx context.Context, req *v1.WdkProjectEdit
 	err = dao.WdkProject.Ctx(ctx).Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		// 检查文档库项目信息是否存在
 		var terr error
-		var wdkProject *entity.WdkProject
+		var wdkProject *v1.WdkProjectInfo
 		wdkProject, terr = s.GetWdkProjectById(ctx, req.Id)
 		if terr != nil {
 			return terr
 		}
-		if wdkProject == nil {
+		if wdkProject == nil || wdkProject.ProjectInfo == nil {
 			return gerror.Newf(`文档库项目ID[%d]不存在`, req.Id)
 		}
 		// 检查文档库项目名称是否可用
-		if wdkProject.Name != req.Name {
+		if wdkProject.ProjectInfo.Name != req.Name {
 			var available bool
 			available, terr = s.IsWdkProjectNameAvailable(ctx, req.Name)
 			if terr != nil {
@@ -330,7 +334,7 @@ func (s *sWdkProject) saveWdkProject(ctx context.Context, req *v1.WdkProjectAddR
 }
 
 // updateWdkProject 更新文档库项目数据
-func (s *sWdkProject) updateWdkProject(ctx context.Context, req *v1.WdkProjectEditReq, principalUser *entity.User, wdkProject *entity.WdkProject) (err error) {
+func (s *sWdkProject) updateWdkProject(ctx context.Context, req *v1.WdkProjectEditReq, principalUser *entity.User, wdkProject *v1.WdkProjectInfo) (err error) {
 	var dept *entity.Dept
 	dept, err = Dept().SelectDeptById(ctx, principalUser.DeptId)
 	if err != nil {
@@ -363,7 +367,7 @@ func (s *sWdkProject) updateWdkProject(ctx context.Context, req *v1.WdkProjectEd
 		return
 	}
 	// 删除旧的文档库项目业态类型数据
-	_, err = dao.WdkProjectBusinessforms.Ctx(ctx).Where(do.WdkProjectBusinessforms{ProjectId: wdkProject.Id}).Delete()
+	_, err = dao.WdkProjectBusinessforms.Ctx(ctx).Where(do.WdkProjectBusinessforms{ProjectId: wdkProject.ProjectInfo.Id}).Delete()
 	if err != nil {
 		return
 	}
@@ -372,7 +376,7 @@ func (s *sWdkProject) updateWdkProject(ctx context.Context, req *v1.WdkProjectEd
 		businessFormsData := g.List{}
 		for _, v := range req.BusinessForms {
 			businessFormsData = append(businessFormsData, g.Map{
-				"project_id":     wdkProject.Id,
+				"project_id":     wdkProject.ProjectInfo.Id,
 				"business_forms": v,
 			})
 		}
