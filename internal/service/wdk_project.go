@@ -167,6 +167,7 @@ func (s *sWdkProject) AddWdkProject(ctx context.Context, req *v1.WdkProjectAddRe
 
 // GetWdkProjectById 通过文档库项目ID获取文档库项目信息
 func (s *sWdkProject) GetWdkProjectById(ctx context.Context, id uint64) (wdkProject *v1.WdkProjectInfo, err error) {
+	wdkProject = &v1.WdkProjectInfo{}
 	err = dao.WdkProject.Ctx(ctx).Where(do.WdkProject{Id: id}).Scan(&wdkProject.ProjectInfo)
 	if err != nil {
 		return
@@ -228,7 +229,7 @@ func (s *sWdkProject) DeleteWdkProject(ctx context.Context, ids []uint64) (err e
 
 // IsWdkProjectNameAvailable 文档库项目名称是否可用
 func (s *sWdkProject) IsWdkProjectNameAvailable(ctx context.Context, name string) (bool, error) {
-	count, err := dao.WdkProject.Ctx(ctx).Where(do.WdkProject{Name: name}).Count()
+	count, err := dao.WdkProject.Ctx(ctx).Where(do.WdkProject{Name: name}).Unscoped().Count()
 	if err != nil {
 		return false, err
 	}
