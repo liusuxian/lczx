@@ -26,6 +26,22 @@ func WdkProject() *sWdkProject {
 
 // GetWdkProjectList 获取文档库项目列表
 func (s *sWdkProject) GetWdkProjectList(ctx context.Context, req *v1.WdkProjectListReq) (total int, list []*v1.WdkProjectInfo, err error) {
+	// 处理业态
+	projectIdsMap := gmap.New()
+	if len(req.BusinessForms) != 0 {
+		var wdkProjectBusinessforms []*entity.WdkProjectBusinessforms
+		err = dao.WdkProjectBusinessforms.Ctx(ctx).WhereIn(dao.WdkProjectBusinessforms.Columns().BusinessForms, req.BusinessForms).
+			Scan(&wdkProjectBusinessforms)
+		if err != nil {
+			return
+		}
+		for _, v := range wdkProjectBusinessforms {
+			projectIdsMap.Set(v.ProjectId, true)
+		}
+		if projectIdsMap.IsEmpty() {
+			return
+		}
+	}
 	model := dao.WdkProject.Ctx(ctx)
 	columns := dao.WdkProject.Columns()
 	order := "id DESC"
@@ -46,19 +62,6 @@ func (s *sWdkProject) GetWdkProjectList(ctx context.Context, req *v1.WdkProjectL
 	}
 	if req.BusinessType != "" {
 		model = model.Where(columns.BusinessType, gconv.Uint(req.BusinessType))
-	}
-	// 处理业态
-	projectIdsMap := gmap.New()
-	if len(req.BusinessForms) != 0 {
-		var wdkProjectBusinessforms []*entity.WdkProjectBusinessforms
-		err = dao.WdkProjectBusinessforms.Ctx(ctx).WhereIn(dao.WdkProjectBusinessforms.Columns().BusinessForms, req.BusinessForms).
-			Scan(&wdkProjectBusinessforms)
-		if err != nil {
-			return
-		}
-		for _, v := range wdkProjectBusinessforms {
-			projectIdsMap.Set(v.ProjectId, true)
-		}
 	}
 	if !projectIdsMap.IsEmpty() {
 		model = model.WhereIn(columns.Id, projectIdsMap.Keys())
