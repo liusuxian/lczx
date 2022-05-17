@@ -52,7 +52,7 @@ func (s *sWdkProject) GetWdkProjectList(ctx context.Context, req *v1.WdkProjectL
 	if len(req.BusinessForms) != 0 {
 		var wdkProjectBusinessforms []*entity.WdkProjectBusinessforms
 		err = dao.WdkProjectBusinessforms.Ctx(ctx).WhereIn(dao.WdkProjectBusinessforms.Columns().BusinessForms, req.BusinessForms).
-			Scan(wdkProjectBusinessforms)
+			Scan(&wdkProjectBusinessforms)
 		if err != nil {
 			return
 		}
