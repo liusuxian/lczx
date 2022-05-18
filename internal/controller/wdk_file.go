@@ -47,12 +47,8 @@ func (c *cWdkFile) Add(req *ghttp.Request) {
 	if err != nil {
 		response.RespJsonExit(req, code.AddWdkFileRecordFailed.Code(), code.AddWdkFileRecordFailed.Message()+": "+err.Error())
 	}
-	// 获取上传文件信息
-	file := req.GetUploadFile("upload-file")
-	if file == nil {
-		response.RespJsonExit(req, code.AddWdkFileRecordFailed.Code(), code.AddWdkFileRecordFailed.Message()+": 获取上传文件信息失败")
-	}
 	// 上传文件
+	file := req.GetUploadFile("upload-file")
 	var fileInfo *upload.FileInfo
 	fileInfo, err = upload.Upload.UploadFile(file, "wdk/file")
 	if err != nil {
@@ -64,9 +60,5 @@ func (c *cWdkFile) Add(req *ghttp.Request) {
 		response.RespJsonExit(req, code.AddWdkFileRecordFailed.Code(), code.AddWdkFileRecordFailed.Message()+": "+err.Error())
 	}
 
-	response.Succ(req, v1.WdkFileAddRes{
-		Type:     wdkFileAddReq.Type,
-		FileInfo: fileInfo,
-	})
 	return
 }

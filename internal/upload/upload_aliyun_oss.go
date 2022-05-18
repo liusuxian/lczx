@@ -163,6 +163,37 @@ func (u FileUploadOSSAdapter) getUrl(filepath string) string {
 
 // 上传到阿里云OSS操作
 func (u FileUploadOSSAdapter) uploadAction(file *ghttp.UploadFile, fType string, dirPath string) (originFileUrl, pdfFileUrl string, err error) {
+	// 文件名处理
+	filename := strings.ToLower(strconv.FormatInt(gtime.TimestampNano(), 36) + grand.S(10))
+	fileFullname := filename + gfile.Ext(file.Filename)
+	// 保存本地临时文件
+	var localFilename string
+	localFilename, err = file.Save("./cache/local/")
+	if err != nil {
+		return
+	}
+	// 本地临时文件改名
+	localFilepath := "./cache/local/" + fileFullname
+	err = gfile.Rename("./cache/local/"+localFilename, localFilepath)
+	if err != nil {
+		return
+	}
+	// 原始文件转pdf文件
+	var resultPath string
+	extName := gfile.ExtName(file.Filename)
+	pdfFilepath := dirPath + "/" + filename + ".pdf"
+	if fType == "file" {
+		pdfFileUrl = u.getUrl(pdfFilepath)
+		if extName != "pdf" {
+			// 转pdf
+			resultPath, err = utils.ConvertToPDF(localFilepath)
+			if err != nil {
+				// 删除本地临时文件
+				_ = gfile.Remove(localFilepath)
+				return
+			}
+		}
+	}
 	// 解密 accessKeyID
 	var accessKeyID []byte
 	accessKeyID, err = crypto.AesDecrypt(u.AccessKeyID)
@@ -194,54 +225,29 @@ func (u FileUploadOSSAdapter) uploadAction(file *ghttp.UploadFile, fType string,
 		return
 	}
 	defer fd.Close()
-	// 文件名处理
-	filename := strings.ToLower(strconv.FormatInt(gtime.TimestampNano(), 36) + grand.S(10))
-	fileFullname := filename + gfile.Ext(file.Filename)
-	originFilepath := dirPath + "/" + fileFullname
 	// 上传原始文件
+	originFilepath := dirPath + "/" + fileFullname
 	err = bucket.PutObject(originFilepath, fd)
 	if err != nil {
 		return
 	}
 	originFileUrl = u.getUrl(originFilepath)
-	// 原始文件转pdf文件
-	extName := gfile.ExtName(file.Filename)
-	pdfFilepath := dirPath + "/" + filename + ".pdf"
-	if fType == "file" && extName == "pdf" {
-		pdfFileUrl = u.getUrl(pdfFilepath)
-		return
-	}
-	if fType == "file" {
-		// 下载原始文件
-		downloadFilepath := "./cache/download/" + fileFullname
-		err = bucket.DownloadFile(originFilepath, downloadFilepath, 100*1024, oss.Routines(3), oss.Checkpoint(true, ""))
-		if err != nil {
-			return
-		}
-		// 转pdf
-		var resultPath string
-		resultPath, err = utils.ConvertToPDF(downloadFilepath)
-		if err != nil {
-			// 删除下载的原始文件
-			_ = gfile.Remove(downloadFilepath)
-			return
-		}
-		// 上传pdf文件
+	// 上传pdf文件
+	if fType == "file" && extName != "pdf" {
 		if resultPath != "" {
 			// 上传文件
 			err = bucket.PutObjectFromFile(pdfFilepath, resultPath)
 			if err != nil {
-				// 删除下载的原始文件
-				_ = gfile.Remove(downloadFilepath)
+				// 删除本地临时文件
+				_ = gfile.Remove(localFilepath)
 				// 删除转换的pdf文件
 				_ = gfile.Remove(resultPath)
 				return
 			}
-			// 删除下载的原始文件
-			_ = gfile.Remove(downloadFilepath)
+			// 删除本地临时文件
+			_ = gfile.Remove(localFilepath)
 			// 删除转换的pdf文件
 			_ = gfile.Remove(resultPath)
-			pdfFileUrl = u.getUrl(pdfFilepath)
 			return
 		}
 	}

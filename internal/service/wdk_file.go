@@ -31,20 +31,14 @@ func (s *sWdkFile) GetWdkFileRecord(ctx context.Context, projectId uint64) (list
 // AddWdkFile 新增文档库上传文件记录
 func (s *sWdkFile) AddWdkFile(ctx context.Context, req *v1.WdkFileAddReq, file *upload.FileInfo) (err error) {
 	err = dao.WdkFile.Ctx(ctx).Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
-		// 检查新增文档库上传文件记录权限
-		var terr error
-		var wdkProject *v1.WdkProjectInfo
-		wdkProject, terr = s.AuthAdd(ctx, req.ProjectId)
-		if terr != nil {
-			return terr
-		}
 		// 获取上传文件类型是否已存在
-		var wdkFileInfo *entity.WdkFile
-		wdkFileInfo, terr = s.GetWdkFileByProjectIdAndType(ctx, wdkProject.ProjectInfo.Id, req.Type)
+		var terr error
+		var wdkFileInfos []*entity.WdkFile
+		wdkFileInfos, terr = s.GetWdkFileByProjectIdAndType(ctx, req.ProjectId, req.Type)
 		if terr != nil {
 			return terr
 		}
-		if wdkFileInfo == nil {
+		if len(wdkFileInfos) == 0 {
 			// 不存在则新增
 			// 保存文档库上传文件数据
 			terr = s.saveWdkFile(ctx, req, file)
@@ -52,19 +46,24 @@ func (s *sWdkFile) AddWdkFile(ctx context.Context, req *v1.WdkFileAddReq, file *
 				return terr
 			}
 			// 设置所属文档库项目阶段
-			terr = WdkProject().SetWdkProjectStep(ctx, wdkProject.ProjectInfo.Id, req.Type)
+			terr = WdkProject().SetWdkProjectStep(ctx, req.ProjectId, req.Type)
 			if terr != nil {
 				return terr
 			}
 			// 设置所属文档库项目文件上传状态为是
-			terr = WdkProject().SetWdkProjectFileUploadStatus(ctx, wdkProject.ProjectInfo.Id)
+			terr = WdkProject().SetWdkProjectFileUploadStatus(ctx, req.ProjectId)
 			if terr != nil {
 				return terr
 			}
 		} else {
 			// 存在则更新
-			// 更新文档库上传文件数据
-			terr = s.updateWdkFile(ctx, req, file)
+			if req.Type == 3 {
+				// 保存文档库上传文件数据
+				terr = s.saveWdkFile(ctx, req, file)
+			} else {
+				// 更新文档库上传文件数据
+				terr = s.updateWdkFile(ctx, req, file)
+			}
 			if terr != nil {
 				return terr
 			}
@@ -96,13 +95,13 @@ func (s *sWdkFile) AuthAdd(ctx context.Context, projectId uint64) (wdkProject *v
 
 // GetWdkFileCountByProjectId 通过项目ID获取文档库项目上传文件记录数量
 func (s *sWdkFile) GetWdkFileCountByProjectId(ctx context.Context, projectId uint64) (count int, err error) {
-	count, err = dao.WdkFile.Ctx(ctx).Where(do.WdkFile{ProjectId: projectId}).Count()
+	count, err = dao.WdkFile.Ctx(ctx).Fields(dao.WdkFile.Columns().Type).Where(do.WdkFile{ProjectId: projectId}).Distinct().Count()
 	return
 }
 
 // GetWdkFileByProjectIdAndType 通过项目ID和文件类型获取文档库项目上传文件信息
-func (s *sWdkFile) GetWdkFileByProjectIdAndType(ctx context.Context, projectId uint64, fileType uint) (wdkFileInfo *entity.WdkFile, err error) {
-	err = dao.WdkFile.Ctx(ctx).Where(do.WdkFile{ProjectId: projectId, Type: fileType}).Scan(&wdkFileInfo)
+func (s *sWdkFile) GetWdkFileByProjectIdAndType(ctx context.Context, projectId uint64, fileType uint) (wdkFileInfos []*entity.WdkFile, err error) {
+	err = dao.WdkFile.Ctx(ctx).Where(do.WdkFile{ProjectId: projectId, Type: fileType}).Scan(&wdkFileInfos)
 	return
 }
 

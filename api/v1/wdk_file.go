@@ -3,7 +3,6 @@ package v1
 import (
 	"github.com/gogf/gf/v2/frame/g"
 	"lczx/internal/model/entity"
-	"lczx/internal/upload"
 )
 
 // WdkFileRecordReq 文档库上传文件记录请求参数
@@ -26,6 +25,4 @@ type WdkFileAddReq struct {
 
 // WdkFileAddRes 文档库新增上传文件记录返回参数
 type WdkFileAddRes struct {
-	Type     uint             `json:"type" dc:"文件类型"`     // 文件类型
-	FileInfo *upload.FileInfo `json:"fileInfo" dc:"文件信息"` // 文件信息
 }
