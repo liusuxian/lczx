@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"github.com/gogf/gf/v2/crypto/gmd5"
@@ -90,7 +91,8 @@ func Reverse[T any](s []T) {
 func interactiveToexec(commandName string, params []string) error {
 	cmd := exec.Command(commandName, params...)
 	log.Println("interactiveToexec cmd: ", cmd)
-	_, err := cmd.CombinedOutput()
+	_, err := cmd.Output()
+	cmd.Stderr = bytes.NewBuffer(nil)
 	return err
 }
 
