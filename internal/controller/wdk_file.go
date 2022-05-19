@@ -4,13 +4,11 @@ import (
 	"context"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/net/ghttp"
-	"github.com/gogf/gf/v2/util/gvalid"
 	v1 "lczx/api/v1"
 	"lczx/internal/code"
 	"lczx/internal/model/entity"
 	"lczx/internal/service"
 	"lczx/internal/upload"
-	"lczx/utility/response"
 )
 
 var (
@@ -33,31 +31,31 @@ func (c *cWdkFile) Record(ctx context.Context, req *v1.WdkFileRecordReq) (res *v
 }
 
 // Add 新增文档库上传文件记录
-func (c *cWdkFile) Add(req *ghttp.Request) {
-	ctx := req.GetCtx()
-	var err error
-	var wdkFileAddReq *v1.WdkFileAddReq
-	if err = req.Parse(&wdkFileAddReq); err != nil {
-		errCode := err.(gvalid.Error).Code().Code()
-		errMsg := err.(gvalid.Error).Current().Error()
-		response.RespJsonExit(req, errCode, errMsg)
-	}
+func (c *cWdkFile) Add(ctx context.Context, req *v1.WdkFileAddReq) (res *v1.WdkFileAddRes, err error) {
 	// 检查新增文档库上传文件记录权限
-	_, err = service.WdkFile().AuthAdd(ctx, wdkFileAddReq.ProjectId)
+	_, err = service.WdkFile().AuthAdd(ctx, req.ProjectId)
 	if err != nil {
-		response.RespJsonExit(req, code.AddWdkFileRecordFailed.Code(), code.AddWdkFileRecordFailed.Message()+": "+err.Error())
+		err = gerror.WrapCode(code.AddWdkFileRecordFailed, err)
+		return
 	}
 	// 上传文件
-	file := req.GetUploadFile("upload-file")
-	var fileInfo *upload.FileInfo
-	fileInfo, err = upload.Upload.UploadFile(file, "wdk/file")
+	var uploadFiles []*ghttp.UploadFile
+	if len(req.UploadFiles) != 0 {
+		uploadFiles = req.UploadFiles
+	} else {
+		uploadFiles = []*ghttp.UploadFile{req.UploadFile}
+	}
+	var fileInfos []*upload.FileInfo
+	fileInfos, err = upload.Upload.UploadFiles(uploadFiles, "wdk/file")
 	if err != nil {
-		response.RespJsonExit(req, code.AddWdkFileRecordFailed.Code(), code.AddWdkFileRecordFailed.Message()+": "+err.Error())
+		err = gerror.WrapCode(code.AddWdkFileRecordFailed, err)
+		return
 	}
 	// 新增文档库上传文件记录
-	err = service.WdkFile().AddWdkFile(ctx, wdkFileAddReq, fileInfo)
+	err = service.WdkFile().AddWdkFile(ctx, req, fileInfos)
 	if err != nil {
-		response.RespJsonExit(req, code.AddWdkFileRecordFailed.Code(), code.AddWdkFileRecordFailed.Message()+": "+err.Error())
+		err = gerror.WrapCode(code.AddWdkFileRecordFailed, err)
+		return
 	}
 
 	return

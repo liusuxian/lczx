@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/errors/gerror"
+	"github.com/gogf/gf/v2/frame/g"
 	v1 "lczx/api/v1"
 	"lczx/internal/model/entity"
 	"lczx/internal/service/internal/dao"
@@ -29,46 +30,27 @@ func (s *sWdkFile) GetWdkFileRecord(ctx context.Context, projectId uint64) (list
 }
 
 // AddWdkFile 新增文档库上传文件记录
-func (s *sWdkFile) AddWdkFile(ctx context.Context, req *v1.WdkFileAddReq, file *upload.FileInfo) (err error) {
+func (s *sWdkFile) AddWdkFile(ctx context.Context, req *v1.WdkFileAddReq, fileInfos []*upload.FileInfo) (err error) {
 	err = dao.WdkFile.Ctx(ctx).Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
-		// 获取上传文件类型是否已存在
+		// 删除旧文件
 		var terr error
-		var wdkFileInfos []*entity.WdkFile
-		wdkFileInfos, terr = s.GetWdkFileByProjectIdAndType(ctx, req.ProjectId, req.Type)
+		_, terr = dao.WdkFile.Ctx(ctx).Where(do.WdkFile{ProjectId: req.ProjectId, Type: req.Type}).Delete()
 		if terr != nil {
 			return terr
 		}
-		if len(wdkFileInfos) == 0 {
-			// 不存在则新增
-			// 保存文档库上传文件数据
-			terr = s.saveWdkFile(ctx, req, file)
-			if terr != nil {
-				return terr
-			}
-			// 设置所属文档库项目阶段
-			terr = WdkProject().SetWdkProjectStep(ctx, req.ProjectId, req.Type)
-			if terr != nil {
-				return terr
-			}
-			// 设置所属文档库项目文件上传状态为是
-			terr = WdkProject().SetWdkProjectFileUploadStatus(ctx, req.ProjectId)
-			if terr != nil {
-				return terr
-			}
-		} else {
-			// 存在则更新
-			if req.Type == 3 {
-				// 保存文档库上传文件数据
-				terr = s.saveWdkFile(ctx, req, file)
-			} else {
-				// 更新文档库上传文件数据
-				terr = s.updateWdkFile(ctx, req, file)
-			}
-			if terr != nil {
-				return terr
-			}
+		// 保存文档库上传文件数据
+		terr = s.saveWdkFile(ctx, req, fileInfos)
+		if terr != nil {
+			return terr
 		}
-		return nil
+		// 设置所属文档库项目阶段
+		terr = WdkProject().SetWdkProjectStep(ctx, req.ProjectId, req.Type)
+		if terr != nil {
+			return terr
+		}
+		// 设置所属文档库项目文件上传状态为是
+		terr = WdkProject().SetWdkProjectFileUploadStatus(ctx, req.ProjectId)
+		return terr
 	})
 	return
 }
@@ -99,36 +81,21 @@ func (s *sWdkFile) GetWdkFileCountByProjectId(ctx context.Context, projectId uin
 	return
 }
 
-// GetWdkFileByProjectIdAndType 通过项目ID和文件类型获取文档库项目上传文件信息
-func (s *sWdkFile) GetWdkFileByProjectIdAndType(ctx context.Context, projectId uint64, fileType uint) (wdkFileInfos []*entity.WdkFile, err error) {
-	err = dao.WdkFile.Ctx(ctx).Where(do.WdkFile{ProjectId: projectId, Type: fileType}).Scan(&wdkFileInfos)
-	return
-}
-
 // saveWdkFile 保存文档库上传文件数据
-func (s *sWdkFile) saveWdkFile(ctx context.Context, req *v1.WdkFileAddReq, file *upload.FileInfo) (err error) {
+func (s *sWdkFile) saveWdkFile(ctx context.Context, req *v1.WdkFileAddReq, fileInfos []*upload.FileInfo) (err error) {
 	user := Context().Get(ctx).User
-	_, err = dao.WdkFile.Ctx(ctx).Data(do.WdkFile{
-		ProjectId:  req.ProjectId,
-		Name:       file.FileName,
-		Type:       req.Type,
-		CreateBy:   user.Id,
-		CreateName: user.Realname,
-		OriginUrl:  file.OriginFileUrl,
-		PdfUrl:     file.PdfFileUrl,
-	}).FieldsEx(dao.WdkFile.Columns().Id).Insert()
-	return
-}
-
-// updateWdkFile 更新文档库上传文件数据
-func (s *sWdkFile) updateWdkFile(ctx context.Context, req *v1.WdkFileAddReq, file *upload.FileInfo) (err error) {
-	_, err = dao.WdkFile.Ctx(ctx).Data(do.WdkFile{
-		Name:      file.FileName,
-		OriginUrl: file.OriginFileUrl,
-		PdfUrl:    file.PdfFileUrl,
-	}).Where(do.WdkFile{
-		ProjectId: req.ProjectId,
-		Type:      req.Type,
-	}).Update()
+	wdkFileData := g.List{}
+	for _, file := range fileInfos {
+		wdkFileData = append(wdkFileData, g.Map{
+			"project_id":  req.ProjectId,
+			"name":        file.FileName,
+			"type":        req.Type,
+			"create_by":   user.Id,
+			"create_name": user.Realname,
+			"origin_url":  file.OriginFileUrl,
+			"pdf_url":     file.PdfFileUrl,
+		})
+	}
+	_, err = dao.WdkFile.Ctx(ctx).Data(wdkFileData).Batch(len(wdkFileData)).Insert()
 	return
 }

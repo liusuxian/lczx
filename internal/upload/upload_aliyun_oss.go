@@ -163,29 +163,29 @@ func (u FileUploadOSSAdapter) getUrl(filepath string) string {
 
 // 上传到阿里云OSS操作
 func (u FileUploadOSSAdapter) uploadAction(file *ghttp.UploadFile, fType string, dirPath string) (originFileUrl, pdfFileUrl string, err error) {
-	// 文件名处理
+	// 图片/文件名处理
 	filename := strings.ToLower(strconv.FormatInt(gtime.TimestampNano(), 36) + grand.S(10))
 	fileFullname := filename + gfile.Ext(file.Filename)
-	// 保存本地临时文件
-	var localFilename string
-	localFilename, err = file.Save("./cache/local/")
-	if err != nil {
-		return
-	}
-	// 本地临时文件改名
-	localFilepath := "./cache/local/" + fileFullname
-	err = gfile.Rename("./cache/local/"+localFilename, localFilepath)
-	if err != nil {
-		return
-	}
-	// 原始文件转pdf文件
+	// 文件处理
 	var resultPath string
 	extName := gfile.ExtName(file.Filename)
+	localFilepath := "./cache/local/" + fileFullname
 	pdfFilepath := dirPath + "/" + filename + ".pdf"
 	if fType == "file" {
 		pdfFileUrl = u.getUrl(pdfFilepath)
 		if extName != "pdf" {
-			// 转pdf
+			// 保存本地临时文件
+			var localFilename string
+			localFilename, err = file.Save("./cache/local/")
+			if err != nil {
+				return
+			}
+			// 本地临时文件改名
+			err = gfile.Rename("./cache/local/"+localFilename, localFilepath)
+			if err != nil {
+				return
+			}
+			// 原始文件转pdf文件
 			resultPath, err = utils.ConvertToPDF(localFilepath)
 			if err != nil {
 				// 删除本地临时文件
@@ -233,23 +233,14 @@ func (u FileUploadOSSAdapter) uploadAction(file *ghttp.UploadFile, fType string,
 	}
 	originFileUrl = u.getUrl(originFilepath)
 	// 上传pdf文件
-	if fType == "file" && extName != "pdf" {
-		if resultPath != "" {
-			// 上传文件
-			err = bucket.PutObjectFromFile(pdfFilepath, resultPath)
-			if err != nil {
-				// 删除本地临时文件
-				_ = gfile.Remove(localFilepath)
-				// 删除转换的pdf文件
-				_ = gfile.Remove(resultPath)
-				return
-			}
-			// 删除本地临时文件
-			_ = gfile.Remove(localFilepath)
-			// 删除转换的pdf文件
-			_ = gfile.Remove(resultPath)
-			return
-		}
+	if fType == "file" && extName != "pdf" && resultPath != "" {
+		// 上传文件
+		err = bucket.PutObjectFromFile(pdfFilepath, resultPath)
+		// 删除本地临时文件
+		_ = gfile.Remove(localFilepath)
+		// 删除转换的pdf文件
+		_ = gfile.Remove(resultPath)
+		return
 	}
 	return
 }
