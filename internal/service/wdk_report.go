@@ -148,10 +148,22 @@ func (s *sWdkReport) AuthAdd(ctx context.Context, projectId uint64) (wdkProject 
 	return
 }
 
-// GetWdkReportCountByProjectId 通过项目ID获取文档库项目上传报告记录数量
+// GetWdkReportCountByProjectId 通过项目ID获取文档库项目上传报告类型数量
 func (s *sWdkReport) GetWdkReportCountByProjectId(ctx context.Context, projectId uint64) (count int, err error) {
-	count, err = dao.WdkReport.Ctx(ctx).Where(do.WdkReport{ProjectId: projectId}).
-		WhereIn(dao.WdkReport.Columns().AuditStatus, []uint{2, 3}).Count()
+	// 查询审核已通过的报告信息
+	var list []*entity.WdkReport
+	err = dao.WdkReport.Ctx(ctx).Where(do.WdkReport{ProjectId: projectId}).
+		WhereIn(dao.WdkReport.Columns().AuditStatus, []uint{2, 3}).Scan(&list)
+	if err != nil {
+		return
+	}
+	// 获取审核已通过的报告ID
+	ids := make([]uint64, 0, len(list))
+	for _, v := range list {
+		ids = append(ids, v.Id)
+	}
+	count, err = dao.WdkReportType.Ctx(ctx).Fields(dao.WdkReportType.Columns().TypeId).
+		WhereIn(dao.WdkReportType.Columns().Id, ids).Distinct().Count()
 	return
 }
 

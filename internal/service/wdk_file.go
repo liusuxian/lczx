@@ -75,9 +75,10 @@ func (s *sWdkFile) AuthAdd(ctx context.Context, projectId uint64) (wdkProject *v
 	return
 }
 
-// GetWdkFileCountByProjectId 通过项目ID获取文档库项目上传文件记录数量
+// GetWdkFileCountByProjectId 通过项目ID获取文档库项目上传文件类型数量
 func (s *sWdkFile) GetWdkFileCountByProjectId(ctx context.Context, projectId uint64) (count int, err error) {
-	count, err = dao.WdkFile.Ctx(ctx).Fields(dao.WdkFile.Columns().Type).Where(do.WdkFile{ProjectId: projectId}).Distinct().Count()
+	count, err = dao.WdkFile.Ctx(ctx).Fields(dao.WdkFile.Columns().Type).Where(do.WdkFile{ProjectId: projectId}).
+		Distinct().Count()
 	return
 }
 
