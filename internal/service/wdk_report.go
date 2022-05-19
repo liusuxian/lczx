@@ -157,13 +157,15 @@ func (s *sWdkReport) GetWdkReportCountByProjectId(ctx context.Context, projectId
 	if err != nil {
 		return
 	}
-	// 获取审核已通过的报告ID
-	ids := make([]uint64, 0, len(list))
-	for _, v := range list {
-		ids = append(ids, v.Id)
+	if len(list) > 0 {
+		// 获取审核已通过的报告ID
+		ids := make([]uint64, 0, len(list))
+		for _, v := range list {
+			ids = append(ids, v.Id)
+		}
+		count, err = dao.WdkReportType.Ctx(ctx).Fields(dao.WdkReportType.Columns().TypeId).
+			WhereIn(dao.WdkReportType.Columns().Id, ids).Distinct().Count()
 	}
-	count, err = dao.WdkReportType.Ctx(ctx).Fields(dao.WdkReportType.Columns().TypeId).
-		WhereIn(dao.WdkReportType.Columns().Id, ids).Distinct().Count()
 	return
 }
 
