@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 21/05/2022 01:32:17
+ Date: 21/05/2022 04:18:31
 */
 
 SET NAMES utf8mb4;
@@ -88,6 +88,18 @@ INSERT INTO `casbin_rule` (`p_type`, `v0`, `v1`, `v2`, `v3`, `v4`, `v5`) VALUES 
 INSERT INTO `casbin_rule` (`p_type`, `v0`, `v1`, `v2`, `v3`, `v4`, `v5`) VALUES ('p', '1', '51', 'All', '', '', '');
 INSERT INTO `casbin_rule` (`p_type`, `v0`, `v1`, `v2`, `v3`, `v4`, `v5`) VALUES ('g', '1', '1', NULL, NULL, NULL, NULL);
 INSERT INTO `casbin_rule` (`p_type`, `v0`, `v1`, `v2`, `v3`, `v4`, `v5`) VALUES ('g', '2', '1', '', '', '', '');
+INSERT INTO `casbin_rule` (`p_type`, `v0`, `v1`, `v2`, `v3`, `v4`, `v5`) VALUES ('p', '2', '32', 'All', '', '', '');
+INSERT INTO `casbin_rule` (`p_type`, `v0`, `v1`, `v2`, `v3`, `v4`, `v5`) VALUES ('p', '2', '33', 'All', '', '', '');
+INSERT INTO `casbin_rule` (`p_type`, `v0`, `v1`, `v2`, `v3`, `v4`, `v5`) VALUES ('p', '2', '41', 'All', '', '', '');
+INSERT INTO `casbin_rule` (`p_type`, `v0`, `v1`, `v2`, `v3`, `v4`, `v5`) VALUES ('p', '2', '42', 'All', '', '', '');
+INSERT INTO `casbin_rule` (`p_type`, `v0`, `v1`, `v2`, `v3`, `v4`, `v5`) VALUES ('p', '2', '43', 'All', '', '', '');
+INSERT INTO `casbin_rule` (`p_type`, `v0`, `v1`, `v2`, `v3`, `v4`, `v5`) VALUES ('p', '2', '44', 'All', '', '', '');
+INSERT INTO `casbin_rule` (`p_type`, `v0`, `v1`, `v2`, `v3`, `v4`, `v5`) VALUES ('p', '2', '45', 'All', '', '', '');
+INSERT INTO `casbin_rule` (`p_type`, `v0`, `v1`, `v2`, `v3`, `v4`, `v5`) VALUES ('p', '2', '46', 'All', '', '', '');
+INSERT INTO `casbin_rule` (`p_type`, `v0`, `v1`, `v2`, `v3`, `v4`, `v5`) VALUES ('p', '2', '47', 'All', '', '', '');
+INSERT INTO `casbin_rule` (`p_type`, `v0`, `v1`, `v2`, `v3`, `v4`, `v5`) VALUES ('p', '2', '48', 'All', '', '', '');
+INSERT INTO `casbin_rule` (`p_type`, `v0`, `v1`, `v2`, `v3`, `v4`, `v5`) VALUES ('p', '2', '50', 'All', '', '', '');
+INSERT INTO `casbin_rule` (`p_type`, `v0`, `v1`, `v2`, `v3`, `v4`, `v5`) VALUES ('g', '3', '2', '', '', '', '');
 COMMIT;
 
 -- ----------------------------
@@ -109,7 +121,7 @@ CREATE TABLE `dept` (
   PRIMARY KEY (`id`),
   KEY `parent_id_index` (`parent_id`) USING BTREE,
   KEY `name_index` (`name`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ----------------------------
 -- Records of dept
@@ -124,6 +136,7 @@ INSERT INTO `dept` (`id`, `parent_id`, `name`, `status`, `created_by`, `updated_
 INSERT INTO `dept` (`id`, `parent_id`, `name`, `status`, `created_by`, `updated_by`, `principal_uid`, `principal_name`, `create_at`, `update_at`, `deleted_at`) VALUES (7, 6, '业务部门', 1, 1, NULL, 0, '', '2022-04-20 12:22:29', '2022-04-20 12:22:29', NULL);
 INSERT INTO `dept` (`id`, `parent_id`, `name`, `status`, `created_by`, `updated_by`, `principal_uid`, `principal_name`, `create_at`, `update_at`, `deleted_at`) VALUES (8, 7, '物业咨询', 1, 1, NULL, 0, '', '2022-04-20 12:23:17', '2022-04-20 12:23:17', NULL);
 INSERT INTO `dept` (`id`, `parent_id`, `name`, `status`, `created_by`, `updated_by`, `principal_uid`, `principal_name`, `create_at`, `update_at`, `deleted_at`) VALUES (9, 8, '技术支持部', 1, 1, NULL, 0, '', '2022-04-20 12:23:45', '2022-04-20 12:23:45', NULL);
+INSERT INTO `dept` (`id`, `parent_id`, `name`, `status`, `created_by`, `updated_by`, `principal_uid`, `principal_name`, `create_at`, `update_at`, `deleted_at`) VALUES (10, 4, '测试', 1, 1, 1, 2, '刘苏贤', '2022-05-21 03:46:52', '2022-05-21 04:07:26', NULL);
 COMMIT;
 
 -- ----------------------------
@@ -274,13 +287,14 @@ CREATE TABLE `role` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `name_index` (`name`),
   KEY `status_index` (`status`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ----------------------------
 -- Records of role
 -- ----------------------------
 BEGIN;
 INSERT INTO `role` (`id`, `name`, `status`, `data_scope`, `remark`, `create_at`, `update_at`) VALUES (1, '超级管理员', 1, 3, '', '2022-04-19 14:30:16', '2022-04-19 14:30:16');
+INSERT INTO `role` (`id`, `name`, `status`, `data_scope`, `remark`, `create_at`, `update_at`) VALUES (2, '测试角色', 1, 3, '', '2022-05-21 04:01:56', '2022-05-21 04:01:56');
 COMMIT;
 
 -- ----------------------------
@@ -328,14 +342,15 @@ CREATE TABLE `user` (
   UNIQUE KEY `mobile_index` (`mobile`),
   KEY `realname_index` (`realname`),
   KEY `nickname_index` (`nickname`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ----------------------------
 -- Records of user
 -- ----------------------------
 BEGIN;
-INSERT INTO `user` (`id`, `passport`, `password`, `salt`, `realname`, `nickname`, `dept_id`, `gender`, `status`, `is_admin`, `avatar`, `mobile`, `email`, `remark`, `last_login_ip`, `last_login_time`, `create_at`, `update_at`, `deleted_at`) VALUES (1, 'sadmin', 'b0167dd859b8a70478da36238b0b3e05', 'CqDQa4THP1', '超级管理员', '超级管理员', 4, 1, 1, 1, 'https://lczx-sys.oss-cn-hangzhou.aliyuncs.com/user/avatar/logo.png', '17364814710', '382185882@qq.com', NULL, '127.0.0.1', '2022-04-19 14:22:16', '2022-03-25 17:41:40', '2022-03-25 17:41:40', NULL);
+INSERT INTO `user` (`id`, `passport`, `password`, `salt`, `realname`, `nickname`, `dept_id`, `gender`, `status`, `is_admin`, `avatar`, `mobile`, `email`, `remark`, `last_login_ip`, `last_login_time`, `create_at`, `update_at`, `deleted_at`) VALUES (1, 'sadmin', 'b0167dd859b8a70478da36238b0b3e05', 'CqDQa4THP1', '超级管理员', '超级管理员', 4, 1, 1, 1, 'https://lczx-sys.oss-cn-hangzhou.aliyuncs.com/user/avatar/logo.png', '17364814710', '382185882@qq.com', NULL, '::1', '2022-05-21 04:01:19', '2022-03-25 17:41:40', '2022-03-25 17:41:40', NULL);
 INSERT INTO `user` (`id`, `passport`, `password`, `salt`, `realname`, `nickname`, `dept_id`, `gender`, `status`, `is_admin`, `avatar`, `mobile`, `email`, `remark`, `last_login_ip`, `last_login_time`, `create_at`, `update_at`, `deleted_at`) VALUES (2, 'liusuxian', 'b6d5d1dc1f39f8a10bfdb53bf78c895f', 'JKPT7WSeG0', '刘苏贤', '', 4, 1, 1, 1, NULL, '15108274735', '', '', NULL, NULL, '2022-04-25 17:21:17', '2022-04-25 17:21:17', NULL);
+INSERT INTO `user` (`id`, `passport`, `password`, `salt`, `realname`, `nickname`, `dept_id`, `gender`, `status`, `is_admin`, `avatar`, `mobile`, `email`, `remark`, `last_login_ip`, `last_login_time`, `create_at`, `update_at`, `deleted_at`) VALUES (3, 'ceshi123', 'bed32e4ac7a83b854d6e1b279915352a', 'nw3VIpRP8y', '测试用户', '', 10, 1, 1, 0, NULL, '15110100101', '', '', '::1', '2022-05-21 04:07:49', '2022-05-21 04:02:36', '2022-05-21 04:02:36', NULL);
 COMMIT;
 
 -- ----------------------------
@@ -456,12 +471,13 @@ CREATE TABLE `wdk_project` (
   `deleted_at` datetime DEFAULT NULL COMMENT '项目软删除时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name_index` (`name`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ----------------------------
 -- Records of wdk_project
 -- ----------------------------
 BEGIN;
+INSERT INTO `wdk_project` (`id`, `name`, `type`, `origin`, `step`, `file_upload_status`, `business_type`, `contract_status`, `contract_sum`, `deep_culture`, `status`, `entrust_company`, `sign_company`, `principal_uid`, `principal_name`, `dept_id`, `dept_name`, `region`, `start_time`, `end_time`, `create_by`, `create_name`, `updated_by`, `updated_name`, `remark`, `create_at`, `update_at`, `deleted_at`) VALUES (1, '测试项目1', 0, 0, 0, 0, 0, 0, 20.11, 0, 0, '委托公司123', 0, 3, '测试用户', 10, '测试', '浙江省/杭州市/西湖区', '2022-05-01 00:00:00', '2022-05-31 23:59:59', 1, '超级管理员', NULL, NULL, '', '2022-05-21 04:03:31', '2022-05-21 04:03:31', NULL);
 COMMIT;
 
 -- ----------------------------
@@ -478,6 +494,8 @@ CREATE TABLE `wdk_project_businessforms` (
 -- Records of wdk_project_businessforms
 -- ----------------------------
 BEGIN;
+INSERT INTO `wdk_project_businessforms` (`project_id`, `business_forms`) VALUES (1, 0);
+INSERT INTO `wdk_project_businessforms` (`project_id`, `business_forms`) VALUES (1, 2);
 COMMIT;
 
 -- ----------------------------
@@ -500,12 +518,13 @@ CREATE TABLE `wdk_report` (
   `create_at` datetime DEFAULT NULL COMMENT '上传时间',
   `update_at` datetime DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`,`project_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ----------------------------
 -- Records of wdk_report
 -- ----------------------------
 BEGIN;
+INSERT INTO `wdk_report` (`id`, `project_id`, `project_name`, `name`, `create_by`, `create_name`, `rescind`, `audit_status`, `excellence`, `audit_time`, `origin_url`, `pdf_url`, `create_at`, `update_at`) VALUES (1, 1, '测试项目1', '一季度市场拓展数据分析-A.pptx', 3, '测试用户', 0, 1, 0, NULL, 'https://lczx-sys.oss-accelerate.aliyuncs.com/wdk/report/ck4uzzsy45bcaeglfvchci.pptx', 'https://lczx-sys.oss-accelerate.aliyuncs.com/wdk/report/ck4uzzsy45bcaeglfvchci.pdf', '2022-05-21 04:08:35', '2022-05-21 04:08:35');
 COMMIT;
 
 -- ----------------------------
@@ -522,6 +541,7 @@ CREATE TABLE `wdk_report_audit` (
   `status` tinyint unsigned NOT NULL COMMENT '审核状态 0:未通过 1:审核中 2:已通过',
   `excellence` tinyint unsigned NOT NULL COMMENT '是否被推荐为优秀报告 0:未被推荐为优秀报告 1:已被推荐为优秀报告',
   `audit_time` datetime DEFAULT NULL COMMENT '审核时间',
+  `audit_opinion` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '审核意见',
   `create_at` datetime DEFAULT NULL COMMENT '创建时间',
   `update_at` datetime DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`,`audit_uid`)
@@ -531,6 +551,8 @@ CREATE TABLE `wdk_report_audit` (
 -- Records of wdk_report_audit
 -- ----------------------------
 BEGIN;
+INSERT INTO `wdk_report_audit` (`id`, `audit_uid`, `auditor_type`, `project_id`, `audit_name`, `rescind`, `status`, `excellence`, `audit_time`, `audit_opinion`, `create_at`, `update_at`) VALUES (1, 1, 1, 1, '超级管理员', 0, 1, 0, NULL, NULL, '2022-05-21 04:08:35', '2022-05-21 04:08:35');
+INSERT INTO `wdk_report_audit` (`id`, `audit_uid`, `auditor_type`, `project_id`, `audit_name`, `rescind`, `status`, `excellence`, `audit_time`, `audit_opinion`, `create_at`, `update_at`) VALUES (1, 2, 0, 1, '刘苏贤', 0, 1, 0, NULL, NULL, '2022-05-21 04:08:35', '2022-05-21 04:08:35');
 COMMIT;
 
 -- ----------------------------
@@ -549,6 +571,10 @@ CREATE TABLE `wdk_report_audit_cfg` (
 -- Records of wdk_report_audit_cfg
 -- ----------------------------
 BEGIN;
+INSERT INTO `wdk_report_audit_cfg` (`id`, `audit_uid`, `type_name`, `audit_name`) VALUES (1, 1, '水电报告', '超级管理员');
+INSERT INTO `wdk_report_audit_cfg` (`id`, `audit_uid`, `type_name`, `audit_name`) VALUES (1, 2, '水电报告', '刘苏贤');
+INSERT INTO `wdk_report_audit_cfg` (`id`, `audit_uid`, `type_name`, `audit_name`) VALUES (2, 1, '建筑规划报告', '超级管理员');
+INSERT INTO `wdk_report_audit_cfg` (`id`, `audit_uid`, `type_name`, `audit_name`) VALUES (2, 2, '建筑规划报告', '刘苏贤');
 COMMIT;
 
 -- ----------------------------
@@ -567,6 +593,9 @@ CREATE TABLE `wdk_report_audit_type` (
 -- Records of wdk_report_audit_type
 -- ----------------------------
 BEGIN;
+INSERT INTO `wdk_report_audit_type` (`id`, `audit_uid`, `type_id`, `type_name`) VALUES (1, 1, 2, '建筑规划报告');
+INSERT INTO `wdk_report_audit_type` (`id`, `audit_uid`, `type_id`, `type_name`) VALUES (1, 2, 1, '水电报告');
+INSERT INTO `wdk_report_audit_type` (`id`, `audit_uid`, `type_id`, `type_name`) VALUES (1, 2, 2, '建筑规划报告');
 COMMIT;
 
 -- ----------------------------
@@ -580,12 +609,14 @@ CREATE TABLE `wdk_report_cfg` (
   `update_at` datetime DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name_index` (`name`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ----------------------------
 -- Records of wdk_report_cfg
 -- ----------------------------
 BEGIN;
+INSERT INTO `wdk_report_cfg` (`id`, `name`, `create_at`, `update_at`) VALUES (1, '水电报告', '2022-05-21 04:03:55', '2022-05-21 04:03:55');
+INSERT INTO `wdk_report_cfg` (`id`, `name`, `create_at`, `update_at`) VALUES (2, '建筑规划报告', '2022-05-21 04:04:10', '2022-05-21 04:04:10');
 COMMIT;
 
 -- ----------------------------
@@ -603,6 +634,8 @@ CREATE TABLE `wdk_report_type` (
 -- Records of wdk_report_type
 -- ----------------------------
 BEGIN;
+INSERT INTO `wdk_report_type` (`id`, `type_id`, `type_name`) VALUES (1, 1, '水电报告');
+INSERT INTO `wdk_report_type` (`id`, `type_id`, `type_name`) VALUES (1, 2, '建筑规划报告');
 COMMIT;
 
 -- ----------------------------
