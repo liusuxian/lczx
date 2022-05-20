@@ -22,11 +22,11 @@ type DeptColumns struct {
 	Id            string // 部门ID
 	ParentId      string // 父部门ID
 	Name          string // 部门名称
-	PrincipalUid  string // 负责人用户ID
-	PrincipalName string // 负责人姓名
 	Status        string // 部门状态 0:停用 1:正常
 	CreatedBy     string // 创建人
 	UpdatedBy     string // 修改人
+	PrincipalUid  string // 负责人用户ID
+	PrincipalName string // 负责人姓名
 	CreateAt      string // 创建时间
 	UpdateAt      string // 更新时间
 	DeletedAt     string // 软删除时间
@@ -37,11 +37,11 @@ var deptColumns = DeptColumns{
 	Id:            "id",
 	ParentId:      "parent_id",
 	Name:          "name",
-	PrincipalUid:  "principal_uid",
-	PrincipalName: "principal_name",
 	Status:        "status",
 	CreatedBy:     "created_by",
 	UpdatedBy:     "updated_by",
+	PrincipalUid:  "principal_uid",
+	PrincipalName: "principal_name",
 	CreateAt:      "create_at",
 	UpdateAt:      "update_at",
 	DeletedAt:     "deleted_at",
