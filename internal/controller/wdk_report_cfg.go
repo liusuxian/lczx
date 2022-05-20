@@ -27,6 +27,19 @@ func (c *cWdkReportCfg) List(ctx context.Context, req *v1.WdkReportCfgListReq) (
 	return
 }
 
+// All 文档库全部报告类型配置列表
+func (c *cWdkReportCfg) All(ctx context.Context, req *v1.WdkAllReportCfgReq) (res *v1.WdkAllReportCfgRes, err error) {
+	var list []*v1.WdkReportCfgInfo
+	list, err = service.WdkReportCfg().GetWdkAllReportCfg(ctx)
+	if err != nil {
+		err = gerror.WrapCode(code.GetWdkAllReportCfgFailed, err)
+		return
+	}
+
+	res = &v1.WdkAllReportCfgRes{List: list}
+	return
+}
+
 // Add 新增文档库报告类型配置
 func (c *cWdkReportCfg) Add(ctx context.Context, req *v1.WdkReportCfgAddReq) (res *v1.WdkReportCfgAddRes, err error) {
 	err = service.WdkReportCfg().AddWdkReportCfg(ctx, req)

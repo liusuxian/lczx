@@ -42,6 +42,17 @@ func (s *sWdkReportCfg) GetWdkReportCfgList(ctx context.Context, name string) (l
 	return
 }
 
+// GetWdkAllReportCfg 获取文档库全部报告类型配置信息列表
+func (s *sWdkReportCfg) GetWdkAllReportCfg(ctx context.Context) (list []*v1.WdkReportCfgInfo, err error) {
+	err = dao.WdkReportCfg.Ctx(ctx).ScanList(&list, "ReportCfg")
+	if err != nil {
+		return
+	}
+	err = dao.WdkReportAuditCfg.Ctx(ctx).Where(dao.WdkReportAuditCfg.Columns().Id, gdb.ListItemValuesUnique(list, "ReportCfg", "Id")).
+		ScanList(&list, "ReportAuditCfg", "ReportCfg", "Id:Id")
+	return
+}
+
 // AddWdkReportCfg 新增文档库报告类型配置
 func (s *sWdkReportCfg) AddWdkReportCfg(ctx context.Context, req *v1.WdkReportCfgAddReq) (err error) {
 	err = dao.WdkReportCfg.Ctx(ctx).Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {

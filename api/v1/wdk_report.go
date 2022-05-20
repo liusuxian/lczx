@@ -29,6 +29,7 @@ type WdkReportAddReq struct {
 	ProjectId    uint64            `json:"projectId" v:"required|regex:^[1-9]\\d*$#所属项目ID不能为空|所属项目ID必须为正整数" dc:"所属项目ID"`                                       // 所属项目ID
 	ProjectName  string            `json:"projectName" v:"required|regex:^[\u4e00-\u9fa5\\w]{0,100}$#所属项目名称不能为空|所属项目名称只能包含中文、英文、数字和下划线且长度不能超过100" dc:"所属项目名称"` // 所属项目名称
 	TypeIds      []uint64          `json:"typeIds" v:"required|slice_valid:uint64#报告类型ID列表不能为空" dc:"报告类型ID列表"`                                                 // 报告类型ID列表
+	AuditUids    []uint64          `json:"auditUids" v:"required|slice_valid:uint64#报告审核员用户ID列表不能为空" dc:"报告审核员用户ID列表"`                                         // 报告审核员用户ID列表
 	UploadReport *ghttp.UploadFile `json:"uploadReport" dc:"上传报告"`                                                                                             // 上传报告
 }
 
