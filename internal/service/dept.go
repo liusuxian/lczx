@@ -54,17 +54,14 @@ func (s *sDept) AddDept(ctx context.Context, req *v1.DeptAddReq) (err error) {
 	if req.ParentId != 0 {
 		parentDept = s.GetDeptById(allDepts, req.ParentId)
 		if parentDept == nil {
-			err = gerror.Newf(`父部门ID[%d]不存在`, req.ParentId)
-			return
+			return gerror.Newf(`父部门ID[%d]不存在`, req.ParentId)
 		}
 		if parentDept.Status == 0 {
-			err = gerror.Newf(`父部门ID[%d]已停用`, req.ParentId)
-			return
+			return gerror.Newf(`父部门ID[%d]已停用`, req.ParentId)
 		}
 	}
 	if parentDept.Name == req.Name {
-		err = gerror.Newf(`父部门名称[%s]不能与子部门名称[%s]相同`, parentDept.Name, req.Name)
-		return
+		return gerror.Newf(`父部门名称[%s]不能与子部门名称[%s]相同`, parentDept.Name, req.Name)
 	}
 	// 检查部门名称是否可用
 	var available bool
@@ -73,11 +70,21 @@ func (s *sDept) AddDept(ctx context.Context, req *v1.DeptAddReq) (err error) {
 		return
 	}
 	if !available {
-		err = gerror.Newf(`部门名称[%s]已存在`, req.Name)
-		return
+		return gerror.Newf(`部门名称[%s]已存在`, req.Name)
+	}
+	// 检查负责人是否存在
+	var principalUser *entity.User
+	if req.PrincipalUid > 0 {
+		principalUser, err = User().GetUserById(ctx, req.PrincipalUid)
+		if err != nil {
+			return
+		}
+		if principalUser == nil {
+			return gerror.Newf(`负责人ID[%d]不存在`, req.PrincipalUid)
+		}
 	}
 	// 保存部门数据
-	err = s.saveDept(ctx, req)
+	err = s.saveDept(ctx, req, principalUser)
 	return
 }
 
@@ -94,23 +101,19 @@ func (s *sDept) EditDept(ctx context.Context, req *v1.DeptEditReq) (err error) {
 	if req.ParentId != 0 {
 		parentDept = s.GetDeptById(allDepts, req.ParentId)
 		if parentDept == nil {
-			err = gerror.Newf(`父部门ID[%d]不存在`, req.ParentId)
-			return
+			return gerror.Newf(`父部门ID[%d]不存在`, req.ParentId)
 		}
 		if parentDept.Status == 0 {
-			err = gerror.Newf(`父部门ID[%d]已停用`, req.ParentId)
-			return
+			return gerror.Newf(`父部门ID[%d]已停用`, req.ParentId)
 		}
 	}
 	if parentDept.Name == req.Name {
-		err = gerror.Newf(`父部门名称[%s]不能与子部门名称[%s]相同`, parentDept.Name, req.Name)
-		return
+		return gerror.Newf(`父部门名称[%s]不能与子部门名称[%s]相同`, parentDept.Name, req.Name)
 	}
 	// 检查部门信息是否存在
 	dept := s.GetDeptById(allDepts, req.Id)
 	if dept == nil {
-		err = gerror.Newf(`部门ID[%d]不存在`, req.Id)
-		return
+		return gerror.Newf(`部门ID[%d]不存在`, req.Id)
 	}
 	// 检查部门名称是否可用
 	if dept.Name != req.Name {
@@ -120,19 +123,28 @@ func (s *sDept) EditDept(ctx context.Context, req *v1.DeptEditReq) (err error) {
 			return
 		}
 		if !available {
-			err = gerror.Newf(`部门名称[%s]已存在`, req.Name)
-			return
+			return gerror.Newf(`部门名称[%s]已存在`, req.Name)
 		}
 	}
 	// 获取部门ID下所有的子部门ID
 	idsMap := gmap.New()
 	s.FindSonIdsByParentId(allDepts, dept.Id, idsMap)
 	if idsMap.Contains(req.ParentId) {
-		err = gerror.Newf(`父部门ID[%d]是部门ID[%d]的子部门ID`, req.ParentId, req.Id)
-		return
+		return gerror.Newf(`父部门ID[%d]是部门ID[%d]的子部门ID`, req.ParentId, req.Id)
+	}
+	// 检查负责人是否存在
+	var principalUser *entity.User
+	if req.PrincipalUid > 0 {
+		principalUser, err = User().GetUserById(ctx, req.PrincipalUid)
+		if err != nil {
+			return
+		}
+		if principalUser == nil {
+			return gerror.Newf(`负责人ID[%d]不存在`, req.PrincipalUid)
+		}
 	}
 	// 更新部门数据
-	err = s.updateDept(ctx, req, idsMap.Keys())
+	err = s.updateDept(ctx, req, principalUser, idsMap.Keys())
 	return
 }
 
@@ -307,36 +319,58 @@ func (s *sDept) SelectDeptById(ctx context.Context, id uint64) (dept *entity.Dep
 }
 
 // saveDept 保存部门数据
-func (s *sDept) saveDept(ctx context.Context, req *v1.DeptAddReq) (err error) {
+func (s *sDept) saveDept(ctx context.Context, req *v1.DeptAddReq, principalUser *entity.User) (err error) {
 	user := Context().Get(ctx).User
-	_, err = dao.Dept.Ctx(ctx).Cache(gdb.CacheOption{
-		Duration: -1,
-		Name:     consts.DeptKey,
-		Force:    false,
-	}).Data(do.Dept{
-		ParentId:  req.ParentId,
-		Name:      req.Name,
-		Status:    req.Status,
-		CreatedBy: user.Id,
-	}).FieldsEx(dao.Dept.Columns().Id).Insert()
+	model := dao.Dept.Ctx(ctx).Cache(gdb.CacheOption{Duration: -1, Name: consts.DeptKey, Force: false})
+	if principalUser != nil {
+		model = model.Data(do.Dept{
+			ParentId:      req.ParentId,
+			Name:          req.Name,
+			Status:        req.Status,
+			CreatedBy:     user.Id,
+			PrincipalUid:  principalUser.Id,
+			PrincipalName: principalUser.Realname,
+		})
+	} else {
+		model = model.Data(do.Dept{
+			ParentId:  req.ParentId,
+			Name:      req.Name,
+			Status:    req.Status,
+			CreatedBy: user.Id,
+		})
+	}
+	_, err = model.FieldsEx(dao.Dept.Columns().Id).Insert()
 	return
 }
 
 // updateDept 更新部门数据
-func (s *sDept) updateDept(ctx context.Context, req *v1.DeptEditReq, ids []any) (err error) {
+func (s *sDept) updateDept(ctx context.Context, req *v1.DeptEditReq, principalUser *entity.User, ids []any) (err error) {
 	user := Context().Get(ctx).User
 	err = dao.Dept.Ctx(ctx).Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		var terr error
-		_, terr = dao.Dept.Ctx(ctx).Data(do.Dept{
-			ParentId:  req.ParentId,
-			Name:      req.Name,
-			Status:    req.Status,
-			UpdatedBy: user.Id,
-		}).Where(do.Dept{Id: req.Id}).Update()
+		model := dao.Dept.Ctx(ctx)
+		if principalUser != nil {
+			model = model.Data(do.Dept{
+				ParentId:      req.ParentId,
+				Name:          req.Name,
+				Status:        req.Status,
+				UpdatedBy:     user.Id,
+				PrincipalUid:  principalUser.Id,
+				PrincipalName: principalUser.Realname,
+			})
+		} else {
+			model = model.Data(do.Dept{
+				ParentId:  req.ParentId,
+				Name:      req.Name,
+				Status:    req.Status,
+				UpdatedBy: user.Id,
+			})
+		}
+		_, terr = model.Where(do.Dept{Id: req.Id}).Update()
 		if terr != nil {
 			return terr
 		}
-
+		// 停用所有子部门
 		if req.Status == 0 {
 			_, terr = dao.Dept.Ctx(ctx).Data(do.Dept{
 				Status:    req.Status,

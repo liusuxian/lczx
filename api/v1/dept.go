@@ -25,10 +25,11 @@ type DeptTreeInfo struct {
 
 // DeptAddReq 新增部门请求参数
 type DeptAddReq struct {
-	g.Meta   `path:"/add" tags:"DeptAdd" method:"post" summary:"You first auth/dept/add api"`
-	ParentId uint64 `json:"parentId" v:"required|regex:^\\d*$#父部门ID不能为空|父部门ID必须为无符号整数" dc:"父部门ID"`                 // 父部门ID
-	Name     string `json:"name" v:"required|regex:^[\u4e00-\u9fa5]{0,20}$#部门名称不能为空|部门名称必须为中文且长度不能超过20" dc:"部门名称"` // 部门名称
-	Status   uint   `json:"status" v:"required|in:0,1#部门状态不能为空|部门状态只能是0,1" dc:"部门状态 0:停用 1:正常"`                    // 部门状态 0:停用 1:正常
+	g.Meta       `path:"/add" tags:"DeptAdd" method:"post" summary:"You first auth/dept/add api"`
+	ParentId     uint64 `json:"parentId" v:"required|regex:^\\d*$#父部门ID不能为空|父部门ID必须为无符号整数" dc:"父部门ID"`                 // 父部门ID
+	Name         string `json:"name" v:"required|regex:^[\u4e00-\u9fa5]{0,20}$#部门名称不能为空|部门名称必须为中文且长度不能超过20" dc:"部门名称"` // 部门名称
+	PrincipalUid uint64 `json:"principalUid" v:"regex:^[1-9]\\d*$#负责人用户ID必须为正整数" dc:"负责人用户ID"`                         // 负责人用户ID
+	Status       uint   `json:"status" v:"required|in:0,1#部门状态不能为空|部门状态只能是0,1" dc:"部门状态 0:停用 1:正常"`                    // 部门状态 0:停用 1:正常
 }
 
 // DeptAddRes 新增部门返回参数
@@ -50,11 +51,12 @@ type DeptInfoRes struct {
 
 // DeptEditReq 编辑部门请求参数
 type DeptEditReq struct {
-	g.Meta   `path:"/edit" tags:"DeptEdit" method:"put" summary:"You first auth/dept/edit api"`
-	Id       uint64 `json:"id" v:"required|regex:^[1-9]\\d*$#部门ID不能为空|部门ID必须为正整数" dc:"部门ID"`                                   // 部门ID
-	ParentId uint64 `json:"parentId" v:"required|regex:^\\d*$|different:Id#父部门ID不能为空|父部门ID必须为无符号整数|父部门ID和部门ID不能相同" dc:"父部门ID"` // 父部门ID
-	Name     string `json:"name" v:"required|regex:^[\u4e00-\u9fa5]{0,20}$#部门名称不能为空|部门名称必须为中文且长度不能超过20" dc:"部门名称"`             // 部门名称
-	Status   uint   `json:"status" v:"required|in:0,1#部门状态不能为空|部门状态只能是0,1" dc:"部门状态 0:停用 1:正常"`                                // 部门状态 0:停用 1:正常
+	g.Meta       `path:"/edit" tags:"DeptEdit" method:"put" summary:"You first auth/dept/edit api"`
+	Id           uint64 `json:"id" v:"required|regex:^[1-9]\\d*$#部门ID不能为空|部门ID必须为正整数" dc:"部门ID"`                                   // 部门ID
+	ParentId     uint64 `json:"parentId" v:"required|regex:^\\d*$|different:Id#父部门ID不能为空|父部门ID必须为无符号整数|父部门ID和部门ID不能相同" dc:"父部门ID"` // 父部门ID
+	Name         string `json:"name" v:"required|regex:^[\u4e00-\u9fa5]{0,20}$#部门名称不能为空|部门名称必须为中文且长度不能超过20" dc:"部门名称"`             // 部门名称
+	PrincipalUid uint64 `json:"principalUid" v:"regex:^[1-9]\\d*$#负责人用户ID必须为正整数" dc:"负责人用户ID"`                                     // 负责人用户ID
+	Status       uint   `json:"status" v:"required|in:0,1#部门状态不能为空|部门状态只能是0,1" dc:"部门状态 0:停用 1:正常"`                                // 部门状态 0:停用 1:正常
 }
 
 // DeptEditRes 编辑部门返回参数
