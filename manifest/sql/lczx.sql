@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 19/05/2022 15:59:22
+ Date: 21/05/2022 01:23:22
 */
 
 SET NAMES utf8mb4;
@@ -98,6 +98,8 @@ CREATE TABLE `dept` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '部门ID',
   `parent_id` bigint unsigned NOT NULL COMMENT '父部门ID',
   `name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '部门名称',
+  `principal_uid` bigint unsigned NOT NULL COMMENT '负责人用户ID',
+  `principal_name` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '负责人姓名',
   `status` tinyint unsigned NOT NULL COMMENT '部门状态 0:停用 1:正常',
   `created_by` bigint unsigned NOT NULL COMMENT '创建人',
   `updated_by` bigint unsigned DEFAULT NULL COMMENT '修改人',
@@ -113,15 +115,15 @@ CREATE TABLE `dept` (
 -- Records of dept
 -- ----------------------------
 BEGIN;
-INSERT INTO `dept` (`id`, `parent_id`, `name`, `status`, `created_by`, `updated_by`, `create_at`, `update_at`, `deleted_at`) VALUES (1, 0, '绿城服务集团', 1, 1, NULL, '2022-04-20 12:18:04', '2022-04-20 12:18:04', NULL);
-INSERT INTO `dept` (`id`, `parent_id`, `name`, `status`, `created_by`, `updated_by`, `create_at`, `update_at`, `deleted_at`) VALUES (2, 1, '咨询集团', 1, 1, NULL, '2022-04-20 12:18:31', '2022-04-20 12:18:31', NULL);
-INSERT INTO `dept` (`id`, `parent_id`, `name`, `status`, `created_by`, `updated_by`, `create_at`, `update_at`, `deleted_at`) VALUES (3, 2, '职能中心', 1, 1, NULL, '2022-04-20 12:18:52', '2022-04-20 12:18:52', NULL);
-INSERT INTO `dept` (`id`, `parent_id`, `name`, `status`, `created_by`, `updated_by`, `create_at`, `update_at`, `deleted_at`) VALUES (4, 3, '运营管理中心', 1, 1, NULL, '2022-04-20 12:19:14', '2022-04-20 12:19:14', NULL);
-INSERT INTO `dept` (`id`, `parent_id`, `name`, `status`, `created_by`, `updated_by`, `create_at`, `update_at`, `deleted_at`) VALUES (5, 2, '分子公司', 1, 1, NULL, '2022-04-20 12:20:53', '2022-04-20 12:20:53', NULL);
-INSERT INTO `dept` (`id`, `parent_id`, `name`, `status`, `created_by`, `updated_by`, `create_at`, `update_at`, `deleted_at`) VALUES (6, 5, '浙江幸福绿城房地产咨询有限公司', 1, 1, NULL, '2022-04-20 12:21:54', '2022-04-20 12:21:54', NULL);
-INSERT INTO `dept` (`id`, `parent_id`, `name`, `status`, `created_by`, `updated_by`, `create_at`, `update_at`, `deleted_at`) VALUES (7, 6, '业务部门', 1, 1, NULL, '2022-04-20 12:22:29', '2022-04-20 12:22:29', NULL);
-INSERT INTO `dept` (`id`, `parent_id`, `name`, `status`, `created_by`, `updated_by`, `create_at`, `update_at`, `deleted_at`) VALUES (8, 7, '物业咨询', 1, 1, NULL, '2022-04-20 12:23:17', '2022-04-20 12:23:17', NULL);
-INSERT INTO `dept` (`id`, `parent_id`, `name`, `status`, `created_by`, `updated_by`, `create_at`, `update_at`, `deleted_at`) VALUES (9, 8, '技术支持部', 1, 1, NULL, '2022-04-20 12:23:45', '2022-04-20 12:23:45', NULL);
+INSERT INTO `dept` (`id`, `parent_id`, `name`, `principal_uid`, `principal_name`, `status`, `created_by`, `updated_by`, `create_at`, `update_at`, `deleted_at`) VALUES (1, 0, '绿城服务集团', 0, '', 1, 1, NULL, '2022-04-20 12:18:04', '2022-04-20 12:18:04', NULL);
+INSERT INTO `dept` (`id`, `parent_id`, `name`, `principal_uid`, `principal_name`, `status`, `created_by`, `updated_by`, `create_at`, `update_at`, `deleted_at`) VALUES (2, 1, '咨询集团', 0, '', 1, 1, NULL, '2022-04-20 12:18:31', '2022-04-20 12:18:31', NULL);
+INSERT INTO `dept` (`id`, `parent_id`, `name`, `principal_uid`, `principal_name`, `status`, `created_by`, `updated_by`, `create_at`, `update_at`, `deleted_at`) VALUES (3, 2, '职能中心', 0, '', 1, 1, NULL, '2022-04-20 12:18:52', '2022-04-20 12:18:52', NULL);
+INSERT INTO `dept` (`id`, `parent_id`, `name`, `principal_uid`, `principal_name`, `status`, `created_by`, `updated_by`, `create_at`, `update_at`, `deleted_at`) VALUES (4, 3, '运营管理中心', 0, '', 1, 1, NULL, '2022-04-20 12:19:14', '2022-04-20 12:19:14', NULL);
+INSERT INTO `dept` (`id`, `parent_id`, `name`, `principal_uid`, `principal_name`, `status`, `created_by`, `updated_by`, `create_at`, `update_at`, `deleted_at`) VALUES (5, 2, '分子公司', 0, '', 1, 1, NULL, '2022-04-20 12:20:53', '2022-04-20 12:20:53', NULL);
+INSERT INTO `dept` (`id`, `parent_id`, `name`, `principal_uid`, `principal_name`, `status`, `created_by`, `updated_by`, `create_at`, `update_at`, `deleted_at`) VALUES (6, 5, '浙江幸福绿城房地产咨询有限公司', 0, '', 1, 1, NULL, '2022-04-20 12:21:54', '2022-04-20 12:21:54', NULL);
+INSERT INTO `dept` (`id`, `parent_id`, `name`, `principal_uid`, `principal_name`, `status`, `created_by`, `updated_by`, `create_at`, `update_at`, `deleted_at`) VALUES (7, 6, '业务部门', 0, '', 1, 1, NULL, '2022-04-20 12:22:29', '2022-04-20 12:22:29', NULL);
+INSERT INTO `dept` (`id`, `parent_id`, `name`, `principal_uid`, `principal_name`, `status`, `created_by`, `updated_by`, `create_at`, `update_at`, `deleted_at`) VALUES (8, 7, '物业咨询', 0, '', 1, 1, NULL, '2022-04-20 12:23:17', '2022-04-20 12:23:17', NULL);
+INSERT INTO `dept` (`id`, `parent_id`, `name`, `principal_uid`, `principal_name`, `status`, `created_by`, `updated_by`, `create_at`, `update_at`, `deleted_at`) VALUES (9, 8, '技术支持部', 0, '', 1, 1, NULL, '2022-04-20 12:23:45', '2022-04-20 12:23:45', NULL);
 COMMIT;
 
 -- ----------------------------
@@ -489,6 +491,7 @@ CREATE TABLE `wdk_report` (
   `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '报告名称',
   `create_by` bigint unsigned NOT NULL COMMENT '上传者用户ID',
   `create_name` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '上传者姓名',
+  `rescind` tinyint unsigned NOT NULL COMMENT '是否已撤销 0:否 1:是',
   `audit_status` tinyint unsigned NOT NULL COMMENT '审核状态 0:未通过 1:审核中 2:已通过 3:后台管理员自动通过',
   `excellence` tinyint unsigned NOT NULL COMMENT '是否是优秀报告 0:未被评选为优秀报告 1:被推荐为优秀报告 2:已被评选为优秀报告',
   `audit_time` datetime DEFAULT NULL COMMENT '审核时间',
@@ -512,8 +515,10 @@ DROP TABLE IF EXISTS `wdk_report_audit`;
 CREATE TABLE `wdk_report_audit` (
   `id` bigint unsigned NOT NULL COMMENT '报告ID',
   `audit_uid` bigint unsigned NOT NULL COMMENT '审核员用户ID',
+  `auditor_type` tinyint unsigned NOT NULL COMMENT '审核员类型 0:负责人 1:专家组',
   `project_id` bigint unsigned NOT NULL COMMENT '所属项目ID',
   `audit_name` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '审核员姓名',
+  `rescind` tinyint unsigned NOT NULL COMMENT '是否已撤销 0:否 1:是',
   `status` tinyint unsigned NOT NULL COMMENT '审核状态 0:未通过 1:审核中 2:已通过',
   `excellence` tinyint unsigned NOT NULL COMMENT '是否被推荐为优秀报告 0:未被推荐为优秀报告 1:已被推荐为优秀报告',
   `audit_time` datetime DEFAULT NULL COMMENT '审核时间',
