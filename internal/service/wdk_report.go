@@ -43,14 +43,8 @@ func (s *sWdkReport) GetWdkReportRecord(ctx context.Context, projectId uint64) (
 // AddWdkReport 新增文档库上传报告记录
 func (s *sWdkReport) AddWdkReport(ctx context.Context, req *v1.WdkReportAddReq, report *upload.FileInfo) (err error) {
 	err = dao.WdkReport.Ctx(ctx).Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
-		// 检查新增文档库上传报告记录权限
-		var terr error
-		var wdkProject *v1.WdkProjectInfo
-		wdkProject, terr = s.AuthAdd(ctx, req.ProjectId)
-		if terr != nil {
-			return terr
-		}
 		// 通过报告类型ID列表获取报告类型配置
+		var terr error
 		typeIdSet := gset.NewFrom(req.TypeIds)
 		typeIds := typeIdSet.Slice()
 		var reportCfgInfos []*v1.WdkReportCfgInfo
@@ -64,23 +58,23 @@ func (s *sWdkReport) AddWdkReport(ctx context.Context, req *v1.WdkReportAddReq, 
 		// 保存文档库上传报告记录
 		curUser := Context().Get(ctx).User
 		var reportId int64
-		reportId, terr = s.saveWdkReport(ctx, curUser, wdkProject, reportCfgInfos, report)
+		reportId, terr = s.saveWdkReport(ctx, curUser, req, reportCfgInfos, report)
 		if terr != nil {
 			return terr
 		}
 		// 保存文档库上传报告审核信息
-		terr = s.saveWdkReportAudit(ctx, curUser, reportCfgInfos, gconv.Uint64(reportId), wdkProject.ProjectInfo.Id)
+		terr = s.saveWdkReportAudit(ctx, curUser, reportCfgInfos, gconv.Uint64(reportId), req.ProjectId)
 		if terr != nil {
 			return terr
 		}
 		if curUser.IsAdmin == 1 {
 			// 设置所属文档库项目阶段
-			terr = WdkProject().SetWdkProjectStep(ctx, wdkProject.ProjectInfo.Id, 8)
+			terr = WdkProject().SetWdkProjectStep(ctx, req.ProjectId, 8)
 			if terr != nil {
 				return terr
 			}
 			// 设置所属文档库项目文件上传状态为是
-			terr = WdkProject().SetWdkProjectFileUploadStatus(ctx, wdkProject.ProjectInfo.Id)
+			terr = WdkProject().SetWdkProjectFileUploadStatus(ctx, req.ProjectId)
 			if terr != nil {
 				return terr
 			}
@@ -186,12 +180,12 @@ func (s *sWdkReport) SetWdkReportAuditCompleteStatus(ctx context.Context, id uin
 }
 
 // saveWdkReport 保存文档库上传报告记录
-func (s *sWdkReport) saveWdkReport(ctx context.Context, user *model.ContextUser, wdkProject *v1.WdkProjectInfo, reportCfgInfos []*v1.WdkReportCfgInfo, report *upload.FileInfo) (reportId int64, err error) {
+func (s *sWdkReport) saveWdkReport(ctx context.Context, user *model.ContextUser, req *v1.WdkReportAddReq, reportCfgInfos []*v1.WdkReportCfgInfo, report *upload.FileInfo) (reportId int64, err error) {
 	if user.IsAdmin == 1 {
 		// 管理员不需要走审核流程
 		reportId, err = dao.WdkReport.Ctx(ctx).Data(do.WdkReport{
-			ProjectId:   wdkProject.ProjectInfo.Id,
-			ProjectName: wdkProject.ProjectInfo.Name,
+			ProjectId:   req.ProjectId,
+			ProjectName: req.ProjectName,
 			Name:        report.FileName,
 			CreateBy:    user.Id,
 			CreateName:  user.Realname,
@@ -204,8 +198,8 @@ func (s *sWdkReport) saveWdkReport(ctx context.Context, user *model.ContextUser,
 	} else {
 		// 非管理员需要走审核流程
 		reportId, err = dao.WdkReport.Ctx(ctx).Data(do.WdkReport{
-			ProjectId:   wdkProject.ProjectInfo.Id,
-			ProjectName: wdkProject.ProjectInfo.Name,
+			ProjectId:   req.ProjectId,
+			ProjectName: req.ProjectName,
 			Name:        report.FileName,
 			CreateBy:    user.Id,
 			CreateName:  user.Realname,

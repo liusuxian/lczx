@@ -22,16 +22,6 @@ type WdkReportCfgInfo struct {
 	ReportAuditCfg []*entity.WdkReportAuditCfg `json:"reportAuditCfg" dc:"文档库报告类型审核配置信息"` // 文档库报告类型审核配置信息
 }
 
-// WdkAllReportCfgReq 文档库全部报告类型配置信息列表请求参数
-type WdkAllReportCfgReq struct {
-	g.Meta `path:"/all" tags:"WdkAllReportCfg" method:"get" summary:"You first wdk/reportTypeCfg/all api"`
-}
-
-// WdkAllReportCfgRes 文档库全部报告类型配置信息列表返回参数
-type WdkAllReportCfgRes struct {
-	List []*entity.WdkReportCfg `json:"list" dc:"文档库报告类型配置信息列表"` // 文档库报告类型配置信息列表
-}
-
 // WdkReportCfgAddReq 文档库新增报告类型配置请求参数
 type WdkReportCfgAddReq struct {
 	g.Meta    `path:"/add" tags:"WdkReportCfgAdd" method:"post" summary:"You first wdk/reportTypeCfg/add api"`

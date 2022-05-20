@@ -2,6 +2,7 @@ package v1
 
 import (
 	"github.com/gogf/gf/v2/frame/g"
+	"github.com/gogf/gf/v2/net/ghttp"
 	"lczx/internal/model/entity"
 )
 
@@ -24,9 +25,11 @@ type WdkReportInfo struct {
 
 // WdkReportAddReq 文档库新增上传报告请求参数
 type WdkReportAddReq struct {
-	g.Meta    `path:"/add" tags:"WdkReportAdd" method:"post" summary:"You first wdk/report/add api"`
-	ProjectId uint64   `json:"projectId" v:"required|regex:^[1-9]\\d*$#所属项目ID不能为空|所属项目ID必须为正整数" dc:"所属项目ID"` // 所属项目ID
-	TypeIds   []uint64 `json:"typeIds" v:"required|slice_valid:uint64#报告类型ID列表不能为空" dc:"报告类型ID列表"`           // 报告类型ID列表
+	g.Meta       `path:"/add" tags:"WdkReportAdd" method:"post" summary:"You first wdk/report/add api"`
+	ProjectId    uint64            `json:"projectId" v:"required|regex:^[1-9]\\d*$#所属项目ID不能为空|所属项目ID必须为正整数" dc:"所属项目ID"`                                       // 所属项目ID
+	ProjectName  string            `json:"projectName" v:"required|regex:^[\u4e00-\u9fa5\\w]{0,100}$#所属项目名称不能为空|所属项目名称只能包含中文、英文、数字和下划线且长度不能超过100" dc:"所属项目名称"` // 所属项目名称
+	TypeIds      []uint64          `json:"typeIds" v:"required|slice_valid:uint64#报告类型ID列表不能为空" dc:"报告类型ID列表"`                                                 // 报告类型ID列表
+	UploadReport *ghttp.UploadFile `json:"uploadReport" dc:"上传报告"`                                                                                             // 上传报告
 }
 
 // WdkReportAddRes 文档库新增上传报告返回参数

@@ -8,7 +8,6 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/util/gconv"
 	v1 "lczx/api/v1"
-	"lczx/internal/consts"
 	"lczx/internal/model/entity"
 	"lczx/internal/service/internal/dao"
 	"lczx/internal/service/internal/do"
@@ -40,28 +39,6 @@ func (s *sWdkReportCfg) GetWdkReportCfgList(ctx context.Context, name string) (l
 	auditCfgColumns := dao.WdkReportAuditCfg.Columns()
 	err = auditCfgModel.Where(auditCfgColumns.Id, gdb.ListItemValuesUnique(list, "ReportCfg", "Id")).
 		ScanList(&list, "ReportAuditCfg", "ReportCfg", "Id:Id")
-	return
-}
-
-// GetWdkAllReportCfg 获取文档库全部报告类型配置信息列表
-func (s *sWdkReportCfg) GetWdkAllReportCfg(ctx context.Context) (list []*entity.WdkReportCfg, err error) {
-	// 从缓存获取
-	reportCfgCacheVal := Cache().GetCache(ctx, consts.WdkReportCfgKey)
-	if reportCfgCacheVal != nil {
-		err = gconv.Structs(reportCfgCacheVal, &list)
-		if err != nil {
-			return
-		}
-		if list != nil {
-			return
-		}
-	}
-	// 从数据库获取
-	err = dao.WdkReportCfg.Ctx(ctx).Cache(gdb.CacheOption{
-		Duration: 0,
-		Name:     consts.WdkReportCfgKey,
-		Force:    false,
-	}).OrderAsc(dao.WdkReportCfg.Columns().Id).Scan(&list)
 	return
 }
 
@@ -98,11 +75,6 @@ func (s *sWdkReportCfg) AddWdkReportCfg(ctx context.Context, req *v1.WdkReportCf
 		terr = s.saveWdkReportAuditCfg(ctx, userList, gconv.Uint64(typeId), req.Name)
 		return terr
 	})
-	if err != nil {
-		return
-	}
-	// 清除文档库报告类型配置缓存
-	err = Cache().ClearCache(ctx, consts.WdkReportCfgKey)
 	return
 }
 
@@ -164,11 +136,6 @@ func (s *sWdkReportCfg) EditWdkReportCfg(ctx context.Context, req *v1.WdkReportC
 		terr = s.saveWdkReportAuditCfg(ctx, userList, req.Id, req.Name)
 		return terr
 	})
-	if err != nil {
-		return
-	}
-	// 清除文档库报告类型配置缓存
-	err = Cache().ClearCache(ctx, consts.WdkReportCfgKey)
 	return
 }
 
@@ -183,11 +150,6 @@ func (s *sWdkReportCfg) DeleteWdkReportCfg(ctx context.Context, ids []uint64) (e
 		_, terr = dao.WdkReportAuditCfg.Ctx(ctx).WhereIn(dao.WdkReportAuditCfg.Columns().Id, ids).Delete()
 		return terr
 	})
-	if err != nil {
-		return
-	}
-	// 清除文档库报告类型配置缓存
-	err = Cache().ClearCache(ctx, consts.WdkReportCfgKey)
 	return
 }
 

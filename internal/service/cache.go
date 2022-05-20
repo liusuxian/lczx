@@ -29,7 +29,7 @@ func Cache() *sCache {
 // ClearAllCache 清除所有缓存
 func (s *sCache) ClearAllCache(ctx context.Context) {
 	var err error
-	err = g.DB().GetCache().Removes(ctx, []any{consts.MenuKey, consts.RoleKey, consts.DeptKey, consts.WdkReportCfgKey})
+	err = g.DB().GetCache().Removes(ctx, []any{consts.MenuKey, consts.RoleKey, consts.DeptKey})
 	if err != nil {
 		logger.Error(ctx, "ClearAllCache Error: ", err.Error())
 	}
