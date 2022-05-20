@@ -333,10 +333,12 @@ func (s *sDept) saveDept(ctx context.Context, req *v1.DeptAddReq, principalUser 
 		})
 	} else {
 		model = model.Data(do.Dept{
-			ParentId:  req.ParentId,
-			Name:      req.Name,
-			Status:    req.Status,
-			CreatedBy: user.Id,
+			ParentId:      req.ParentId,
+			Name:          req.Name,
+			Status:        req.Status,
+			CreatedBy:     user.Id,
+			PrincipalUid:  0,
+			PrincipalName: "",
 		})
 	}
 	_, err = model.FieldsEx(dao.Dept.Columns().Id).Insert()
@@ -360,10 +362,12 @@ func (s *sDept) updateDept(ctx context.Context, req *v1.DeptEditReq, principalUs
 			})
 		} else {
 			model = model.Data(do.Dept{
-				ParentId:  req.ParentId,
-				Name:      req.Name,
-				Status:    req.Status,
-				UpdatedBy: user.Id,
+				ParentId:      req.ParentId,
+				Name:          req.Name,
+				Status:        req.Status,
+				UpdatedBy:     user.Id,
+				PrincipalUid:  0,
+				PrincipalName: "",
 			})
 		}
 		_, terr = model.Where(do.Dept{Id: req.Id}).Update()
