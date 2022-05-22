@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 23/05/2022 01:23:37
+ Date: 23/05/2022 01:32:22
 */
 
 SET NAMES utf8mb4;
@@ -186,7 +186,7 @@ CREATE TABLE `menu` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `rule_index` (`rule`),
   KEY `parent_id_index` (`parent_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ----------------------------
 -- Records of menu
@@ -242,6 +242,7 @@ INSERT INTO `menu` (`id`, `parent_id`, `rule`, `name`, `condition`, `menu_type`,
 INSERT INTO `menu` (`id`, `parent_id`, `rule`, `name`, `condition`, `menu_type`, `status`, `jump_path`, `is_frame`, `module_type`, `remark`, `create_at`, `update_at`, `deleted_at`) VALUES (48, 47, 'wdk/report/add', '上传报告', NULL, 2, 1, NULL, 0, 'sys_admin', NULL, '2022-05-01 12:54:36', '2022-05-01 12:54:36', NULL);
 INSERT INTO `menu` (`id`, `parent_id`, `rule`, `name`, `condition`, `menu_type`, `status`, `jump_path`, `is_frame`, `module_type`, `remark`, `create_at`, `update_at`, `deleted_at`) VALUES (49, 32, 'wdk/reportAudit/uploadAuditList', '报告上传审核管理', NULL, 1, 1, NULL, 0, ' sys_admin', NULL, '2022-05-22 19:06:47', '2022-05-22 19:06:47', NULL);
 INSERT INTO `menu` (`id`, `parent_id`, `rule`, `name`, `condition`, `menu_type`, `status`, `jump_path`, `is_frame`, `module_type`, `remark`, `create_at`, `update_at`, `deleted_at`) VALUES (50, 49, 'wdk/reportAudit/rescindAudit', '报告撤销审核', NULL, 2, 1, NULL, 0, 'sys_admin', NULL, '2022-05-22 19:09:32', '2022-05-22 19:09:32', NULL);
+INSERT INTO `menu` (`id`, `parent_id`, `rule`, `name`, `condition`, `menu_type`, `status`, `jump_path`, `is_frame`, `module_type`, `remark`, `create_at`, `update_at`, `deleted_at`) VALUES (51, 32, 'wdk/reportAudit/list', '报告审核管理', NULL, 1, 1, NULL, 0, 'sys_admin', NULL, '2022-05-23 01:31:59', '2022-05-23 01:31:59', NULL);
 COMMIT;
 
 -- ----------------------------
