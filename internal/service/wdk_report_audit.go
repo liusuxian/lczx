@@ -25,7 +25,7 @@ func WdkReportAudit() *sWdkReportAudit {
 // GetWdkReportAuditList 获取文档库报告审核列表
 func (s *sWdkReportAudit) GetWdkReportAuditList(ctx context.Context, req *v1.WdkReportAuditListReq) (total int, list []*v1.WdkReportAuditInfo, err error) {
 	user := Context().Get(ctx).User
-	model := dao.WdkReportAudit.Ctx(ctx).Where(do.WdkReportAudit{AuditUid: user.Id, Status: req.Status})
+	model := dao.WdkReportAudit.Ctx(ctx).Where(do.WdkReportAudit{AuditUid: user.Id, Rescind: req.Rescind, PreauditStatus: 1, Status: req.Status})
 	columns := dao.WdkReportAudit.Columns()
 	total, err = model.Count()
 	if err != nil {

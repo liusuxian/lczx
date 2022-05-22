@@ -285,14 +285,15 @@ func (s *sWdkReport) saveWdkReportAudit(ctx context.Context, user *model.Context
 		reportAuditTypes := make([]entity.WdkReportAuditType, 0, len(reportTypeInfo))
 		// 添加负责人审核
 		reportAudits = append(reportAudits, entity.WdkReportAudit{
-			Id:          reportId,
-			AuditUid:    dept.PrincipalUid,
-			AuditorType: 0,
-			ProjectId:   projectId,
-			AuditName:   dept.PrincipalName,
-			Rescind:     0,
-			Status:      1,
-			Excellence:  0,
+			Id:             reportId,
+			AuditUid:       dept.PrincipalUid,
+			AuditorType:    0,
+			ProjectId:      projectId,
+			AuditName:      dept.PrincipalName,
+			Rescind:        0,
+			PreauditStatus: 1,
+			Status:         1,
+			Excellence:     0,
 		})
 		for _, rt := range reportTypeInfo {
 			// 添加负责人审核
@@ -305,14 +306,15 @@ func (s *sWdkReport) saveWdkReportAudit(ctx context.Context, user *model.Context
 			for _, ra := range rt.ReportAuditCfg {
 				if ra.AuditUid != dept.PrincipalUid {
 					reportAudits = append(reportAudits, entity.WdkReportAudit{
-						Id:          reportId,
-						AuditUid:    ra.AuditUid,
-						AuditorType: 1,
-						ProjectId:   projectId,
-						AuditName:   ra.AuditName,
-						Rescind:     0,
-						Status:      1,
-						Excellence:  0,
+						Id:             reportId,
+						AuditUid:       ra.AuditUid,
+						AuditorType:    1,
+						ProjectId:      projectId,
+						AuditName:      ra.AuditName,
+						Rescind:        0,
+						PreauditStatus: 0,
+						Status:         1,
+						Excellence:     0,
 					})
 					reportAuditTypes = append(reportAuditTypes, entity.WdkReportAuditType{
 						Id:       reportId,

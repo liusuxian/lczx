@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 23/05/2022 01:19:00
+ Date: 23/05/2022 01:23:37
 */
 
 SET NAMES utf8mb4;
@@ -553,7 +553,7 @@ CREATE TABLE `wdk_report_audit` (
 -- ----------------------------
 BEGIN;
 INSERT INTO `wdk_report_audit` (`id`, `audit_uid`, `auditor_type`, `project_id`, `audit_name`, `rescind`, `preaudit_status`, `status`, `excellence`, `audit_time`, `audit_opinion`, `create_at`, `update_at`) VALUES (1, 1, 1, 1, '超级管理员', 0, 0, 1, 0, NULL, NULL, '2022-05-21 04:08:35', '2022-05-21 04:08:35');
-INSERT INTO `wdk_report_audit` (`id`, `audit_uid`, `auditor_type`, `project_id`, `audit_name`, `rescind`, `preaudit_status`, `status`, `excellence`, `audit_time`, `audit_opinion`, `create_at`, `update_at`) VALUES (1, 2, 0, 1, '刘苏贤', 0, 0, 1, 0, NULL, NULL, '2022-05-21 04:08:35', '2022-05-21 04:08:35');
+INSERT INTO `wdk_report_audit` (`id`, `audit_uid`, `auditor_type`, `project_id`, `audit_name`, `rescind`, `preaudit_status`, `status`, `excellence`, `audit_time`, `audit_opinion`, `create_at`, `update_at`) VALUES (1, 2, 0, 1, '刘苏贤', 0, 1, 1, 0, NULL, NULL, '2022-05-21 04:08:35', '2022-05-21 04:08:35');
 COMMIT;
 
 -- ----------------------------
