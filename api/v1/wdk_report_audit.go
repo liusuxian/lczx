@@ -73,7 +73,7 @@ type WdkReportRescindAuditRes struct {
 
 // WdkReportAuditProcessReq 文档库报告审核流程请求参数
 type WdkReportAuditProcessReq struct {
-	g.Meta `path:"/auditProcess" tags:"WdkReportAuditProcess" method:"put" summary:"You first wdk/reportAudit/auditProcess api"`
+	g.Meta `path:"/auditProcess" tags:"WdkReportAuditProcess" method:"get" summary:"You first wdk/reportAudit/auditProcess api"`
 	Id     uint64 `json:"id" v:"required|regex:^[1-9]\\d*$#报告ID不能为空|报告ID必须为正整数" dc:"报告ID"` // 部门ID
 }
 
