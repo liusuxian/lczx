@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 23/05/2022 00:13:48
+ Date: 23/05/2022 01:19:00
 */
 
 SET NAMES utf8mb4;
@@ -538,6 +538,7 @@ CREATE TABLE `wdk_report_audit` (
   `project_id` bigint unsigned NOT NULL COMMENT '所属项目ID',
   `audit_name` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '审核员姓名',
   `rescind` tinyint unsigned NOT NULL COMMENT '是否已撤销 0:否 1:是',
+  `preaudit_status` tinyint unsigned NOT NULL COMMENT '前置审核是否已通过 0:否 1:是',
   `status` tinyint unsigned NOT NULL COMMENT '审核状态 0:未通过 1:审核中 2:已通过',
   `excellence` tinyint unsigned NOT NULL COMMENT '是否被推荐为优秀报告 0:未被推荐为优秀报告 1:已被推荐为优秀报告',
   `audit_time` datetime DEFAULT NULL COMMENT '审核时间',
@@ -551,8 +552,8 @@ CREATE TABLE `wdk_report_audit` (
 -- Records of wdk_report_audit
 -- ----------------------------
 BEGIN;
-INSERT INTO `wdk_report_audit` (`id`, `audit_uid`, `auditor_type`, `project_id`, `audit_name`, `rescind`, `status`, `excellence`, `audit_time`, `audit_opinion`, `create_at`, `update_at`) VALUES (1, 1, 1, 1, '超级管理员', 0, 1, 0, NULL, NULL, '2022-05-21 04:08:35', '2022-05-21 04:08:35');
-INSERT INTO `wdk_report_audit` (`id`, `audit_uid`, `auditor_type`, `project_id`, `audit_name`, `rescind`, `status`, `excellence`, `audit_time`, `audit_opinion`, `create_at`, `update_at`) VALUES (1, 2, 0, 1, '刘苏贤', 0, 1, 0, NULL, NULL, '2022-05-21 04:08:35', '2022-05-21 04:08:35');
+INSERT INTO `wdk_report_audit` (`id`, `audit_uid`, `auditor_type`, `project_id`, `audit_name`, `rescind`, `preaudit_status`, `status`, `excellence`, `audit_time`, `audit_opinion`, `create_at`, `update_at`) VALUES (1, 1, 1, 1, '超级管理员', 0, 0, 1, 0, NULL, NULL, '2022-05-21 04:08:35', '2022-05-21 04:08:35');
+INSERT INTO `wdk_report_audit` (`id`, `audit_uid`, `auditor_type`, `project_id`, `audit_name`, `rescind`, `preaudit_status`, `status`, `excellence`, `audit_time`, `audit_opinion`, `create_at`, `update_at`) VALUES (1, 2, 0, 1, '刘苏贤', 0, 0, 1, 0, NULL, NULL, '2022-05-21 04:08:35', '2022-05-21 04:08:35');
 COMMIT;
 
 -- ----------------------------

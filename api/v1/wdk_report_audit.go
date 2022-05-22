@@ -8,9 +8,10 @@ import (
 // WdkReportAuditListReq 文档库报告审核记录列表请求参数
 type WdkReportAuditListReq struct {
 	g.Meta   `path:"/list" tags:"WdkReportAuditList" method:"get" summary:"You first wdk/reportAudit/list api"`
-	Status   uint `json:"status" v:"required|in:0,1,2#审核状态不能为空|审核状态只能是0,1,2" dc:"审核状态 0:未通过 1:审核中 2:已通过"` // 审核状态 0:未通过 1:审核中 2:已通过
-	CurPage  int  `json:"curPage" v:"required|regex:^[1-9]\\d*$#当前页码不能为空|当前页码必须为正整数" dc:"当前页码"`           // 当前页码
-	PageSize int  `json:"pageSize" v:"required|regex:^[1-9]\\d*$#每页数量不能为空|每页数量必须为正整数" dc:"每页数量"`          // 每页数量
+	Status   uint `json:"status" v:"required|in:0,1,2#审核状态不能为空|审核状态只能是0,1,2" dc:"审核状态 0:未通过 1:审核中 2:已通过"`   // 审核状态 0:未通过 1:审核中 2:已通过
+	Rescind  uint `json:"rescind" v:"required-if:Status,1|in:0,1#是否已撤销不能为空|是否已撤销只能是0,1" dc:"是否已撤销 0:否 1:是"` // 是否已撤销 0:否 1:是
+	CurPage  int  `json:"curPage" v:"required|regex:^[1-9]\\d*$#当前页码不能为空|当前页码必须为正整数" dc:"当前页码"`             // 当前页码
+	PageSize int  `json:"pageSize" v:"required|regex:^[1-9]\\d*$#每页数量不能为空|每页数量必须为正整数" dc:"每页数量"`            // 每页数量
 }
 
 // WdkReportAuditListRes 文档库报告审核记录列表返回参数

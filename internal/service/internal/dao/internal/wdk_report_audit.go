@@ -19,34 +19,36 @@ type WdkReportAuditDao struct {
 
 // WdkReportAuditColumns defines and stores column names for table wdk_report_audit.
 type WdkReportAuditColumns struct {
-	Id           string // 报告ID
-	AuditUid     string // 审核员用户ID
-	AuditorType  string // 审核员类型 0:负责人 1:专家组
-	ProjectId    string // 所属项目ID
-	AuditName    string // 审核员姓名
-	Rescind      string // 是否已撤销 0:否 1:是
-	Status       string // 审核状态 0:未通过 1:审核中 2:已通过
-	Excellence   string // 是否被推荐为优秀报告 0:未被推荐为优秀报告 1:已被推荐为优秀报告
-	AuditTime    string // 审核时间
-	AuditOpinion string // 审核意见
-	CreateAt     string // 创建时间
-	UpdateAt     string // 更新时间
+	Id             string // 报告ID
+	AuditUid       string // 审核员用户ID
+	AuditorType    string // 审核员类型 0:负责人 1:专家组
+	ProjectId      string // 所属项目ID
+	AuditName      string // 审核员姓名
+	Rescind        string // 是否已撤销 0:否 1:是
+	PreauditStatus string // 前置审核是否已通过 0:否 1:是
+	Status         string // 审核状态 0:未通过 1:审核中 2:已通过
+	Excellence     string // 是否被推荐为优秀报告 0:未被推荐为优秀报告 1:已被推荐为优秀报告
+	AuditTime      string // 审核时间
+	AuditOpinion   string // 审核意见
+	CreateAt       string // 创建时间
+	UpdateAt       string // 更新时间
 }
 
 //  wdkReportAuditColumns holds the columns for table wdk_report_audit.
 var wdkReportAuditColumns = WdkReportAuditColumns{
-	Id:           "id",
-	AuditUid:     "audit_uid",
-	AuditorType:  "auditor_type",
-	ProjectId:    "project_id",
-	AuditName:    "audit_name",
-	Rescind:      "rescind",
-	Status:       "status",
-	Excellence:   "excellence",
-	AuditTime:    "audit_time",
-	AuditOpinion: "audit_opinion",
-	CreateAt:     "create_at",
-	UpdateAt:     "update_at",
+	Id:             "id",
+	AuditUid:       "audit_uid",
+	AuditorType:    "auditor_type",
+	ProjectId:      "project_id",
+	AuditName:      "audit_name",
+	Rescind:        "rescind",
+	PreauditStatus: "preaudit_status",
+	Status:         "status",
+	Excellence:     "excellence",
+	AuditTime:      "audit_time",
+	AuditOpinion:   "audit_opinion",
+	CreateAt:       "create_at",
+	UpdateAt:       "update_at",
 }
 
 // NewWdkReportAuditDao creates and returns a new DAO object for table data access.
