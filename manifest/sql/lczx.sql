@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 22/05/2022 19:12:18
+ Date: 23/05/2022 00:13:48
 */
 
 SET NAMES utf8mb4;
@@ -88,6 +88,7 @@ INSERT INTO `casbin_rule` (`p_type`, `v0`, `v1`, `v2`, `v3`, `v4`, `v5`) VALUES 
 INSERT INTO `casbin_rule` (`p_type`, `v0`, `v1`, `v2`, `v3`, `v4`, `v5`) VALUES ('p', '1', '51', 'All', '', '', '');
 INSERT INTO `casbin_rule` (`p_type`, `v0`, `v1`, `v2`, `v3`, `v4`, `v5`) VALUES ('g', '1', '1', NULL, NULL, NULL, NULL);
 INSERT INTO `casbin_rule` (`p_type`, `v0`, `v1`, `v2`, `v3`, `v4`, `v5`) VALUES ('g', '2', '1', '', '', '', '');
+INSERT INTO `casbin_rule` (`p_type`, `v0`, `v1`, `v2`, `v3`, `v4`, `v5`) VALUES ('g', '3', '2', '', '', '', '');
 INSERT INTO `casbin_rule` (`p_type`, `v0`, `v1`, `v2`, `v3`, `v4`, `v5`) VALUES ('p', '2', '32', 'All', '', '', '');
 INSERT INTO `casbin_rule` (`p_type`, `v0`, `v1`, `v2`, `v3`, `v4`, `v5`) VALUES ('p', '2', '33', 'All', '', '', '');
 INSERT INTO `casbin_rule` (`p_type`, `v0`, `v1`, `v2`, `v3`, `v4`, `v5`) VALUES ('p', '2', '41', 'All', '', '', '');
@@ -98,8 +99,8 @@ INSERT INTO `casbin_rule` (`p_type`, `v0`, `v1`, `v2`, `v3`, `v4`, `v5`) VALUES 
 INSERT INTO `casbin_rule` (`p_type`, `v0`, `v1`, `v2`, `v3`, `v4`, `v5`) VALUES ('p', '2', '46', 'All', '', '', '');
 INSERT INTO `casbin_rule` (`p_type`, `v0`, `v1`, `v2`, `v3`, `v4`, `v5`) VALUES ('p', '2', '47', 'All', '', '', '');
 INSERT INTO `casbin_rule` (`p_type`, `v0`, `v1`, `v2`, `v3`, `v4`, `v5`) VALUES ('p', '2', '48', 'All', '', '', '');
+INSERT INTO `casbin_rule` (`p_type`, `v0`, `v1`, `v2`, `v3`, `v4`, `v5`) VALUES ('p', '2', '49', 'All', '', '', '');
 INSERT INTO `casbin_rule` (`p_type`, `v0`, `v1`, `v2`, `v3`, `v4`, `v5`) VALUES ('p', '2', '50', 'All', '', '', '');
-INSERT INTO `casbin_rule` (`p_type`, `v0`, `v1`, `v2`, `v3`, `v4`, `v5`) VALUES ('g', '3', '2', '', '', '', '');
 COMMIT;
 
 -- ----------------------------
@@ -293,7 +294,7 @@ CREATE TABLE `role` (
 -- ----------------------------
 BEGIN;
 INSERT INTO `role` (`id`, `name`, `status`, `data_scope`, `remark`, `create_at`, `update_at`) VALUES (1, '超级管理员', 1, 3, '', '2022-04-19 14:30:16', '2022-04-19 14:30:16');
-INSERT INTO `role` (`id`, `name`, `status`, `data_scope`, `remark`, `create_at`, `update_at`) VALUES (2, '测试角色', 1, 3, '', '2022-05-21 04:01:56', '2022-05-21 04:01:56');
+INSERT INTO `role` (`id`, `name`, `status`, `data_scope`, `remark`, `create_at`, `update_at`) VALUES (2, '测试角色', 1, 3, '', '2022-05-21 04:01:56', '2022-05-23 00:12:22');
 COMMIT;
 
 -- ----------------------------
@@ -347,7 +348,7 @@ CREATE TABLE `user` (
 -- Records of user
 -- ----------------------------
 BEGIN;
-INSERT INTO `user` (`id`, `passport`, `password`, `salt`, `realname`, `nickname`, `dept_id`, `gender`, `status`, `is_admin`, `avatar`, `mobile`, `email`, `remark`, `last_login_ip`, `last_login_time`, `create_at`, `update_at`, `deleted_at`) VALUES (1, 'sadmin', 'b0167dd859b8a70478da36238b0b3e05', 'CqDQa4THP1', '超级管理员', '超级管理员', 4, 1, 1, 1, 'https://lczx-sys.oss-cn-hangzhou.aliyuncs.com/user/avatar/logo.png', '17364814710', '382185882@qq.com', NULL, '::1', '2022-05-21 04:01:19', '2022-03-25 17:41:40', '2022-03-25 17:41:40', NULL);
+INSERT INTO `user` (`id`, `passport`, `password`, `salt`, `realname`, `nickname`, `dept_id`, `gender`, `status`, `is_admin`, `avatar`, `mobile`, `email`, `remark`, `last_login_ip`, `last_login_time`, `create_at`, `update_at`, `deleted_at`) VALUES (1, 'sadmin', 'b0167dd859b8a70478da36238b0b3e05', 'CqDQa4THP1', '超级管理员', '超级管理员', 4, 1, 1, 1, 'https://lczx-sys.oss-cn-hangzhou.aliyuncs.com/user/avatar/logo.png', '17364814710', '382185882@qq.com', NULL, '::1', '2022-05-23 00:11:46', '2022-03-25 17:41:40', '2022-03-25 17:41:40', NULL);
 INSERT INTO `user` (`id`, `passport`, `password`, `salt`, `realname`, `nickname`, `dept_id`, `gender`, `status`, `is_admin`, `avatar`, `mobile`, `email`, `remark`, `last_login_ip`, `last_login_time`, `create_at`, `update_at`, `deleted_at`) VALUES (2, 'liusuxian', 'b6d5d1dc1f39f8a10bfdb53bf78c895f', 'JKPT7WSeG0', '刘苏贤', '', 4, 1, 1, 1, NULL, '15108274735', '', '', NULL, NULL, '2022-04-25 17:21:17', '2022-04-25 17:21:17', NULL);
 INSERT INTO `user` (`id`, `passport`, `password`, `salt`, `realname`, `nickname`, `dept_id`, `gender`, `status`, `is_admin`, `avatar`, `mobile`, `email`, `remark`, `last_login_ip`, `last_login_time`, `create_at`, `update_at`, `deleted_at`) VALUES (3, 'ceshi123', 'bed32e4ac7a83b854d6e1b279915352a', 'nw3VIpRP8y', '测试用户', '', 10, 1, 1, 0, NULL, '15110100101', '', '', '::1', '2022-05-21 04:07:49', '2022-05-21 04:02:36', '2022-05-21 04:02:36', NULL);
 COMMIT;
