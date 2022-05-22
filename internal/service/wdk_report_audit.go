@@ -45,29 +45,6 @@ func (s *sWdkReportAudit) GetWdkReportAuditList(ctx context.Context, req *v1.Wdk
 	return
 }
 
-// GetWdkReportBeAuditedList 获取文档库报告被审核列表
-func (s *sWdkReportAudit) GetWdkReportBeAuditedList(ctx context.Context, req *v1.WdkReportBeAuditedListReq) (total int, list []*v1.WdkReportBeAuditedInfo, err error) {
-	user := Context().Get(ctx).User
-	model := dao.WdkReport.Ctx(ctx).Where(do.WdkReport{CreateBy: user.Id, AuditStatus: req.Status})
-	columns := dao.WdkReport.Columns()
-	total, err = model.Count()
-	if err != nil {
-		return
-	}
-	err = model.Page(req.CurPage, req.PageSize).OrderDesc(columns.CreateAt).ScanList(&list, "Report")
-	if err != nil {
-		return
-	}
-	err = dao.WdkReportAudit.Ctx(ctx).Where(dao.WdkReportAudit.Columns().Id, gdb.ListItemValuesUnique(list, "Report", "Id")).
-		ScanList(&list, "ReportAudit", "Report", "Id:Id")
-	if err != nil {
-		return
-	}
-	err = dao.WdkReportAuditType.Ctx(ctx).Where(dao.WdkReportAuditType.Columns().Id, gdb.ListItemValuesUnique(list, "Report", "Id")).
-		ScanList(&list, "ReportAuditType", "Report", "Id:Id")
-	return
-}
-
 // HandleWdkReportAudit 处理文档库报告审核
 func (s *sWdkReportAudit) HandleWdkReportAudit(ctx context.Context, req *v1.WdkReportAuditReq) (err error) {
 	user := Context().Get(ctx).User
@@ -119,6 +96,50 @@ func (s *sWdkReportAudit) HandleWdkReportAudit(ctx context.Context, req *v1.WdkR
 		}
 		return nil
 	})
+	return
+}
+
+// GetWdkReportUploadAuditList 获取文档库报告上传审核列表
+func (s *sWdkReportAudit) GetWdkReportUploadAuditList(ctx context.Context, req *v1.WdkReportUploadAuditListReq) (total int, list []*v1.WdkReportUploadAuditInfo, err error) {
+	user := Context().Get(ctx).User
+	model := dao.WdkReport.Ctx(ctx).Where(do.WdkReport{CreateBy: user.Id, Rescind: req.Rescind, AuditStatus: req.Status})
+	columns := dao.WdkReport.Columns()
+	total, err = model.Count()
+	if err != nil {
+		return
+	}
+	err = model.Page(req.CurPage, req.PageSize).OrderDesc(columns.CreateAt).ScanList(&list, "Report")
+	if err != nil {
+		return
+	}
+	err = dao.WdkReportType.Ctx(ctx).Where(dao.WdkReportType.Columns().Id, gdb.ListItemValuesUnique(list, "Report", "Id")).
+		ScanList(&list, "ReportType", "Report", "Id:Id")
+	return
+}
+
+// HandleWdkReportRescindAudit 处理文档库报告撤销审核
+func (s *sWdkReportAudit) HandleWdkReportRescindAudit(ctx context.Context, Id uint64) (err error) {
+	err = dao.WdkReportAudit.Ctx(ctx).Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
+		var terr error
+		_, terr = dao.WdkReport.Ctx(ctx).Data(do.WdkReport{Rescind: 1}).Where(do.WdkReport{Id: Id}).Update()
+		if terr != nil {
+			return terr
+		}
+		_, terr = dao.WdkReportAudit.Ctx(ctx).Data(do.WdkReportAudit{Rescind: 1}).Where(do.WdkReportAudit{Id: Id}).Update()
+		return terr
+	})
+	return
+}
+
+// GetWdkReportAuditProcess 获取文档库报告审核流程
+func (s *sWdkReportAudit) GetWdkReportAuditProcess(ctx context.Context, Id uint64) (list []*v1.WdkReportAuditProcessInfo, err error) {
+	err = dao.WdkReportAudit.Ctx(ctx).Where(do.WdkReportAudit{Id: Id}).OrderAsc(dao.WdkReportAudit.Columns().AuditorType).
+		OrderAsc(dao.WdkReportAudit.Columns().AuditTime).ScanList(&list, "ReportAudit")
+	if err != nil {
+		return
+	}
+	err = dao.WdkReportAuditType.Ctx(ctx).Where(dao.WdkReportAuditType.Columns().Id, gdb.ListItemValuesUnique(list, "ReportAudit", "AuditUid")).
+		Where(do.WdkReportAuditType{Id: Id}).ScanList(&list, "ReportAuditType", "ReportAudit", "AuditUid:AuditUid")
 	return
 }
 

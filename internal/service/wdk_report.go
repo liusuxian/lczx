@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"github.com/gogf/gf/v2/container/gmap"
 	"github.com/gogf/gf/v2/container/gset"
 	"github.com/gogf/gf/v2/container/gvar"
 	"github.com/gogf/gf/v2/database/gdb"
@@ -43,39 +44,77 @@ func (s *sWdkReport) GetWdkReportRecord(ctx context.Context, projectId uint64) (
 // AddWdkReport 新增文档库上传报告记录
 func (s *sWdkReport) AddWdkReport(ctx context.Context, req *v1.WdkReportAddReq, report *upload.FileInfo) (err error) {
 	err = dao.WdkReport.Ctx(ctx).Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
-		// 通过报告类型ID列表获取报告类型配置
+		// 检查部门负责人是否存在
 		var terr error
-		typeIdSet := gset.NewFrom(req.TypeIds)
-		typeIds := typeIdSet.Slice()
-		var reportCfg []*entity.WdkReportCfg
-		terr = dao.WdkReportCfg.Ctx(ctx).WhereIn(dao.WdkReportCfg.Columns().Id, typeIds).Scan(&reportCfg)
+		curUser := Context().Get(ctx).User
+		var userInfo *entity.User
+		userInfo, terr = User().GetUserById(ctx, curUser.Id)
 		if terr != nil {
 			return terr
 		}
-		if len(reportCfg) == 0 {
-			return gerror.Newf("报告类型ID列表%v不存在", req.TypeIds)
+		if userInfo == nil {
+			return gerror.Newf(`用户ID[%d]不存在`, curUser.Id)
 		}
-		// 通过审核员ID列表获取报告类型审核配置
-		auditUidSet := gset.NewFrom(req.AuditUids)
-		auditUids := auditUidSet.Slice()
-		var reportAuditCfg []*entity.WdkReportAuditCfg
-		terr = dao.WdkReportAuditCfg.Ctx(ctx).WhereIn(dao.WdkReportAuditCfg.Columns().AuditUid, auditUids).
-			Scan(&reportAuditCfg)
+		var dept *entity.Dept
+		terr = dao.Dept.Ctx(ctx).Where(do.Dept{Id: userInfo.DeptId}).Scan(&dept)
 		if terr != nil {
 			return terr
 		}
-		if len(reportAuditCfg) == 0 {
-			return gerror.Newf("报告审核员用户ID列表%v不存在", req.AuditUids)
+		if dept == nil {
+			return gerror.Newf(`部门ID[%d]不存在`, userInfo.DeptId)
+		}
+		if dept.PrincipalUid == 0 {
+			return gerror.Newf(`部门[%s]负责人不存在，请添加部门负责人`, dept.Name)
+		}
+		// 处理客户端传来的参数
+		auditTypeInfoMap := gmap.New()
+		for _, auditTypeInfo := range req.AuditTypeInfos {
+			auditUidSet := gset.NewFrom(auditTypeInfo.AuditUids)
+			if auditUidSet.Size() != len(auditTypeInfo.AuditUids) {
+				return gerror.Newf("报告审核类型信息列表%v不存在，请刷新页面后重试", req.AuditTypeInfos)
+			}
+			auditTypeInfoMap.Set(auditTypeInfo.TypeId, auditUidSet)
+		}
+		if len(req.AuditTypeInfos) != auditTypeInfoMap.Size() {
+			return gerror.Newf("报告审核类型信息列表%v不存在，请刷新页面后重试", req.AuditTypeInfos)
+		}
+		// 通过报告类型ID列表获取报告类型配置
+		var reportCfg []*v1.WdkReportCfgInfo
+		reportCfg, terr = WdkReportCfg().GetWdkReportCfgByIds(ctx, gconv.Uint64s(auditTypeInfoMap.Keys()))
+		if terr != nil {
+			return terr
+		}
+		if len(reportCfg) == 0 || len(reportCfg) != auditTypeInfoMap.Size() {
+			return gerror.Newf("报告审核类型信息列表%v不存在，请刷新页面后重试", req.AuditTypeInfos)
+		}
+		// 处理报告类型
+		reportTypeInfo := make([]*v1.WdkReportCfgInfo, 0, len(reportCfg))
+		for _, r := range reportCfg {
+			auditUidSet := auditTypeInfoMap.Get(r.ReportCfg.Id).(*gset.Set)
+			reportAuditCfg := make([]*entity.WdkReportAuditCfg, 0, len(r.ReportAuditCfg))
+			for _, ra := range r.ReportAuditCfg {
+				if auditUidSet.Contains(ra.AuditUid) {
+					reportAuditCfg = append(reportAuditCfg, ra)
+				}
+			}
+			if len(reportAuditCfg) > 0 && len(reportAuditCfg) == auditUidSet.Size() {
+				reportTypeInfo = append(reportTypeInfo, &v1.WdkReportCfgInfo{
+					ReportCfg:      r.ReportCfg,
+					ReportAuditCfg: reportAuditCfg,
+				})
+			}
+		}
+		if len(reportTypeInfo) == 0 || len(reportTypeInfo) != auditTypeInfoMap.Size() {
+			return gerror.Newf("报告审核类型信息列表%v不存在", req.AuditTypeInfos)
 		}
 		// 保存文档库上传报告记录
-		curUser := Context().Get(ctx).User
 		var reportId int64
-		reportId, terr = s.saveWdkReport(ctx, curUser, req, reportCfg, report)
+		reportId, terr = s.saveWdkReport(ctx, curUser, req, reportTypeInfo, report)
 		if terr != nil {
 			return terr
 		}
 		// 保存文档库上传报告审核信息
-		terr = s.saveWdkReportAudit(ctx, curUser, reportAuditCfg, typeIdSet, gconv.Uint64(reportId), req.ProjectId)
+		terr = s.saveWdkReportAudit(ctx, curUser, reportTypeInfo, dept, gconv.Uint64(reportId), req.ProjectId)
 		if terr != nil {
 			return terr
 		}
@@ -192,7 +231,7 @@ func (s *sWdkReport) SetWdkReportAuditCompleteStatus(ctx context.Context, id uin
 }
 
 // saveWdkReport 保存文档库上传报告记录
-func (s *sWdkReport) saveWdkReport(ctx context.Context, user *model.ContextUser, req *v1.WdkReportAddReq, reportCfg []*entity.WdkReportCfg, report *upload.FileInfo) (reportId int64, err error) {
+func (s *sWdkReport) saveWdkReport(ctx context.Context, user *model.ContextUser, req *v1.WdkReportAddReq, reportTypeInfo []*v1.WdkReportCfgInfo, report *upload.FileInfo) (reportId int64, err error) {
 	if user.IsAdmin == 1 {
 		// 管理员不需要走审核流程
 		reportId, err = dao.WdkReport.Ctx(ctx).Data(do.WdkReport{
@@ -201,6 +240,7 @@ func (s *sWdkReport) saveWdkReport(ctx context.Context, user *model.ContextUser,
 			Name:        report.FileName,
 			CreateBy:    user.Id,
 			CreateName:  user.Realname,
+			Rescind:     0,
 			AuditStatus: 3,
 			Excellence:  0,
 			AuditTime:   gtime.Now(),
@@ -215,6 +255,7 @@ func (s *sWdkReport) saveWdkReport(ctx context.Context, user *model.ContextUser,
 			Name:        report.FileName,
 			CreateBy:    user.Id,
 			CreateName:  user.Realname,
+			Rescind:     0,
 			AuditStatus: 1,
 			Excellence:  0,
 			OriginUrl:   report.OriginFileUrl,
@@ -226,11 +267,11 @@ func (s *sWdkReport) saveWdkReport(ctx context.Context, user *model.ContextUser,
 	}
 	// 保存文档库上传报告类型数据
 	reportTypeData := g.List{}
-	for _, v := range reportCfg {
+	for _, v := range reportTypeInfo {
 		reportTypeData = append(reportTypeData, g.Map{
 			"id":        reportId,
-			"type_id":   v.Id,
-			"type_name": v.Name,
+			"type_id":   v.ReportCfg.Id,
+			"type_name": v.ReportCfg.Name,
 		})
 	}
 	_, err = dao.WdkReportType.Ctx(ctx).Data(reportTypeData).Batch(len(reportTypeData)).Insert()
@@ -238,26 +279,48 @@ func (s *sWdkReport) saveWdkReport(ctx context.Context, user *model.ContextUser,
 }
 
 // saveWdkReportAuditRecord 保存文档库上传报告审核信息
-func (s *sWdkReport) saveWdkReportAudit(ctx context.Context, user *model.ContextUser, reportAuditCfg []*entity.WdkReportAuditCfg, typeIdSet *gset.Set, reportId, projectId uint64) (err error) {
+func (s *sWdkReport) saveWdkReportAudit(ctx context.Context, user *model.ContextUser, reportTypeInfo []*v1.WdkReportCfgInfo, dept *entity.Dept, reportId, projectId uint64) (err error) {
 	if user.IsAdmin != 1 {
-		reportAudits := make([]entity.WdkReportAudit, 0, len(reportAuditCfg))
-		reportAuditTypes := make([]entity.WdkReportAuditType, 0, len(reportAuditCfg))
-		for _, reportAuditInfo := range reportAuditCfg {
-			if typeIdSet.Contains(reportAuditInfo.Id) {
-				reportAudits = append(reportAudits, entity.WdkReportAudit{
-					Id:         reportId,
-					AuditUid:   reportAuditInfo.AuditUid,
-					ProjectId:  projectId,
-					AuditName:  reportAuditInfo.AuditName,
-					Status:     1,
-					Excellence: 0,
-				})
-				reportAuditTypes = append(reportAuditTypes, entity.WdkReportAuditType{
-					Id:       reportId,
-					AuditUid: reportAuditInfo.AuditUid,
-					TypeId:   reportAuditInfo.Id,
-					TypeName: reportAuditInfo.TypeName,
-				})
+		reportAudits := make([]entity.WdkReportAudit, 0, len(reportTypeInfo))
+		reportAuditTypes := make([]entity.WdkReportAuditType, 0, len(reportTypeInfo))
+		// 添加负责人审核
+		reportAudits = append(reportAudits, entity.WdkReportAudit{
+			Id:          reportId,
+			AuditUid:    dept.PrincipalUid,
+			AuditorType: 0,
+			ProjectId:   projectId,
+			AuditName:   dept.PrincipalName,
+			Rescind:     0,
+			Status:      1,
+			Excellence:  0,
+		})
+		for _, rt := range reportTypeInfo {
+			// 添加负责人审核
+			reportAuditTypes = append(reportAuditTypes, entity.WdkReportAuditType{
+				Id:       reportId,
+				AuditUid: dept.PrincipalUid,
+				TypeId:   rt.ReportCfg.Id,
+				TypeName: rt.ReportCfg.Name,
+			})
+			for _, ra := range rt.ReportAuditCfg {
+				if ra.AuditUid != dept.PrincipalUid {
+					reportAudits = append(reportAudits, entity.WdkReportAudit{
+						Id:          reportId,
+						AuditUid:    ra.AuditUid,
+						AuditorType: 1,
+						ProjectId:   projectId,
+						AuditName:   ra.AuditName,
+						Rescind:     0,
+						Status:      1,
+						Excellence:  0,
+					})
+					reportAuditTypes = append(reportAuditTypes, entity.WdkReportAuditType{
+						Id:       reportId,
+						AuditUid: ra.AuditUid,
+						TypeId:   ra.Id,
+						TypeName: ra.TypeName,
+					})
+				}
 			}
 		}
 		reportAuditData := gconv.Maps(gset.NewFrom(reportAudits).Slice())
