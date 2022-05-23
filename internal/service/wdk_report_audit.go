@@ -175,7 +175,8 @@ func (s *sWdkReportAudit) HandleWdkReportRescindAudit(ctx context.Context, Id ui
 // GetWdkReportAuditProcess 获取文档库报告审核流程
 func (s *sWdkReportAudit) GetWdkReportAuditProcess(ctx context.Context, Id uint64) (list []*v1.WdkReportAuditProcessInfo, err error) {
 	err = dao.WdkReportAudit.Ctx(ctx).Where(do.WdkReportAudit{Id: Id}).OrderAsc(dao.WdkReportAudit.Columns().AuditorType).
-		OrderAsc(dao.WdkReportAudit.Columns().AuditTime).ScanList(&list, "ReportAudit")
+		OrderDesc(dao.WdkReportAudit.Columns().Status).OrderAsc(dao.WdkReportAudit.Columns().AuditTime).
+		ScanList(&list, "ReportAudit")
 	if err != nil {
 		return
 	}
