@@ -59,23 +59,50 @@ func (s *sWdkReportAudit) HandleWdkReportAudit(ctx context.Context, req *v1.WdkR
 		if wdkReportAudit == nil {
 			return gerror.Newf(`文档库报告审核信息[%d]不存在`, req.Id)
 		}
+		// 检查是否已审核处理过
+		if wdkReportAudit.Status != 1 {
+			return gerror.New(`该报告审核已处理，无法再次审核`)
+		}
+		// 检查是否已撤销
+		if wdkReportAudit.Rescind == 1 {
+			return gerror.New(`该报告审核流程已撤销，无法审核`)
+		}
+		// 检查前置审核是否已通过
+		if wdkReportAudit.PreauditStatus == 0 {
+			return gerror.New(`前置审核未通过，无法审核`)
+		}
 		// 设置文档库报告审核状态
 		auditTime := gtime.Now()
-		terr = s.SetWdkReportAuditStatus(ctx, wdkReportAudit.Id, wdkReportAudit.AuditUid, req.AuditStatus, req.Excellence, auditTime)
+		terr = s.SetWdkReportAuditStatus(ctx, wdkReportAudit, req, auditTime)
 		if terr != nil {
 			return terr
 		}
-		// 通过报告ID获取文档库报告审核列表
-		var auditList []*entity.WdkReportAudit
-		auditList, terr = s.GetWdkReportAuditListById(ctx, wdkReportAudit.Id)
-		if terr != nil {
-			return terr
+		// 设置下级前置审核状态
+		if wdkReportAudit.AuditorType == 0 && req.AuditStatus == 2 {
+			_, terr = dao.WdkReportAudit.Ctx(ctx).Data(do.WdkReportAudit{PreauditStatus: 1}).Where(do.WdkReportAudit{
+				Id:          wdkReportAudit.Id,
+				AuditorType: 1,
+			}).Update()
+			if terr != nil {
+				return terr
+			}
 		}
-		// 获取文档库报告审核完成状态
-		completeStatus := s.GetWdkReportAuditCompleteStatus(auditList)
-		if completeStatus != 1 {
+		// 设置文档库报告审核完成状态
+		var completeStatus uint
+		var excellence uint
+		if wdkReportAudit.AuditorType == 1 && req.AuditStatus == 2 {
+			// 通过报告ID获取文档库报告审核列表
+			var auditList []*entity.WdkReportAudit
+			auditList, terr = s.GetWdkReportAuditListById(ctx, wdkReportAudit.Id)
+			if terr != nil {
+				return terr
+			}
+			// 获取文档库报告审核完成状态
+			completeStatus = s.GetWdkReportAuditCompleteStatus(auditList)
 			// 获取文档库报告审核完成时的被推荐优秀报告状态
-			excellence := s.GetWdkReportExcellence(auditList)
+			excellence = s.GetWdkReportExcellence(auditList)
+		}
+		if wdkReportAudit.AuditorType == 1 && completeStatus != 1 {
 			// 设置文档库报告审核完成状态
 			terr = WdkReport().SetWdkReportAuditCompleteStatus(ctx, wdkReportAudit.Id, completeStatus, excellence, auditTime)
 			if terr != nil {
@@ -156,44 +183,39 @@ func (s *sWdkReportAudit) GetWdkReportAuditListById(ctx context.Context, id uint
 }
 
 // GetWdkReportAuditCompleteStatus 获取文档库报告审核完成状态
-func (s *sWdkReportAudit) GetWdkReportAuditCompleteStatus(auditList []*entity.WdkReportAudit) (status uint) {
+func (s *sWdkReportAudit) GetWdkReportAuditCompleteStatus(auditList []*entity.WdkReportAudit) uint {
+	count := 0
 	for _, v := range auditList {
-		if v.Status == 1 {
-			status = 1
-			return
+		if v.Status == 2 {
+			count++
 		}
 	}
-	for _, v := range auditList {
-		if v.Status == 0 {
-			status = 0
-			return
-		}
+	if count == len(auditList) {
+		return 2
 	}
-	status = 2
-	return
+	return 1
 }
 
 // GetWdkReportExcellence 获取文档库报告审核完成时的被推荐优秀报告状态
-func (s *sWdkReportAudit) GetWdkReportExcellence(auditList []*entity.WdkReportAudit) (excellence uint) {
+func (s *sWdkReportAudit) GetWdkReportExcellence(auditList []*entity.WdkReportAudit) uint {
 	for _, v := range auditList {
-		if v.Excellence == 0 {
-			excellence = 0
-			return
+		if v.Excellence == 1 {
+			return 1
 		}
 	}
-	excellence = 1
-	return
+	return 0
 }
 
 // SetWdkReportAuditStatus 设置文档库报告审核状态
-func (s *sWdkReportAudit) SetWdkReportAuditStatus(ctx context.Context, id uint64, userId uint64, status, excellence uint, auditTime *gtime.Time) (err error) {
+func (s *sWdkReportAudit) SetWdkReportAuditStatus(ctx context.Context, wdkReportAudit *entity.WdkReportAudit, req *v1.WdkReportAuditReq, auditTime *gtime.Time) (err error) {
 	_, err = dao.WdkReportAudit.Ctx(ctx).Data(do.WdkReportAudit{
-		Status:     status,
-		Excellence: excellence,
-		AuditTime:  auditTime,
+		Status:       req.AuditStatus,
+		Excellence:   req.Excellence,
+		AuditTime:    auditTime,
+		AuditOpinion: req.AuditOpinion,
 	}).Where(do.WdkReportAudit{
-		Id:       id,
-		AuditUid: userId,
+		Id:       wdkReportAudit.Id,
+		AuditUid: wdkReportAudit.AuditUid,
 	}).Update()
 	return
 }
