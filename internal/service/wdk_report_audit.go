@@ -25,13 +25,27 @@ func WdkReportAudit() *sWdkReportAudit {
 // GetWdkReportAuditList 获取文档库报告审核列表
 func (s *sWdkReportAudit) GetWdkReportAuditList(ctx context.Context, req *v1.WdkReportAuditListReq) (total int, list []*v1.WdkReportAuditInfo, err error) {
 	user := Context().Get(ctx).User
-	model := dao.WdkReportAudit.Ctx(ctx).Where(do.WdkReportAudit{AuditUid: user.Id, Rescind: req.Rescind, PreauditStatus: 1, Status: req.Status})
+	var model *gdb.Model
+	if req.Rescind == 1 {
+		model = dao.WdkReportAudit.Ctx(ctx).Where(do.WdkReportAudit{AuditUid: user.Id, Rescind: req.Rescind, PreauditStatus: 1})
+	} else if req.Status == 1 {
+		model = dao.WdkReportAudit.Ctx(ctx).Where(do.WdkReportAudit{AuditUid: user.Id, Rescind: 0, PreauditStatus: 1, Status: req.Status})
+	} else {
+		model = dao.WdkReportAudit.Ctx(ctx).Where(do.WdkReportAudit{AuditUid: user.Id, PreauditStatus: 1, Status: req.Status})
+	}
 	columns := dao.WdkReportAudit.Columns()
 	total, err = model.Count()
 	if err != nil {
 		return
 	}
-	err = model.Page(req.CurPage, req.PageSize).OrderAsc(columns.CreateAt).ScanList(&list, "ReportAudit")
+	// 排序
+	if req.Status == 0 || req.Status == 2 {
+		err = model.Page(req.CurPage, req.PageSize).OrderDesc(columns.AuditTime).ScanList(&list, "ReportAudit")
+	} else if req.Rescind == 1 {
+		err = model.Page(req.CurPage, req.PageSize).OrderDesc(columns.UpdateAt).ScanList(&list, "ReportAudit")
+	} else {
+		err = model.Page(req.CurPage, req.PageSize).OrderAsc(columns.CreateAt).ScanList(&list, "ReportAudit")
+	}
 	if err != nil {
 		return
 	}
