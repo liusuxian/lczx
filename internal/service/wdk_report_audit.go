@@ -72,6 +72,7 @@ func (s *sWdkReportAudit) HandleWdkReportAudit(ctx context.Context, req *v1.WdkR
 			return gerror.New(`前置审核未通过，无法审核`)
 		}
 		// 设置文档库报告审核状态
+		// 如果下级审核人员与当前审核人员相同，则会同时更新下级审核状态
 		auditTime := gtime.Now()
 		terr = s.SetWdkReportAuditStatus(ctx, wdkReportAudit, req, auditTime)
 		if terr != nil {
@@ -90,7 +91,7 @@ func (s *sWdkReportAudit) HandleWdkReportAudit(ctx context.Context, req *v1.WdkR
 		// 设置文档库报告审核完成状态
 		var completeStatus uint
 		var excellence uint
-		if wdkReportAudit.AuditorType == 1 && req.AuditStatus == 2 {
+		if req.AuditStatus == 2 {
 			// 通过报告ID获取文档库报告审核列表
 			var auditList []*entity.WdkReportAudit
 			auditList, terr = s.GetWdkReportAuditListById(ctx, wdkReportAudit.Id)
@@ -102,7 +103,7 @@ func (s *sWdkReportAudit) HandleWdkReportAudit(ctx context.Context, req *v1.WdkR
 			// 获取文档库报告审核完成时的被推荐优秀报告状态
 			excellence = s.GetWdkReportExcellence(auditList)
 		}
-		if wdkReportAudit.AuditorType == 1 && completeStatus != 1 {
+		if completeStatus != 1 {
 			// 设置文档库报告审核完成状态
 			terr = WdkReport().SetWdkReportAuditCompleteStatus(ctx, wdkReportAudit.Id, completeStatus, excellence, auditTime)
 			if terr != nil {
