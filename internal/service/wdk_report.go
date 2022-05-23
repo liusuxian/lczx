@@ -298,31 +298,31 @@ func (s *sWdkReport) saveWdkReportAudit(ctx context.Context, user *model.Context
 		for _, rt := range reportTypeInfo {
 			// 添加负责人审核
 			reportAuditTypes = append(reportAuditTypes, entity.WdkReportAuditType{
-				Id:       reportId,
-				AuditUid: dept.PrincipalUid,
-				TypeId:   rt.ReportCfg.Id,
-				TypeName: rt.ReportCfg.Name,
+				Id:          reportId,
+				AuditUid:    dept.PrincipalUid,
+				AuditorType: 0,
+				TypeId:      rt.ReportCfg.Id,
+				TypeName:    rt.ReportCfg.Name,
 			})
 			for _, ra := range rt.ReportAuditCfg {
-				if ra.AuditUid != dept.PrincipalUid {
-					reportAudits = append(reportAudits, entity.WdkReportAudit{
-						Id:             reportId,
-						AuditUid:       ra.AuditUid,
-						AuditorType:    1,
-						ProjectId:      projectId,
-						AuditName:      ra.AuditName,
-						Rescind:        0,
-						PreauditStatus: 0,
-						Status:         1,
-						Excellence:     0,
-					})
-					reportAuditTypes = append(reportAuditTypes, entity.WdkReportAuditType{
-						Id:       reportId,
-						AuditUid: ra.AuditUid,
-						TypeId:   ra.Id,
-						TypeName: ra.TypeName,
-					})
-				}
+				reportAudits = append(reportAudits, entity.WdkReportAudit{
+					Id:             reportId,
+					AuditUid:       ra.AuditUid,
+					AuditorType:    1,
+					ProjectId:      projectId,
+					AuditName:      ra.AuditName,
+					Rescind:        0,
+					PreauditStatus: 0,
+					Status:         1,
+					Excellence:     0,
+				})
+				reportAuditTypes = append(reportAuditTypes, entity.WdkReportAuditType{
+					Id:          reportId,
+					AuditUid:    ra.AuditUid,
+					AuditorType: 1,
+					TypeId:      ra.Id,
+					TypeName:    ra.TypeName,
+				})
 			}
 		}
 		reportAuditData := gconv.Maps(gset.NewFrom(reportAudits).Slice())
