@@ -42,6 +42,19 @@ func (s *sWdkReportAudit) GetWdkReportAuditList(ctx context.Context, req *v1.Wdk
 	}
 	err = dao.WdkReportAuditType.Ctx(ctx).Where(dao.WdkReportAuditType.Columns().Id, gdb.ListItemValuesUnique(list, "ReportAudit", "Id")).
 		Where(do.WdkReportAuditType{AuditUid: user.Id}).ScanList(&list, "ReportAuditType", "ReportAudit", "Id:Id")
+	if err != nil {
+		return
+	}
+	// 处理审核类型数据
+	for _, v := range list {
+		reportAuditType := make([]*entity.WdkReportAuditType, 0, len(v.ReportAuditType))
+		for _, rat := range v.ReportAuditType {
+			if rat.AuditorType == v.ReportAudit.AuditorType {
+				reportAuditType = append(reportAuditType, rat)
+			}
+		}
+		v.ReportAuditType = reportAuditType
+	}
 	return
 }
 
@@ -168,6 +181,9 @@ func (s *sWdkReportAudit) GetWdkReportAuditProcess(ctx context.Context, Id uint6
 	}
 	err = dao.WdkReportAuditType.Ctx(ctx).Where(dao.WdkReportAuditType.Columns().Id, gdb.ListItemValuesUnique(list, "ReportAudit", "AuditUid")).
 		Where(do.WdkReportAuditType{Id: Id}).ScanList(&list, "ReportAuditType", "ReportAudit", "AuditUid:AuditUid")
+	if err != nil {
+		return
+	}
 	// 处理审核类型数据
 	for _, v := range list {
 		reportAuditType := make([]*entity.WdkReportAuditType, 0, len(v.ReportAuditType))
