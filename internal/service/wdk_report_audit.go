@@ -180,7 +180,7 @@ func (s *sWdkReportAudit) GetWdkReportAuditProcess(ctx context.Context, Id uint6
 	if err != nil {
 		return
 	}
-	err = dao.WdkReportAuditType.Ctx(ctx).Where(dao.WdkReportAuditType.Columns().Id, gdb.ListItemValuesUnique(list, "ReportAudit", "AuditUid")).
+	err = dao.WdkReportAuditType.Ctx(ctx).Where(dao.WdkReportAuditType.Columns().AuditUid, gdb.ListItemValuesUnique(list, "ReportAudit", "AuditUid")).
 		Where(do.WdkReportAuditType{Id: Id}).ScanList(&list, "ReportAuditType", "ReportAudit", "AuditUid:AuditUid")
 	if err != nil {
 		return
