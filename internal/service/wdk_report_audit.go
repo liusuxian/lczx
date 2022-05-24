@@ -99,7 +99,7 @@ func (s *sWdkReportAudit) HandleWdkReportAudit(ctx context.Context, req *v1.WdkR
 			return gerror.New(`前置审核未通过，无法审核`)
 		}
 		// 设置文档库报告审核状态
-		// 如果下级审核人员与当前审核人员相同，则会同时更新下级审核状态
+		// 选择通过时，如果下级审核人员与当前审核人员相同，则会同时更新下级审核状态
 		auditTime := gtime.Now()
 		terr = s.SetWdkReportAuditStatus(ctx, wdkReportAudit, req, auditTime)
 		if terr != nil {
@@ -249,14 +249,24 @@ func (s *sWdkReportAudit) GetWdkReportExcellence(auditList []*entity.WdkReportAu
 
 // SetWdkReportAuditStatus 设置文档库报告审核状态
 func (s *sWdkReportAudit) SetWdkReportAuditStatus(ctx context.Context, wdkReportAudit *entity.WdkReportAudit, req *v1.WdkReportAuditReq, auditTime *gtime.Time) (err error) {
-	_, err = dao.WdkReportAudit.Ctx(ctx).Data(do.WdkReportAudit{
+	model := dao.WdkReportAudit.Ctx(ctx).Data(do.WdkReportAudit{
 		Status:       req.AuditStatus,
 		Excellence:   req.Excellence,
 		AuditTime:    auditTime,
 		AuditOpinion: req.AuditOpinion,
-	}).Where(do.WdkReportAudit{
-		Id:       wdkReportAudit.Id,
-		AuditUid: wdkReportAudit.AuditUid,
-	}).Update()
+	})
+	if req.AuditStatus == 2 {
+		model = model.Where(do.WdkReportAudit{
+			Id:       wdkReportAudit.Id,
+			AuditUid: wdkReportAudit.AuditUid,
+		})
+	} else {
+		model = model.Where(do.WdkReportAudit{
+			Id:          wdkReportAudit.Id,
+			AuditUid:    wdkReportAudit.AuditUid,
+			AuditorType: wdkReportAudit.AuditorType,
+		})
+	}
+	_, err = model.Update()
 	return
 }
