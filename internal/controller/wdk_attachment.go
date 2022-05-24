@@ -31,12 +31,6 @@ func (c *cWdkAttachment) Record(ctx context.Context, req *v1.WdkAttachmentRecord
 
 // Add 新增文档库上传附件记录
 func (c *cWdkAttachment) Add(ctx context.Context, req *v1.WdkAttachmentAddReq) (res *v1.WdkAttachmentAddRes, err error) {
-	// 检查新增文档库上传附件记录权限
-	_, err = service.WdkAttachment().AuthAdd(ctx, req.ProjectId)
-	if err != nil {
-		err = gerror.WrapCode(code.AddWdkAttachmentRecordFailed, err)
-		return
-	}
 	// 获取上传附件信息
 	files := g.RequestFromCtx(ctx).GetUploadFiles(req.UploadName)
 	if len(files) == 0 {

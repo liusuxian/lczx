@@ -46,22 +46,14 @@ func (s *sWdkReport) AddWdkReport(ctx context.Context, req *v1.WdkReportAddReq, 
 	err = dao.WdkReport.Ctx(ctx).Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		// 检查部门负责人是否存在
 		var terr error
-		curUser := Context().Get(ctx).User
-		var userInfo *entity.User
-		userInfo, terr = User().GetUserById(ctx, curUser.Id)
-		if terr != nil {
-			return terr
-		}
-		if userInfo == nil {
-			return gerror.Newf(`用户ID[%d]不存在`, curUser.Id)
-		}
+		user := Context().Get(ctx).User
 		var dept *entity.Dept
-		terr = dao.Dept.Ctx(ctx).Where(do.Dept{Id: userInfo.DeptId}).Scan(&dept)
+		terr = dao.Dept.Ctx(ctx).Where(do.Dept{Id: user.DeptId}).Scan(&dept)
 		if terr != nil {
 			return terr
 		}
 		if dept == nil {
-			return gerror.Newf(`部门ID[%d]不存在`, userInfo.DeptId)
+			return gerror.Newf(`部门ID[%d]不存在`, user.DeptId)
 		}
 		if dept.PrincipalUid == 0 {
 			return gerror.Newf(`部门[%s]负责人不存在，请添加部门负责人`, dept.Name)
@@ -109,16 +101,16 @@ func (s *sWdkReport) AddWdkReport(ctx context.Context, req *v1.WdkReportAddReq, 
 		}
 		// 保存文档库上传报告记录
 		var reportId int64
-		reportId, terr = s.saveWdkReport(ctx, curUser, req, reportTypeInfo, report)
+		reportId, terr = s.saveWdkReport(ctx, user, req, reportTypeInfo, report)
 		if terr != nil {
 			return terr
 		}
 		// 保存文档库上传报告审核信息
-		terr = s.saveWdkReportAudit(ctx, curUser, reportTypeInfo, dept, gconv.Uint64(reportId), req.ProjectId)
+		terr = s.saveWdkReportAudit(ctx, user, reportTypeInfo, dept, gconv.Uint64(reportId), req.ProjectId)
 		if terr != nil {
 			return terr
 		}
-		if curUser.IsAdmin == 1 {
+		if user.IsAdmin == 1 {
 			// 设置所属文档库项目阶段
 			terr = WdkProject().SetWdkProjectStep(ctx, req.ProjectId, 8)
 			if terr != nil {
@@ -170,26 +162,6 @@ func (s *sWdkReport) GetWdkReportExcellenceList(ctx context.Context, req *v1.Wdk
 	}
 	err = dao.WdkReportType.Ctx(ctx).Where(dao.WdkReportType.Columns().Id, gdb.ListItemValuesUnique(list, "Report", "Id")).
 		ScanList(&list, "ReportType", "Report", "Id:Id")
-	return
-}
-
-// AuthAdd 检查新增文档库上传报告记录权限
-func (s *sWdkReport) AuthAdd(ctx context.Context, projectId uint64) (wdkProject *v1.WdkProjectInfo, err error) {
-	// 通过文档库项目ID判断文档库项目信息是否存在
-	wdkProject, err = WdkProject().GetWdkProjectById(ctx, projectId)
-	if err != nil {
-		return
-	}
-	if wdkProject == nil || wdkProject.ProjectInfo == nil {
-		err = gerror.Newf(`文档库项目ID[%d]不存在`, projectId)
-		return
-	}
-	// 判断写入权限
-	user := Context().Get(ctx).User
-	if user.Id != wdkProject.ProjectInfo.PrincipalUid && user.IsAdmin != 1 {
-		err = gerror.New("抱歉！！！该项目您没有上传报告的权限")
-		return
-	}
 	return
 }
 

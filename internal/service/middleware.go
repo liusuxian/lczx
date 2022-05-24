@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"github.com/casbin/casbin/v2"
 	"github.com/gogf/gf/v2/errors/gcode"
 	"github.com/gogf/gf/v2/errors/gerror"
@@ -11,6 +12,8 @@ import (
 	"lczx/internal/code"
 	"lczx/internal/model"
 	"lczx/internal/model/entity"
+	"lczx/internal/service/internal/dao"
+	"lczx/internal/service/internal/do"
 	"lczx/utility/logger"
 	"lczx/utility/response"
 	"net/http"
@@ -157,6 +160,9 @@ func (s *sMiddleware) Auth(req *ghttp.Request) {
 			req.Middleware.Next()
 			return
 		}
+		if gstr.Equal(menu.Condition, "check_dept") {
+			s.CheckProjectUpload(ctx, req)
+		}
 		// 菜单没存数据库不验证权限
 		if menu.Id != 0 {
 			// 判断权限操作
@@ -184,4 +190,34 @@ func (s *sMiddleware) Auth(req *ghttp.Request) {
 		response.RespJsonExitByGcode(req, code.NotAccessAuth)
 	}
 	req.Middleware.Next()
+}
+
+// CheckProjectUpload 检查项目相关文件上传权限
+func (s *sMiddleware) CheckProjectUpload(ctx context.Context, req *ghttp.Request) {
+	// 解析参数
+	paramsMap := req.GetMap()
+	projectIdStr := paramsMap["projectId"]
+	projectId := gconv.Uint64(projectIdStr)
+	// 通过文档库项目ID判断文档库项目信息是否存在
+	var wdkProject *entity.WdkProject
+	var err error
+	err = dao.WdkProject.Ctx(ctx).Where(do.WdkProject{Id: projectId}).Scan(&wdkProject)
+	if err != nil {
+		response.RespJsonExit(req, code.GetWdkProjectFailed.Code(), code.GetWdkProjectFailed.Message()+": "+err.Error())
+	}
+	if wdkProject == nil {
+		err = gerror.Newf(`文档库项目ID[%d]不存在`, projectId)
+		response.RespJsonExit(req, code.GetWdkProjectFailed.Code(), code.GetWdkProjectFailed.Message()+": "+err.Error())
+	}
+	// 通过项目负责人，查询项目负责人是否是部门负责人
+	var dept *entity.Dept
+	err = dao.Dept.Ctx(ctx).Where(do.Dept{PrincipalUid: wdkProject.PrincipalUid}).Scan(&dept)
+	if err != nil {
+		response.RespJsonExit(req, code.GetDeptFailed.Code(), code.GetDeptFailed.Message()+": "+err.Error())
+	}
+	// 判断权限
+	user := Context().Get(ctx).User
+	if !(user.IsAdmin == 1 || user.DeptId == wdkProject.DeptId || (dept != nil && dept.Id == user.DeptId)) {
+		response.RespJsonExitByGcode(req, code.NotAccessAuth)
+	}
 }

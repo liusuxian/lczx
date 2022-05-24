@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"github.com/gogf/gf/v2/database/gdb"
-	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	v1 "lczx/api/v1"
 	"lczx/internal/model/entity"
@@ -52,26 +51,6 @@ func (s *sWdkFile) AddWdkFile(ctx context.Context, req *v1.WdkFileAddReq, fileIn
 		terr = WdkProject().SetWdkProjectFileUploadStatus(ctx, req.ProjectId)
 		return terr
 	})
-	return
-}
-
-// AuthAdd 检查新增文档库上传文件记录权限
-func (s *sWdkFile) AuthAdd(ctx context.Context, projectId uint64) (wdkProject *v1.WdkProjectInfo, err error) {
-	// 通过文档库项目ID判断文档库项目信息是否存在
-	wdkProject, err = WdkProject().GetWdkProjectById(ctx, projectId)
-	if err != nil {
-		return
-	}
-	if wdkProject == nil || wdkProject.ProjectInfo == nil {
-		err = gerror.Newf(`文档库项目ID[%d]不存在`, projectId)
-		return
-	}
-	// 判断写入权限
-	user := Context().Get(ctx).User
-	if user.Id != wdkProject.ProjectInfo.PrincipalUid && user.IsAdmin != 1 {
-		err = gerror.New("抱歉！！！该项目您没有上传文件的权限")
-		return
-	}
 	return
 }
 
