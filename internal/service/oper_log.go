@@ -101,6 +101,9 @@ func (s *sOperLog) Invoke(req *ghttp.Request) {
 			} else {
 				data.Status = 0
 			}
+			if _, ok = res["data"]; ok {
+				delete(res, "data")
+			}
 			// 返回参数
 			jsonRes, _ := gjson.Encode(res)
 			if len(jsonRes) > 0 {
