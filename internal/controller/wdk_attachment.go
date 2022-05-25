@@ -3,7 +3,7 @@ package controller
 import (
 	"context"
 	"github.com/gogf/gf/v2/errors/gerror"
-	"github.com/gogf/gf/v2/frame/g"
+	"github.com/gogf/gf/v2/net/ghttp"
 	v1 "lczx/api/v1"
 	"lczx/internal/code"
 	"lczx/internal/service"
@@ -31,19 +31,15 @@ func (c *cWdkAttachment) Record(ctx context.Context, req *v1.WdkAttachmentRecord
 
 // Add 新增文档库上传附件记录
 func (c *cWdkAttachment) Add(ctx context.Context, req *v1.WdkAttachmentAddReq) (res *v1.WdkAttachmentAddRes, err error) {
-	// 获取上传附件信息
-	files := g.RequestFromCtx(ctx).GetUploadFiles(req.UploadName)
-	if len(files) == 0 {
-		err = gerror.WrapCode(code.AddWdkAttachmentRecordFailed, gerror.New("获取上传附件信息失败"))
-		return
-	}
-	if len(files) > 4 {
-		err = gerror.WrapCode(code.AddWdkAttachmentRecordFailed, gerror.New("最多可添加4份附件"))
-		return
-	}
 	// 上传附件
+	var uploadAttachments []*ghttp.UploadFile
+	if len(req.UploadAttachments) != 0 {
+		uploadAttachments = req.UploadAttachments
+	} else {
+		uploadAttachments = []*ghttp.UploadFile{req.UploadAttachment}
+	}
 	var fileInfos []*upload.FileInfo
-	fileInfos, err = upload.Upload.UploadFiles(files, "wdk/attachment")
+	fileInfos, err = upload.Upload.UploadFiles(uploadAttachments, "wdk/attachment")
 	if err != nil {
 		err = gerror.WrapCode(code.AddWdkAttachmentRecordFailed, err)
 		return
