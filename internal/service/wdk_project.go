@@ -6,6 +6,7 @@ import (
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
+	"github.com/gogf/gf/v2/text/gstr"
 	"github.com/gogf/gf/v2/util/gconv"
 	v1 "lczx/api/v1"
 	"lczx/internal/model/entity"
@@ -106,10 +107,12 @@ func (s *sWdkProject) GetWdkProjectList(ctx context.Context, req *v1.WdkProjectL
 		model = model.WhereLike(columns.Region, "%"+req.Region+"%")
 	}
 	if req.StartTime.String() != "" {
-		model = model.WhereGTE(columns.StartTime, req.StartTime)
+		startTime := gstr.Split(req.StartTime.String(), " ")[0]
+		model = model.WhereGTE(columns.StartTime, startTime)
 	}
 	if req.EndTime.String() != "" {
-		model = model.WhereLTE(columns.EndTime, req.EndTime)
+		endTime := gstr.Split(req.EndTime.String(), " ")[0]
+		model = model.WhereLTE(columns.EndTime, endTime)
 	}
 	if req.SortName != "" {
 		if req.SortOrder != "" {
@@ -158,8 +161,17 @@ func (s *sWdkProject) AddWdkProject(ctx context.Context, req *v1.WdkProjectAddRe
 		if principalUser == nil {
 			return gerror.Newf(`负责人用户ID[%d]不存在`, req.PrincipalUid)
 		}
+		// 通过部门ID判断部门信息是否存在
+		var dept *entity.Dept
+		dept, terr = Dept().SelectDeptById(ctx, req.DeptId)
+		if terr != nil {
+			return terr
+		}
+		if dept == nil {
+			return gerror.Newf(`所属部门ID[%d]不存在`, req.DeptId)
+		}
 		// 保存文档库项目数据
-		terr = s.saveWdkProject(ctx, req, principalUser)
+		terr = s.saveWdkProject(ctx, req, principalUser, dept)
 		return terr
 	})
 	return
@@ -214,8 +226,17 @@ func (s *sWdkProject) EditWdkProject(ctx context.Context, req *v1.WdkProjectEdit
 		if principalUser == nil {
 			return gerror.Newf(`负责人用户ID[%d]不存在`, req.PrincipalUid)
 		}
+		// 通过部门ID判断部门信息是否存在
+		var dept *entity.Dept
+		dept, terr = Dept().SelectDeptById(ctx, req.DeptId)
+		if terr != nil {
+			return terr
+		}
+		if dept == nil {
+			return gerror.Newf(`所属部门ID[%d]不存在`, req.DeptId)
+		}
 		// 更新文档库项目数据
-		terr = s.updateWdkProject(ctx, req, principalUser, wdkProject)
+		terr = s.updateWdkProject(ctx, req, principalUser, dept, wdkProject)
 		return terr
 	})
 	return
@@ -285,12 +306,7 @@ func (s *sWdkProject) SetWdkProjectStep(ctx context.Context, id uint64, fType ui
 }
 
 // saveWdkProject 保存文档库项目数据
-func (s *sWdkProject) saveWdkProject(ctx context.Context, req *v1.WdkProjectAddReq, principalUser *entity.User) (err error) {
-	var dept *entity.Dept
-	dept, err = Dept().SelectDeptById(ctx, principalUser.DeptId)
-	if err != nil {
-		return
-	}
+func (s *sWdkProject) saveWdkProject(ctx context.Context, req *v1.WdkProjectAddReq, principalUser *entity.User, dept *entity.Dept) (err error) {
 	user := Context().Get(ctx).User
 	var projectId int64
 	projectId, err = dao.WdkProject.Ctx(ctx).Data(do.WdkProject{
@@ -338,12 +354,7 @@ func (s *sWdkProject) saveWdkProject(ctx context.Context, req *v1.WdkProjectAddR
 }
 
 // updateWdkProject 更新文档库项目数据
-func (s *sWdkProject) updateWdkProject(ctx context.Context, req *v1.WdkProjectEditReq, principalUser *entity.User, wdkProject *v1.WdkProjectInfo) (err error) {
-	var dept *entity.Dept
-	dept, err = Dept().SelectDeptById(ctx, principalUser.DeptId)
-	if err != nil {
-		return
-	}
+func (s *sWdkProject) updateWdkProject(ctx context.Context, req *v1.WdkProjectEditReq, principalUser *entity.User, dept *entity.Dept, wdkProject *v1.WdkProjectInfo) (err error) {
 	user := Context().Get(ctx).User
 	_, err = dao.WdkProject.Ctx(ctx).Data(do.WdkProject{
 		Name:           req.Name,
