@@ -3,7 +3,7 @@ package controller
 import (
 	"context"
 	"github.com/gogf/gf/v2/errors/gerror"
-	"github.com/gogf/gf/v2/frame/g"
+	"github.com/gogf/gf/v2/net/ghttp"
 	v1 "lczx/api/v1"
 	"lczx/internal/code"
 	"lczx/internal/service"
@@ -31,38 +31,28 @@ func (c *cWdkService) Record(ctx context.Context, req *v1.WdkServiceRecordReq) (
 
 // Add 新增文档库服务记录
 func (c *cWdkService) Add(ctx context.Context, req *v1.WdkServiceAddReq) (res *v1.WdkServiceAddRes, err error) {
-	// 获取上传行程函文件信息
-	xchFile := g.RequestFromCtx(ctx).GetUploadFile(req.XchUploadName)
-	if xchFile == nil {
-		err = gerror.WrapCode(code.AddWdkServiceRecordFailed, gerror.New("获取上传行程函文件信息失败"))
-		return
-	}
-	// 获取上传图片信息
-	photoFiles := g.RequestFromCtx(ctx).GetUploadFiles(req.PhotoUploadName)
-	if len(photoFiles) == 0 {
-		err = gerror.WrapCode(code.AddWdkServiceRecordFailed, gerror.New("获取上传图片信息失败"))
-		return
-	}
-	if len(photoFiles) > 8 {
-		err = gerror.WrapCode(code.AddWdkServiceRecordFailed, gerror.New("最多可添加8张照片"))
-		return
-	}
 	// 上传行程函文件
-	var xch *upload.FileInfo
-	xch, err = upload.Upload.UploadFile(xchFile, "wdk/service/xch")
+	var xchFile *upload.FileInfo
+	xchFile, err = upload.Upload.UploadFile(req.UploadXchFile, "wdk/service/xch")
 	if err != nil {
-		err = gerror.WrapCode(code.AddWdkServiceRecordFailed, gerror.Wrap(err, "上传行程函文件失败"))
+		err = gerror.WrapCode(code.AddWdkServiceRecordFailed, err)
 		return
 	}
 	// 上传图片
+	var uploadPhotos []*ghttp.UploadFile
+	if len(req.UploadPhotos) != 0 {
+		uploadPhotos = req.UploadPhotos
+	} else {
+		uploadPhotos = []*ghttp.UploadFile{req.UploadPhoto}
+	}
 	var photos []*upload.FileInfo
-	photos, err = upload.Upload.UploadFiles(photoFiles, "wdk/service/photo")
+	photos, err = upload.Upload.UploadImgs(uploadPhotos, "wdk/service/photo")
 	if err != nil {
-		err = gerror.WrapCode(code.AddWdkServiceRecordFailed, gerror.Wrap(err, "上传图片失败"))
+		err = gerror.WrapCode(code.AddWdkServiceRecordFailed, err)
 		return
 	}
 	// 新增文档库服务记录
-	err = service.WdkService().AddWdkService(ctx, req, xch, photos)
+	err = service.WdkService().AddWdkService(ctx, req, xchFile, photos)
 	if err != nil {
 		err = gerror.WrapCode(code.AddWdkServiceRecordFailed, err)
 		return

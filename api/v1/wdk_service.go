@@ -2,6 +2,7 @@ package v1
 
 import (
 	"github.com/gogf/gf/v2/frame/g"
+	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/os/gtime"
 	"lczx/internal/model/entity"
 )
@@ -25,12 +26,13 @@ type WdkServiceInfo struct {
 
 // WdkServiceAddReq 文档库新增服务记录请求参数
 type WdkServiceAddReq struct {
-	g.Meta          `path:"/add" tags:"WdkServiceAdd" method:"post" summary:"You first wdk/service/add api"`
-	XchUploadName   string      `json:"xchUploadName" v:"required#行程函表单文件字段名不能为空" dc:"行程函表单文件字段名"`                    // 行程函表单文件字段名
-	PhotoUploadName string      `json:"photoUploadName" v:"required#照片表单文件字段名不能为空" dc:"照片表单文件字段名"`                    // 照片表单文件字段名
-	ProjectId       uint64      `json:"projectId" v:"required|regex:^[1-9]\\d*$#所属项目ID不能为空|所属项目ID必须为正整数" dc:"所属项目ID"` // 所属项目ID
-	ServiceTime     *gtime.Time `json:"serviceTime" v:"required|date#服务时间不能为空|服务时间不是有效的日期时间" dc:"服务时间"`               // 服务时间
-	Remark          string      `json:"remark" v:"max-length:255#备注长度不能超过255" dc:"备注"`                                // 备注
+	g.Meta        `path:"/add" tags:"WdkServiceAdd" method:"post" summary:"You first wdk/service/add api"`
+	ProjectId     uint64              `json:"projectId" v:"required|regex:^[1-9]\\d*$#所属项目ID不能为空|所属项目ID必须为正整数" dc:"所属项目ID"` // 所属项目ID
+	ServiceTime   *gtime.Time         `json:"serviceTime" v:"required|date#服务时间不能为空|服务时间不是有效的日期时间" dc:"服务时间"`               // 服务时间
+	Remark        string              `json:"remark" v:"max-length:255#备注长度不能超过255" dc:"备注"`                                // 备注
+	UploadXchFile *ghttp.UploadFile   `json:"uploadXchFile" dc:"上传行程函文件"`                                                   // 上传行程函文件
+	UploadPhoto   *ghttp.UploadFile   `json:"uploadPhoto" dc:"上传照片"`                                                        // 上传照片
+	UploadPhotos  []*ghttp.UploadFile `json:"uploadPhotos" dc:"上传照片列表"`                                                     // 上传照片列表
 }
 
 // WdkServiceAddRes 文档库新增服务记录返回参数

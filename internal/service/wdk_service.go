@@ -34,11 +34,11 @@ func (s *sWdkService) GetWdkServiceRecord(ctx context.Context, projectId uint64)
 }
 
 // AddWdkService 新增文档库服务记录
-func (s *sWdkService) AddWdkService(ctx context.Context, req *v1.WdkServiceAddReq, xch *upload.FileInfo, photos []*upload.FileInfo) (err error) {
+func (s *sWdkService) AddWdkService(ctx context.Context, req *v1.WdkServiceAddReq, xchFile *upload.FileInfo, photos []*upload.FileInfo) (err error) {
 	err = dao.WdkServiceRecord.Ctx(ctx).Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		// 保存文档库服务记录
 		var terr error
-		terr = s.saveWdkServiceRecord(ctx, req, xch, photos)
+		terr = s.saveWdkServiceRecord(ctx, req, xchFile, photos)
 		if terr != nil {
 			return terr
 		}
@@ -50,14 +50,14 @@ func (s *sWdkService) AddWdkService(ctx context.Context, req *v1.WdkServiceAddRe
 }
 
 // saveWdkServiceRecord 保存文档库服务记录
-func (s *sWdkService) saveWdkServiceRecord(ctx context.Context, req *v1.WdkServiceAddReq, xch *upload.FileInfo, photos []*upload.FileInfo) (err error) {
+func (s *sWdkService) saveWdkServiceRecord(ctx context.Context, req *v1.WdkServiceAddReq, xchFile *upload.FileInfo, photos []*upload.FileInfo) (err error) {
 	var recordId int64
 	recordId, err = dao.WdkServiceRecord.Ctx(ctx).Data(do.WdkServiceRecord{
 		ProjectId:    req.ProjectId,
 		ServiceTime:  req.ServiceTime,
-		XchName:      xch.FileName,
-		XchOriginUrl: xch.OriginFileUrl,
-		XchPdfUrl:    xch.PdfFileUrl,
+		XchName:      xchFile.FileName,
+		XchOriginUrl: xchFile.OriginFileUrl,
+		XchPdfUrl:    xchFile.PdfFileUrl,
 		Remark:       req.Remark,
 	}).FieldsEx(dao.WdkServiceRecord.Columns().Id).InsertAndGetId()
 	if err != nil {
