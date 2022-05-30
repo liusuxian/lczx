@@ -3,7 +3,6 @@ package controller
 import (
 	"context"
 	"github.com/gogf/gf/v2/errors/gerror"
-	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/util/gconv"
 	v1 "lczx/api/v1"
 	"lczx/internal/code"
@@ -86,15 +85,9 @@ func (c *cUser) Profile(ctx context.Context, req *v1.UserProfileReq) (res *v1.Us
 
 // UploadAvatar 上传用户头像
 func (c *cUser) UploadAvatar(ctx context.Context, req *v1.UserUploadAvatarReq) (res *v1.UserUploadAvatarRes, err error) {
-	// 获取上传头像图片信息
-	avatar := g.RequestFromCtx(ctx).GetUploadFile(req.UploadName)
-	if avatar == nil {
-		err = gerror.WrapCode(code.SetUserAvatarFailed, gerror.New("获取上传头像图片信息失败"))
-		return
-	}
 	// 上传头像
 	var fileInfo *upload.FileInfo
-	fileInfo, err = upload.Upload.UploadImg(avatar, "user/avatar")
+	fileInfo, err = upload.Upload.UploadImg(req.AvatarFile, "user/avatar")
 	if err != nil {
 		err = gerror.WrapCode(code.SetUserAvatarFailed, err)
 		return

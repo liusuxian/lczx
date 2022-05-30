@@ -109,7 +109,6 @@ func (s *sUser) EditProfile(ctx context.Context, req *v1.UserProfileEditReq) (er
 		Nickname: req.Nickname,
 		Mobile:   req.Mobile,
 		Email:    req.Email,
-		Gender:   req.Gender,
 	}).Where(do.User{Id: user.Id}).Update()
 	return
 }

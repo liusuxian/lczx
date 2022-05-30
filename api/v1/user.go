@@ -2,6 +2,7 @@ package v1
 
 import (
 	"github.com/gogf/gf/v2/frame/g"
+	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/os/gtime"
 	"lczx/internal/model/entity"
 	"lczx/internal/upload"
@@ -39,7 +40,7 @@ type UserProfileInfo struct {
 // UserUploadAvatarReq 用户上传头像请求参数
 type UserUploadAvatarReq struct {
 	g.Meta     `path:"/uploadAvatar" tags:"UserUploadAvatar" method:"post" summary:"You first user/uploadAvatar api"`
-	UploadName string `json:"uploadName" dc:"表单的文件字段名"` // 表单的文件字段名
+	AvatarFile *ghttp.UploadFile `json:"avatarFile" dc:"上传头像文件"` // 上传头像文件
 }
 
 type UserUploadAvatarRes struct {
@@ -52,7 +53,6 @@ type UserProfileEditReq struct {
 	Nickname string `json:"nickname" v:"regex:^[\u4e00-\u9fa5]{0,20}$#昵称必须为中文且长度不能超过20" dc:"昵称"` // 昵称
 	Mobile   string `json:"mobile" v:"phone#不是有效的手机号码" dc:"手机号"`                                 // 手机号
 	Email    string `json:"email" v:"email#不是有效的用户邮箱" dc:"用户邮箱"`                                 // 用户邮箱
-	Gender   uint   `json:"gender" v:"required|in:1,2#性别不能为空|性别只能是1,2" dc:"性别 1: 男 2: 女"`        // 性别 1: 男 2: 女
 }
 
 // UserProfileEditRes 编辑个人中心信息返回参数
