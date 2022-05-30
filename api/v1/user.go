@@ -51,7 +51,7 @@ type UserUploadAvatarRes struct {
 type UserProfileEditReq struct {
 	g.Meta   `path:"/profileEdit" tags:"UserProfileEdit" method:"put" summary:"You first user/profileEdit api"`
 	Nickname string `json:"nickname" v:"regex:^[\u4e00-\u9fa5]{0,20}$#昵称必须为中文且长度不能超过20" dc:"昵称"` // 昵称
-	Mobile   string `json:"mobile" v:"phone#不是有效的手机号码" dc:"手机号"`                                 // 手机号
+	Mobile   string `json:"mobile" v:"required|phone#手机号码不能为空|不是有效的手机号码" dc:"手机号"`               // 手机号
 	Email    string `json:"email" v:"email#不是有效的用户邮箱" dc:"用户邮箱"`                                 // 用户邮箱
 }
 
