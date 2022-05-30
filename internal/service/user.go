@@ -80,8 +80,6 @@ func (s *sUser) GetProfile(ctx context.Context) (profileInfo *v1.UserProfileInfo
 	}
 	// 获取部门信息
 	dept := Dept().GetDeptById(depts, userInfo.DeptId)
-	deptInfo := Dept().CopyDept(dept)
-	deptInfo.Name = Dept().GetDeptAllNameById(depts, userInfo.DeptId)
 	// 获取用户角色
 	var roles []*entity.Role
 	roles, err = Role().GetUserRoles(ctx, userInfo.Id)
@@ -91,7 +89,7 @@ func (s *sUser) GetProfile(ctx context.Context) (profileInfo *v1.UserProfileInfo
 
 	profileInfo = &v1.UserProfileInfo{
 		User:  userInfo,
-		Dept:  deptInfo,
+		Dept:  dept,
 		Roles: roles,
 	}
 	return
