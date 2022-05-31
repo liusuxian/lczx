@@ -6,7 +6,6 @@ import (
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
-	"github.com/gogf/gf/v2/text/gstr"
 	"github.com/gogf/gf/v2/util/gconv"
 	v1 "lczx/api/v1"
 	"lczx/internal/model/entity"
@@ -107,11 +106,11 @@ func (s *sWdkProject) GetWdkProjectList(ctx context.Context, req *v1.WdkProjectL
 		model = model.WhereLike(columns.Region, "%"+req.Region+"%")
 	}
 	if req.StartTime.String() != "" {
-		startTime := gstr.Split(req.StartTime.String(), " ")[0]
+		startTime := req.StartTime.Format("Y-m-d")
 		model = model.WhereGTE(columns.StartTime, startTime)
 	}
 	if req.EndTime.String() != "" {
-		endTime := gstr.Split(req.EndTime.String(), " ")[0]
+		endTime := req.EndTime.Format("Y-m-d")
 		model = model.WhereLTE(columns.EndTime, endTime)
 	}
 	if req.SortName != "" {
