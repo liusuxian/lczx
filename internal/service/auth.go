@@ -270,7 +270,6 @@ func (s *sAuth) logoutBefore(req *ghttp.Request) bool {
 		UserOnline().DeleteOnlineByToken(ctx, authHeader)
 	}
 
-	Context().Init(req, nil)
 	err := Session().RemoveUser(ctx)
 	if err != nil {
 		logger.Error(ctx, "Session RemoveUser Error: ", err.Error())
