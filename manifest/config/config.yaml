@@ -89,7 +89,7 @@ database:
     stdout: true
     ctxKeys: [ "RequestId" ]
   default:
-    link: "root:LClsx19890329!@#$%@tcp(172.16.144.132:3306)/lczx?charset=utf8mb4&parseTime=true&loc=Local"
+    link: "root:LClsx19890329!@#$%@tcp(172.16.144.132:3306)/lczx"
     maxIdle: "10"
     maxOpen: "100"
     maxLifetime: "30s"
