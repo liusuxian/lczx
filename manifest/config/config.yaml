@@ -4,7 +4,7 @@ server:
   httpsAddr: ":443"         # TLS/HTTPS配置，同时需要配置证书和密钥。默认关闭
   httpsCertPath: ""         # TLS/HTTPS证书文件本地路径，建议使用绝对路径。默认关闭
   httpsKeyPath: ""          # TLS/HTTPS密钥文件本地路径，建议使用绝对路径。默认关闭
-  readTimeout: "60s"        # 请求读取超时时间，一般不需要配置。默认为60秒
+  readTimeout: "3600s"      # 请求读取超时时间，一般不需要配置。默认为60秒
   writeTimeout: "0"         # 数据返回写入超时时间，一般不需要配置。默认不超时（0）
   idleTimeout: "60s"        # 仅当Keep-Alive开启时有效，请求闲置时间。默认为60秒
   maxHeaderBytes: "10240"   # 请求Header大小限制（Byte）。默认为10KB
@@ -38,7 +38,7 @@ server:
   pprofPattern: ""    # 开启PProf时有效，表示PProf特性的页面访问路径，对当前Server绑定的所有域名有效。
 
   # 其他配置
-  clientMaxBodySize: 810241024  # 客户端最大Body上传限制大小，影响文件上传大小(Byte)。默认为8*1024*1024=8MB
+  clientMaxBodySize: 5368709120 # 客户端最大Body上传限制大小，影响文件上传大小(Byte)。默认为8*1024*1024=8MB
   formParsingMemory: 1048576    # 解析表单时的缓冲区大小(Byte)，一般不需要配置。默认为1024*1024=1MB
   nameToUriType: 0              # 路由注册中使用对象注册时的路由生成规则。默认为0
   routeOverWrite: false         # 当遇到重复路由注册时是否强制覆盖。默认为false，重复路由存在时将会在启动时报错退出
