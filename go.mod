@@ -10,6 +10,7 @@ require (
 	github.com/mojocn/base64Captcha v1.3.5
 	github.com/mssola/user_agent v0.5.3
 	github.com/shirou/gopsutil v3.21.11+incompatible
+	golang.org/x/net v0.0.0-20211112202133-69e39bad7dc2
 )
 
 require (
@@ -40,7 +41,6 @@ require (
 	go.opentelemetry.io/otel/sdk v1.0.0 // indirect
 	go.opentelemetry.io/otel/trace v1.0.0 // indirect
 	golang.org/x/image v0.0.0-20190501045829-6d32002ffd75 // indirect
-	golang.org/x/net v0.0.0-20211112202133-69e39bad7dc2 // indirect
 	golang.org/x/sys v0.0.0-20220128215802-99c3d69c2c27 // indirect
 	golang.org/x/text v0.3.8-0.20211105212822-18b340fc7af2 // indirect
 	golang.org/x/time v0.0.0-20220411224347-583f2d630306 // indirect
