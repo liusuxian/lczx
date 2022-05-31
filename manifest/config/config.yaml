@@ -4,7 +4,7 @@ server:
   httpsAddr: ":443"         # TLS/HTTPS配置，同时需要配置证书和密钥。默认关闭
   httpsCertPath: ""         # TLS/HTTPS证书文件本地路径，建议使用绝对路径。默认关闭
   httpsKeyPath: ""          # TLS/HTTPS密钥文件本地路径，建议使用绝对路径。默认关闭
-  readTimeout: "60s"        # 请求读取超时时间，一般不需要配置。默认为60秒
+  readTimeout: "3600s"      # 请求读取超时时间，一般不需要配置。默认为60秒
   writeTimeout: "0"         # 数据返回写入超时时间，一般不需要配置。默认不超时（0）
   idleTimeout: "60s"        # 仅当Keep-Alive开启时有效，请求闲置时间。默认为60秒
   maxHeaderBytes: "10240"   # 请求Header大小限制（Byte）。默认为10KB
