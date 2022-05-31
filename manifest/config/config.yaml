@@ -100,7 +100,7 @@ redis:
   default:
     address: 172.16.144.132:6379
     db: 0
-    pass: ""
+    pass: "lczx2022!@#$%"
     idleTimeout: 600
     maxActive: 100
 
