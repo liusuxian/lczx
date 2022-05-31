@@ -1,5 +1,6 @@
 FROM centos:7.9.2009
 MAINTAINER liusuxian "382185882@qq.com"
+COPY utility/fonts/* /usr/share/fonts/ChineseFonts/
 
 ###############################################################################
 #                                INSTALLATION
