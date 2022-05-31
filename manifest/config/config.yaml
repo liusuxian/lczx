@@ -89,7 +89,7 @@ database:
     stdout: true
     ctxKeys: [ "RequestId" ]
   default:
-    link: "mysql:root:Lsx19890329!@#$%@tcp(127.0.0.1:3306)/lczx"
+    link: "root:LClsx19890329!@#$%@tcp(172.16.144.132:3306)/lczx?charset=utf8mb4&parseTime=true&loc=Local"
     maxIdle: "10"
     maxOpen: "100"
     maxLifetime: "30s"
@@ -98,7 +98,7 @@ database:
 # Redis 配置
 redis:
   default:
-    address: 127.0.0.1:6379
+    address: 172.16.144.132:6379
     db: 0
     pass: ""
     idleTimeout: 600
@@ -122,8 +122,8 @@ userManager:
 
 # casbin配置
 casbin:
-  modelFile: "manifest/config/rbac_model.conf"
-  policyFile: "manifest/config/rbac_policy.csv"
+  modelFile: "config/rbac_model.conf"
+  policyFile: "config/rbac_policy.csv"
 
 # 上传配置
 upload:
