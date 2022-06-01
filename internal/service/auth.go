@@ -216,7 +216,6 @@ func (s *sAuth) loginBefore(req *ghttp.Request) (string, any) {
 // 登录返回方法
 func (s *sAuth) loginAfter(req *ghttp.Request, respData gtoken.Resp) {
 	ctx := req.GetCtx()
-	logger.Debug(ctx, "loginAfter: ", respData)
 	if !respData.Success() {
 		response.RespJson(req, respData.Code, respData.Msg, respData.Data)
 	} else {
@@ -253,7 +252,6 @@ func (s *sAuth) loginAfter(req *ghttp.Request, respData gtoken.Resp) {
 // 登出验证方法 return true 继续执行，否则结束执行
 func (s *sAuth) logoutBefore(req *ghttp.Request) bool {
 	ctx := req.GetCtx()
-	logger.Debug(ctx, "logoutBefore: ", req)
 	// 删除在线用户状态
 	var authHeader string
 	authHeader = req.Header.Get("Authorization")
@@ -279,22 +277,16 @@ func (s *sAuth) logoutBefore(req *ghttp.Request) bool {
 
 // 登出返回方法
 func (s *sAuth) logoutAfter(req *ghttp.Request, respData gtoken.Resp) {
-	ctx := req.GetCtx()
-	logger.Debug(ctx, "logoutAfter: ", respData)
 	response.RespJson(req, respData.Code, respData.Msg, respData.Data)
 }
 
 // 认证验证方法 return true 继续执行，否则结束执行
 func (s *sAuth) authBefore(req *ghttp.Request) bool {
-	ctx := req.GetCtx()
-	logger.Debug(ctx, "authBefore: ", req)
 	return true
 }
 
 // 认证返回方法
 func (s *sAuth) authAfter(req *ghttp.Request, respData gtoken.Resp) {
-	ctx := req.GetCtx()
-	logger.Debug(ctx, "authAfter: ", respData)
 	if req.Method == "OPTIONS" || respData.Success() {
 		req.Middleware.Next()
 	} else if respData.Code == gtoken.UNAUTHORIZED {
