@@ -33,8 +33,7 @@ func (s *sCache) ClearAllCache(ctx context.Context) {
 	if err != nil {
 		logger.Error(ctx, "ClearAllCache Error: ", err.Error())
 	}
-	// TODO 暂时不删除
-	//s.scanClearCache(ctx, "GToken:lczx:*")
+	s.scanClearCache(ctx, "GToken:lczx:*")
 }
 
 // ClearCache 清除缓存
