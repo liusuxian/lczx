@@ -14,14 +14,13 @@ ENV LANG zh_CN.UTF-8
 ENV LC_ALL zh_CN.UTF-8
 ENV TZ=Asia/Shanghai
 
-RUN wget https://mirrors.nju.edu.cn/tdf/libreoffice/stable/7.3.3/rpm/x86_64/LibreOffice_7.3.3_Linux_x86-64_rpm.tar.gz
-RUN tar -zxvf LibreOffice_7.3.3_Linux_x86-64_rpm.tar.gz
-RUN yum install LibreOffice_7.3.3_Linux_x86-64_rpm/RPMS/* -y
-ENV PATH /opt/libreoffice7.3/program:$PATH
-
 RUN yum install vim -y
 RUN yum install java -y
 RUN yum install deltarpm -y &&\
+    yum install libreoffice -y &&\
+    yum install libreoffice-langpack-zh-Han* -y &&\
+    yum install libreoffice-headless -y &&\
+    yum install libreoffice-writer -y &&\
     yum install ImageMagick -y &&\
     export DISPLAY=:0.0
 
