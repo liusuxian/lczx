@@ -35,7 +35,8 @@ RUN mkdir -p $WORKDIR/cache/pdf/
 
 RUN yum install wget -y && wget https://mirrors.nju.edu.cn/tdf/libreoffice/stable/7.3.3/rpm/x86_64/LibreOffice_7.3.3_Linux_x86-64_rpm.tar.gz
 RUN tar -zxvf LibreOffice_7.3.3_Linux_x86-64_rpm.tar.gz
-RUN cd LibreOffice_7.3.3.2_Linux_x86-64_rpm/RPMS/ && rpm -Uivh *.rpm --nodeps
+RUN rpm -Uivh LibreOffice_7.3.3.2_Linux_x86-64_rpm/RPMS/*.rpm --nodeps
+RUN rm -rf LibreOffice_7.3.3*
 
 ###############################################################################
 #                                   START
