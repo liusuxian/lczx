@@ -10,6 +10,7 @@ ENV WORKDIR /lczx
 RUN yum install kde-l10n-Chinese -y
 RUN yum install glibc-common -y
 RUN localedef -c -f UTF-8 -i zh_CN zh_CN.utf8
+ENV LANG zh_CN.UTF-8
 ENV LC_ALL zh_CN.UTF-8
 ENV TZ=Asia/Shanghai
 
@@ -17,6 +18,7 @@ RUN yum install vim -y
 RUN yum install java -y
 RUN yum install deltarpm -y &&\
     yum install libreoffice -y &&\
+    yum install libreoffice-langpack-zh-Han* -y &&\
     yum install libreoffice-headless -y &&\
     yum install libreoffice-writer -y &&\
     yum install ImageMagick -y &&\
