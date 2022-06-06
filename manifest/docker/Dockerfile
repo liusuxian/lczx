@@ -7,8 +7,10 @@ COPY utility/fonts/* /usr/share/fonts/ChineseFonts/
 ###############################################################################
 # 设置固定的项目路径
 ENV WORKDIR /lczx
-ENV LANG en_US.UTF-8
-ENV LC_ALL en_US.UTF-8
+RUN yum install langpacks-zh_CN.noarch
+RUN yum install glibc-common -y
+RUN localedef -c -f UTF-8 -i zh_CN zh_CN.utf8
+ENV LC_ALL zh_CN.UTF-8
 ENV TZ=Asia/Shanghai
 
 RUN yum install vim -y
