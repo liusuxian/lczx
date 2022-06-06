@@ -14,7 +14,7 @@ ENV LANG zh_CN.UTF-8
 ENV LC_ALL zh_CN.UTF-8
 ENV TZ=Asia/Shanghai
 
-RUN wget https://mirrors.nju.edu.cn/tdf/libreoffice/stable/7.3.3/rpm/x86_64/LibreOffice_7.3.3_Linux_x86-64_rpm.tar.gz
+RUN yum install wget -y && wget https://mirrors.nju.edu.cn/tdf/libreoffice/stable/7.3.3/rpm/x86_64/LibreOffice_7.3.3_Linux_x86-64_rpm.tar.gz
 RUN tar -zxvf LibreOffice_7.3.3_Linux_x86-64_rpm.tar.gz
 RUN yum install LibreOffice_7.3.3_Linux_x86-64_rpm/RPMS/* -y
 ENV PATH /opt/libreoffice7.3/program:$PATH
