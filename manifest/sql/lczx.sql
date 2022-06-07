@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 25/05/2022 18:20:28
+ Date: 07/06/2022 17:06:12
 */
 
 SET NAMES utf8mb4;
@@ -442,7 +442,7 @@ CREATE TABLE `wdk_project` (
   `contract_status` tinyint unsigned NOT NULL COMMENT '签约状态 0:新签 1:续签',
   `contract_sum` double unsigned NOT NULL COMMENT '合同金额',
   `deep_culture` tinyint unsigned NOT NULL COMMENT '是否为深耕 0:否 1:是',
-  `status` tinyint unsigned NOT NULL COMMENT '服务状态 0:服务中 1:暂停 2:提前终止 3:正常结束',
+  `status` tinyint unsigned NOT NULL COMMENT '服务状态 0:服务中 1:暂停 2:提前终止 3:跟踪期 4:洽谈中',
   `entrust_company` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '委托方公司',
   `sign_company` tinyint unsigned NOT NULL COMMENT '我方签订公司 0:绿城房地产咨询集团有限公司 1:浙江幸福绿城房地产咨询有限公司 2:浙江美好绿城房地产咨询有限公司',
   `principal_uid` bigint unsigned NOT NULL COMMENT '负责人用户ID',

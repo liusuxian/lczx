@@ -10,8 +10,8 @@ import (
 
 // WdkReportCfg is the golang structure for table wdk_report_cfg.
 type WdkReportCfg struct {
-	Id       uint64      `json:"id"       description:"报告类型ID"` // 报告类型ID
-	Name     string      `json:"name"     description:"报告类型名称"` // 报告类型名称
-	CreateAt *gtime.Time `json:"createAt" description:"创建时间"`   // 创建时间
-	UpdateAt *gtime.Time `json:"updateAt" description:"更新时间"`   // 更新时间
+	Id       uint64      `json:"id"       ` // 报告类型ID
+	Name     string      `json:"name"     ` // 报告类型名称
+	CreateAt *gtime.Time `json:"createAt" ` // 创建时间
+	UpdateAt *gtime.Time `json:"updateAt" ` // 更新时间
 }

@@ -6,8 +6,8 @@ package entity
 
 // WdkAttachmentFile is the golang structure for table wdk_attachment_file.
 type WdkAttachmentFile struct {
-	Id        uint64 `json:"id"        description:"附件上传记录ID"` // 附件上传记录ID
-	Name      string `json:"name"      description:"附件名"`      // 附件名
-	OriginUrl string `json:"originUrl" description:"原始附件url"`  // 原始附件url
-	PdfUrl    string `json:"pdfUrl"    description:"pdf附件url"` // pdf附件url
+	Id        uint64 `json:"id"        ` // 附件上传记录ID
+	Name      string `json:"name"      ` // 附件名
+	OriginUrl string `json:"originUrl" ` // 原始附件url
+	PdfUrl    string `json:"pdfUrl"    ` // pdf附件url
 }

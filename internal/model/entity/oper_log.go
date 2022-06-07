@@ -10,18 +10,18 @@ import (
 
 // OperLog is the golang structure for table oper_log.
 type OperLog struct {
-	Id           uint64      `json:"id"           description:"日志ID"`                     // 日志ID
-	Title        string      `json:"title"        description:"模块标题"`                     // 模块标题
-	Method       string      `json:"method"       description:"方法名称"`                     // 方法名称
-	ReqMethod    string      `json:"reqMethod"    description:"请求方式"`                     // 请求方式
-	OperType     uint        `json:"operType"     description:"操作类别 0:其它 1:后台用户 2:手机端用户"` // 操作类别 0:其它 1:后台用户 2:手机端用户
-	OperName     string      `json:"operName"     description:"操作人员"`                     // 操作人员
-	DeptName     string      `json:"deptName"     description:"部门名称"`                     // 部门名称
-	ReqUrl       string      `json:"reqUrl"       description:"请求URL"`                    // 请求URL
-	OperIp       string      `json:"operIp"       description:"操作IP地址"`                   // 操作IP地址
-	OperLocation string      `json:"operLocation" description:"操作地点"`                     // 操作地点
-	ReqParam     string      `json:"reqParam"     description:"请求参数"`                     // 请求参数
-	JsonResult   string      `json:"jsonResult"   description:"返回参数"`                     // 返回参数
-	Status       uint        `json:"status"       description:"操作状态 0:异常 1:正常"`           // 操作状态 0:异常 1:正常
-	Time         *gtime.Time `json:"time"         description:"操作时间"`                     // 操作时间
+	Id           uint64      `json:"id"           ` // 日志ID
+	Title        string      `json:"title"        ` // 模块标题
+	Method       string      `json:"method"       ` // 方法名称
+	ReqMethod    string      `json:"reqMethod"    ` // 请求方式
+	OperType     uint        `json:"operType"     ` // 操作类别 0:其它 1:后台用户 2:手机端用户
+	OperName     string      `json:"operName"     ` // 操作人员
+	DeptName     string      `json:"deptName"     ` // 部门名称
+	ReqUrl       string      `json:"reqUrl"       ` // 请求URL
+	OperIp       string      `json:"operIp"       ` // 操作IP地址
+	OperLocation string      `json:"operLocation" ` // 操作地点
+	ReqParam     string      `json:"reqParam"     ` // 请求参数
+	JsonResult   string      `json:"jsonResult"   ` // 返回参数
+	Status       uint        `json:"status"       ` // 操作状态 0:异常 1:正常
+	Time         *gtime.Time `json:"time"         ` // 操作时间
 }
