@@ -6,7 +6,7 @@ package entity
 
 // WdkReportType is the golang structure for table wdk_report_type.
 type WdkReportType struct {
-	Id       uint64 `json:"id"       ` // 报告ID
-	TypeId   uint64 `json:"typeId"   ` // 报告类型ID
-	TypeName string `json:"typeName" ` // 报告类型名称
+	Id       uint64 `json:"id"       description:"报告ID"`   // 报告ID
+	TypeId   uint64 `json:"typeId"   description:"报告类型ID"` // 报告类型ID
+	TypeName string `json:"typeName" description:"报告类型名称"` // 报告类型名称
 }

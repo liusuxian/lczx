@@ -10,18 +10,18 @@ import (
 
 // Menu is the golang structure for table menu.
 type Menu struct {
-	Id         uint64      `json:"id"         ` // 规则ID
-	ParentId   uint64      `json:"parentId"   ` // 父规则ID
-	Rule       string      `json:"rule"       ` // 权限规则
-	Name       string      `json:"name"       ` // 菜单名称
-	Condition  string      `json:"condition"  ` // 条件
-	MenuType   uint        `json:"menuType"   ` // 类型 0:目录 1:菜单 2:按钮
-	Status     uint        `json:"status"     ` // 菜单状态 0:停用 1:正常
-	JumpPath   string      `json:"jumpPath"   ` // 跳转路由
-	IsFrame    uint        `json:"isFrame"    ` // 是否外链 1是 0否
-	ModuleType string      `json:"moduleType" ` // 所属模块
-	Remark     string      `json:"remark"     ` // 备注
-	CreateAt   *gtime.Time `json:"createAt"   ` // 创建时间
-	UpdateAt   *gtime.Time `json:"updateAt"   ` // 更新时间
-	DeletedAt  *gtime.Time `json:"deletedAt"  ` // 软删除时间
+	Id         uint64      `json:"id"         description:"规则ID"`              // 规则ID
+	ParentId   uint64      `json:"parentId"   description:"父规则ID"`             // 父规则ID
+	Rule       string      `json:"rule"       description:"权限规则"`              // 权限规则
+	Name       string      `json:"name"       description:"菜单名称"`              // 菜单名称
+	Condition  string      `json:"condition"  description:"条件"`                // 条件
+	MenuType   uint        `json:"menuType"   description:"类型 0:目录 1:菜单 2:按钮"` // 类型 0:目录 1:菜单 2:按钮
+	Status     uint        `json:"status"     description:"菜单状态 0:停用 1:正常"`    // 菜单状态 0:停用 1:正常
+	JumpPath   string      `json:"jumpPath"   description:"跳转路由"`              // 跳转路由
+	IsFrame    uint        `json:"isFrame"    description:"是否外链 1是 0否"`        // 是否外链 1是 0否
+	ModuleType string      `json:"moduleType" description:"所属模块"`              // 所属模块
+	Remark     string      `json:"remark"     description:"备注"`                // 备注
+	CreateAt   *gtime.Time `json:"createAt"   description:"创建时间"`              // 创建时间
+	UpdateAt   *gtime.Time `json:"updateAt"   description:"更新时间"`              // 更新时间
+	DeletedAt  *gtime.Time `json:"deletedAt"  description:"软删除时间"`             // 软删除时间
 }
