@@ -10,17 +10,17 @@ import (
 
 // WdkReportAudit is the golang structure for table wdk_report_audit.
 type WdkReportAudit struct {
-	Id             uint64      `json:"id"             description:"报告ID"`                               // 报告ID
-	AuditUid       uint64      `json:"auditUid"       description:"审核员用户ID"`                            // 审核员用户ID
-	AuditorType    uint        `json:"auditorType"    description:"审核员类型 0:负责人 1:专家组"`                  // 审核员类型 0:负责人 1:专家组
-	ProjectId      uint64      `json:"projectId"      description:"所属项目ID"`                             // 所属项目ID
-	AuditName      string      `json:"auditName"      description:"审核员姓名"`                              // 审核员姓名
-	Rescind        uint        `json:"rescind"        description:"是否已撤销 0:否 1:是"`                      // 是否已撤销 0:否 1:是
-	PreauditStatus uint        `json:"preauditStatus" description:"前置审核是否已通过 0:否 1:是"`                  // 前置审核是否已通过 0:否 1:是
-	Status         uint        `json:"status"         description:"审核状态 0:未通过 1:审核中 2:已通过"`             // 审核状态 0:未通过 1:审核中 2:已通过
-	Excellence     uint        `json:"excellence"     description:"是否被推荐为优秀报告 0:未被推荐为优秀报告 1:已被推荐为优秀报告"` // 是否被推荐为优秀报告 0:未被推荐为优秀报告 1:已被推荐为优秀报告
-	AuditTime      *gtime.Time `json:"auditTime"      description:"审核时间"`                               // 审核时间
-	AuditOpinion   string      `json:"auditOpinion"   description:"审核意见"`                               // 审核意见
-	CreateAt       *gtime.Time `json:"createAt"       description:"创建时间"`                               // 创建时间
-	UpdateAt       *gtime.Time `json:"updateAt"       description:"更新时间"`                               // 更新时间
+	Id             uint64      `json:"id"             ` // 报告ID
+	AuditUid       uint64      `json:"auditUid"       ` // 审核员用户ID
+	AuditorType    uint        `json:"auditorType"    ` // 审核员类型 0:负责人 1:专家组
+	ProjectId      uint64      `json:"projectId"      ` // 所属项目ID
+	AuditName      string      `json:"auditName"      ` // 审核员姓名
+	Rescind        uint        `json:"rescind"        ` // 是否已撤销 0:否 1:是
+	PreauditStatus uint        `json:"preauditStatus" ` // 前置审核是否已通过 0:否 1:是
+	Status         uint        `json:"status"         ` // 审核状态 0:未通过 1:审核中 2:已通过
+	Excellence     uint        `json:"excellence"     ` // 是否被推荐为优秀报告 0:未被推荐为优秀报告 1:已被推荐为优秀报告
+	AuditTime      *gtime.Time `json:"auditTime"      ` // 审核时间
+	AuditOpinion   string      `json:"auditOpinion"   ` // 审核意见
+	CreateAt       *gtime.Time `json:"createAt"       ` // 创建时间
+	UpdateAt       *gtime.Time `json:"updateAt"       ` // 更新时间
 }

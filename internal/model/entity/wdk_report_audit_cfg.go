@@ -6,8 +6,8 @@ package entity
 
 // WdkReportAuditCfg is the golang structure for table wdk_report_audit_cfg.
 type WdkReportAuditCfg struct {
-	Id        uint64 `json:"id"        description:"报告类型ID"`  // 报告类型ID
-	AuditUid  uint64 `json:"auditUid"  description:"审核员用户ID"` // 审核员用户ID
-	TypeName  string `json:"typeName"  description:"报告类型名称"`  // 报告类型名称
-	AuditName string `json:"auditName" description:"审核员姓名"`   // 审核员姓名
+	Id        uint64 `json:"id"        ` // 报告类型ID
+	AuditUid  uint64 `json:"auditUid"  ` // 审核员用户ID
+	TypeName  string `json:"typeName"  ` // 报告类型名称
+	AuditName string `json:"auditName" ` // 审核员姓名
 }

@@ -6,6 +6,6 @@ package entity
 
 // RoleDept is the golang structure for table role_dept.
 type RoleDept struct {
-	RoleId uint64 `json:"roleId" description:"角色ID"` // 角色ID
-	DeptId uint64 `json:"deptId" description:"部门ID"` // 部门ID
+	RoleId uint64 `json:"roleId" ` // 角色ID
+	DeptId uint64 `json:"deptId" ` // 部门ID
 }

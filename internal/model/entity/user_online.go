@@ -10,12 +10,12 @@ import (
 
 // UserOnline is the golang structure for table user_online.
 type UserOnline struct {
-	Id       uint64      `json:"id"       description:"访问ID"`    // 访问ID
-	Uuid     string      `json:"uuid"     description:"用户标识"`    // 用户标识
-	Token    string      `json:"token"    description:"用户token"` // 用户token
-	Passport string      `json:"passport" description:"登录账号"`    // 登录账号
-	Browser  string      `json:"browser"  description:"浏览器类型"`   // 浏览器类型
-	Os       string      `json:"os"       description:"操作系统"`    // 操作系统
-	Ip       string      `json:"ip"       description:"登录ip"`    // 登录ip
-	Time     *gtime.Time `json:"time"     description:"登录时间"`    // 登录时间
+	Id       uint64      `json:"id"       ` // 访问ID
+	Uuid     string      `json:"uuid"     ` // 用户标识
+	Token    string      `json:"token"    ` // 用户token
+	Passport string      `json:"passport" ` // 登录账号
+	Browser  string      `json:"browser"  ` // 浏览器类型
+	Os       string      `json:"os"       ` // 操作系统
+	Ip       string      `json:"ip"       ` // 登录ip
+	Time     *gtime.Time `json:"time"     ` // 登录时间
 }

@@ -10,8 +10,8 @@ import (
 
 // WdkAttachmentRecord is the golang structure for table wdk_attachment_record.
 type WdkAttachmentRecord struct {
-	Id        uint64      `json:"id"        description:"附件上传记录ID"` // 附件上传记录ID
-	ProjectId uint64      `json:"projectId" description:"所属项目ID"`   // 所属项目ID
-	Remark    string      `json:"remark"    description:"备注"`       // 备注
-	CreateAt  *gtime.Time `json:"createAt"  description:"创建时间"`     // 创建时间
+	Id        uint64      `json:"id"        ` // 附件上传记录ID
+	ProjectId uint64      `json:"projectId" ` // 所属项目ID
+	Remark    string      `json:"remark"    ` // 备注
+	CreateAt  *gtime.Time `json:"createAt"  ` // 创建时间
 }

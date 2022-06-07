@@ -10,14 +10,14 @@ import (
 
 // WdkFile is the golang structure for table wdk_file.
 type WdkFile struct {
-	Id         uint64      `json:"id"         description:"上传文件ID"`                                                        // 上传文件ID
-	ProjectId  uint64      `json:"projectId"  description:"所属项目ID"`                                                        // 所属项目ID
-	Name       string      `json:"name"       description:"文件名称"`                                                          // 文件名称
-	Type       uint        `json:"type"       description:"文件类型 0:合同扫描文件 1:年度服务计划书 2:总结报告 3:项目移交 4:复盘报告 5:文件签收单 6:满意度调查表"` // 文件类型 0:合同扫描文件 1:年度服务计划书 2:总结报告 3:项目移交 4:复盘报告 5:文件签收单 6:满意度调查表
-	CreateBy   uint64      `json:"createBy"   description:"上传者用户ID"`                                                       // 上传者用户ID
-	CreateName string      `json:"createName" description:"上传者姓名"`                                                         // 上传者姓名
-	OriginUrl  string      `json:"originUrl"  description:"原始文件url"`                                                       // 原始文件url
-	PdfUrl     string      `json:"pdfUrl"     description:"pdf文件url"`                                                      // pdf文件url
-	CreateAt   *gtime.Time `json:"createAt"   description:"上传时间"`                                                          // 上传时间
-	UpdateAt   *gtime.Time `json:"updateAt"   description:"更新时间"`                                                          // 更新时间
+	Id         uint64      `json:"id"         ` // 上传文件ID
+	ProjectId  uint64      `json:"projectId"  ` // 所属项目ID
+	Name       string      `json:"name"       ` // 文件名称
+	Type       uint        `json:"type"       ` // 文件类型 0:合同扫描文件 1:年度服务计划书 2:总结报告 3:项目移交 4:复盘报告 5:文件签收单 6:满意度调查表
+	CreateBy   uint64      `json:"createBy"   ` // 上传者用户ID
+	CreateName string      `json:"createName" ` // 上传者姓名
+	OriginUrl  string      `json:"originUrl"  ` // 原始文件url
+	PdfUrl     string      `json:"pdfUrl"     ` // pdf文件url
+	CreateAt   *gtime.Time `json:"createAt"   ` // 上传时间
+	UpdateAt   *gtime.Time `json:"updateAt"   ` // 更新时间
 }
