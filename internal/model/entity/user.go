@@ -10,23 +10,23 @@ import (
 
 // User is the golang structure for table user.
 type User struct {
-	Id            uint64      `json:"id"            ` // 用户ID
-	Passport      string      `json:"passport"      ` // 账号
-	Password      string      `json:"password"      ` // 密码
-	Salt          string      `json:"salt"          ` // 加密盐
-	Realname      string      `json:"realname"      ` // 姓名
-	Nickname      string      `json:"nickname"      ` // 昵称
-	DeptId        uint64      `json:"deptId"        ` // 部门ID
-	Gender        uint        `json:"gender"        ` // 性别 1: 男 2: 女
-	Status        uint        `json:"status"        ` // 状态 0:禁用 1:启用
-	IsAdmin       uint        `json:"isAdmin"       ` // 是否后台管理员 0:否 1:是
-	Avatar        string      `json:"avatar"        ` // 头像地址
-	Mobile        string      `json:"mobile"        ` // 手机号
-	Email         string      `json:"email"         ` // 用户邮箱
-	Remark        string      `json:"remark"        ` // 备注
-	LastLoginIp   string      `json:"lastLoginIp"   ` // 最后登录ip
-	LastLoginTime *gtime.Time `json:"lastLoginTime" ` // 最后登录时间
-	CreateAt      *gtime.Time `json:"createAt"      ` // 创建时间
-	UpdateAt      *gtime.Time `json:"updateAt"      ` // 更新时间
-	DeletedAt     *gtime.Time `json:"deletedAt"     ` // 软删除时间
+	Id            uint64      `json:"id"            description:"用户ID"`            // 用户ID
+	Passport      string      `json:"passport"      description:"账号"`              // 账号
+	Password      string      `json:"password"      description:"密码"`              // 密码
+	Salt          string      `json:"salt"          description:"加密盐"`             // 加密盐
+	Realname      string      `json:"realname"      description:"姓名"`              // 姓名
+	Nickname      string      `json:"nickname"      description:"昵称"`              // 昵称
+	DeptId        uint64      `json:"deptId"        description:"部门ID"`            // 部门ID
+	Gender        uint        `json:"gender"        description:"性别 1: 男 2: 女"`    // 性别 1: 男 2: 女
+	Status        uint        `json:"status"        description:"状态 0:禁用 1:启用"`    // 状态 0:禁用 1:启用
+	IsAdmin       uint        `json:"isAdmin"       description:"是否后台管理员 0:否 1:是"` // 是否后台管理员 0:否 1:是
+	Avatar        string      `json:"avatar"        description:"头像地址"`            // 头像地址
+	Mobile        string      `json:"mobile"        description:"手机号"`             // 手机号
+	Email         string      `json:"email"         description:"用户邮箱"`            // 用户邮箱
+	Remark        string      `json:"remark"        description:"备注"`              // 备注
+	LastLoginIp   string      `json:"lastLoginIp"   description:"最后登录ip"`          // 最后登录ip
+	LastLoginTime *gtime.Time `json:"lastLoginTime" description:"最后登录时间"`          // 最后登录时间
+	CreateAt      *gtime.Time `json:"createAt"      description:"创建时间"`            // 创建时间
+	UpdateAt      *gtime.Time `json:"updateAt"      description:"更新时间"`            // 更新时间
+	DeletedAt     *gtime.Time `json:"deletedAt"     description:"软删除时间"`           // 软删除时间
 }
