@@ -14,6 +14,7 @@ ENV LANG zh_CN.UTF-8
 ENV LC_ALL zh_CN.UTF-8
 ENV TZ=Asia/Shanghai
 
+RUN yum install wget -y
 RUN yum install vim -y
 RUN yum install java -y
 RUN yum install deltarpm -y &&\
@@ -33,7 +34,8 @@ RUN mkdir -p $WORKDIR/cache/download/
 RUN mkdir -p $WORKDIR/cache/local/
 RUN mkdir -p $WORKDIR/cache/pdf/
 
-RUN yum install wget -y && wget https://mirrors.cloud.tencent.com/libreoffice/libreoffice/stable/7.3.3/rpm/x86_64/LibreOffice_7.3.3_Linux_x86-64_rpm.tar.gz
+# 安装 libreoffice
+RUN wget https://mirrors.cloud.tencent.com/libreoffice/libreoffice/stable/7.3.3/rpm/x86_64/LibreOffice_7.3.3_Linux_x86-64_rpm.tar.gz
 RUN tar -zxvf LibreOffice_7.3.3_Linux_x86-64_rpm.tar.gz
 RUN rpm -Uivh LibreOffice_7.3.3.2_Linux_x86-64_rpm/RPMS/*.rpm --nodeps
 RUN rm -rf LibreOffice_7.3.3*
