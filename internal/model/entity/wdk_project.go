@@ -13,7 +13,7 @@ type WdkProject struct {
 	Id               uint64      `json:"id"               description:"文档库项目ID"`                                                    // 文档库项目ID
 	Name             string      `json:"name"             description:"项目名称"`                                                       // 项目名称
 	Type             uint        `json:"type"             description:"项目性质 0:蓝绿体系 1:非绿"`                                           // 项目性质 0:蓝绿体系 1:非绿
-	Origin           uint        `json:"origin"           description:"项目来源 0:物业公司 1:分子公司 2:老客户 3:自拓"`                              // 项目来源 0:物业公司 1:分子公司 2:老客户 3:自拓
+	Origin           uint        `json:"origin"           description:"项目来源 0:绿中 1:分子公司 2:合伙人 3:老客户 4:中交 5:蓝城 6:自拓 7:其他"`           // 项目来源 0:绿中 1:分子公司 2:合伙人 3:老客户 4:中交 5:蓝城 6:自拓 7:其他
 	Step             uint        `json:"step"             description:"项目阶段 0:未开始 1:合同签约 2:项目启动会 3:服务中 4:合同结束 5:复盘"`                // 项目阶段 0:未开始 1:合同签约 2:项目启动会 3:服务中 4:合同结束 5:复盘
 	FileUploadStatus uint        `json:"fileUploadStatus" description:"项目文件上传状态 0:未传完 1:已传完"`                                       // 项目文件上传状态 0:未传完 1:已传完
 	BusinessType     uint        `json:"businessType"     description:"业务类型 0:物业 1:专项 2:全过程"`                                       // 业务类型 0:物业 1:专项 2:全过程

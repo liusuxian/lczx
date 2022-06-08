@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 07/06/2022 17:06:12
+ Date: 08/06/2022 16:35:43
 */
 
 SET NAMES utf8mb4;
@@ -435,7 +435,7 @@ CREATE TABLE `wdk_project` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '文档库项目ID',
   `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '项目名称',
   `type` tinyint unsigned NOT NULL COMMENT '项目性质 0:蓝绿体系 1:非绿',
-  `origin` tinyint unsigned NOT NULL COMMENT '项目来源 0:物业公司 1:分子公司 2:老客户 3:自拓',
+  `origin` tinyint unsigned NOT NULL COMMENT '项目来源 0:绿中 1:分子公司 2:合伙人 3:老客户 4:中交 5:蓝城 6:自拓 7:其他',
   `step` tinyint unsigned NOT NULL COMMENT '项目阶段 0:未开始 1:合同签约 2:项目启动会 3:服务中 4:合同结束 5:复盘',
   `file_upload_status` tinyint unsigned NOT NULL COMMENT '项目文件上传状态 0:未传完 1:已传完',
   `business_type` tinyint unsigned NOT NULL COMMENT '业务类型 0:物业 1:专项 2:全过程',
@@ -476,7 +476,7 @@ COMMIT;
 DROP TABLE IF EXISTS `wdk_project_businessforms`;
 CREATE TABLE `wdk_project_businessforms` (
   `project_id` bigint unsigned NOT NULL COMMENT '文档库项目ID',
-  `business_forms` tinyint unsigned NOT NULL COMMENT '业态 0:住宅-综合性住宅 1:住宅-高层住宅 2:住宅-多层住宅 3:住宅-联排别墅 4:住宅-独立式住宅 5:非住宅-办公用房 6:非住宅-场馆（体育馆、博物馆、机场） 7:非住宅-综合类 8:非住宅-学校 9:非住宅-工业园 10:非住宅-医院 11:非住宅-商场 12:非住宅-商铺 13:非住宅-车位 14:非住宅-酒店式公寓 15:非住宅-仓储 16:非住宅-经营用房 17:非住宅-物业用房 18:非住宅-配套用房 19:非住宅-车库 20:非住宅-会所 21:非住宅-临停车位 22:非住宅-非机动车位 23:非住宅-社会福利院 24:非住宅-旅游景区',
+  `business_forms` tinyint unsigned NOT NULL COMMENT '业态 0:住宅 1:小高层 2:高层 3:超高层 4:公寓 5:合院 6:叠墅 7:排屋 8:多层 9:会所 10:商住 11:综合体 12:产业园 13:酒店 14:酒店式公寓 15:商业 16:普通商业 17:公共配套 18:办公 19:厂房',
   PRIMARY KEY (`project_id`,`business_forms`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
