@@ -2,5 +2,5 @@
 
 ### gf gen dao
 ```
-gf gen dao -d
+gf gen dao -c
 ```
