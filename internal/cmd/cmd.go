@@ -51,6 +51,12 @@ var (
 				)
 				// 后台操作日志记录
 				group.Hook("/*", ghttp.HookAfterOutput, service.OperLog().Invoke)
+				// 文件下载
+				group.Group("/serverfile/*", func(group *ghttp.RouterGroup) {
+					group.Bind(func(req *ghttp.Request) {
+						req.Response.ServeFileDownload(req.URL.String())
+					})
+				})
 				// 用户相关
 				group.Group("/user", func(group *ghttp.RouterGroup) {
 					group.Bind(controller.User)

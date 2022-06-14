@@ -10,6 +10,7 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/text/gstr"
+	"github.com/xuri/excelize/v2"
 	"lczx/utility/logger"
 	"log"
 	"net"
@@ -107,4 +108,59 @@ func Doexec(cmdStr string) error {
 // RedisKey 组装redis key
 func RedisKey(keys ...string) string {
 	return gstr.Join(keys, ":")
+}
+
+// GetExcelHeadStyle 获取Excel文件表头样式
+func GetExcelHeadStyle(file *excelize.File) (style int, err error) {
+	style, err = file.NewStyle(&excelize.Style{
+		Border: []excelize.Border{
+			{Type: "left", Color: "000000", Style: 1},
+			{Type: "top", Color: "000000", Style: 1},
+			{Type: "bottom", Color: "000000", Style: 1},
+			{Type: "right", Color: "000000", Style: 1},
+		},
+		Fill: excelize.Fill{
+			Type:    "pattern",
+			Color:   []string{"#DFEBF6"},
+			Pattern: 1,
+		},
+		Font: &excelize.Font{
+			Bold:   true,
+			Family: "微软雅黑",
+			Size:   14,
+			Color:  "#000000",
+		},
+		Alignment: &excelize.Alignment{
+			Horizontal: "center",
+			Vertical:   "center",
+		},
+	})
+	return
+}
+
+// GetExcelBodyStyle 获取Excel文件表体样式
+func GetExcelBodyStyle(file *excelize.File) (style int, err error) {
+	style, err = file.NewStyle(&excelize.Style{
+		Border: []excelize.Border{
+			{Type: "left", Color: "000000", Style: 1},
+			{Type: "top", Color: "000000", Style: 1},
+			{Type: "bottom", Color: "000000", Style: 1},
+			{Type: "right", Color: "000000", Style: 1},
+		},
+		Fill: excelize.Fill{
+			Type:    "pattern",
+			Color:   []string{"#DFEBF6"},
+			Pattern: 1,
+		},
+		Font: &excelize.Font{
+			Family: "微软雅黑",
+			Size:   11,
+			Color:  "#000000",
+		},
+		Alignment: &excelize.Alignment{
+			Horizontal: "center",
+			Vertical:   "center",
+		},
+	})
+	return
 }
