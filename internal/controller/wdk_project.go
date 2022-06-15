@@ -80,13 +80,13 @@ func (c *cWdkProject) Delete(ctx context.Context, req *v1.WdkProjectDeleteReq) (
 
 // Export 文档库项目信息导出
 func (c *cWdkProject) Export(ctx context.Context, req *v1.WdkProjectExportReq) (res *v1.WdkProjectExportRes, err error) {
-	var fileUrl string
-	fileUrl, err = service.WdkProject().ExportWdkProject(ctx, req)
+	var fileInfo *v1.WdkProjectExportFile
+	fileInfo, err = service.WdkProject().ExportWdkProject(ctx, req)
 	if err != nil {
 		err = gerror.WrapCode(code.ExportWdkProjectFailed, err)
 		return
 	}
 
-	res = &v1.WdkProjectExportRes{FileUrl: fileUrl}
+	res = &v1.WdkProjectExportRes{FileInfo: fileInfo}
 	return
 }

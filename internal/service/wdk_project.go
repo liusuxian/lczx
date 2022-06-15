@@ -6,11 +6,14 @@ import (
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
+	"github.com/gogf/gf/v2/os/gtime"
 	"github.com/gogf/gf/v2/util/gconv"
+	"github.com/xuri/excelize/v2"
 	v1 "lczx/api/v1"
 	"lczx/internal/model/entity"
 	"lczx/internal/service/internal/dao"
 	"lczx/internal/service/internal/do"
+	"lczx/utility/utils"
 )
 
 type sWdkProject struct{}
@@ -247,6 +250,134 @@ func (s *sWdkProject) DeleteWdkProject(ctx context.Context, ids []uint64) (err e
 	return
 }
 
+// ExportWdkProject 导出文档库项目信息
+func (s *sWdkProject) ExportWdkProject(ctx context.Context, req *v1.WdkProjectExportReq) (fileInfo *v1.WdkProjectExportFile, err error) {
+	// 处理业态
+	projectIdsMap := gmap.New()
+	if len(req.BusinessForms) != 0 {
+		var wdkProjectBusinessforms []*entity.WdkProjectBusinessforms
+		if err = dao.WdkProjectBusinessforms.Ctx(ctx).WhereIn(dao.WdkProjectBusinessforms.Columns().BusinessForms, req.BusinessForms).
+			Scan(&wdkProjectBusinessforms); err != nil {
+			return
+		}
+		for _, v := range wdkProjectBusinessforms {
+			projectIdsMap.Set(v.ProjectId, true)
+		}
+		if projectIdsMap.IsEmpty() {
+			return
+		}
+	}
+	model := dao.WdkProject.Ctx(ctx)
+	columns := dao.WdkProject.Columns()
+	order := "id DESC"
+	if req.Name != "" {
+		model = model.WhereLike(columns.Name, "%"+req.Name+"%")
+	}
+	if req.Type != "" {
+		model = model.Where(columns.Type, gconv.Uint(req.Type))
+	}
+	if req.Origin != "" {
+		model = model.Where(columns.Origin, gconv.Uint(req.Origin))
+	}
+	if req.Step != "" {
+		model = model.Where(columns.Step, gconv.Uint(req.Step))
+	}
+	if req.FileUploadStatus != "" {
+		model = model.Where(columns.FileUploadStatus, gconv.Uint(req.FileUploadStatus))
+	}
+	if req.BusinessType != "" {
+		model = model.Where(columns.BusinessType, gconv.Uint(req.BusinessType))
+	}
+	if !projectIdsMap.IsEmpty() {
+		model = model.WhereIn(columns.Id, projectIdsMap.Keys())
+	}
+	if req.ContractStatus != "" {
+		model = model.Where(columns.ContractStatus, gconv.Uint(req.ContractStatus))
+	}
+	if req.ContractSum != "" {
+		model = model.WhereLike(columns.ContractSum, "%"+req.ContractSum+"%")
+	}
+	if req.DeepCulture != "" {
+		model = model.Where(columns.DeepCulture, gconv.Uint(req.DeepCulture))
+	}
+	if req.Status != "" {
+		model = model.Where(columns.Status, gconv.Uint(req.Status))
+	}
+	if req.EntrustCompany != "" {
+		model = model.WhereLike(columns.EntrustCompany, "%"+req.EntrustCompany+"%")
+	}
+	if req.SignCompany != "" {
+		model = model.Where(columns.SignCompany, gconv.Uint(req.SignCompany))
+	}
+	if req.PrincipalName != "" {
+		model = model.WhereLike(columns.PrincipalName, "%"+req.PrincipalName+"%")
+	}
+	deptIdsMap := gmap.New()
+	if req.DeptId != "" {
+		// 获取部门状态为正常的部门列表
+		var depts []*entity.Dept
+		if depts, err = Dept().GetStatusEnableDepts(ctx); err != nil {
+			return
+		}
+		deptId := gconv.Uint64(req.DeptId)
+		deptIdsMap.Set(deptId, true)
+		Dept().FindSonIdsByParentId(depts, deptId, deptIdsMap)
+	}
+	if !deptIdsMap.IsEmpty() {
+		model = model.WhereIn(columns.DeptId, deptIdsMap.Keys())
+	}
+	if req.Region != "" {
+		model = model.WhereLike(columns.Region, "%"+req.Region+"%")
+	}
+	if req.StartTime.String() != "" {
+		startTime := req.StartTime.Format("Y-m-d")
+		model = model.WhereGTE(columns.StartTime, startTime)
+	}
+	if req.EndTime.String() != "" {
+		endTime := req.EndTime.Format("Y-m-d")
+		model = model.WhereLTE(columns.EndTime, endTime)
+	}
+	var total int
+	if total, err = model.Count(); err != nil {
+		return
+	}
+	// 循环读取
+	curPage := 1
+	pageSize := 1 // TODO
+	excelData := make([][]any, 0, total+2)
+	excelData = append(excelData, []any{"项目信息"})
+	excelData = append(excelData, []any{"项目ID", "项目名称", "项目性质", "项目来源", "项目阶段", "上传状态", "业务类型", "业态", "签约状态",
+		"合同金额", "是否深耕", "服务状态", "委托方公司", "签订公司", "负责人", "所属部门", "地区", "开始时间", "结束时间", "备注"})
+	for {
+		var list []*v1.WdkProjectInfo
+		if err = model.Page(curPage, pageSize).Order(order).ScanList(&list, "ProjectInfo"); err != nil {
+			return
+		}
+		if err = dao.WdkProjectBusinessforms.Ctx(ctx).Where(dao.WdkProjectBusinessforms.Columns().ProjectId, gdb.ListItemValuesUnique(list, "ProjectInfo", "Id")).
+			ScanList(&list, "Businessforms", "ProjectInfo", "ProjectId:Id"); err != nil {
+			return
+		}
+		if list == nil {
+			break
+		}
+		for _, v := range list {
+			excelData = append(excelData, []any{
+				v.ProjectInfo.Id,
+				v.ProjectInfo.Name,
+			})
+		}
+		if curPage*pageSize >= total {
+			break
+		}
+		curPage++
+	}
+	// 创建文档库项目信息Excel表
+	if fileInfo, err = s.createWdkProjectExcel(excelData); err != nil {
+		return
+	}
+	return
+}
+
 // IsWdkProjectNameAvailable 文档库项目名称是否可用
 func (s *sWdkProject) IsWdkProjectNameAvailable(ctx context.Context, name string) (bool, error) {
 	count, err := dao.WdkProject.Ctx(ctx).Where(do.WdkProject{Name: name}).Unscoped().Count()
@@ -400,4 +531,59 @@ func (s *sWdkProject) updateWdkProject(ctx context.Context, req *v1.WdkProjectEd
 		}
 	}
 	return nil
+}
+
+// createWdkProjectExcel 创建文档库项目信息Excel表
+func (s *sWdkProject) createWdkProjectExcel(data [][]any) (fileInfo *v1.WdkProjectExportFile, err error) {
+	f := excelize.NewFile()
+	sheetName := "项目信息"
+	f.SetSheetName("Sheet1", sheetName)
+	// 循环写入
+	for i, row := range data {
+		var startCell string
+		if startCell, err = excelize.JoinCellName("A", i+1); err != nil {
+			return
+		}
+		if err = f.SetSheetRow(sheetName, startCell, &row); err != nil {
+			return
+		}
+	}
+	// 合并单元格
+	if err = f.MergeCell(sheetName, "A1", "T1"); err != nil {
+		return
+	}
+	// 获取Excel文件表头样式
+	var hstyle int
+	if hstyle, err = utils.GetExcelHeadStyle(f); err != nil {
+		return
+	}
+	// 设置Excel文件表头样式
+	if err = f.SetCellStyle(sheetName, "A1", "T2", hstyle); err != nil {
+		return
+	}
+	// 获取Excel文件表体样式
+	var bstyle int
+	if bstyle, err = utils.GetExcelBodyStyle(f); err != nil {
+		return
+	}
+	// 设置Excel文件表体样式
+	if err = f.SetCellStyle(sheetName, "A3", "T"+gconv.String(len(data)), bstyle); err != nil {
+		return
+	}
+	// 设置列宽
+	if err = f.SetColWidth(sheetName, "A", "T", 20); err != nil {
+		return
+	}
+	// 保存
+	fileName := "项目信息导出表 " + gtime.Datetime()
+	filePath := "cache/excel/" + fileName + ".xlsx"
+	if err = f.SaveAs(filePath); err != nil {
+		return
+	}
+	// 返回文件信息
+	fileInfo = &v1.WdkProjectExportFile{
+		FileName: fileName,
+		FilePath: filePath,
+	}
+	return
 }

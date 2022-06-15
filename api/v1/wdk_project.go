@@ -145,5 +145,11 @@ type WdkProjectExportReq struct {
 
 // WdkProjectExportRes 文档库项目信息导出返回参数
 type WdkProjectExportRes struct {
-	FileUrl string `json:"fileUrl" dc:"文件Url"` // 文件Url
+	FileInfo *WdkProjectExportFile `json:"fileInfo" dc:"导出的文件信息"` // 导出的文件信息
+}
+
+// WdkProjectExportFile 文档库项目信息导出的文件信息
+type WdkProjectExportFile struct {
+	FileName string `json:"fileName" dc:"文件名"`       // 文件名
+	FilePath string `json:"filePath" dc:"文件在服务器的路径"` // 文件在服务器的路径
 }
