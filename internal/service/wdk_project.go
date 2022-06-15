@@ -348,7 +348,7 @@ func (s *sWdkProject) ExportWdkProject(ctx context.Context, req *v1.WdkProjectEx
 	excelData := make([][]any, 0, total+2)
 	excelData = append(excelData, []any{"项目信息"})
 	excelData = append(excelData, []any{"项目ID", "项目名称", "项目性质", "项目来源", "项目阶段", "上传状态", "业务类型", "业态", "签约状态",
-		"合同金额", "是否深耕", "服务状态", "委托方公司", "签订公司", "负责人", "所属部门", "地区", "开始时间", "结束时间", "备注"})
+		"合同金额（单位：万元）", "是否深耕", "服务状态", "委托方公司", "签订公司", "负责人", "所属部门", "地区", "开始时间", "结束时间", "备注"})
 	for {
 		var list []*v1.WdkProjectInfo
 		if err = model.Page(curPage, pageSize).Order(order).ScanList(&list, "ProjectInfo"); err != nil {
@@ -788,11 +788,18 @@ func (s *sWdkProject) createWdkProjectExcel(data [][]any) (fileInfo *v1.WdkProje
 		return
 	}
 	// 设置Excel文件表体样式
-	if err = f.SetCellStyle(sheetName, "A3", "T"+gconv.String(len(data)), bstyle); err != nil {
+	endRow := gconv.String(len(data) + 1)
+	if err = f.SetCellStyle(sheetName, "A3", "T"+endRow, bstyle); err != nil {
 		return
 	}
 	// 设置列宽
 	if err = f.SetColWidth(sheetName, "A", "T", 20); err != nil {
+		return
+	}
+	// 合同金额求和
+	maxRow := gconv.String(len(data))
+	sumRowAxis := "J" + endRow
+	if err = f.SetCellFormula(sheetName, sumRowAxis, "=SUM(J3:J"+maxRow+")"); err != nil {
 		return
 	}
 	// 保存
