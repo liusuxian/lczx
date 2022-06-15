@@ -7,6 +7,7 @@ import (
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gtime"
+	"github.com/gogf/gf/v2/text/gstr"
 	"github.com/gogf/gf/v2/util/gconv"
 	"github.com/xuri/excelize/v2"
 	v1 "lczx/api/v1"
@@ -343,7 +344,7 @@ func (s *sWdkProject) ExportWdkProject(ctx context.Context, req *v1.WdkProjectEx
 	}
 	// 循环读取
 	curPage := 1
-	pageSize := 1 // TODO
+	pageSize := 50
 	excelData := make([][]any, 0, total+2)
 	excelData = append(excelData, []any{"项目信息"})
 	excelData = append(excelData, []any{"项目ID", "项目名称", "项目性质", "项目来源", "项目阶段", "上传状态", "业务类型", "业态", "签约状态",
@@ -364,6 +365,24 @@ func (s *sWdkProject) ExportWdkProject(ctx context.Context, req *v1.WdkProjectEx
 			excelData = append(excelData, []any{
 				v.ProjectInfo.Id,
 				v.ProjectInfo.Name,
+				s.getWdkProjectType(v.ProjectInfo.Type),
+				s.getWdkProjectOrigin(v.ProjectInfo.Origin),
+				s.getWdkProjectStep(v.ProjectInfo.Step),
+				s.getWdkProjectFileUploadStatus(v.ProjectInfo.FileUploadStatus),
+				s.getWdkProjectBusinessType(v.ProjectInfo.BusinessType),
+				s.getWdkProjectBusinessforms(v.Businessforms),
+				s.getWdkProjectContractStatus(v.ProjectInfo.ContractStatus),
+				v.ProjectInfo.ContractSum,
+				s.getWdkProjectDeepCulture(v.ProjectInfo.DeepCulture),
+				s.getWdkProjectStatus(v.ProjectInfo.Status),
+				v.ProjectInfo.EntrustCompany,
+				s.getWdkProjectSignCompany(v.ProjectInfo.SignCompany),
+				v.ProjectInfo.PrincipalName,
+				v.ProjectInfo.DeptName,
+				v.ProjectInfo.Region,
+				v.ProjectInfo.StartTime.Format("Y-m-d"),
+				v.ProjectInfo.EndTime.Format("Y-m-d"),
+				v.ProjectInfo.Remark,
 			})
 		}
 		if curPage*pageSize >= total {
@@ -531,6 +550,208 @@ func (s *sWdkProject) updateWdkProject(ctx context.Context, req *v1.WdkProjectEd
 		}
 	}
 	return nil
+}
+
+// getWdkProjectType 获取项目性质中文名称
+func (s *sWdkProject) getWdkProjectType(ptype uint) (name string) {
+	switch ptype {
+	case 0:
+		name = "蓝绿体系"
+	case 1:
+		name = "非绿"
+	default:
+		name = ""
+	}
+	return
+}
+
+// getWdkProjectOrigin 获取项目来源中文名称
+func (s *sWdkProject) getWdkProjectOrigin(origin uint) (name string) {
+	switch origin {
+	case 0:
+		name = "绿中"
+	case 1:
+		name = "分子公司"
+	case 2:
+		name = "合伙人"
+	case 3:
+		name = "老客户"
+	case 4:
+		name = "中交"
+	case 5:
+		name = "蓝城"
+	case 6:
+		name = "自拓"
+	case 7:
+		name = "其他"
+	default:
+		name = ""
+	}
+	return
+}
+
+// getWdkProjectStep 获取项目阶段中文名称 TODO
+func (s *sWdkProject) getWdkProjectStep(step uint) (name string) {
+	switch step {
+	case 0:
+		name = "未开始"
+	case 1:
+		name = "合同签约"
+	case 2:
+		name = "项目启动会"
+	case 3:
+		name = "服务中"
+	case 4:
+		name = "合同结束"
+	case 5:
+		name = "复盘"
+	default:
+		name = ""
+	}
+	return
+}
+
+// getWdkProjectFileUploadStatus 获取项目文件上传状态中文名称 TODO
+func (s *sWdkProject) getWdkProjectFileUploadStatus(fileUploadStatus uint) (name string) {
+	switch fileUploadStatus {
+	case 0:
+		name = "未传完"
+	case 1:
+		name = "已传完"
+	default:
+		name = ""
+	}
+	return
+}
+
+// getWdkProjectBusinessType 获取业务类型中文名称
+func (s *sWdkProject) getWdkProjectBusinessType(businessType uint) (name string) {
+	switch businessType {
+	case 0:
+		name = "物业"
+	case 1:
+		name = "专项"
+	case 2:
+		name = "全过程"
+	default:
+		name = ""
+	}
+	return
+}
+
+// getWdkProjectBusinessforms 获取项目业态中文名称
+func (s *sWdkProject) getWdkProjectBusinessforms(businessforms []*entity.WdkProjectBusinessforms) (name string) {
+	nameList := make([]string, 0, len(businessforms))
+	for _, v := range businessforms {
+		switch v.BusinessForms {
+		case 0:
+			nameList = append(nameList, "住宅")
+		case 1:
+			nameList = append(nameList, "小高层")
+		case 2:
+			nameList = append(nameList, "高层")
+		case 3:
+			nameList = append(nameList, "超高层")
+		case 4:
+			nameList = append(nameList, "公寓")
+		case 5:
+			nameList = append(nameList, "合院")
+		case 6:
+			nameList = append(nameList, "叠墅")
+		case 7:
+			nameList = append(nameList, "排屋")
+		case 8:
+			nameList = append(nameList, "多层")
+		case 9:
+			nameList = append(nameList, "会所")
+		case 10:
+			nameList = append(nameList, "商住")
+		case 11:
+			nameList = append(nameList, "综合体")
+		case 12:
+			nameList = append(nameList, "产业园")
+		case 13:
+			nameList = append(nameList, "酒店")
+		case 14:
+			nameList = append(nameList, "酒店式公寓")
+		case 15:
+			nameList = append(nameList, "商业")
+		case 16:
+			nameList = append(nameList, "普通商业")
+		case 17:
+			nameList = append(nameList, "公共配套")
+		case 18:
+			nameList = append(nameList, "办公")
+		case 19:
+			nameList = append(nameList, "厂房")
+		default:
+			nameList = append(nameList, "")
+		}
+	}
+	name = gstr.Join(nameList, ", ")
+	return
+}
+
+// getWdkProjectContractStatus 获取签约状态中文名称
+func (s *sWdkProject) getWdkProjectContractStatus(contractStatus uint) (name string) {
+	switch contractStatus {
+	case 0:
+		name = "新签"
+	case 1:
+		name = "续签"
+	case 2:
+		name = "未签"
+	default:
+		name = ""
+	}
+	return
+}
+
+// getWdkProjectDeepCulture 获取是否为深耕中文名称
+func (s *sWdkProject) getWdkProjectDeepCulture(deepCulture uint) (name string) {
+	switch deepCulture {
+	case 0:
+		name = "否"
+	case 1:
+		name = "是"
+	default:
+		name = ""
+	}
+	return
+}
+
+// getWdkProjectStatus 获取服务状态中文名称
+func (s *sWdkProject) getWdkProjectStatus(status uint) (name string) {
+	switch status {
+	case 0:
+		name = "服务中"
+	case 1:
+		name = "暂停"
+	case 2:
+		name = "提前终止"
+	case 3:
+		name = "跟踪期"
+	case 4:
+		name = "洽谈中"
+	default:
+		name = ""
+	}
+	return
+}
+
+// getWdkProjectSignCompany 获取我方签订公司中文名称
+func (s *sWdkProject) getWdkProjectSignCompany(signCompany uint) (name string) {
+	switch signCompany {
+	case 0:
+		name = "绿城房地产咨询集团有限公司"
+	case 1:
+		name = "浙江幸福绿城房地产咨询有限公司"
+	case 2:
+		name = "浙江美好绿城房地产咨询有限公司"
+	default:
+		name = ""
+	}
+	return
 }
 
 // createWdkProjectExcel 创建文档库项目信息Excel表

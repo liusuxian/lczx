@@ -17,7 +17,7 @@ type WdkProject struct {
 	Step             uint        `json:"step"             description:"项目阶段 0:未开始 1:合同签约 2:项目启动会 3:服务中 4:合同结束 5:复盘"`                // 项目阶段 0:未开始 1:合同签约 2:项目启动会 3:服务中 4:合同结束 5:复盘
 	FileUploadStatus uint        `json:"fileUploadStatus" description:"项目文件上传状态 0:未传完 1:已传完"`                                       // 项目文件上传状态 0:未传完 1:已传完
 	BusinessType     uint        `json:"businessType"     description:"业务类型 0:物业 1:专项 2:全过程"`                                       // 业务类型 0:物业 1:专项 2:全过程
-	ContractStatus   uint        `json:"contractStatus"   description:"签约状态 0:新签 1:续签"`                                             // 签约状态 0:新签 1:续签
+	ContractStatus   uint        `json:"contractStatus"   description:"签约状态 0:新签 1:续签 2:未签"`                                        // 签约状态 0:新签 1:续签 2:未签
 	ContractSum      float64     `json:"contractSum"      description:"合同金额"`                                                       // 合同金额
 	DeepCulture      uint        `json:"deepCulture"      description:"是否为深耕 0:否 1:是"`                                              // 是否为深耕 0:否 1:是
 	Status           uint        `json:"status"           description:"服务状态 0:服务中 1:暂停 2:提前终止 3:跟踪期 4:洽谈中"`                         // 服务状态 0:服务中 1:暂停 2:提前终止 3:跟踪期 4:洽谈中

@@ -19,7 +19,7 @@ type WdkProject struct {
 	Step             interface{} // 项目阶段 0:未开始 1:合同签约 2:项目启动会 3:服务中 4:合同结束 5:复盘
 	FileUploadStatus interface{} // 项目文件上传状态 0:未传完 1:已传完
 	BusinessType     interface{} // 业务类型 0:物业 1:专项 2:全过程
-	ContractStatus   interface{} // 签约状态 0:新签 1:续签
+	ContractStatus   interface{} // 签约状态 0:新签 1:续签 2:未签
 	ContractSum      interface{} // 合同金额
 	DeepCulture      interface{} // 是否为深耕 0:否 1:是
 	Status           interface{} // 服务状态 0:服务中 1:暂停 2:提前终止 3:跟踪期 4:洽谈中
