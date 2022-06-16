@@ -406,28 +406,34 @@ func (s *sWdkProject) IsWdkProjectNameAvailable(ctx context.Context, name string
 	return count == 0, nil
 }
 
-// SetWdkProjectFileUploadStatus 设置文档库项目文件上传状态为是
-func (s *sWdkProject) SetWdkProjectFileUploadStatus(ctx context.Context, id uint64) (err error) {
+// SetWdkProjectFileUploadStatusFinish 设置文档库项目文件上传状态为已完成
+func (s *sWdkProject) SetWdkProjectFileUploadStatusFinish(ctx context.Context, id uint64) (err error) {
+	// 通过项目ID获取文档库项目上传文件类型数量
 	var fileCount int
 	fileCount, err = WdkFile().GetWdkFileCountByProjectId(ctx, id)
 	if err != nil {
-		return err
+		return
 	}
+	// 通过项目ID获取文档库项目上传报告类型数量
 	var reportCount int
 	reportCount, err = WdkReport().GetWdkReportCountByProjectId(ctx, id)
 	if err != nil {
-		return err
+		return
 	}
+	// 获取文档库报告类型配置数量
 	var reportCfgCount int
 	reportCfgCount, err = WdkReportCfg().GetWdkReportCfgCount(ctx)
 	if err != nil {
-		return err
+		return
 	}
+	// 判断项目上传文件和项目上传报告是否已全部传完
 	if (fileCount + reportCount) >= reportCfgCount+7 {
-		_, err = dao.WdkProject.Ctx(ctx).Data(do.WdkProject{FileUploadStatus: 1}).Where(do.WdkProject{Id: id}).Update()
-		if err != nil {
-			return err
-		}
+		// 已传完
+		_, err = dao.WdkProject.Ctx(ctx).Data(do.WdkProject{FileUploadStatus: 2}).Where(do.WdkProject{Id: id}).Update()
+	} else {
+		// 未传完
+		_, err = dao.WdkProject.Ctx(ctx).Data(do.WdkProject{FileUploadStatus: 1}).Where(do.WdkProject{Id: id}).
+			WhereNot(dao.WdkProject.Columns().FileUploadStatus, 2).Update()
 	}
 	return
 }
