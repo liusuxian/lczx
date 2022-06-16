@@ -138,13 +138,8 @@ func (s *sWdkReportAudit) HandleWdkReportAudit(ctx context.Context, req *v1.WdkR
 			}
 		}
 		if completeStatus == 2 {
-			// 设置所属文档库项目阶段
-			terr = WdkProject().SetWdkProjectStep(ctx, wdkReportAudit.ProjectId, 8)
-			if terr != nil {
-				return terr
-			}
-			// 设置所属文档库项目文件上传状态为是
-			terr = WdkProject().SetWdkProjectFileUploadStatus(ctx, wdkReportAudit.ProjectId)
+			// 设置文档库项目文件上传状态为已完成
+			terr = WdkProject().SetWdkProjectFileUploadStatusFinish(ctx, wdkReportAudit.ProjectId)
 			if terr != nil {
 				return terr
 			}
