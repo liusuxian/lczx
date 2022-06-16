@@ -37,7 +37,14 @@ func (s *sWdkService) GetWdkServiceRecord(ctx context.Context, projectId uint64)
 func (s *sWdkService) AddWdkService(ctx context.Context, req *v1.WdkServiceAddReq, xchFile *upload.FileInfo, photos []*upload.FileInfo) (err error) {
 	err = dao.WdkServiceRecord.Ctx(ctx).Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		// 保存文档库服务记录
-		return s.saveWdkServiceRecord(ctx, req, xchFile, photos)
+		var terr error
+		terr = s.saveWdkServiceRecord(ctx, req, xchFile, photos)
+		if terr != nil {
+			return terr
+		}
+		// 设置文档库项目文件上传状态为正常
+		terr = WdkProject().SetWdkProjectFileUploadStatusNormal(ctx, req.ProjectId)
+		return terr
 	})
 	return
 }

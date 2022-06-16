@@ -438,6 +438,20 @@ func (s *sWdkProject) SetWdkProjectFileUploadStatusFinish(ctx context.Context, i
 	return
 }
 
+// SetWdkProjectFileUploadStatusAbnormal 设置文档库项目文件上传状态为异常
+func (s *sWdkProject) SetWdkProjectFileUploadStatusAbnormal(ctx context.Context, id uint64) (err error) {
+	_, err = dao.WdkProject.Ctx(ctx).Data(do.WdkProject{FileUploadStatus: 0}).Where(do.WdkProject{Id: id}).
+		WhereNot(dao.WdkProject.Columns().FileUploadStatus, 2).Update()
+	return
+}
+
+// SetWdkProjectFileUploadStatusNormal 设置文档库项目文件上传状态为正常
+func (s *sWdkProject) SetWdkProjectFileUploadStatusNormal(ctx context.Context, id uint64) (err error) {
+	_, err = dao.WdkProject.Ctx(ctx).Data(do.WdkProject{FileUploadStatus: 1}).Where(do.WdkProject{Id: id}).
+		WhereNot(dao.WdkProject.Columns().FileUploadStatus, 2).Update()
+	return
+}
+
 // SetWdkProjectStepByFileType 通过文件类型设置文档库项目阶段
 // 文件类型 0:合同扫描文件 1:年度服务计划书 2:总结报告 3:项目移交 4:复盘报告 5:文件签收单 6:满意度调查表
 // 项目阶段 0:未开始 1:合同签约 2:项目启动会 3:服务中-规划设计 4:服务中-项目展示区施工 5:服务中-主体结构工程 6:服务中-主体安装工程

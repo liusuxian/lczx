@@ -37,7 +37,14 @@ func (s *sWdkAttachment) GetWdkAttachmentRecord(ctx context.Context, projectId u
 func (s *sWdkAttachment) AddWdkAttachment(ctx context.Context, req *v1.WdkAttachmentAddReq, Attachments []*upload.FileInfo) (err error) {
 	err = dao.WdkAttachmentRecord.Ctx(ctx).Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		// 保存文档库上传附件记录数据
-		return s.saveWdkAttachmentRecord(ctx, req, Attachments)
+		var terr error
+		terr = s.saveWdkAttachmentRecord(ctx, req, Attachments)
+		if terr != nil {
+			return terr
+		}
+		// 设置文档库项目文件上传状态为正常
+		terr = WdkProject().SetWdkProjectFileUploadStatusNormal(ctx, req.ProjectId)
+		return terr
 	})
 	return
 }
