@@ -590,7 +590,7 @@ func (s *sWdkProject) getWdkProjectOrigin(origin uint) (name string) {
 	return
 }
 
-// getWdkProjectStep 获取项目阶段中文名称 TODO
+// getWdkProjectStep 获取项目阶段中文名称
 func (s *sWdkProject) getWdkProjectStep(step uint) (name string) {
 	switch step {
 	case 0:
@@ -600,10 +600,22 @@ func (s *sWdkProject) getWdkProjectStep(step uint) (name string) {
 	case 2:
 		name = "项目启动会"
 	case 3:
-		name = "服务中"
+		name = "服务中-规划设计"
 	case 4:
-		name = "合同结束"
+		name = "服务中-项目展示区施工"
 	case 5:
+		name = "服务中-主体结构工程"
+	case 6:
+		name = "服务中-主体安装工程"
+	case 7:
+		name = "服务中-装饰装修工程"
+	case 8:
+		name = "服务中-景观市政工程"
+	case 9:
+		name = "服务中-项目交付验收"
+	case 30:
+		name = "合同结束"
+	case 31:
 		name = "复盘"
 	default:
 		name = ""
@@ -611,13 +623,15 @@ func (s *sWdkProject) getWdkProjectStep(step uint) (name string) {
 	return
 }
 
-// getWdkProjectFileUploadStatus 获取项目文件上传状态中文名称 TODO
+// getWdkProjectFileUploadStatus 获取项目文件上传状态中文名称
 func (s *sWdkProject) getWdkProjectFileUploadStatus(fileUploadStatus uint) (name string) {
 	switch fileUploadStatus {
 	case 0:
-		name = "未传完"
+		name = "异常"
 	case 1:
-		name = "已传完"
+		name = "正常"
+	case 2:
+		name = "已完成"
 	default:
 		name = ""
 	}
