@@ -23,8 +23,8 @@ type WdkProjectColumns struct {
 	Name             string // 项目名称
 	Type             string // 项目性质 0:蓝绿体系 1:非绿
 	Origin           string // 项目来源 0:绿中 1:分子公司 2:合伙人 3:老客户 4:中交 5:蓝城 6:自拓 7:其他
-	Step             string // 项目阶段 0:未开始 1:合同签约 2:项目启动会 3:服务中 4:合同结束 5:复盘
-	FileUploadStatus string // 项目文件上传状态 0:未传完 1:已传完
+	Step             string // 项目阶段 0:未开始 1:合同签约 2:项目启动会 3:服务中-规划设计 4:服务中-项目展示区施工 5:服务中-主体结构工程 6:服务中-主体安装工程 7:服务中-装饰装修工程 8:服务中-景观市政工程 9:服务中-项目交付验收 30:合同结束 31:复盘
+	FileUploadStatus string // 项目文件上传状态 0:异常 1:正常 2:已完成
 	BusinessType     string // 业务类型 0:物业 1:专项 2:全过程
 	ContractStatus   string // 签约状态 0:新签 1:续签 2:未签
 	ContractSum      string // 合同金额

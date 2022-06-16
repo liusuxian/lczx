@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 08/06/2022 16:35:43
+ Date: 16/06/2022 11:10:02
 */
 
 SET NAMES utf8mb4;
@@ -438,8 +438,8 @@ CREATE TABLE `wdk_project` (
   `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '项目名称',
   `type` tinyint unsigned NOT NULL COMMENT '项目性质 0:蓝绿体系 1:非绿',
   `origin` tinyint unsigned NOT NULL COMMENT '项目来源 0:绿中 1:分子公司 2:合伙人 3:老客户 4:中交 5:蓝城 6:自拓 7:其他',
-  `step` tinyint unsigned NOT NULL COMMENT '项目阶段 0:未开始 1:合同签约 2:项目启动会 3:服务中 4:合同结束 5:复盘',
-  `file_upload_status` tinyint unsigned NOT NULL COMMENT '项目文件上传状态 0:未传完 1:已传完',
+  `step` tinyint unsigned NOT NULL COMMENT '项目阶段 0:未开始 1:合同签约 2:项目启动会 3:服务中-规划设计 4:服务中-项目展示区施工 5:服务中-主体结构工程 6:服务中-主体安装工程 7:服务中-装饰装修工程 8:服务中-景观市政工程 9:服务中-项目交付验收 30:合同结束 31:复盘',
+  `file_upload_status` tinyint unsigned NOT NULL COMMENT '项目文件上传状态 0:异常 1:正常 2:已完成',
   `business_type` tinyint unsigned NOT NULL COMMENT '业务类型 0:物业 1:专项 2:全过程',
   `contract_status` tinyint unsigned NOT NULL COMMENT '签约状态 0:新签 1:续签 2:未签',
   `contract_sum` double unsigned NOT NULL COMMENT '合同金额',
