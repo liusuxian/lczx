@@ -59,7 +59,7 @@ var (
 				group.Group("/download", func(group *ghttp.RouterGroup) {
 					group.Bind(controller.Download)
 				})
-				// 文件内容获取
+				// 获取文件内容
 				group.Group("/fileContent", func(group *ghttp.RouterGroup) {
 					group.Bind(controller.FileContent)
 				})
