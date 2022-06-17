@@ -8,26 +8,26 @@ import (
 	"lczx/utility/crypto"
 )
 
-type fileDownloadAliyunOSS struct {
+type aliyunOSS struct {
 	Bucket          string
 	Endpoint        string
 	AccessKeyID     []byte
 	AccessKeySecret []byte
 }
 
-var FileDownloadAliyunOSS = fileDownloadAliyunOSS{}
+var AliyunOSS = &aliyunOSS{}
 
 func init() {
 	ctx := gctx.New()
 	// 阿里云OSS下载
-	FileDownloadAliyunOSS.Bucket = g.Cfg().MustGet(ctx, "upload.aliyunOSS.bucket").String()
-	FileDownloadAliyunOSS.Endpoint = g.Cfg().MustGet(ctx, "upload.aliyunOSS.endpoint").String()
-	FileDownloadAliyunOSS.AccessKeyID = g.Cfg().MustGet(ctx, "upload.aliyunOSS.accessKeyID").Bytes()
-	FileDownloadAliyunOSS.AccessKeySecret = g.Cfg().MustGet(ctx, "upload.aliyunOSS.accessKeySecret").Bytes()
+	AliyunOSS.Bucket = g.Cfg().MustGet(ctx, "upload.aliyunOSS.bucket").String()
+	AliyunOSS.Endpoint = g.Cfg().MustGet(ctx, "upload.aliyunOSS.endpoint").String()
+	AliyunOSS.AccessKeyID = g.Cfg().MustGet(ctx, "upload.aliyunOSS.accessKeyID").Bytes()
+	AliyunOSS.AccessKeySecret = g.Cfg().MustGet(ctx, "upload.aliyunOSS.accessKeySecret").Bytes()
 }
 
-// DownloadAliyunOSS 阿里云OSS下载
-func (d fileDownloadAliyunOSS) DownloadAliyunOSS(objectKey, filePath string) (err error) {
+// Download 阿里云OSS下载
+func (d *aliyunOSS) Download(objectKey, filePath string) (err error) {
 	// 解密 accessKeyID
 	var accessKeyID []byte
 	accessKeyID, err = crypto.AesDecrypt(d.AccessKeyID)
