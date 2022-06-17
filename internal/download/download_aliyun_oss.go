@@ -53,6 +53,6 @@ func (d *aliyunOSS) Download(objectKey, filePath string) (err error) {
 		return
 	}
 	// 下载文件
-	err = bucket.DownloadFile(objectKey, filePath, 100*1024, oss.Routines(3), oss.Checkpoint(true, ""))
+	err = bucket.DownloadFile(objectKey, filePath, 100*1024, oss.Routines(10), oss.Checkpoint(true, ""))
 	return
 }
