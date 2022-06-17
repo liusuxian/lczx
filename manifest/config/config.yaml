@@ -113,7 +113,7 @@ gToken:
   MaxRefresh: 302400000                           # 缓存刷新时间。默认为超时时间的一半（毫秒）
   TokenDelimiter: "_"                             # Token分隔符。默认_
   EncryptKey: "1ee7f75f1145e929df46514e3c924d69"  # Token加密key。默认12345678912345678912345678912345
-  AuthFailMsg: "登录超时或未登录，请重新登录"         # 认证失败提示。默认请求错误或登录超时
+  AuthFailMsg: "登录超时或未登录，请重新登录"          # 认证失败提示。默认请求错误或登录超时
   MultiLogin: true                                # 是否支持多端登录。默认false
 
 # 用户管理配置
@@ -127,10 +127,10 @@ casbin:
 
 # 上传配置
 upload:
-  type: 1                                                                                                                                     # 上传方式。1: 阿里云OSS
-  imgList: [ "jpg", "jpeg", "png", "gif" ]                                                                                                    # 允许上传的图片类型
-  fileList: [ "doc", "docx", "xls", "xlsx", "ppt", "pptx", "pdf" ]                                                                     # 允许上传的文件类型
-  maxSize: 5120                                                                                                                               # 最大文件上传大小(MB)。默认为5*1024=5G=5120MB
+  type: 1                                                                                                                               # 上传方式。1: 阿里云OSS
+  imgList: [ "jpg", "jpeg", "png", "gif" ]                                                                                              # 允许上传的图片类型
+  fileList: [ "doc", "docx", "xls", "xlsx", "ppt", "pptx", "pdf" ]                                                                      # 允许上传的文件类型
+  maxSize: 5120                                                                                                                         # 最大文件上传大小(MB)。默认为5*1024=5G=5120MB
   aliyunOSS:
     bucket: "lczx-sys"
     endpoint: "https://oss-accelerate.aliyuncs.com"
