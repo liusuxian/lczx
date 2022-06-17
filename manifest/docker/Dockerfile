@@ -36,10 +36,10 @@ RUN mkdir -p $WORKDIR/cache/pdf/
 RUN mkdir -p $WORKDIR/cache/excel/
 
 # 安装 libreoffice
-RUN wget https://mirrors.cloud.tencent.com/libreoffice/libreoffice/stable/7.3.3/rpm/x86_64/LibreOffice_7.3.3_Linux_x86-64_rpm.tar.gz
-RUN tar -zxvf LibreOffice_7.3.3_Linux_x86-64_rpm.tar.gz
-RUN rpm -Uivh LibreOffice_7.3.3.2_Linux_x86-64_rpm/RPMS/*.rpm --nodeps
-RUN rm -rf LibreOffice_7.3.3*
+RUN wget https://mirrors.cloud.tencent.com/libreoffice/libreoffice/stable/7.3.4/rpm/x86_64/LibreOffice_7.3.4_Linux_x86-64_rpm.tar.gz
+RUN tar -zxvf LibreOffice_7.3.4_Linux_x86-64_rpm.tar.gz
+RUN rpm -Uivh LibreOffice_7.3.4.2_Linux_x86-64_rpm/RPMS/*.rpm --nodeps
+RUN rm -rf LibreOffice_7.3.4*
 
 ###############################################################################
 #                                   START
