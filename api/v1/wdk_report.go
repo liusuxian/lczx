@@ -26,10 +26,11 @@ type WdkReportInfo struct {
 // WdkReportAddReq 文档库新增上传报告请求参数
 type WdkReportAddReq struct {
 	g.Meta         `path:"/add" tags:"WdkReportAdd" method:"post" summary:"You first wdk/report/add api"`
-	ProjectId      uint64                    `json:"projectId" v:"required|regex:^[1-9]\\d*$#所属项目ID不能为空|所属项目ID必须为正整数" dc:"所属项目ID"` // 所属项目ID
-	ProjectName    string                    `json:"projectName" v:"required#项目名称不能为空" dc:"所属项目名称"`                                // 所属项目名称
-	AuditTypeInfos []*WdkReportAuditTypeInfo `json:"auditTypeInfos" v:"required#文档库报告审核类型信息列表不能为空" dc:"文档库报告审核类型信息列表"`             // 文档库报告审核类型信息列表
-	UploadReport   *ghttp.UploadFile         `json:"uploadReport" dc:"上传报告"`                                                       // 上传报告
+	ProjectId      uint64                    `json:"projectId" v:"required|regex:^[1-9]\\d*$#所属项目ID不能为空|所属项目ID必须为正整数" dc:"所属项目ID"`                                                                                         // 所属项目ID
+	ProjectName    string                    `json:"projectName" v:"required#项目名称不能为空" dc:"所属项目名称"`                                                                                                                        // 所属项目名称
+	Step           uint                      `json:"step" v:"required|in:3,4,5,6,7,8,9#项目阶段不能为空|项目阶段只能是3,4,5,6,7,8,9" dc:"项目阶段 3:服务中-规划设计 4:服务中-项目展示区施工 5:服务中-主体结构工程 6:服务中-主体安装工程 7:服务中-装饰装修工程 8:服务中-景观市政工程 9:服务中-项目交付验收"` // 项目阶段 3:服务中-规划设计 4:服务中-项目展示区施工 5:服务中-主体结构工程 6:服务中-主体安装工程 7:服务中-装饰装修工程 8:服务中-景观市政工程 9:服务中-项目交付验收
+	AuditTypeInfos []*WdkReportAuditTypeInfo `json:"auditTypeInfos" v:"required#文档库报告审核类型信息列表不能为空" dc:"文档库报告审核类型信息列表"`                                                                                                     // 文档库报告审核类型信息列表
+	UploadReport   *ghttp.UploadFile         `json:"uploadReport" dc:"上传报告"`                                                                                                                                               // 上传报告
 }
 
 // WdkReportAddRes 文档库新增上传报告返回参数

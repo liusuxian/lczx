@@ -33,6 +33,7 @@ RUN mkdir -p $WORKDIR/cache/convert/
 RUN mkdir -p $WORKDIR/cache/download/
 RUN mkdir -p $WORKDIR/cache/local/
 RUN mkdir -p $WORKDIR/cache/pdf/
+RUN mkdir -p $WORKDIR/cache/excel/
 
 # 安装 libreoffice
 RUN wget https://mirrors.cloud.tencent.com/libreoffice/libreoffice/stable/7.3.3/rpm/x86_64/LibreOffice_7.3.3_Linux_x86-64_rpm.tar.gz

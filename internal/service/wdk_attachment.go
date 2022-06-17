@@ -39,6 +39,11 @@ func (s *sWdkAttachment) AddWdkAttachment(ctx context.Context, req *v1.WdkAttach
 		// 保存文档库上传附件记录数据
 		var terr error
 		terr = s.saveWdkAttachmentRecord(ctx, req, Attachments)
+		if terr != nil {
+			return terr
+		}
+		// 设置文档库项目文件上传状态为正常
+		terr = WdkProject().SetWdkProjectFileUploadStatusNormal(ctx, req.ProjectId)
 		return terr
 	})
 	return

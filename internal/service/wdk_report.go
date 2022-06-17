@@ -110,14 +110,14 @@ func (s *sWdkReport) AddWdkReport(ctx context.Context, req *v1.WdkReportAddReq, 
 		if terr != nil {
 			return terr
 		}
+		// 设置所属文档库项目阶段
+		terr = WdkProject().SetWdkProjectStepByReportStep(ctx, req.ProjectId, req.Step)
+		if terr != nil {
+			return terr
+		}
 		if user.IsAdmin == 1 {
-			// 设置所属文档库项目阶段
-			terr = WdkProject().SetWdkProjectStep(ctx, req.ProjectId, 8)
-			if terr != nil {
-				return terr
-			}
-			// 设置所属文档库项目文件上传状态为是
-			terr = WdkProject().SetWdkProjectFileUploadStatus(ctx, req.ProjectId)
+			// 设置文档库项目文件上传状态为已完成
+			terr = WdkProject().SetWdkProjectFileUploadStatusFinish(ctx, req.ProjectId)
 			if terr != nil {
 				return terr
 			}

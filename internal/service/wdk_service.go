@@ -42,8 +42,8 @@ func (s *sWdkService) AddWdkService(ctx context.Context, req *v1.WdkServiceAddRe
 		if terr != nil {
 			return terr
 		}
-		// 设置所属文档库项目阶段
-		terr = WdkProject().SetWdkProjectStep(ctx, req.ProjectId, 7)
+		// 设置文档库项目文件上传状态为正常
+		terr = WdkProject().SetWdkProjectFileUploadStatusNormal(ctx, req.ProjectId)
 		return terr
 	})
 	return
