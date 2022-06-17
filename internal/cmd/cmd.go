@@ -59,6 +59,10 @@ var (
 				group.Group("/download", func(group *ghttp.RouterGroup) {
 					group.Bind(controller.Download)
 				})
+				// 文件内容获取
+				group.Group("/fileContent", func(group *ghttp.RouterGroup) {
+					group.Bind(controller.FileContent)
+				})
 				// 权限管理
 				group.Group("/auth", func(group *ghttp.RouterGroup) {
 					// 菜单管理
