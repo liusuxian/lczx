@@ -188,7 +188,7 @@ func (u FileUploadOSSAdapter) uploadAction(file *ghttp.UploadFile, fType string,
 		}
 		// 原始文件转pdf文件
 		if extName != "pdf" {
-			resultPath, err = utils.ConvertToPDF(localFilepath)
+			resultPath, err = utils.ConvertToPDF(localFilepath, "./cache/local/")
 			if err != nil {
 				// 删除本地临时文件
 				_ = gfile.Remove(localFilepath)

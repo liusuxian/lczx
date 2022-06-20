@@ -23,7 +23,7 @@ type cFileContent struct{}
 func (c *cFileContent) GetFileContent(ctx context.Context, req *v1.FileContentGetReq) (res *v1.FileContentGetRes, err error) {
 	// 下载文件
 	list := gstr.SplitAndTrim(req.FileUrl, "/")
-	filePath := "cache/download/" + list[len(list)-1]
+	filePath := "./cache/local/" + list[len(list)-1]
 	if !gfile.Exists(filePath) {
 		// 文件不存在则下载
 		objectKey := gstr.Join(list[2:], "/")
