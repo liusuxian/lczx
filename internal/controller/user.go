@@ -27,6 +27,7 @@ func (c *cUser) Info(ctx context.Context, req *v1.UserInfoReq) (res *v1.UserInfo
 		err = gerror.WrapCode(code.GetUserFailed, err)
 		return
 	}
+	userInfo.Avatar = upload.Upload.GetUrl(userInfo.Avatar)
 	userInfo.Password = ""
 	userInfo.Salt = ""
 	// 获取用户角色ID列表
@@ -99,6 +100,7 @@ func (c *cUser) UploadAvatar(ctx context.Context, req *v1.UserUploadAvatarReq) (
 		return
 	}
 
+	fileInfo.OriginFileUrl = upload.Upload.GetUrl(fileInfo.OriginFileUrl)
 	res = &v1.UserUploadAvatarRes{FileInfo: fileInfo}
 	return
 }

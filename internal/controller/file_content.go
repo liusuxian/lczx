@@ -26,8 +26,8 @@ func (c *cFileContent) GetFileContent(ctx context.Context, req *v1.FileContentGe
 	filePath := "./cache/local/" + list[len(list)-1]
 	if !gfile.Exists(filePath) {
 		// 文件不存在则下载
-		objectKey := gstr.Join(list[2:], "/")
-		err = download.AliyunOSS.Download(objectKey, filePath)
+		//objectKey := gstr.Join(list[2:], "/")
+		err = download.AliyunOSS.Download(req.FileUrl, filePath)
 		if err != nil {
 			err = gerror.WrapCode(code.GetFileContentFailed, err)
 			return

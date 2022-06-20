@@ -58,6 +58,11 @@ func (u FileUploadOSSAdapter) UploadFiles(files []*ghttp.UploadFile, dirPath str
 	return u.uploadBathByType(files, dirPath, "file")
 }
 
+// GetUrl 获取上传文件的Url
+func (u FileUploadOSSAdapter) GetUrl(filepath string) string {
+	return u.RawUrl + "/" + filepath
+}
+
 // 文件上传 img|file
 func (u FileUploadOSSAdapter) uploadByType(file *ghttp.UploadFile, dirPath string, fType string) (fileInfo *FileInfo, err error) {
 	if file == nil {
@@ -156,11 +161,6 @@ func (u FileUploadOSSAdapter) checkSize(configSize int64, fileSize int64) bool {
 	return configSize*1024*1024 >= fileSize
 }
 
-// 获取上传文件的Url
-func (u FileUploadOSSAdapter) getUrl(filepath string) string {
-	return u.RawUrl + "/" + filepath
-}
-
 // 上传到阿里云OSS操作
 func (u FileUploadOSSAdapter) uploadAction(file *ghttp.UploadFile, fType string, dirPath string) (originFileUrl, pdfFileUrl string, err error) {
 	// 图片/文件名处理
@@ -172,7 +172,7 @@ func (u FileUploadOSSAdapter) uploadAction(file *ghttp.UploadFile, fType string,
 	localFilepath := "./cache/local/" + fileFullname
 	pdfFilepath := dirPath + "/" + filename + ".pdf"
 	if fType == "file" {
-		pdfFileUrl = u.getUrl(pdfFilepath)
+		pdfFileUrl = pdfFilepath
 		// 保存本地缓存文件
 		var localFilename string
 		localFilename, err = file.Save("./cache/local/")
@@ -237,7 +237,7 @@ func (u FileUploadOSSAdapter) uploadAction(file *ghttp.UploadFile, fType string,
 		_ = gfile.Remove(resultPath)
 		return
 	}
-	originFileUrl = u.getUrl(originFilepath)
+	originFileUrl = originFilepath
 	// 上传pdf文件
 	if fType == "file" && extName != "pdf" && resultPath != "" {
 		// 上传文件

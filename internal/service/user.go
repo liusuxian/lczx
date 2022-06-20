@@ -9,6 +9,7 @@ import (
 	"lczx/internal/model/entity"
 	"lczx/internal/service/internal/dao"
 	"lczx/internal/service/internal/do"
+	"lczx/internal/upload"
 	"lczx/utility/logger"
 	"lczx/utility/utils"
 )
@@ -70,6 +71,7 @@ func (s *sUser) GetProfile(ctx context.Context) (profileInfo *v1.UserProfileInfo
 		err = gerror.Newf(`用户ID[%d]不存在`, curUser.Id)
 		return
 	}
+	userInfo.Avatar = upload.Upload.GetUrl(userInfo.Avatar)
 	userInfo.Password = ""
 	userInfo.Salt = ""
 	// 获取部门状态为正常的部门列表
