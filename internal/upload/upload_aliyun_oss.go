@@ -173,19 +173,21 @@ func (u FileUploadOSSAdapter) uploadAction(file *ghttp.UploadFile, fType string,
 	pdfFilepath := dirPath + "/" + filename + ".pdf"
 	if fType == "file" {
 		pdfFileUrl = u.getUrl(pdfFilepath)
+		// 保存本地缓存文件
+		var localFilename string
+		localFilename, err = file.Save("./cache/local/")
+		if err != nil {
+			return
+		}
+		// 本地缓存文件改名
+		err = gfile.Rename("./cache/local/"+localFilename, localFilepath)
+		if err != nil {
+			// 删除本地临时文件
+			_ = gfile.Remove("./cache/local/" + localFilename)
+			return
+		}
+		// 原始文件转pdf文件
 		if extName != "pdf" {
-			// 保存本地临时文件
-			var localFilename string
-			localFilename, err = file.Save("./cache/local/")
-			if err != nil {
-				return
-			}
-			// 本地临时文件改名
-			err = gfile.Rename("./cache/local/"+localFilename, localFilepath)
-			if err != nil {
-				return
-			}
-			// 原始文件转pdf文件
 			resultPath, err = utils.ConvertToPDF(localFilepath)
 			if err != nil {
 				// 删除本地临时文件
@@ -229,6 +231,10 @@ func (u FileUploadOSSAdapter) uploadAction(file *ghttp.UploadFile, fType string,
 	originFilepath := dirPath + "/" + fileFullname
 	err = bucket.PutObject(originFilepath, fd)
 	if err != nil {
+		// 删除本地临时文件
+		_ = gfile.Remove(localFilepath)
+		// 删除转换的pdf文件
+		_ = gfile.Remove(resultPath)
 		return
 	}
 	originFileUrl = u.getUrl(originFilepath)
@@ -236,11 +242,13 @@ func (u FileUploadOSSAdapter) uploadAction(file *ghttp.UploadFile, fType string,
 	if fType == "file" && extName != "pdf" && resultPath != "" {
 		// 上传文件
 		err = bucket.PutObjectFromFile(pdfFilepath, resultPath)
-		// 删除本地临时文件
-		_ = gfile.Remove(localFilepath)
-		// 删除转换的pdf文件
-		_ = gfile.Remove(resultPath)
-		return
+		if err != nil {
+			// 删除本地临时文件
+			_ = gfile.Remove(localFilepath)
+			// 删除转换的pdf文件
+			_ = gfile.Remove(resultPath)
+			return
+		}
 	}
 	return
 }
