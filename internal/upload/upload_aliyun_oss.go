@@ -23,8 +23,8 @@ func init() {
 		// 使用阿里云OSS上传
 		adp = FileUploadOSSAdapter{
 			Bucket:          g.Cfg().MustGet(ctx, "upload.aliyunOSS.bucket").String(),
-			Endpoint:        g.Cfg().MustGet(ctx, "upload.aliyunOSS.endpoint").String(),
-			RawUrl:          g.Cfg().MustGet(ctx, "upload.aliyunOSS.rawUrl").String(),
+			Endpoint1:       g.Cfg().MustGet(ctx, "upload.aliyunOSS.endpoint1").String(),
+			Endpoint2:       g.Cfg().MustGet(ctx, "upload.aliyunOSS.endpoint2").String(),
 			AccessKeyID:     g.Cfg().MustGet(ctx, "upload.aliyunOSS.accessKeyID").Bytes(),
 			AccessKeySecret: g.Cfg().MustGet(ctx, "upload.aliyunOSS.accessKeySecret").Bytes(),
 		}
@@ -36,8 +36,8 @@ func init() {
 
 type FileUploadOSSAdapter struct {
 	Bucket          string
-	Endpoint        string
-	RawUrl          string
+	Endpoint1       string
+	Endpoint2       string
 	AccessKeyID     []byte
 	AccessKeySecret []byte
 }
@@ -58,9 +58,34 @@ func (u FileUploadOSSAdapter) UploadFiles(files []*ghttp.UploadFile, dirPath str
 	return u.uploadBathByType(files, dirPath, "file")
 }
 
-// GetUrl 获取上传文件的Url
-func (u FileUploadOSSAdapter) GetUrl(filepath string) string {
-	return u.RawUrl + "/" + filepath
+func (u FileUploadOSSAdapter) GetAccessUrl(filePath string) (fileUrl string, err error) {
+	// 解密 accessKeyID
+	var accessKeyID []byte
+	accessKeyID, err = crypto.AesDecrypt(u.AccessKeyID)
+	if err != nil {
+		return
+	}
+	// 解密 accessKeySecret
+	var accessKeySecret []byte
+	accessKeySecret, err = crypto.AesDecrypt(u.AccessKeySecret)
+	if err != nil {
+		return
+	}
+	// 连接OSS
+	var client *oss.Client
+	client, err = oss.New(u.Endpoint2, gstr.TrimAll(string(accessKeyID)), gstr.TrimAll(string(accessKeySecret)))
+	if err != nil {
+		return
+	}
+	// 获取存储空间
+	var bucket *oss.Bucket
+	bucket, err = client.Bucket(u.Bucket)
+	if err != nil {
+		return
+	}
+	// 授权访问
+	fileUrl, err = bucket.SignURL(filePath, oss.HTTPGet, 300)
+	return
 }
 
 // 文件上传 img|file
@@ -173,22 +198,22 @@ func (u FileUploadOSSAdapter) uploadAction(file *ghttp.UploadFile, fType string,
 	pdfFilepath := dirPath + "/" + filename + ".pdf"
 	if fType == "file" {
 		pdfFileUrl = pdfFilepath
-		// 保存本地缓存文件
-		var localFilename string
-		localFilename, err = file.Save("./cache/local/")
-		if err != nil {
-			return
-		}
-		// 本地缓存文件改名
-		err = gfile.Rename("./cache/local/"+localFilename, localFilepath)
-		if err != nil {
-			// 删除本地临时文件
-			_ = gfile.Remove("./cache/local/" + localFilename)
-			return
-		}
-		// 原始文件转pdf文件
 		if extName != "pdf" {
-			resultPath, err = utils.ConvertToPDF(localFilepath, "./cache/local/")
+			// 保存本地临时文件
+			var localFilename string
+			localFilename, err = file.Save("./cache/local/")
+			if err != nil {
+				return
+			}
+			// 本地临时文件改名
+			err = gfile.Rename("./cache/local/"+localFilename, localFilepath)
+			if err != nil {
+				// 删除本地临时文件
+				_ = gfile.Remove("./cache/local/" + localFilename)
+				return
+			}
+			// 原始文件转pdf文件
+			resultPath, err = utils.ConvertToPDF(localFilepath, "./cache/pdf/")
 			if err != nil {
 				// 删除本地临时文件
 				_ = gfile.Remove(localFilepath)
@@ -210,7 +235,7 @@ func (u FileUploadOSSAdapter) uploadAction(file *ghttp.UploadFile, fType string,
 	}
 	// 连接OSS
 	var client *oss.Client
-	client, err = oss.New(u.Endpoint, gstr.TrimAll(string(accessKeyID)), gstr.TrimAll(string(accessKeySecret)))
+	client, err = oss.New(u.Endpoint1, gstr.TrimAll(string(accessKeyID)), gstr.TrimAll(string(accessKeySecret)))
 	if err != nil {
 		return
 	}
