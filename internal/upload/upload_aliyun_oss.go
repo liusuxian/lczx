@@ -299,10 +299,11 @@ func (u FileUploadOSSAdapter) getAccessUrl(filePath string) (fileUrl string, err
 		return
 	}
 	// 授权访问
-	fileUrl, err = bucket.SignURL(filePath, oss.HTTPGet, 3605)
+	fileUrl, err = bucket.SignURL(filePath, oss.HTTPGet, 3610)
 	if err != nil {
 		return
 	}
+	// 添加缓存
 	err = g.DB().GetCache().Set(ctx, cacheKey, fileUrl, time.Hour)
 	return
 }
