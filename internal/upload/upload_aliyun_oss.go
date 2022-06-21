@@ -2,6 +2,7 @@ package upload
 
 import (
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
+	"github.com/gogf/gf/v2/container/gvar"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
@@ -15,6 +16,7 @@ import (
 	"lczx/utility/utils"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func init() {
@@ -68,33 +70,7 @@ func (u FileUploadOSSAdapter) UploadFiles(files []*ghttp.UploadFile, dirPath str
 }
 
 func (u FileUploadOSSAdapter) GetAccessUrl(filePath string) (fileUrl string, err error) {
-	// 解密 accessKeyID
-	var accessKeyID []byte
-	accessKeyID, err = crypto.AesDecrypt(u.AccessKeyID)
-	if err != nil {
-		return
-	}
-	// 解密 accessKeySecret
-	var accessKeySecret []byte
-	accessKeySecret, err = crypto.AesDecrypt(u.AccessKeySecret)
-	if err != nil {
-		return
-	}
-	// 连接OSS
-	var client *oss.Client
-	client, err = oss.New(u.Endpoint2, gstr.TrimAll(string(accessKeyID)), gstr.TrimAll(string(accessKeySecret)))
-	if err != nil {
-		return
-	}
-	// 获取存储空间
-	var bucket *oss.Bucket
-	bucket, err = client.Bucket(u.Bucket)
-	if err != nil {
-		return
-	}
-	// 授权访问
-	fileUrl, err = bucket.SignURL(filePath, oss.HTTPGet, 60)
-	return
+	return u.getAccessUrl(filePath)
 }
 
 // 文件上传 img|file
@@ -281,5 +257,52 @@ func (u FileUploadOSSAdapter) uploadAction(file *ghttp.UploadFile, fType string,
 		// 删除转换的pdf文件
 		_ = gfile.Remove(resultPath)
 	}
+	return
+}
+
+func (u FileUploadOSSAdapter) getAccessUrl(filePath string) (fileUrl string, err error) {
+	// 从缓存获取url
+	cacheKey := "cache:lczx:fileurl:" + filePath
+	var cacheVal *gvar.Var
+	cacheVal, err = g.DB().GetCache().Get(ctx, cacheKey)
+	if err != nil {
+		return
+	}
+	if cacheVal != nil {
+		fileUrl = gconv.String(cacheVal)
+		if fileUrl != "" {
+			return
+		}
+	}
+	// 解密 accessKeyID
+	var accessKeyID []byte
+	accessKeyID, err = crypto.AesDecrypt(u.AccessKeyID)
+	if err != nil {
+		return
+	}
+	// 解密 accessKeySecret
+	var accessKeySecret []byte
+	accessKeySecret, err = crypto.AesDecrypt(u.AccessKeySecret)
+	if err != nil {
+		return
+	}
+	// 连接OSS
+	var client *oss.Client
+	client, err = oss.New(u.Endpoint2, gstr.TrimAll(string(accessKeyID)), gstr.TrimAll(string(accessKeySecret)))
+	if err != nil {
+		return
+	}
+	// 获取存储空间
+	var bucket *oss.Bucket
+	bucket, err = client.Bucket(u.Bucket)
+	if err != nil {
+		return
+	}
+	// 授权访问
+	fileUrl, err = bucket.SignURL(filePath, oss.HTTPGet, 3605)
+	if err != nil {
+		return
+	}
+	err = g.DB().GetCache().Set(ctx, cacheKey, fileUrl, time.Hour)
 	return
 }
