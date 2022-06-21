@@ -71,7 +71,11 @@ func (s *sUser) GetProfile(ctx context.Context) (profileInfo *v1.UserProfileInfo
 		err = gerror.Newf(`用户ID[%d]不存在`, curUser.Id)
 		return
 	}
-	userInfo.Avatar = upload.Upload.GetUrl(userInfo.Avatar)
+	// 获取头像访问url
+	userInfo.Avatar, err = upload.Upload.GetAccessUrl(userInfo.Avatar)
+	if err != nil {
+		return
+	}
 	userInfo.Password = ""
 	userInfo.Salt = ""
 	// 获取部门状态为正常的部门列表

@@ -20,17 +20,26 @@ import (
 func init() {
 	var adp FileUploadAdapter
 	if upType == 1 {
-		// 使用阿里云OSS上传
+		// 使用阿里云OSS测试上传
 		adp = FileUploadOSSAdapter{
-			Bucket:          g.Cfg().MustGet(ctx, "upload.aliyunOSS.bucket").String(),
-			Endpoint1:       g.Cfg().MustGet(ctx, "upload.aliyunOSS.endpoint1").String(),
-			Endpoint2:       g.Cfg().MustGet(ctx, "upload.aliyunOSS.endpoint2").String(),
-			AccessKeyID:     g.Cfg().MustGet(ctx, "upload.aliyunOSS.accessKeyID").Bytes(),
-			AccessKeySecret: g.Cfg().MustGet(ctx, "upload.aliyunOSS.accessKeySecret").Bytes(),
+			Bucket:          g.Cfg().MustGet(ctx, "upload.aliyunOSS1.bucket").String(),
+			Endpoint1:       g.Cfg().MustGet(ctx, "upload.aliyunOSS1.endpoint1").String(),
+			Endpoint2:       g.Cfg().MustGet(ctx, "upload.aliyunOSS1.endpoint2").String(),
+			AccessKeyID:     g.Cfg().MustGet(ctx, "upload.aliyunOSS1.accessKeyID").Bytes(),
+			AccessKeySecret: g.Cfg().MustGet(ctx, "upload.aliyunOSS1.accessKeySecret").Bytes(),
 		}
-		Upload = &upload{
-			upAdapter: adp,
+	} else if upType == 2 {
+		// 使用阿里云OSS正式上传
+		adp = FileUploadOSSAdapter{
+			Bucket:          g.Cfg().MustGet(ctx, "upload.aliyunOSS2.bucket").String(),
+			Endpoint1:       g.Cfg().MustGet(ctx, "upload.aliyunOSS2.endpoint1").String(),
+			Endpoint2:       g.Cfg().MustGet(ctx, "upload.aliyunOSS2.endpoint2").String(),
+			AccessKeyID:     g.Cfg().MustGet(ctx, "upload.aliyunOSS2.accessKeyID").Bytes(),
+			AccessKeySecret: g.Cfg().MustGet(ctx, "upload.aliyunOSS2.accessKeySecret").Bytes(),
 		}
+	}
+	Upload = &upload{
+		upAdapter: adp,
 	}
 }
 
@@ -84,7 +93,7 @@ func (u FileUploadOSSAdapter) GetAccessUrl(filePath string) (fileUrl string, err
 		return
 	}
 	// 授权访问
-	fileUrl, err = bucket.SignURL(filePath, oss.HTTPGet, 300)
+	fileUrl, err = bucket.SignURL(filePath, oss.HTTPGet, 60)
 	return
 }
 

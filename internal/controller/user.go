@@ -27,7 +27,12 @@ func (c *cUser) Info(ctx context.Context, req *v1.UserInfoReq) (res *v1.UserInfo
 		err = gerror.WrapCode(code.GetUserFailed, err)
 		return
 	}
-	userInfo.Avatar = upload.Upload.GetUrl(userInfo.Avatar)
+	// 获取头像访问url
+	userInfo.Avatar, err = upload.Upload.GetAccessUrl(userInfo.Avatar)
+	if err != nil {
+		err = gerror.WrapCode(code.GetUserFailed, err)
+		return
+	}
 	userInfo.Password = ""
 	userInfo.Salt = ""
 	// 获取用户角色ID列表
@@ -99,8 +104,13 @@ func (c *cUser) UploadAvatar(ctx context.Context, req *v1.UserUploadAvatarReq) (
 		err = gerror.WrapCode(code.SetUserAvatarFailed, err)
 		return
 	}
+	// 获取头像访问url
+	fileInfo.OriginFileUrl, err = upload.Upload.GetAccessUrl(fileInfo.OriginFileUrl)
+	if err != nil {
+		err = gerror.WrapCode(code.SetUserAvatarFailed, err)
+		return
+	}
 
-	fileInfo.OriginFileUrl = upload.Upload.GetUrl(fileInfo.OriginFileUrl)
 	res = &v1.UserUploadAvatarRes{FileInfo: fileInfo}
 	return
 }
