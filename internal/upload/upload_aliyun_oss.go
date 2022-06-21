@@ -276,13 +276,10 @@ func (u FileUploadOSSAdapter) uploadAction(file *ghttp.UploadFile, fType string,
 	if fType == "file" && extName != "pdf" && resultPath != "" {
 		// 上传文件
 		err = bucket.PutObjectFromFile(pdfFilepath, resultPath)
-		if err != nil {
-			// 删除本地临时文件
-			_ = gfile.Remove(localFilepath)
-			// 删除转换的pdf文件
-			_ = gfile.Remove(resultPath)
-			return
-		}
+		// 删除本地临时文件
+		_ = gfile.Remove(localFilepath)
+		// 删除转换的pdf文件
+		_ = gfile.Remove(resultPath)
 	}
 	return
 }
