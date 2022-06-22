@@ -127,13 +127,19 @@ casbin:
 
 # 上传配置
 upload:
-  type: 1                                                                                                                               # 上传方式。1: 阿里云OSS
-  imgList: [ "jpg", "jpeg", "png", "gif" ]                                                                                              # 允许上传的图片类型
-  fileList: [ "doc", "docx", "xls", "xlsx", "ppt", "pptx", "pdf" ]                                                                      # 允许上传的文件类型
-  maxSize: 5120                                                                                                                         # 最大文件上传大小(MB)。默认为5*1024=5G=5120MB
-  aliyunOSS:
-    bucket: "lczx-sys"
-    endpoint: "https://oss-accelerate.aliyuncs.com"
-    rawUrl: "https://lczx-sys.oss-accelerate.aliyuncs.com"
-    accessKeyID: [ 152,60,19,233,110,138,231,56,136,236,111,99,86,90,117,2,37,115,103,126,16,98,29,113,248,25,86,36,182,233,157,106 ]   # accessKeyID 已加密处理
-    accessKeySecret: [ 217,254,205,91,10,6,218,211,226,225,8,216,71,122,55,171,88,244,4,230,255,30,19,95,108,7,117,15,26,154,154,55 ]   # accessKeySecret 已加密处理
+  type: 1                                                             # 上传方式。1: 阿里云OSS测试 2: 阿里云OSS正式
+  imgList: [ "jpg", "jpeg", "png", "gif" ]                            # 允许上传的图片类型
+  fileList: [ "doc", "docx", "xls", "xlsx", "ppt", "pptx", "pdf" ]    # 允许上传的文件类型
+  maxSize: 5120                                                       # 最大文件上传大小(MB)。默认为5*1024=5G=5120MB
+  aliyunOSS1:
+    bucket: "liusuxian"                                               # bucket名称
+    endpoint1: "https://oss-accelerate.aliyuncs.com"                  # 传输加速节点
+    endpoint2: "oss-cn-hangzhou.aliyuncs.com"                         # 外网访问节点
+    accessKeyID: [ 161,235,145,203,216,152,240,214,97,180,232,35,227,102,170,153,80,180,107,17,231,233,53,202,174,240,195,62,200,75,1,177 ]    # accessKeyID 已加密处理
+    accessKeySecret: [ 243,241,227,248,244,35,197,113,192,188,49,161,111,240,11,237,31,39,215,243,66,242,130,38,20,58,228,14,119,27,171,81 ]   # accessKeySecret 已加密处理
+  aliyunOSS2:
+    bucket: "lczx-sys"                                                # bucket名称
+    endpoint1: "https://oss-accelerate.aliyuncs.com"                  # 传输加速节点
+    endpoint2: "oss-cn-hangzhou.aliyuncs.com"                         # 外网访问节点
+    accessKeyID: [ ]    # accessKeyID 已加密处理
+    accessKeySecret: [ ]   # accessKeySecret 已加密处理

@@ -3,7 +3,6 @@ package response
 import (
 	"github.com/gogf/gf/v2/errors/gcode"
 	"github.com/gogf/gf/v2/net/ghttp"
-	"lczx/utility/logger"
 )
 
 // Resp 数据返回通用JSON数据结构
@@ -26,10 +25,7 @@ func RespJson(req *ghttp.Request, code int, msg string, data ...any) {
 		Data: rData,
 	}
 	req.SetParam("apiReturnRes", resData)
-	err := req.Response.WriteJson(resData)
-	if err != nil {
-		logger.Error(req.GetCtx(), "RespJson Error: ", err.Error())
-	}
+	req.Response.WriteJson(resData)
 }
 
 // RespJsonByGcode 标准返回结果数据

@@ -5,22 +5,22 @@
 package dao
 
 import (
-	"lczx/internal/service/internal/dao/internal"
+	"lczx/internal/dao/internal"
 )
 
-// internalMenuDao is internal type for wrapping internal DAO implements.
-type internalMenuDao = *internal.MenuDao
+// internalRoleDao is internal type for wrapping internal DAO implements.
+type internalRoleDao = *internal.RoleDao
 
-// menuDao is the data access object for table menu.
+// roleDao is the data access object for table role.
 // You can define custom methods on it to extend its functionality as you wish.
-type menuDao struct {
-	internalMenuDao
+type roleDao struct {
+	internalRoleDao
 }
 
 var (
-	// Menu is globally public accessible object for table menu operations.
-	Menu = menuDao{
-		internal.NewMenuDao(),
+	// Role is globally public accessible object for table role operations.
+	Role = roleDao{
+		internal.NewRoleDao(),
 	}
 )
 

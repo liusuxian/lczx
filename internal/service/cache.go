@@ -8,6 +8,7 @@ import (
 	"github.com/gogf/gf/v2/util/gconv"
 	"lczx/internal/consts"
 	"lczx/utility/logger"
+	"time"
 )
 
 type sCache struct{}
@@ -60,6 +61,12 @@ func (s *sCache) GetCache(ctx context.Context, cacheKey any, mapKey ...string) a
 		return cacheVal.Map()[mapKey[0]]
 	}
 	return nil
+}
+
+// SetCache 设置缓存
+func (s *sCache) SetCache(ctx context.Context, key, value any, duration time.Duration) (err error) {
+	err = g.DB().GetCache().Set(ctx, key, value, duration)
+	return
 }
 
 // 扫描删除缓存

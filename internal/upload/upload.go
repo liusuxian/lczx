@@ -21,6 +21,7 @@ type FileUploadAdapter interface {
 	UploadFile(file *ghttp.UploadFile, dirPath string) (fileInfo *FileInfo, err error)
 	UploadImgs(files []*ghttp.UploadFile, dirPath string) (fileInfos []*FileInfo, err error)
 	UploadFiles(files []*ghttp.UploadFile, dirPath string) (fileInfos []*FileInfo, err error)
+	GetAccessUrl(filePath string) (fileUrl string, err error)
 }
 
 type upload struct {
@@ -54,4 +55,9 @@ func (u upload) UploadImgs(files []*ghttp.UploadFile, dirPath string) (fileInfos
 // UploadFiles 多文件上传
 func (u upload) UploadFiles(files []*ghttp.UploadFile, dirPath string) (fileInfos []*FileInfo, err error) {
 	return u.upAdapter.UploadFiles(files, dirPath)
+}
+
+// GetAccessUrl 文件访问Url
+func (u upload) GetAccessUrl(filePath string) (fileUrl string, err error) {
+	return u.upAdapter.GetAccessUrl(filePath)
 }

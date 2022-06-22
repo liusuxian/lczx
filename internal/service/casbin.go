@@ -6,9 +6,9 @@ import (
 	"github.com/casbin/casbin/v2/model"
 	"github.com/casbin/casbin/v2/persist"
 	"github.com/gogf/gf/v2/frame/g"
+	"lczx/internal/dao"
+	"lczx/internal/model/do"
 	"lczx/internal/model/entity"
-	"lczx/internal/service/internal/dao"
-	"lczx/internal/service/internal/do"
 	"sync"
 )
 

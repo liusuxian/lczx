@@ -11,10 +11,10 @@ import (
 	"github.com/gogf/gf/v2/os/gtime"
 	"github.com/gogf/gf/v2/util/gconv"
 	v1 "lczx/api/v1"
+	"lczx/internal/dao"
 	"lczx/internal/model"
+	"lczx/internal/model/do"
 	"lczx/internal/model/entity"
-	"lczx/internal/service/internal/dao"
-	"lczx/internal/service/internal/do"
 	"lczx/internal/upload"
 )
 

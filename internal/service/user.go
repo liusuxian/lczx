@@ -6,9 +6,10 @@ import (
 	"github.com/gogf/gf/v2/os/gtime"
 	"github.com/gogf/gf/v2/util/grand"
 	v1 "lczx/api/v1"
+	"lczx/internal/dao"
+	"lczx/internal/model/do"
 	"lczx/internal/model/entity"
-	"lczx/internal/service/internal/dao"
-	"lczx/internal/service/internal/do"
+	"lczx/internal/upload"
 	"lczx/utility/logger"
 	"lczx/utility/utils"
 )
@@ -68,6 +69,11 @@ func (s *sUser) GetProfile(ctx context.Context) (profileInfo *v1.UserProfileInfo
 	}
 	if userInfo == nil {
 		err = gerror.Newf(`用户ID[%d]不存在`, curUser.Id)
+		return
+	}
+	// 获取头像访问url
+	userInfo.Avatar, err = upload.Upload.GetAccessUrl(userInfo.Avatar)
+	if err != nil {
 		return
 	}
 	userInfo.Password = ""

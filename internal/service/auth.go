@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"github.com/goflyfox/gtoken/gtoken"
 	"github.com/gogf/gf/v2/errors/gcode"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
@@ -11,6 +10,7 @@ import (
 	"github.com/gogf/gf/v2/os/gtime"
 	"github.com/gogf/gf/v2/util/gconv"
 	"github.com/gogf/gf/v2/util/gvalid"
+	"github.com/liusuxian/gtoken/gtoken"
 	"github.com/mssola/user_agent"
 	v1 "lczx/api/v1"
 	"lczx/internal/code"

@@ -1,0 +1,7 @@
+# CLI tool, only in development environment.
+# https://goframe.org/pages/viewpage.action?pageId=3673173
+gfcli:
+  gen:
+    dao:
+      - link: "mysql:root:Lsx19890329!@#$%@tcp(127.0.0.1:3306)/lczx"
+        jsonCase: "CamelLower"
