@@ -10,10 +10,10 @@ import (
 	"github.com/gogf/gf/v2/text/gstr"
 	"github.com/gogf/gf/v2/util/gconv"
 	"lczx/internal/code"
+	"lczx/internal/dao"
 	"lczx/internal/model"
+	"lczx/internal/model/do"
 	"lczx/internal/model/entity"
-	"lczx/internal/service/internal/dao"
-	"lczx/internal/service/internal/do"
 	"lczx/utility/logger"
 	"lczx/utility/response"
 	"net/http"
@@ -75,7 +75,6 @@ func (s *sMiddleware) HandlerResponse(req *ghttp.Request) {
 	}
 
 	msg := "OK"
-	ctx := req.Context()
 	err := req.GetError()
 	res := req.GetHandlerResponse()
 	rCode := gerror.Code(err)
@@ -104,10 +103,7 @@ func (s *sMiddleware) HandlerResponse(req *ghttp.Request) {
 		Data: res,
 	}
 	req.SetParam("apiReturnRes", resData)
-	internalErr := req.Response.WriteJson(resData)
-	if internalErr != nil {
-		logger.Errorf(ctx, `%+v`, internalErr)
-	}
+	req.Response.WriteJson(resData)
 }
 
 // Auth 权限判断处理中间件

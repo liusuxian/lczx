@@ -6,9 +6,9 @@ import (
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/os/gtime"
 	v1 "lczx/api/v1"
+	"lczx/internal/dao"
+	"lczx/internal/model/do"
 	"lczx/internal/model/entity"
-	"lczx/internal/service/internal/dao"
-	"lczx/internal/service/internal/do"
 )
 
 type sWdkReportAudit struct{}

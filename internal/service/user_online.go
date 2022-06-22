@@ -5,9 +5,9 @@ import (
 	"github.com/gogf/gf/v2/container/gvar"
 	"github.com/gogf/gf/v2/os/grpool"
 	v1 "lczx/api/v1"
+	"lczx/internal/dao"
+	"lczx/internal/model/do"
 	"lczx/internal/model/entity"
-	"lczx/internal/service/internal/dao"
-	"lczx/internal/service/internal/do"
 	"lczx/utility/logger"
 )
 

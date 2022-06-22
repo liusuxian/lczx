@@ -5,22 +5,22 @@
 package dao
 
 import (
-	"lczx/internal/service/internal/dao/internal"
+	"lczx/internal/dao/internal"
 )
 
-// internalUserDao is internal type for wrapping internal DAO implements.
-type internalUserDao = *internal.UserDao
+// internalOperLogDao is internal type for wrapping internal DAO implements.
+type internalOperLogDao = *internal.OperLogDao
 
-// userDao is the data access object for table user.
+// operLogDao is the data access object for table oper_log.
 // You can define custom methods on it to extend its functionality as you wish.
-type userDao struct {
-	internalUserDao
+type operLogDao struct {
+	internalOperLogDao
 }
 
 var (
-	// User is globally public accessible object for table user operations.
-	User = userDao{
-		internal.NewUserDao(),
+	// OperLog is globally public accessible object for table oper_log operations.
+	OperLog = operLogDao{
+		internal.NewOperLogDao(),
 	}
 )
 

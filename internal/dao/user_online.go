@@ -5,7 +5,7 @@
 package dao
 
 import (
-	"lczx/internal/service/internal/dao/internal"
+	"lczx/internal/dao/internal"
 )
 
 // internalUserOnlineDao is internal type for wrapping internal DAO implements.

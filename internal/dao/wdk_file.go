@@ -5,22 +5,22 @@
 package dao
 
 import (
-	"lczx/internal/service/internal/dao/internal"
+	"lczx/internal/dao/internal"
 )
 
-// internalOperLogDao is internal type for wrapping internal DAO implements.
-type internalOperLogDao = *internal.OperLogDao
+// internalWdkFileDao is internal type for wrapping internal DAO implements.
+type internalWdkFileDao = *internal.WdkFileDao
 
-// operLogDao is the data access object for table oper_log.
+// wdkFileDao is the data access object for table wdk_file.
 // You can define custom methods on it to extend its functionality as you wish.
-type operLogDao struct {
-	internalOperLogDao
+type wdkFileDao struct {
+	internalWdkFileDao
 }
 
 var (
-	// OperLog is globally public accessible object for table oper_log operations.
-	OperLog = operLogDao{
-		internal.NewOperLogDao(),
+	// WdkFile is globally public accessible object for table wdk_file operations.
+	WdkFile = wdkFileDao{
+		internal.NewWdkFileDao(),
 	}
 )
 

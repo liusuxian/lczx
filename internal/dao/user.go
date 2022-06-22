@@ -5,22 +5,22 @@
 package dao
 
 import (
-	"lczx/internal/service/internal/dao/internal"
+	"lczx/internal/dao/internal"
 )
 
-// internalWdkFileDao is internal type for wrapping internal DAO implements.
-type internalWdkFileDao = *internal.WdkFileDao
+// internalUserDao is internal type for wrapping internal DAO implements.
+type internalUserDao = *internal.UserDao
 
-// wdkFileDao is the data access object for table wdk_file.
+// userDao is the data access object for table user.
 // You can define custom methods on it to extend its functionality as you wish.
-type wdkFileDao struct {
-	internalWdkFileDao
+type userDao struct {
+	internalUserDao
 }
 
 var (
-	// WdkFile is globally public accessible object for table wdk_file operations.
-	WdkFile = wdkFileDao{
-		internal.NewWdkFileDao(),
+	// User is globally public accessible object for table user operations.
+	User = userDao{
+		internal.NewUserDao(),
 	}
 )
 

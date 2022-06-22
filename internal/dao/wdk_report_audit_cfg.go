@@ -5,7 +5,7 @@
 package dao
 
 import (
-	"lczx/internal/service/internal/dao/internal"
+	"lczx/internal/dao/internal"
 )
 
 // internalWdkReportAuditCfgDao is internal type for wrapping internal DAO implements.
