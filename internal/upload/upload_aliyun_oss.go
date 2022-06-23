@@ -261,10 +261,6 @@ func (u FileUploadOSSAdapter) uploadAction(file *ghttp.UploadFile, fType string,
 }
 
 func (u FileUploadOSSAdapter) getAccessUrl(filePath string) (fileUrl string, err error) {
-	if filePath == "" {
-		// 默认头像
-		filePath = "user/avatar/logo.png"
-	}
 	// 从缓存获取url
 	cacheKey := "cache:lczx:accessUrl:" + filePath
 	var cacheVal *gvar.Var

@@ -155,5 +155,12 @@ func (s *sUser) GetUserByPassport(ctx context.Context, passport string) (user *e
 // GetUserById 通过用户ID获取用户信息
 func (s *sUser) GetUserById(ctx context.Context, id uint64) (user *entity.User, err error) {
 	err = dao.User.Ctx(ctx).Where(do.User{Id: id}).Scan(&user)
+	if err != nil {
+		return
+	}
+	// 处理头像
+	if user.Avatar == "" {
+		user.Avatar = "user/avatar/logo.png"
+	}
 	return
 }
