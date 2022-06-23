@@ -35,6 +35,7 @@ func (s *sCache) ClearAllCache(ctx context.Context) {
 		logger.Error(ctx, "ClearAllCache Error: ", err.Error())
 	}
 	s.scanClearCache(ctx, "GToken:lczx:*")
+	s.scanClearCache(ctx, "cache:lczx:accessUrl:*")
 }
 
 // ClearCache 清除缓存

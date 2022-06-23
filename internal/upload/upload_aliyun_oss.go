@@ -262,7 +262,7 @@ func (u FileUploadOSSAdapter) uploadAction(file *ghttp.UploadFile, fType string,
 
 func (u FileUploadOSSAdapter) getAccessUrl(filePath string) (fileUrl string, err error) {
 	// 从缓存获取url
-	cacheKey := "cache:lczx:fileurl:" + filePath
+	cacheKey := "cache:lczx:accessUrl:" + filePath
 	var cacheVal *gvar.Var
 	cacheVal, err = g.DB().GetCache().Get(ctx, cacheKey)
 	if err != nil {
