@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 20/06/2022 15:32:42
+ Date: 23/06/2022 16:02:18
 */
 
 SET NAMES utf8mb4;
@@ -444,7 +444,7 @@ CREATE TABLE `wdk_project` (
   `contract_status` tinyint unsigned NOT NULL COMMENT '签约状态 0:新签 1:续签 2:未签',
   `contract_sum` double unsigned NOT NULL COMMENT '合同金额',
   `deep_culture` tinyint unsigned NOT NULL COMMENT '是否为深耕 0:否 1:是',
-  `status` tinyint unsigned NOT NULL COMMENT '服务状态 0:服务中 1:暂停 2:提前终止 3:跟踪期 4:洽谈中',
+  `status` tinyint unsigned NOT NULL COMMENT '服务状态 0:服务中 1:暂停 2:提前终止 3:跟踪期 4:洽谈中 5:正常结束',
   `entrust_company` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '委托方公司',
   `sign_company` tinyint unsigned NOT NULL COMMENT '我方签订公司 0:绿城房地产咨询集团有限公司 1:浙江幸福绿城房地产咨询有限公司 2:浙江美好绿城房地产咨询有限公司',
   `principal_uid` bigint unsigned NOT NULL COMMENT '负责人用户ID',
@@ -478,7 +478,7 @@ COMMIT;
 DROP TABLE IF EXISTS `wdk_project_businessforms`;
 CREATE TABLE `wdk_project_businessforms` (
   `project_id` bigint unsigned NOT NULL COMMENT '文档库项目ID',
-  `business_forms` tinyint unsigned NOT NULL COMMENT '业态 0:住宅 1:小高层 2:高层 3:超高层 4:公寓 5:合院 6:叠墅 7:排屋 8:多层 9:会所 10:商住 11:综合体 12:产业园 13:酒店 14:酒店式公寓 15:商业 16:普通商业 17:公共配套 18:办公 19:厂房',
+  `business_forms` tinyint unsigned NOT NULL COMMENT '业态 0:住宅 1:小高层 2:高层 3:超高层 4:公寓 5:合院 6:叠墅 7:排屋 8:多层 9:会所 10:商住 11:综合体 12:产业园 13:酒店 14:酒店式公寓 15:商业 16:普通商业 17:公共配套 18:办公 19:公寓式办公 20:厂房',
   PRIMARY KEY (`project_id`,`business_forms`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 

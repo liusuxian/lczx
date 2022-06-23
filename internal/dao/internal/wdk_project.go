@@ -29,7 +29,7 @@ type WdkProjectColumns struct {
 	ContractStatus   string // 签约状态 0:新签 1:续签 2:未签
 	ContractSum      string // 合同金额
 	DeepCulture      string // 是否为深耕 0:否 1:是
-	Status           string // 服务状态 0:服务中 1:暂停 2:提前终止 3:跟踪期 4:洽谈中
+	Status           string // 服务状态 0:服务中 1:暂停 2:提前终止 3:跟踪期 4:洽谈中 5:正常结束
 	EntrustCompany   string // 委托方公司
 	SignCompany      string // 我方签订公司 0:绿城房地产咨询集团有限公司 1:浙江幸福绿城房地产咨询有限公司 2:浙江美好绿城房地产咨询有限公司
 	PrincipalUid     string // 负责人用户ID

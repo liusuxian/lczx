@@ -24,7 +24,16 @@ func (c *cWdkService) Record(ctx context.Context, req *v1.WdkServiceRecordReq) (
 		err = gerror.WrapCode(code.GetWdkServiceRecordFailed, err)
 		return
 	}
-
+	// 获取照片访问url
+	for _, item := range list {
+		for _, photo := range item.Photo {
+			photo.Url, err = upload.Upload.GetAccessUrl(photo.Url)
+			if err != nil {
+				err = gerror.WrapCode(code.GetWdkServiceRecordFailed, err)
+				return
+			}
+		}
+	}
 	res = &v1.WdkServiceRecordRes{List: list}
 	return
 }
