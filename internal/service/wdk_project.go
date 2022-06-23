@@ -729,6 +729,8 @@ func (s *sWdkProject) getWdkProjectBusinessforms(businessforms []*entity.WdkProj
 		case 18:
 			nameList = append(nameList, "办公")
 		case 19:
+			nameList = append(nameList, "公寓式办公")
+		case 20:
 			nameList = append(nameList, "厂房")
 		default:
 			nameList = append(nameList, "")
@@ -779,6 +781,8 @@ func (s *sWdkProject) getWdkProjectStatus(status uint) (name string) {
 		name = "跟踪期"
 	case 4:
 		name = "洽谈中"
+	case 5:
+		name = "正常结束"
 	default:
 		name = ""
 	}
