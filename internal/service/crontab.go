@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/gogf/gf/v2/os/gmutex"
 	"golang.org/x/net/context"
 	v1 "lczx/api/v1"
 	"lczx/internal/dao"
@@ -8,11 +9,29 @@ import (
 	"lczx/internal/model/entity"
 )
 
-type sCrontab struct{}
+type TimeTask struct {
+	FuncName string
+	Param    []string
+	Run      func(ctx context.Context)
+}
+
+type sCrontab struct {
+	taskList []*TimeTask
+	mu       *gmutex.Mutex
+}
 
 var (
 	insCrontab = sCrontab{}
 )
+
+func init() {
+	insCrontab.mu = gmutex.New()
+	checkUserOnlineTask := &TimeTask{
+		FuncName: "checkUserOnline",
+		Run:      Auth().CheckUserOnline,
+	}
+	insCrontab.AddTask(checkUserOnlineTask)
+}
 
 // Crontab 定时任务管理服务
 func Crontab() *sCrontab {
@@ -88,4 +107,37 @@ func (s *sCrontab) EditCrontab(ctx context.Context, req *v1.CrontabEditReq) (err
 		Remark:         req.Remark,
 	}).Where(do.Crontab{Id: req.Id}).Update()
 	return
+}
+
+// AddTask 添加任务
+func (s *sCrontab) AddTask(task *TimeTask) *sCrontab {
+	if task.FuncName == "" || task.Run == nil {
+		return s
+	}
+	s.taskList = append(s.taskList, task)
+	return s
+}
+
+// GetTaskByName 通过方法名获取对应task信息
+func (s *sCrontab) GetTaskByName(funcName string) *TimeTask {
+	var result *TimeTask
+	for _, item := range s.taskList {
+		if item.FuncName == funcName {
+			result = item
+			break
+		}
+	}
+	return result
+}
+
+// EditParams 修改参数
+func (s *sCrontab) EditParams(funcName string, params []string) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	for _, item := range s.taskList {
+		if item.FuncName == funcName {
+			item.Param = params
+			break
+		}
+	}
 }
