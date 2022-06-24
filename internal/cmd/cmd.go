@@ -5,7 +5,6 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/os/gcmd"
-	"github.com/gogf/gf/v2/os/gcron"
 	"lczx/internal/controller"
 	"lczx/internal/service"
 	"lczx/utility/logger"
@@ -100,6 +99,10 @@ var (
 					group.Group("/operLog", func(group *ghttp.RouterGroup) {
 						group.Bind(controller.OperLog)
 					})
+					// 定时任务管理
+					group.Group("/crontab", func(group *ghttp.RouterGroup) {
+						group.Bind(controller.Crontab)
+					})
 				})
 				// 文档库
 				group.Group("/wdk", func(group *ghttp.RouterGroup) {
@@ -133,11 +136,6 @@ var (
 					})
 				})
 			})
-			// 每2小时执行一次检查在线用户
-			_, err = gcron.Add(ctx, "0 0 */2 * * *", service.Auth().CheckUserOnline)
-			if err != nil {
-				return err
-			}
 			// 启动
 			s.Run()
 			return nil

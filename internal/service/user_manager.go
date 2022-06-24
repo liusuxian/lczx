@@ -70,7 +70,7 @@ func (s *sUserManager) GetUserList(ctx context.Context, req *v1.UserListReq) (to
 		model = model.WhereLike(columns.Mobile, "%"+req.Mobile+"%")
 	}
 	if req.Status != "" {
-		model = model.Where(columns.Status, gconv.Uint(req.Status))
+		model = model.Where(columns.Status, req.Status)
 	}
 	if req.StartTime.String() != "" {
 		model = model.WhereGTE(columns.CreateAt, req.StartTime)

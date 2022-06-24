@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"github.com/gogf/gf/v2/container/gmap"
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/errors/gerror"
@@ -53,40 +54,40 @@ func (s *sWdkProject) GetWdkProjectList(ctx context.Context, req *v1.WdkProjectL
 		model = model.WhereLike(columns.Name, "%"+req.Name+"%")
 	}
 	if req.Type != "" {
-		model = model.Where(columns.Type, gconv.Uint(req.Type))
+		model = model.Where(columns.Type, req.Type)
 	}
 	if req.Origin != "" {
-		model = model.Where(columns.Origin, gconv.Uint(req.Origin))
+		model = model.Where(columns.Origin, req.Origin)
 	}
 	if req.Step != "" {
-		model = model.Where(columns.Step, gconv.Uint(req.Step))
+		model = model.Where(columns.Step, req.Step)
 	}
 	if req.FileUploadStatus != "" {
-		model = model.Where(columns.FileUploadStatus, gconv.Uint(req.FileUploadStatus))
+		model = model.Where(columns.FileUploadStatus, req.FileUploadStatus)
 	}
 	if req.BusinessType != "" {
-		model = model.Where(columns.BusinessType, gconv.Uint(req.BusinessType))
+		model = model.Where(columns.BusinessType, req.BusinessType)
 	}
 	if !projectIdsMap.IsEmpty() {
 		model = model.WhereIn(columns.Id, projectIdsMap.Keys())
 	}
 	if req.ContractStatus != "" {
-		model = model.Where(columns.ContractStatus, gconv.Uint(req.ContractStatus))
+		model = model.Where(columns.ContractStatus, req.ContractStatus)
 	}
 	if req.ContractSum != "" {
 		model = model.WhereLike(columns.ContractSum, "%"+req.ContractSum+"%")
 	}
 	if req.DeepCulture != "" {
-		model = model.Where(columns.DeepCulture, gconv.Uint(req.DeepCulture))
+		model = model.Where(columns.DeepCulture, req.DeepCulture)
 	}
 	if req.Status != "" {
-		model = model.Where(columns.Status, gconv.Uint(req.Status))
+		model = model.Where(columns.Status, req.Status)
 	}
 	if req.EntrustCompany != "" {
 		model = model.WhereLike(columns.EntrustCompany, "%"+req.EntrustCompany+"%")
 	}
 	if req.SignCompany != "" {
-		model = model.Where(columns.SignCompany, gconv.Uint(req.SignCompany))
+		model = model.Where(columns.SignCompany, req.SignCompany)
 	}
 	if req.PrincipalName != "" {
 		model = model.WhereLike(columns.PrincipalName, "%"+req.PrincipalName+"%")
@@ -275,40 +276,40 @@ func (s *sWdkProject) ExportWdkProject(ctx context.Context, req *v1.WdkProjectEx
 		model = model.WhereLike(columns.Name, "%"+req.Name+"%")
 	}
 	if req.Type != "" {
-		model = model.Where(columns.Type, gconv.Uint(req.Type))
+		model = model.Where(columns.Type, req.Type)
 	}
 	if req.Origin != "" {
-		model = model.Where(columns.Origin, gconv.Uint(req.Origin))
+		model = model.Where(columns.Origin, req.Origin)
 	}
 	if req.Step != "" {
-		model = model.Where(columns.Step, gconv.Uint(req.Step))
+		model = model.Where(columns.Step, req.Step)
 	}
 	if req.FileUploadStatus != "" {
-		model = model.Where(columns.FileUploadStatus, gconv.Uint(req.FileUploadStatus))
+		model = model.Where(columns.FileUploadStatus, req.FileUploadStatus)
 	}
 	if req.BusinessType != "" {
-		model = model.Where(columns.BusinessType, gconv.Uint(req.BusinessType))
+		model = model.Where(columns.BusinessType, req.BusinessType)
 	}
 	if !projectIdsMap.IsEmpty() {
 		model = model.WhereIn(columns.Id, projectIdsMap.Keys())
 	}
 	if req.ContractStatus != "" {
-		model = model.Where(columns.ContractStatus, gconv.Uint(req.ContractStatus))
+		model = model.Where(columns.ContractStatus, req.ContractStatus)
 	}
 	if req.ContractSum != "" {
 		model = model.WhereLike(columns.ContractSum, "%"+req.ContractSum+"%")
 	}
 	if req.DeepCulture != "" {
-		model = model.Where(columns.DeepCulture, gconv.Uint(req.DeepCulture))
+		model = model.Where(columns.DeepCulture, req.DeepCulture)
 	}
 	if req.Status != "" {
-		model = model.Where(columns.Status, gconv.Uint(req.Status))
+		model = model.Where(columns.Status, req.Status)
 	}
 	if req.EntrustCompany != "" {
 		model = model.WhereLike(columns.EntrustCompany, "%"+req.EntrustCompany+"%")
 	}
 	if req.SignCompany != "" {
-		model = model.Where(columns.SignCompany, gconv.Uint(req.SignCompany))
+		model = model.Where(columns.SignCompany, req.SignCompany)
 	}
 	if req.PrincipalName != "" {
 		model = model.WhereLike(columns.PrincipalName, "%"+req.PrincipalName+"%")
@@ -484,6 +485,10 @@ func (s *sWdkProject) SetWdkProjectStepByReportStep(ctx context.Context, id uint
 	_, err = dao.WdkProject.Ctx(ctx).Data(do.WdkProject{Step: reportStep}).Where(do.WdkProject{Id: id}).
 		WhereLT(dao.WdkProject.Columns().Step, reportStep).Update()
 	return
+}
+
+func (s *sWdkProject) CheckWdkProjectFileUploadStatus(ctx context.Context) {
+	fmt.Println("111111111111111111111111111111111111111111111111", ctx)
 }
 
 // saveWdkProject 保存文档库项目数据

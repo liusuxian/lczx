@@ -35,7 +35,7 @@ func (s *sDept) GetDeptList(ctx context.Context, req *v1.DeptListReq) (list []*e
 		model = model.WhereLike(columns.Name, "%"+req.Name+"%")
 	}
 	if req.Status != "" {
-		model = model.Where(columns.Status, gconv.Uint(req.Status))
+		model = model.Where(columns.Status, req.Status)
 	}
 	err = model.OrderAsc(columns.Id).Scan(&list)
 	return

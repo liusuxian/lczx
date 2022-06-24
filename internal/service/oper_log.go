@@ -151,7 +151,7 @@ func (s *sOperLog) GetOperLogList(ctx context.Context, req *v1.OperLogListReq) (
 		model = model.Where(columns.ReqMethod, req.ReqMethod)
 	}
 	if req.Status != "" {
-		model = model.Where(columns.Status, gconv.Uint(req.Status))
+		model = model.Where(columns.Status, req.Status)
 	}
 	if req.StartTime.String() != "" {
 		model = model.WhereGTE(columns.Time, req.StartTime)

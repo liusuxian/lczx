@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"github.com/gogf/gf/v2/os/grpool"
-	"github.com/gogf/gf/v2/util/gconv"
 	v1 "lczx/api/v1"
 	"lczx/internal/dao"
 	"lczx/internal/model/entity"
@@ -59,7 +58,7 @@ func (s *sLoginLog) GetLoginLogList(ctx context.Context, req *v1.LoginLogListReq
 		model = model.WhereLike(columns.Location, "%"+req.Location+"%")
 	}
 	if req.Status != "" {
-		model = model.Where(columns.Status, gconv.Uint(req.Status))
+		model = model.Where(columns.Status, req.Status)
 	}
 	if req.StartTime.String() != "" {
 		model = model.WhereGTE(columns.Time, req.StartTime)
