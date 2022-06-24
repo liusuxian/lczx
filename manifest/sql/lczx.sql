@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 23/06/2022 16:02:18
+ Date: 24/06/2022 13:51:02
 */
 
 SET NAMES utf8mb4;
@@ -92,6 +92,35 @@ INSERT INTO `casbin_rule` (`p_type`, `v0`, `v1`, `v2`, `v3`, `v4`, `v5`) VALUES 
 INSERT INTO `casbin_rule` (`p_type`, `v0`, `v1`, `v2`, `v3`, `v4`, `v5`) VALUES ('p', '1', '55', 'All', '', '', '');
 INSERT INTO `casbin_rule` (`p_type`, `v0`, `v1`, `v2`, `v3`, `v4`, `v5`) VALUES ('g', '1', '1', '', '', '', '');
 INSERT INTO `casbin_rule` (`p_type`, `v0`, `v1`, `v2`, `v3`, `v4`, `v5`) VALUES ('g', '2', '1', '', '', '', '');
+COMMIT;
+
+-- ----------------------------
+-- Table structure for crontab
+-- ----------------------------
+DROP TABLE IF EXISTS `crontab`;
+CREATE TABLE `crontab` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '任务ID',
+  `name` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '任务名称',
+  `group` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '任务组名',
+  `params` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '参数',
+  `invoke_target` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '调用目标字符串',
+  `cron_expression` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'cron执行表达式',
+  `misfire_policy` tinyint unsigned NOT NULL COMMENT '计划执行策略 0:执行一次 1:执行多次',
+  `concurrent` tinyint unsigned NOT NULL COMMENT '是否并发执行 0:禁止 1:允许',
+  `status` tinyint unsigned NOT NULL COMMENT '状态 0:暂停 1:正常',
+  `create_by` bigint unsigned NOT NULL COMMENT '创建者用户ID',
+  `update_by` bigint unsigned DEFAULT NULL COMMENT '更新者用户ID',
+  `remark` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '备注',
+  `created_at` datetime DEFAULT NULL COMMENT '创建时间',
+  `updated_at` datetime DEFAULT NULL COMMENT '更新时间',
+  `deleted_at` datetime DEFAULT NULL COMMENT '删除时间',
+  PRIMARY KEY (`id`,`name`,`group`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ----------------------------
+-- Records of crontab
+-- ----------------------------
+BEGIN;
 COMMIT;
 
 -- ----------------------------
