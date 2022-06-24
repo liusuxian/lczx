@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 24/06/2022 13:51:02
+ Date: 24/06/2022 15:06:08
 */
 
 SET NAMES utf8mb4;
@@ -107,17 +107,17 @@ COMMIT;
 DROP TABLE IF EXISTS `crontab`;
 CREATE TABLE `crontab` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '任务ID',
-  `name` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '任务名称',
-  `group` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '任务组名',
-  `params` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '参数',
-  `invoke_target` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '调用目标字符串',
-  `cron_expression` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'cron执行表达式',
+  `name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '任务名称',
+  `group` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '任务组名',
+  `params` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '参数',
+  `invoke_target` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '调用目标字符串',
+  `cron_expression` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'cron执行表达式',
   `misfire_policy` tinyint unsigned NOT NULL COMMENT '计划执行策略 0:执行一次 1:执行多次',
   `concurrent` tinyint unsigned NOT NULL COMMENT '是否并发执行 0:禁止 1:允许',
   `status` tinyint unsigned NOT NULL COMMENT '状态 0:暂停 1:正常',
   `create_by` bigint unsigned NOT NULL COMMENT '创建者用户ID',
   `update_by` bigint unsigned DEFAULT NULL COMMENT '更新者用户ID',
-  `remark` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '备注',
+  `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '备注',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '更新时间',
   `deleted_at` datetime DEFAULT NULL COMMENT '删除时间',
@@ -250,12 +250,12 @@ INSERT INTO `menu` (`id`, `parent_id`, `rule`, `name`, `condition`, `menu_type`,
 INSERT INTO `menu` (`id`, `parent_id`, `rule`, `name`, `condition`, `menu_type`, `status`, `jump_path`, `is_frame`, `module_type`, `remark`, `create_at`, `update_at`, `deleted_at`) VALUES (30, 28, 'monitor/operLog/clear', '清除操作日志', NULL, 2, 1, NULL, 0, 'sys_admin', NULL, '2022-04-18 14:06:21', '2022-04-18 14:06:21', NULL);
 INSERT INTO `menu` (`id`, `parent_id`, `rule`, `name`, `condition`, `menu_type`, `status`, `jump_path`, `is_frame`, `module_type`, `remark`, `create_at`, `update_at`, `deleted_at`) VALUES (31, 22, 'monitor/server_monitor/info', '服务监控信息', NULL, 1, 1, NULL, 0, 'sys_admin', NULL, '2022-04-18 17:03:42', '2022-04-18 17:03:42', NULL);
 INSERT INTO `menu` (`id`, `parent_id`, `rule`, `name`, `condition`, `menu_type`, `status`, `jump_path`, `is_frame`, `module_type`, `remark`, `create_at`, `update_at`, `deleted_at`) VALUES (32, 22, 'monitor/crontab/list', '定时任务', NULL, 1, 1, NULL, 0, 'sys_admin', NULL, '2022-04-18 17:03:42', '2022-04-18 17:03:42', NULL);
-INSERT INTO `menu` (`id`, `parent_id`, `rule`, `name`, `condition`, `menu_type`, `status`, `jump_path`, `is_frame`, `module_type`, `remark`, `create_at`, `update_at`, `deleted_at`) VALUES (33, 32, 'monitor/crontab/add', '添加定时任务', NULL, 2, 1, NULL, 0, 'sys_admin', NULL, '2022-04-18 17:03:42', '2022-04-18 17:03:42', NULL);
-INSERT INTO `menu` (`id`, `parent_id`, `rule`, `name`, `condition`, `menu_type`, `status`, `jump_path`, `is_frame`, `module_type`, `remark`, `create_at`, `update_at`, `deleted_at`) VALUES (34, 32, 'monitor/crontab/edit', '修改定时任务', NULL, 2, 1, NULL, 0, 'sys_admin', NULL, '2022-04-18 17:03:42', '2022-04-18 17:03:42', NULL);
-INSERT INTO `menu` (`id`, `parent_id`, `rule`, `name`, `condition`, `menu_type`, `status`, `jump_path`, `is_frame`, `module_type`, `remark`, `create_at`, `update_at`, `deleted_at`) VALUES (35, 32, 'monitor/crontab/start', '开启定时任务', NULL, 2, 1, NULL, 0, 'sys_admin', NULL, '2022-04-18 17:03:42', '2022-04-18 17:03:42', NULL);
-INSERT INTO `menu` (`id`, `parent_id`, `rule`, `name`, `condition`, `menu_type`, `status`, `jump_path`, `is_frame`, `module_type`, `remark`, `create_at`, `update_at`, `deleted_at`) VALUES (36, 32, 'monitor/crontab/stop', '停止定时任务', NULL, 2, 1, NULL, 0, 'sys_admin', NULL, '2022-04-18 17:03:42', '2022-04-18 17:03:42', NULL);
-INSERT INTO `menu` (`id`, `parent_id`, `rule`, `name`, `condition`, `menu_type`, `status`, `jump_path`, `is_frame`, `module_type`, `remark`, `create_at`, `update_at`, `deleted_at`) VALUES (37, 32, 'monitor/crontab/run', '执行定时任务', NULL, 2, 1, NULL, 0, 'sys_admin', NULL, '2022-04-18 17:03:42', '2022-04-18 17:03:42', NULL);
-INSERT INTO `menu` (`id`, `parent_id`, `rule`, `name`, `condition`, `menu_type`, `status`, `jump_path`, `is_frame`, `module_type`, `remark`, `create_at`, `update_at`, `deleted_at`) VALUES (38, 32, 'monitor/crontab/delete', '删除定时任务', NULL, 2, 1, NULL, 0, 'sys_admin', NULL, '2022-04-18 17:03:42', '2022-04-18 17:03:42', NULL);
+INSERT INTO `menu` (`id`, `parent_id`, `rule`, `name`, `condition`, `menu_type`, `status`, `jump_path`, `is_frame`, `module_type`, `remark`, `create_at`, `update_at`, `deleted_at`) VALUES (33, 32, 'monitor/crontab/add', '添加任务', NULL, 2, 1, NULL, 0, 'sys_admin', NULL, '2022-04-18 17:03:42', '2022-04-18 17:03:42', NULL);
+INSERT INTO `menu` (`id`, `parent_id`, `rule`, `name`, `condition`, `menu_type`, `status`, `jump_path`, `is_frame`, `module_type`, `remark`, `create_at`, `update_at`, `deleted_at`) VALUES (34, 32, 'monitor/crontab/edit', '修改任务', NULL, 2, 1, NULL, 0, 'sys_admin', NULL, '2022-04-18 17:03:42', '2022-04-18 17:03:42', NULL);
+INSERT INTO `menu` (`id`, `parent_id`, `rule`, `name`, `condition`, `menu_type`, `status`, `jump_path`, `is_frame`, `module_type`, `remark`, `create_at`, `update_at`, `deleted_at`) VALUES (35, 32, 'monitor/crontab/start', '开启任务', NULL, 2, 1, NULL, 0, 'sys_admin', NULL, '2022-04-18 17:03:42', '2022-04-18 17:03:42', NULL);
+INSERT INTO `menu` (`id`, `parent_id`, `rule`, `name`, `condition`, `menu_type`, `status`, `jump_path`, `is_frame`, `module_type`, `remark`, `create_at`, `update_at`, `deleted_at`) VALUES (36, 32, 'monitor/crontab/stop', '停止任务', NULL, 2, 1, NULL, 0, 'sys_admin', NULL, '2022-04-18 17:03:42', '2022-04-18 17:03:42', NULL);
+INSERT INTO `menu` (`id`, `parent_id`, `rule`, `name`, `condition`, `menu_type`, `status`, `jump_path`, `is_frame`, `module_type`, `remark`, `create_at`, `update_at`, `deleted_at`) VALUES (37, 32, 'monitor/crontab/run', '执行任务', NULL, 2, 1, NULL, 0, 'sys_admin', NULL, '2022-04-18 17:03:42', '2022-04-18 17:03:42', NULL);
+INSERT INTO `menu` (`id`, `parent_id`, `rule`, `name`, `condition`, `menu_type`, `status`, `jump_path`, `is_frame`, `module_type`, `remark`, `create_at`, `update_at`, `deleted_at`) VALUES (38, 32, 'monitor/crontab/delete', '删除任务', NULL, 2, 1, NULL, 0, 'sys_admin', NULL, '2022-04-18 17:03:42', '2022-04-18 17:03:42', NULL);
 INSERT INTO `menu` (`id`, `parent_id`, `rule`, `name`, `condition`, `menu_type`, `status`, `jump_path`, `is_frame`, `module_type`, `remark`, `create_at`, `update_at`, `deleted_at`) VALUES (39, 0, 'wdk', '文档库', NULL, 0, 1, NULL, 0, 'sys_admin', NULL, '2022-04-24 10:17:10', '2022-04-24 10:17:10', NULL);
 INSERT INTO `menu` (`id`, `parent_id`, `rule`, `name`, `condition`, `menu_type`, `status`, `jump_path`, `is_frame`, `module_type`, `remark`, `create_at`, `update_at`, `deleted_at`) VALUES (40, 39, 'wdk/project/list', '项目管理', NULL, 1, 1, NULL, 0, 'sys_admin', NULL, '2022-04-24 10:18:56', '2022-04-24 10:18:56', NULL);
 INSERT INTO `menu` (`id`, `parent_id`, `rule`, `name`, `condition`, `menu_type`, `status`, `jump_path`, `is_frame`, `module_type`, `remark`, `create_at`, `update_at`, `deleted_at`) VALUES (41, 40, 'wdk/project/add', '添加项目', NULL, 2, 1, NULL, 0, 'sys_admin', NULL, '2022-04-24 10:20:38', '2022-04-24 10:20:38', NULL);
