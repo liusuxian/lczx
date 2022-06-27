@@ -1,10 +1,12 @@
 package service
 
 import (
+	"context"
 	"github.com/gogf/gf/v2/errors/gerror"
+	"github.com/gogf/gf/v2/os/gcron"
 	"github.com/gogf/gf/v2/os/gctx"
 	"github.com/gogf/gf/v2/os/gmutex"
-	"golang.org/x/net/context"
+	"github.com/gogf/gf/v2/text/gstr"
 	v1 "lczx/api/v1"
 	"lczx/internal/dao"
 	"lczx/internal/model/do"
@@ -53,7 +55,7 @@ func init() {
 		logger.Error(crontabCtx, "自动执行状态正常的任务失败：", err)
 	}
 	for _, crontab := range crontabList {
-		err = insCrontab.StartTask(crontab)
+		err = insCrontab.StartTask(crontabCtx, crontab)
 		if err != nil {
 			logger.Error(crontabCtx, "启动任务失败：", err)
 		}
@@ -186,12 +188,36 @@ func (s *sCrontab) EditParams(funcName string, params []string) {
 }
 
 // StartTask 启动任务
-func (s *sCrontab) StartTask(crontab *entity.Crontab) (err error) {
+func (s *sCrontab) StartTask(ctx context.Context, crontab *entity.Crontab) (err error) {
+	// 获取调用目标是否注册对应的方法
 	var task *timeTask
 	task = s.GetTaskByName(crontab.InvokeTarget)
 	if task == nil {
-		return gerror.Newf("没有绑定对应的方法", crontab.InvokeTarget)
+		return gerror.Newf("调用目标[%s]没有注册对应的方法", crontab.InvokeTarget)
 	}
-
+	// 传参
+	params := gstr.Split(crontab.Params, "|")
+	s.EditParams(task.funcName, params)
+	// 搜索任务
+	cron := gcron.Search(crontab.InvokeTarget)
+	if cron == nil {
+		var newCron *gcron.Entry
+		if crontab.MisfirePolicy == 1 {
+			newCron, err = gcron.AddSingleton(ctx, crontab.CronExpression, task.run, crontab.InvokeTarget)
+		} else {
+			newCron, err = gcron.AddOnce(ctx, crontab.CronExpression, task.run, crontab.InvokeTarget)
+		}
+		if err != nil {
+			return
+		}
+		if newCron == nil {
+			return gerror.New("启动任务失败")
+		}
+	}
+	gcron.Start(crontab.InvokeTarget)
+	if crontab.MisfirePolicy == 1 {
+		_, err = dao.Crontab.Ctx(ctx).Data(do.Crontab{Status: 1}).Where(do.Crontab{Id: crontab.Id}).Unscoped().Update()
+		return
+	}
 	return
 }
