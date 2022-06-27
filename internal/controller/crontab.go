@@ -68,6 +68,57 @@ func (c *cCrontab) Edit(ctx context.Context, req *v1.CrontabEditReq) (res *v1.Cr
 	return
 }
 
+// Start 启动定时任务
+func (c *cCrontab) Start(ctx context.Context, req *v1.CrontabStartReq) (res *v1.CrontabStartRes, err error) {
+	var crontab *entity.Crontab
+	crontab, err = service.Crontab().GetCrontabById(ctx, req.Id)
+	if err != nil {
+		err = gerror.WrapCode(code.StartCrontabFailed, err)
+		return
+	}
+	err = service.Crontab().StartTask(ctx, crontab)
+	if err != nil {
+		err = gerror.WrapCode(code.StartCrontabFailed, err)
+		return
+	}
+
+	return
+}
+
+// Stop 停止定时任务
+func (c *cCrontab) Stop(ctx context.Context, req *v1.CrontabStopReq) (res *v1.CrontabStopRes, err error) {
+	var crontab *entity.Crontab
+	crontab, err = service.Crontab().GetCrontabById(ctx, req.Id)
+	if err != nil {
+		err = gerror.WrapCode(code.StopEditCrontabFailed, err)
+		return
+	}
+	err = service.Crontab().StopTask(ctx, crontab)
+	if err != nil {
+		err = gerror.WrapCode(code.StopEditCrontabFailed, err)
+		return
+	}
+
+	return
+}
+
+// Run 执行定时任务
+func (c *cCrontab) Run(ctx context.Context, req *v1.CrontabRunReq) (res *v1.CrontabRunRes, err error) {
+	var crontab *entity.Crontab
+	crontab, err = service.Crontab().GetCrontabById(ctx, req.Id)
+	if err != nil {
+		err = gerror.WrapCode(code.RunCrontabFailed, err)
+		return
+	}
+	err = service.Crontab().RunTask(ctx, crontab)
+	if err != nil {
+		err = gerror.WrapCode(code.RunCrontabFailed, err)
+		return
+	}
+
+	return
+}
+
 // Delete 删除定时任务
 func (c *cCrontab) Delete(ctx context.Context, req *v1.CrontabDeleteReq) (res *v1.CrontabDeleteRes, err error) {
 	err = service.Crontab().DeleteCrontab(ctx, req.Ids)

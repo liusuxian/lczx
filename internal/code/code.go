@@ -22,7 +22,10 @@ var (
 	AddCrontabFailed            = gcode.New(1109, "添加定时任务失败", "")   // 添加定时任务失败
 	GetCrontabFailed            = gcode.New(1110, "获取定时任务失败", "")   // 获取定时任务失败
 	EditCrontabFailed           = gcode.New(1111, "修改定时任务失败", "")   // 修改定时任务失败
-	DeleteCrontabFailed         = gcode.New(1112, "删除定时任务失败", "")   // 删除定时任务失败
+	StartCrontabFailed          = gcode.New(1112, "启动定时任务失败", "")   // 启动定时任务失败
+	StopEditCrontabFailed       = gcode.New(1113, "停止定时任务失败", "")   // 停止定时任务失败
+	RunCrontabFailed            = gcode.New(1114, "执行定时任务失败", "")   // 执行定时任务失败
+	DeleteCrontabFailed         = gcode.New(1115, "删除定时任务失败", "")   // 删除定时任务失败
 
 	GetUserFailed          = gcode.New(1200, "获取用户信息失败", "")     // 获取用户信息失败
 	GetUserProfileFailed   = gcode.New(1201, "获取用户个人中心信息失败", "") // 获取用户个人中心信息失败
