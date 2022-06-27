@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 24/06/2022 15:06:08
+ Date: 27/06/2022 16:18:43
 */
 
 SET NAMES utf8mb4;
@@ -113,7 +113,6 @@ CREATE TABLE `crontab` (
   `invoke_target` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '调用目标字符串',
   `cron_expression` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'cron执行表达式',
   `misfire_policy` tinyint unsigned NOT NULL COMMENT '计划执行策略 0:执行一次 1:执行多次',
-  `concurrent` tinyint unsigned NOT NULL COMMENT '是否并发执行 0:禁止 1:允许',
   `status` tinyint unsigned NOT NULL COMMENT '状态 0:暂停 1:正常',
   `create_by` bigint unsigned NOT NULL COMMENT '创建者用户ID',
   `update_by` bigint unsigned DEFAULT NULL COMMENT '更新者用户ID',

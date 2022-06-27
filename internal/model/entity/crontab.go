@@ -17,7 +17,6 @@ type Crontab struct {
 	InvokeTarget   string      `json:"invokeTarget"   description:"调用目标字符串"`              // 调用目标字符串
 	CronExpression string      `json:"cronExpression" description:"cron执行表达式"`            // cron执行表达式
 	MisfirePolicy  uint        `json:"misfirePolicy"  description:"计划执行策略 0:执行一次 1:执行多次"` // 计划执行策略 0:执行一次 1:执行多次
-	Concurrent     uint        `json:"concurrent"     description:"是否并发执行 0:禁止 1:允许"`     // 是否并发执行 0:禁止 1:允许
 	Status         uint        `json:"status"         description:"状态 0:暂停 1:正常"`         // 状态 0:暂停 1:正常
 	CreateBy       uint64      `json:"createBy"       description:"创建者用户ID"`              // 创建者用户ID
 	UpdateBy       uint64      `json:"updateBy"       description:"更新者用户ID"`              // 更新者用户ID

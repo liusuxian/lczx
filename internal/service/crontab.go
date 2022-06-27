@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"github.com/gogf/gf/v2/container/gset"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/os/gcron"
 	"github.com/gogf/gf/v2/os/gctx"
@@ -16,10 +17,10 @@ import (
 
 // 定时任务信息
 type timeTask struct {
-	name     string
-	funcName string
-	param    []string
-	run      func(ctx context.Context)
+	funcDescName string                    // 调用方法描述名（中文）
+	invokeTarget string                    // 调用目标字符串（英文）
+	param        []string                  // 参数
+	run          func(ctx context.Context) // 调用方法
 }
 
 // 定时任务管理信息
@@ -37,14 +38,14 @@ func init() {
 	insCrontab.mu = gmutex.New()
 	// 注册定时任务
 	checkUserOnlineTask := &timeTask{
-		name:     "检查在线用户",
-		funcName: "checkUserOnline",
-		run:      Auth().CheckUserOnline,
+		funcDescName: "检查在线用户",
+		invokeTarget: "checkUserOnline",
+		run:          Auth().CheckUserOnline,
 	}
 	checkWdkProjectFileUploadStatus := &timeTask{
-		name:     "检查项目文件上传状态",
-		funcName: "checkWdkProjectFileUploadStatus",
-		run:      WdkProject().CheckWdkProjectFileUploadStatus,
+		funcDescName: "检查项目文件上传状态",
+		invokeTarget: "checkWdkProjectFileUploadStatus",
+		run:          WdkProject().CheckWdkProjectFileUploadStatus,
 	}
 	insCrontab.AddTask(checkUserOnlineTask).AddTask(checkWdkProjectFileUploadStatus)
 	// 自动执行状态正常的任务
@@ -106,7 +107,6 @@ func (s *sCrontab) AddCrontab(ctx context.Context, req *v1.CrontabAddReq) (err e
 		InvokeTarget:   req.InvokeTarget,
 		CronExpression: req.CronExpression,
 		MisfirePolicy:  req.MisfirePolicy,
-		Concurrent:     req.Concurrent,
 		Status:         req.Status,
 		CreateBy:       user.Id,
 		Remark:         req.Remark,
@@ -130,7 +130,6 @@ func (s *sCrontab) EditCrontab(ctx context.Context, req *v1.CrontabEditReq) (err
 		InvokeTarget:   req.InvokeTarget,
 		CronExpression: req.CronExpression,
 		MisfirePolicy:  req.MisfirePolicy,
-		Concurrent:     req.Concurrent,
 		Status:         req.Status,
 		UpdateBy:       user.Id,
 		Remark:         req.Remark,
@@ -138,9 +137,39 @@ func (s *sCrontab) EditCrontab(ctx context.Context, req *v1.CrontabEditReq) (err
 	return
 }
 
-// GetStatusNormalCrontab 获取状态正常的任务
+// DeleteCrontab 删除任务
+func (s *sCrontab) DeleteCrontab(ctx context.Context, ids []uint64) (err error) {
+	idSet := gset.NewFrom(ids)
+	var crontabList []*entity.Crontab
+	crontabList, err = insCrontab.GetStatusNormalCrontab(ctx)
+	if err != nil {
+		return
+	}
+	for _, crontab := range crontabList {
+		if idSet.Contains(crontab.Id) {
+			err = gerror.Newf("状态为正常的任务[%s]不能删除", crontab.Name)
+			return
+		}
+	}
+	_, err = dao.Crontab.Ctx(ctx).WhereIn(dao.Crontab.Columns().Id, idSet.Slice()).Delete()
+	return
+}
+
+// GetStatusNormalCrontab 获取状态为正常的任务
 func (s *sCrontab) GetStatusNormalCrontab(ctx context.Context) (list []*entity.Crontab, err error) {
 	err = dao.Crontab.Ctx(ctx).Where(do.Crontab{Status: 1}).Scan(&list)
+	return
+}
+
+// SetCrontabStatusNormal 设置任务状态为正常
+func (s *sCrontab) SetCrontabStatusNormal(ctx context.Context, id uint64) (err error) {
+	_, err = dao.Crontab.Ctx(ctx).Data(do.Crontab{Status: 1}).Where(do.Crontab{Id: id}).Unscoped().Update()
+	return
+}
+
+// SetCrontabStatusPause 设置任务状态为暂停
+func (s *sCrontab) SetCrontabStatusPause(ctx context.Context, id uint64) (err error) {
+	_, err = dao.Crontab.Ctx(ctx).Data(do.Crontab{Status: 0}).Where(do.Crontab{Id: id}).Unscoped().Update()
 	return
 }
 
@@ -151,23 +180,28 @@ func (s *sCrontab) GetRegisteredTask() (list []*timeTask) {
 
 // AddTask 添加任务
 func (s *sCrontab) AddTask(task *timeTask) *sCrontab {
-	if task.name == "" || task.funcName == "" || task.run == nil {
+	if task.funcDescName == "" || task.invokeTarget == "" || task.run == nil {
 		return s
 	}
 	s.taskList = append(s.taskList, task)
 	return s
 }
 
-// GetTaskNameAndFuncName 获取任务名称和任务方法名称
-func (s *sCrontab) GetTaskNameAndFuncName(timeTask *timeTask) (name, funcName string) {
-	return timeTask.name, timeTask.funcName
+// GetTaskFuncDescName 获取调用方法描述名
+func (s *sCrontab) GetTaskFuncDescName(timeTask *timeTask) string {
+	return timeTask.funcDescName
 }
 
-// GetTaskByName 通过方法名获取对应task信息
-func (s *sCrontab) GetTaskByName(funcName string) *timeTask {
+// GetTaskInvokeTarget 获取调用目标字符串
+func (s *sCrontab) GetTaskInvokeTarget(timeTask *timeTask) string {
+	return timeTask.invokeTarget
+}
+
+// GetTaskByInvokeTarget 通过调用目标字符串获取对应task信息
+func (s *sCrontab) GetTaskByInvokeTarget(invokeTarget string) *timeTask {
 	var result *timeTask
 	for _, item := range s.taskList {
-		if item.funcName == funcName {
+		if item.invokeTarget == invokeTarget {
 			result = item
 			break
 		}
@@ -176,11 +210,11 @@ func (s *sCrontab) GetTaskByName(funcName string) *timeTask {
 }
 
 // EditParams 修改参数
-func (s *sCrontab) EditParams(funcName string, params []string) {
+func (s *sCrontab) EditParams(invokeTarget string, params []string) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	for _, item := range s.taskList {
-		if item.funcName == funcName {
+		if item.invokeTarget == invokeTarget {
 			item.param = params
 			break
 		}
@@ -191,13 +225,13 @@ func (s *sCrontab) EditParams(funcName string, params []string) {
 func (s *sCrontab) StartTask(ctx context.Context, crontab *entity.Crontab) (err error) {
 	// 获取调用目标是否注册对应的方法
 	var task *timeTask
-	task = s.GetTaskByName(crontab.InvokeTarget)
+	task = s.GetTaskByInvokeTarget(crontab.InvokeTarget)
 	if task == nil {
 		return gerror.Newf("调用目标[%s]没有注册对应的方法", crontab.InvokeTarget)
 	}
 	// 传参
 	params := gstr.Split(crontab.Params, "|")
-	s.EditParams(task.funcName, params)
+	s.EditParams(task.invokeTarget, params)
 	// 搜索任务
 	cron := gcron.Search(crontab.InvokeTarget)
 	if cron == nil {
@@ -211,13 +245,52 @@ func (s *sCrontab) StartTask(ctx context.Context, crontab *entity.Crontab) (err 
 			return
 		}
 		if newCron == nil {
-			return gerror.New("启动任务失败")
+			return gerror.Newf("启动任务[%s]失败", crontab.Name)
 		}
 	}
 	gcron.Start(crontab.InvokeTarget)
 	if crontab.MisfirePolicy == 1 {
-		_, err = dao.Crontab.Ctx(ctx).Data(do.Crontab{Status: 1}).Where(do.Crontab{Id: crontab.Id}).Unscoped().Update()
+		err = s.SetCrontabStatusNormal(ctx, crontab.Id)
 		return
+	}
+	return
+}
+
+// StopTask 停止任务
+func (s *sCrontab) StopTask(ctx context.Context, crontab *entity.Crontab) (err error) {
+	// 获取调用目标是否注册对应的方法
+	var task *timeTask
+	task = s.GetTaskByInvokeTarget(crontab.InvokeTarget)
+	if task == nil {
+		return gerror.Newf("调用目标[%s]没有注册对应的方法", crontab.InvokeTarget)
+	}
+	// 搜索任务
+	cron := gcron.Search(crontab.InvokeTarget)
+	if cron != nil {
+		gcron.Remove(crontab.InvokeTarget)
+	}
+	err = s.SetCrontabStatusPause(ctx, crontab.Id)
+	return
+}
+
+// RunTask 执行任务
+func (s *sCrontab) RunTask(ctx context.Context, crontab *entity.Crontab) (err error) {
+	// 获取调用目标是否注册对应的方法
+	var task *timeTask
+	task = s.GetTaskByInvokeTarget(crontab.InvokeTarget)
+	if task == nil {
+		return gerror.Newf("调用目标[%s]没有注册对应的方法", crontab.InvokeTarget)
+	}
+	// 传参
+	params := gstr.Split(crontab.Params, "|")
+	s.EditParams(task.invokeTarget, params)
+	var newCron *gcron.Entry
+	newCron, err = gcron.AddOnce(ctx, "@every 1s", task.run)
+	if err != nil {
+		return
+	}
+	if newCron == nil {
+		return gerror.Newf("启动任务[%s]失败", crontab.Name)
 	}
 	return
 }

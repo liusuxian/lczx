@@ -1,8 +1,8 @@
 package controller
 
 import (
+	"context"
 	"github.com/gogf/gf/v2/errors/gerror"
-	"golang.org/x/net/context"
 	v1 "lczx/api/v1"
 	"lczx/internal/code"
 	"lczx/internal/upload"

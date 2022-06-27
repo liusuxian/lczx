@@ -18,6 +18,11 @@ var (
 	GetOperLogListFailed        = gcode.New(1105, "获取操作日志列表失败", "") // 获取操作日志列表失败
 	DeleteOperLogFailed         = gcode.New(1106, "删除操作日志失败", "")   // 删除操作日志失败
 	ClearOperLogFailed          = gcode.New(1107, "清除操作日志失败", "")   // 清除操作日志失败
+	GetCrontabListFailed        = gcode.New(1108, "获取定时任务列表失败", "") // 获取定时任务列表失败
+	AddCrontabFailed            = gcode.New(1109, "添加定时任务失败", "")   // 添加定时任务失败
+	GetCrontabFailed            = gcode.New(1110, "获取定时任务失败", "")   // 获取定时任务失败
+	EditCrontabFailed           = gcode.New(1111, "修改定时任务失败", "")   // 修改定时任务失败
+	DeleteCrontabFailed         = gcode.New(1112, "删除定时任务失败", "")   // 删除定时任务失败
 
 	GetUserFailed          = gcode.New(1200, "获取用户信息失败", "")     // 获取用户信息失败
 	GetUserProfileFailed   = gcode.New(1201, "获取用户个人中心信息失败", "") // 获取用户个人中心信息失败

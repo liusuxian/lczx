@@ -1,9 +1,9 @@
 package controller
 
 import (
+	"context"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gfile"
-	"golang.org/x/net/context"
 	v1 "lczx/api/v1"
 )
 

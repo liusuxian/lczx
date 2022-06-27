@@ -26,7 +26,6 @@ type CrontabColumns struct {
 	InvokeTarget   string // 调用目标字符串
 	CronExpression string // cron执行表达式
 	MisfirePolicy  string // 计划执行策略 0:执行一次 1:执行多次
-	Concurrent     string // 是否并发执行 0:禁止 1:允许
 	Status         string // 状态 0:暂停 1:正常
 	CreateBy       string // 创建者用户ID
 	UpdateBy       string // 更新者用户ID
@@ -45,7 +44,6 @@ var crontabColumns = CrontabColumns{
 	InvokeTarget:   "invoke_target",
 	CronExpression: "cron_expression",
 	MisfirePolicy:  "misfire_policy",
-	Concurrent:     "concurrent",
 	Status:         "status",
 	CreateBy:       "create_by",
 	UpdateBy:       "update_by",

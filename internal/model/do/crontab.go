@@ -19,7 +19,6 @@ type Crontab struct {
 	InvokeTarget   interface{} // 调用目标字符串
 	CronExpression interface{} // cron执行表达式
 	MisfirePolicy  interface{} // 计划执行策略 0:执行一次 1:执行多次
-	Concurrent     interface{} // 是否并发执行 0:禁止 1:允许
 	Status         interface{} // 状态 0:暂停 1:正常
 	CreateBy       interface{} // 创建者用户ID
 	UpdateBy       interface{} // 更新者用户ID

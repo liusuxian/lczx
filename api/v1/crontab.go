@@ -33,7 +33,6 @@ type CrontabAddReq struct {
 	InvokeTarget   string `json:"invokeTarget" v:"required|max-length:255#调用目标字符串不能为空|调用目标字符串长度不能超过255" dc:"调用目标字符串"`         // 调用目标字符串
 	CronExpression string `json:"cronExpression" v:"required|max-length:255#cron执行表达式不能为空|cron执行表达式长度不能超过255" dc:"cron执行表达式"` // cron执行表达式
 	MisfirePolicy  uint   `json:"misfirePolicy" v:"required|in:0,1#计划执行策略不能为空|计划执行策略只能是0,1" dc:"计划执行策略 0:执行一次 1:执行多次"`        // 计划执行策略 0:执行一次 1:执行多次
-	Concurrent     uint   `json:"concurrent" v:"required|in:0,1#是否并发执行不能为空|是否并发执行只能是0,1" dc:"是否并发执行 0:禁止 1:允许"`               // 是否并发执行 0:禁止 1:允许
 	Status         uint   `json:"status" v:"required|in:0,1#状态不能为空|状态只能是0,1" dc:"状态 0:暂停 1:正常"`                               // 状态 0:暂停 1:正常
 	Remark         string `json:"remark" v:"max-length:255#备注长度不能超过255" dc:"备注"`                                              // 备注
 }
@@ -63,7 +62,6 @@ type CrontabEditReq struct {
 	InvokeTarget   string `json:"invokeTarget" v:"required|max-length:255#调用目标字符串不能为空|调用目标字符串长度不能超过255" dc:"调用目标字符串"`         // 调用目标字符串
 	CronExpression string `json:"cronExpression" v:"required|max-length:255#cron执行表达式不能为空|cron执行表达式长度不能超过255" dc:"cron执行表达式"` // cron执行表达式
 	MisfirePolicy  uint   `json:"misfirePolicy" v:"required|in:0,1#计划执行策略不能为空|计划执行策略只能是0,1" dc:"计划执行策略 0:执行一次 1:执行多次"`        // 计划执行策略 0:执行一次 1:执行多次
-	Concurrent     uint   `json:"concurrent" v:"required|in:0,1#是否并发执行不能为空|是否并发执行只能是0,1" dc:"是否并发执行 0:禁止 1:允许"`               // 是否并发执行 0:禁止 1:允许
 	Status         uint   `json:"status" v:"required|in:0,1#状态不能为空|状态只能是0,1" dc:"状态 0:暂停 1:正常"`                               // 状态 0:暂停 1:正常
 	Remark         string `json:"remark" v:"max-length:255#备注长度不能超过255" dc:"备注"`                                              // 备注
 }
