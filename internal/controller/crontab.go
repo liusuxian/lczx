@@ -24,15 +24,29 @@ func (c *cCrontab) ClientOptions(ctx context.Context, req *v1.CrontabClientOptio
 		value := service.Crontab().GetTaskFuncDescName(task)
 		optionMap[key] = value
 	}
-	list := make([]*v1.CrontabClientOption, 0, len(optionMap))
+
+	groupList := []*v1.CrontabClientOption{
+		{
+			Value: "default",
+			Name:  "默认",
+		},
+		{
+			Value: "system",
+			Name:  "系统",
+		},
+	}
+	invokeTargetList := make([]*v1.CrontabClientOption, 0, len(optionMap))
 	for value, name := range optionMap {
-		list = append(list, &v1.CrontabClientOption{
+		invokeTargetList = append(invokeTargetList, &v1.CrontabClientOption{
 			Value: value,
 			Name:  name,
 		})
 	}
 
-	res = &v1.CrontabClientOptionsRes{List: list}
+	res = &v1.CrontabClientOptionsRes{
+		GroupList:        groupList,
+		InvokeTargetList: invokeTargetList,
+	}
 	return
 }
 

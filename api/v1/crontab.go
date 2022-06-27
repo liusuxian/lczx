@@ -12,7 +12,8 @@ type CrontabClientOptionsReq struct {
 
 // CrontabClientOptionsRes 获取定时任务客户端选项返回参数
 type CrontabClientOptionsRes struct {
-	List []*CrontabClientOption `json:"list" dc:"客户端选项列表"` // 客户端选项列表
+	GroupList        []*CrontabClientOption `json:"groupList" dc:"任务组名选项列表"`           // 任务组名选项列表
+	InvokeTargetList []*CrontabClientOption `json:"invokeTargetList" dc:"调用目标字符串选项列表"` // 调用目标字符串选项列表
 }
 
 // CrontabClientOption 定时任务客户端选项
