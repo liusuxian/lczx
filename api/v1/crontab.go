@@ -5,6 +5,22 @@ import (
 	"lczx/internal/model/entity"
 )
 
+// CrontabClientOptionsReq 获取定时任务客户端选项请求参数
+type CrontabClientOptionsReq struct {
+	g.Meta `path:"/clientOptions" tags:"CrontabClientOptions" method:"get" summary:"You first monitor/crontab/clientOptions api"`
+}
+
+// CrontabClientOptionsRes 获取定时任务客户端选项返回参数
+type CrontabClientOptionsRes struct {
+	List []*CrontabClientOption `json:"list" dc:"客户端选项列表"` // 客户端选项列表
+}
+
+// CrontabClientOption 定时任务客户端选项
+type CrontabClientOption struct {
+	Value string `json:"value" dc:"选项值"`  // 选项值
+	Name  string `json:"name" dc:"选项显示名"` // 选项显示名
+}
+
 // CrontabListReq 定时任务列表请求参数
 type CrontabListReq struct {
 	g.Meta    `path:"/list" tags:"CrontabList" method:"get" summary:"You first monitor/crontab/list api"`

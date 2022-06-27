@@ -15,6 +15,27 @@ var (
 
 type cCrontab struct{}
 
+// ClientOptions 客户端选项
+func (c *cCrontab) ClientOptions(ctx context.Context, req *v1.CrontabClientOptionsReq) (res *v1.CrontabClientOptionsRes, err error) {
+	optionMap := map[string]string{}
+	registeredTaskList := service.Crontab().GetRegisteredTask()
+	for _, task := range registeredTaskList {
+		key := service.Crontab().GetTaskInvokeTarget(task)
+		value := service.Crontab().GetTaskFuncDescName(task)
+		optionMap[key] = value
+	}
+	list := make([]*v1.CrontabClientOption, 0, len(optionMap))
+	for value, name := range optionMap {
+		list = append(list, &v1.CrontabClientOption{
+			Value: value,
+			Name:  name,
+		})
+	}
+
+	res = &v1.CrontabClientOptionsRes{List: list}
+	return
+}
+
 // List 定时任务列表
 func (c *cCrontab) List(ctx context.Context, req *v1.CrontabListReq) (res *v1.CrontabListRes, err error) {
 	var total int
