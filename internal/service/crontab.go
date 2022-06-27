@@ -1,22 +1,28 @@
 package service
 
 import (
+	"github.com/gogf/gf/v2/errors/gerror"
+	"github.com/gogf/gf/v2/os/gctx"
 	"github.com/gogf/gf/v2/os/gmutex"
 	"golang.org/x/net/context"
 	v1 "lczx/api/v1"
 	"lczx/internal/dao"
 	"lczx/internal/model/do"
 	"lczx/internal/model/entity"
+	"lczx/utility/logger"
 )
 
-type TimeTask struct {
-	FuncName string
-	Param    []string
-	Run      func(ctx context.Context)
+// 定时任务信息
+type timeTask struct {
+	name     string
+	funcName string
+	param    []string
+	run      func(ctx context.Context)
 }
 
+// 定时任务管理信息
 type sCrontab struct {
-	taskList []*TimeTask
+	taskList []*timeTask
 	mu       *gmutex.Mutex
 }
 
@@ -25,12 +31,33 @@ var (
 )
 
 func init() {
+	crontabCtx := gctx.New()
 	insCrontab.mu = gmutex.New()
-	checkUserOnlineTask := &TimeTask{
-		FuncName: "checkUserOnline",
-		Run:      Auth().CheckUserOnline,
+	// 注册定时任务
+	checkUserOnlineTask := &timeTask{
+		name:     "检查在线用户",
+		funcName: "checkUserOnline",
+		run:      Auth().CheckUserOnline,
 	}
-	insCrontab.AddTask(checkUserOnlineTask)
+	checkWdkProjectFileUploadStatus := &timeTask{
+		name:     "检查项目文件上传状态",
+		funcName: "checkWdkProjectFileUploadStatus",
+		run:      WdkProject().CheckWdkProjectFileUploadStatus,
+	}
+	insCrontab.AddTask(checkUserOnlineTask).AddTask(checkWdkProjectFileUploadStatus)
+	// 自动执行状态正常的任务
+	var crontabList []*entity.Crontab
+	var err error
+	crontabList, err = insCrontab.GetStatusNormalCrontab(crontabCtx)
+	if err != nil {
+		logger.Error(crontabCtx, "自动执行状态正常的任务失败：", err)
+	}
+	for _, crontab := range crontabList {
+		err = insCrontab.StartTask(crontab)
+		if err != nil {
+			logger.Error(crontabCtx, "启动任务失败：", err)
+		}
+	}
 }
 
 // Crontab 定时任务管理服务
@@ -109,20 +136,36 @@ func (s *sCrontab) EditCrontab(ctx context.Context, req *v1.CrontabEditReq) (err
 	return
 }
 
+// GetStatusNormalCrontab 获取状态正常的任务
+func (s *sCrontab) GetStatusNormalCrontab(ctx context.Context) (list []*entity.Crontab, err error) {
+	err = dao.Crontab.Ctx(ctx).Where(do.Crontab{Status: 1}).Scan(&list)
+	return
+}
+
+// GetRegisteredTask 获取已注册的任务
+func (s *sCrontab) GetRegisteredTask() (list []*timeTask) {
+	return s.taskList
+}
+
 // AddTask 添加任务
-func (s *sCrontab) AddTask(task *TimeTask) *sCrontab {
-	if task.FuncName == "" || task.Run == nil {
+func (s *sCrontab) AddTask(task *timeTask) *sCrontab {
+	if task.name == "" || task.funcName == "" || task.run == nil {
 		return s
 	}
 	s.taskList = append(s.taskList, task)
 	return s
 }
 
+// GetTaskNameAndFuncName 获取任务名称和任务方法名称
+func (s *sCrontab) GetTaskNameAndFuncName(timeTask *timeTask) (name, funcName string) {
+	return timeTask.name, timeTask.funcName
+}
+
 // GetTaskByName 通过方法名获取对应task信息
-func (s *sCrontab) GetTaskByName(funcName string) *TimeTask {
-	var result *TimeTask
+func (s *sCrontab) GetTaskByName(funcName string) *timeTask {
+	var result *timeTask
 	for _, item := range s.taskList {
-		if item.FuncName == funcName {
+		if item.funcName == funcName {
 			result = item
 			break
 		}
@@ -135,9 +178,20 @@ func (s *sCrontab) EditParams(funcName string, params []string) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	for _, item := range s.taskList {
-		if item.FuncName == funcName {
-			item.Param = params
+		if item.funcName == funcName {
+			item.param = params
 			break
 		}
 	}
+}
+
+// StartTask 启动任务
+func (s *sCrontab) StartTask(crontab *entity.Crontab) (err error) {
+	var task *timeTask
+	task = s.GetTaskByName(crontab.InvokeTarget)
+	if task == nil {
+		return gerror.Newf("没有绑定对应的方法", crontab.InvokeTarget)
+	}
+
+	return
 }
