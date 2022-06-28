@@ -17,34 +17,27 @@ type cCrontab struct{}
 
 // ClientOptions 客户端选项
 func (c *cCrontab) ClientOptions(ctx context.Context, req *v1.CrontabClientOptionsReq) (res *v1.CrontabClientOptionsRes, err error) {
-	optionMap := map[string]string{}
-	registeredTaskList := service.Crontab().GetRegisteredTask()
-	for _, task := range registeredTaskList {
-		key := service.Crontab().GetTaskInvokeTarget(task)
-		value := service.Crontab().GetTaskFuncDescName(task)
-		optionMap[key] = value
+	// 获取客户端选项Map
+	clientOptionMap := service.Crontab().GetClientOptionMap()
+	groupList := make([]*v1.CrontabClientOption, 0, len(clientOptionMap["groupList"]))
+	for _, v := range clientOptionMap["groupList"] {
+		name, value := service.Crontab().GetClientOption(v)
+		groupList = append(groupList, &v1.CrontabClientOption{Name: name, Value: value})
 	}
-
-	groupList := []*v1.CrontabClientOption{
-		{
-			Value: "default",
-			Name:  "默认",
-		},
-		{
-			Value: "system",
-			Name:  "系统",
-		},
+	statusList := make([]*v1.CrontabClientOption, 0, len(clientOptionMap["statusList"]))
+	for _, v := range clientOptionMap["statusList"] {
+		name, value := service.Crontab().GetClientOption(v)
+		statusList = append(statusList, &v1.CrontabClientOption{Name: name, Value: value})
 	}
-	invokeTargetList := make([]*v1.CrontabClientOption, 0, len(optionMap))
-	for value, name := range optionMap {
-		invokeTargetList = append(invokeTargetList, &v1.CrontabClientOption{
-			Value: value,
-			Name:  name,
-		})
+	invokeTargetList := make([]*v1.CrontabClientOption, 0, len(clientOptionMap["invokeTargetList"]))
+	for _, v := range clientOptionMap["invokeTargetList"] {
+		name, value := service.Crontab().GetClientOption(v)
+		invokeTargetList = append(invokeTargetList, &v1.CrontabClientOption{Name: name, Value: value})
 	}
 
 	res = &v1.CrontabClientOptionsRes{
 		GroupList:        groupList,
+		StatusList:       statusList,
 		InvokeTargetList: invokeTargetList,
 	}
 	return

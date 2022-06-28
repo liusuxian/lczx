@@ -23,10 +23,17 @@ type timeTask struct {
 	run          func(ctx context.Context) // 调用方法
 }
 
+// 客户端选项
+type clientOption struct {
+	name  string // 选项显示名
+	value string // 选项值
+}
+
 // 定时任务管理信息
 type sCrontab struct {
-	taskList []*timeTask
-	mu       *gmutex.Mutex
+	taskList        []*timeTask                // 任务列表
+	clientOptionMap map[string][]*clientOption // 客户端选项
+	mu              *gmutex.Mutex
 }
 
 var (
@@ -61,6 +68,37 @@ func init() {
 			logger.Error(crontabCtx, "启动任务失败：", err)
 		}
 	}
+	// 处理客户端选项
+	groupList := []*clientOption{
+		{
+			name:  "默认",
+			value: "default",
+		},
+		{
+			name:  "系统",
+			value: "system",
+		},
+	}
+	statusList := []*clientOption{
+		{
+			name:  "暂停",
+			value: "0",
+		},
+		{
+			name:  "正常",
+			value: "1",
+		},
+	}
+	invokeTargetList := make([]*clientOption, 0, len(insCrontab.taskList))
+	for _, v := range insCrontab.taskList {
+		invokeTargetList = append(invokeTargetList, &clientOption{
+			name:  v.funcDescName,
+			value: v.invokeTarget,
+		})
+	}
+	insCrontab.clientOptionMap["groupList"] = groupList
+	insCrontab.clientOptionMap["statusList"] = statusList
+	insCrontab.clientOptionMap["invokeTargetList"] = invokeTargetList
 }
 
 // Crontab 定时任务管理服务
@@ -173,9 +211,14 @@ func (s *sCrontab) SetCrontabStatusPause(ctx context.Context, id uint64) (err er
 	return
 }
 
-// GetRegisteredTask 获取已注册的任务
-func (s *sCrontab) GetRegisteredTask() (list []*timeTask) {
-	return s.taskList
+// GetClientOptionMap 获取客户端选项Map
+func (s *sCrontab) GetClientOptionMap() map[string][]*clientOption {
+	return s.clientOptionMap
+}
+
+// GetClientOption 获取客户端选项
+func (s *sCrontab) GetClientOption(op *clientOption) (name, value string) {
+	return op.name, op.value
 }
 
 // AddTask 添加任务
@@ -185,16 +228,6 @@ func (s *sCrontab) AddTask(task *timeTask) *sCrontab {
 	}
 	s.taskList = append(s.taskList, task)
 	return s
-}
-
-// GetTaskFuncDescName 获取调用方法描述名
-func (s *sCrontab) GetTaskFuncDescName(timeTask *timeTask) string {
-	return timeTask.funcDescName
-}
-
-// GetTaskInvokeTarget 获取调用目标字符串
-func (s *sCrontab) GetTaskInvokeTarget(timeTask *timeTask) string {
-	return timeTask.invokeTarget
 }
 
 // GetTaskByInvokeTarget 通过调用目标字符串获取对应task信息
