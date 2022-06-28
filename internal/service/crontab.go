@@ -43,6 +43,7 @@ var (
 func init() {
 	crontabCtx := gctx.New()
 	insCrontab.mu = gmutex.New()
+	insCrontab.clientOptionMap = map[string][]*clientOption{}
 	// 注册定时任务
 	checkUserOnlineTask := &timeTask{
 		funcDescName: "检查在线用户",
