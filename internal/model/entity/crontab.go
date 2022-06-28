@@ -23,5 +23,4 @@ type Crontab struct {
 	Remark         string      `json:"remark"         description:"备注"`                   // 备注
 	CreatedAt      *gtime.Time `json:"createdAt"      description:"创建时间"`                 // 创建时间
 	UpdatedAt      *gtime.Time `json:"updatedAt"      description:"更新时间"`                 // 更新时间
-	DeletedAt      *gtime.Time `json:"deletedAt"      description:"删除时间"`                 // 删除时间
 }

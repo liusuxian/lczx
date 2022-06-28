@@ -32,7 +32,6 @@ type CrontabColumns struct {
 	Remark         string // 备注
 	CreatedAt      string // 创建时间
 	UpdatedAt      string // 更新时间
-	DeletedAt      string // 删除时间
 }
 
 //  crontabColumns holds the columns for table crontab.
@@ -50,7 +49,6 @@ var crontabColumns = CrontabColumns{
 	Remark:         "remark",
 	CreatedAt:      "created_at",
 	UpdatedAt:      "updated_at",
-	DeletedAt:      "deleted_at",
 }
 
 // NewCrontabDao creates and returns a new DAO object for table data access.
