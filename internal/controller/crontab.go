@@ -110,7 +110,7 @@ func (c *cCrontab) Start(ctx context.Context, req *v1.CrontabStartReq) (res *v1.
 		err = gerror.WrapCode(code.StartCrontabFailed, err)
 		return
 	}
-	err = service.Crontab().StartTask(ctx, crontab)
+	err = service.Crontab().StartTask(ctx, crontab, true)
 	if err != nil {
 		err = gerror.WrapCode(code.StartCrontabFailed, err)
 		return
@@ -127,7 +127,7 @@ func (c *cCrontab) Stop(ctx context.Context, req *v1.CrontabStopReq) (res *v1.Cr
 		err = gerror.WrapCode(code.StopEditCrontabFailed, err)
 		return
 	}
-	err = service.Crontab().StopTask(ctx, crontab)
+	err = service.Crontab().StopTask(ctx, crontab, true)
 	if err != nil {
 		err = gerror.WrapCode(code.StopEditCrontabFailed, err)
 		return
