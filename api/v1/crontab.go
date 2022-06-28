@@ -12,9 +12,10 @@ type CrontabClientOptionsReq struct {
 
 // CrontabClientOptionsRes 获取定时任务客户端选项返回参数
 type CrontabClientOptionsRes struct {
-	GroupList        []*CrontabClientOption `json:"groupList" dc:"任务组名选项列表"`           // 任务组名选项列表
-	StatusList       []*CrontabClientOption `json:"statusList" dc:"任务状态选项列表"`          // 任务状态选项列表
-	InvokeTargetList []*CrontabClientOption `json:"invokeTargetList" dc:"调用目标字符串选项列表"` // 调用目标字符串选项列表
+	GroupList         []*CrontabClientOption `json:"groupList" dc:"任务组名选项列表"`           // 任务组名选项列表
+	MisfirePolicyList []*CrontabClientOption `json:"misfirePolicyList" dc:"计划执行策略选项列表"` // 计划执行策略选项列表
+	StatusList        []*CrontabClientOption `json:"statusList" dc:"任务状态选项列表"`          // 任务状态选项列表
+	InvokeTargetList  []*CrontabClientOption `json:"invokeTargetList" dc:"调用目标字符串选项列表"` // 调用目标字符串选项列表
 }
 
 // CrontabClientOption 定时任务客户端选项

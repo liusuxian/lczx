@@ -24,6 +24,11 @@ func (c *cCrontab) ClientOptions(ctx context.Context, req *v1.CrontabClientOptio
 		name, value := service.Crontab().GetClientOption(v)
 		groupList = append(groupList, &v1.CrontabClientOption{Name: name, Value: value})
 	}
+	misfirePolicyList := make([]*v1.CrontabClientOption, 0, len(clientOptionMap["misfirePolicyList"]))
+	for _, v := range clientOptionMap["misfirePolicyList"] {
+		name, value := service.Crontab().GetClientOption(v)
+		misfirePolicyList = append(misfirePolicyList, &v1.CrontabClientOption{Name: name, Value: value})
+	}
 	statusList := make([]*v1.CrontabClientOption, 0, len(clientOptionMap["statusList"]))
 	for _, v := range clientOptionMap["statusList"] {
 		name, value := service.Crontab().GetClientOption(v)
@@ -36,9 +41,10 @@ func (c *cCrontab) ClientOptions(ctx context.Context, req *v1.CrontabClientOptio
 	}
 
 	res = &v1.CrontabClientOptionsRes{
-		GroupList:        groupList,
-		StatusList:       statusList,
-		InvokeTargetList: invokeTargetList,
+		GroupList:         groupList,
+		MisfirePolicyList: misfirePolicyList,
+		StatusList:        statusList,
+		InvokeTargetList:  invokeTargetList,
 	}
 	return
 }

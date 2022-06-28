@@ -80,6 +80,16 @@ func init() {
 			value: "system",
 		},
 	}
+	misfirePolicyList := []*clientOption{
+		{
+			name:  "执行一次",
+			value: "0",
+		},
+		{
+			name:  "重复执行",
+			value: "1",
+		},
+	}
 	statusList := []*clientOption{
 		{
 			name:  "暂停",
@@ -98,6 +108,7 @@ func init() {
 		})
 	}
 	insCrontab.clientOptionMap["groupList"] = groupList
+	insCrontab.clientOptionMap["misfirePolicyList"] = misfirePolicyList
 	insCrontab.clientOptionMap["statusList"] = statusList
 	insCrontab.clientOptionMap["invokeTargetList"] = invokeTargetList
 }
