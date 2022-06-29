@@ -16,6 +16,17 @@ var (
 
 type cDept struct{}
 
+// ClientOptions 客户端选项
+func (c *cDept) ClientOptions(ctx context.Context, req *v1.DeptClientOptionsReq) (res *v1.DeptClientOptionsRes, err error) {
+	// 获取客户端选项Map
+	clientOptionMap := service.Dept().GetClientOptionMap()
+
+	res = &v1.DeptClientOptionsRes{
+		StatusList: clientOptionMap["statusList"],
+	}
+	return
+}
+
 // List 获取部门列表
 func (c *cDept) List(ctx context.Context, req *v1.DeptListReq) (res *v1.DeptListRes, err error) {
 	var list []*entity.Dept

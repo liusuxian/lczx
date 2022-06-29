@@ -11,16 +11,34 @@ import (
 	v1 "lczx/api/v1"
 	"lczx/internal/consts"
 	"lczx/internal/dao"
+	"lczx/internal/model"
 	"lczx/internal/model/do"
 	"lczx/internal/model/entity"
 	"lczx/utility/utils"
 )
 
-type sDept struct{}
+type sDept struct {
+	clientOptionMap map[string][]*model.ClientOption // 客户端选项
+}
 
 var (
 	insDept = sDept{}
 )
+
+func init() {
+	insDept.clientOptionMap = map[string][]*model.ClientOption{}
+	statusList := []*model.ClientOption{
+		{
+			Name:  "停用",
+			Value: "0",
+		},
+		{
+			Name:  "正常",
+			Value: "1",
+		},
+	}
+	insDept.clientOptionMap["statusList"] = statusList
+}
 
 // Dept 部门管理服务
 func Dept() *sDept {
@@ -29,15 +47,15 @@ func Dept() *sDept {
 
 // GetDeptList 获取部门列表
 func (s *sDept) GetDeptList(ctx context.Context, req *v1.DeptListReq) (list []*entity.Dept, err error) {
-	model := dao.Dept.Ctx(ctx)
+	gmodel := dao.Dept.Ctx(ctx)
 	columns := dao.Dept.Columns()
 	if req.Name != "" {
-		model = model.WhereLike(columns.Name, "%"+req.Name+"%")
+		gmodel = gmodel.WhereLike(columns.Name, "%"+req.Name+"%")
 	}
 	if req.Status != "" {
-		model = model.Where(columns.Status, req.Status)
+		gmodel = gmodel.Where(columns.Status, req.Status)
 	}
-	err = model.OrderAsc(columns.Id).Scan(&list)
+	err = gmodel.OrderAsc(columns.Id).Scan(&list)
 	return
 }
 
@@ -228,6 +246,11 @@ func (s *sDept) GetDeptTree(deptList []*entity.Dept, parentId uint64) (tree []*v
 	return
 }
 
+// GetClientOptionMap 获取客户端选项Map
+func (s *sDept) GetClientOptionMap() map[string][]*model.ClientOption {
+	return s.clientOptionMap
+}
+
 // IsDeptNameAvailable 部门名称是否可用
 func (s *sDept) IsDeptNameAvailable(ctx context.Context, name string, parentId uint64) (bool, error) {
 	count, err := dao.Dept.Ctx(ctx).Where(do.Dept{Name: name, ParentId: parentId}).Count()
@@ -306,9 +329,9 @@ func (s *sDept) SelectDeptById(ctx context.Context, id uint64) (dept *entity.Dep
 // saveDept 保存部门数据
 func (s *sDept) saveDept(ctx context.Context, req *v1.DeptAddReq, principalUser *entity.User) (err error) {
 	user := Context().Get(ctx).User
-	model := dao.Dept.Ctx(ctx).Cache(gdb.CacheOption{Duration: -1, Name: consts.DeptKey, Force: false})
+	gmodel := dao.Dept.Ctx(ctx).Cache(gdb.CacheOption{Duration: -1, Name: consts.DeptKey, Force: false})
 	if principalUser != nil {
-		model = model.Data(do.Dept{
+		gmodel = gmodel.Data(do.Dept{
 			ParentId:      req.ParentId,
 			Name:          req.Name,
 			Status:        req.Status,
@@ -317,7 +340,7 @@ func (s *sDept) saveDept(ctx context.Context, req *v1.DeptAddReq, principalUser 
 			PrincipalName: principalUser.Realname,
 		})
 	} else {
-		model = model.Data(do.Dept{
+		gmodel = gmodel.Data(do.Dept{
 			ParentId:      req.ParentId,
 			Name:          req.Name,
 			Status:        req.Status,
@@ -326,7 +349,7 @@ func (s *sDept) saveDept(ctx context.Context, req *v1.DeptAddReq, principalUser 
 			PrincipalName: "",
 		})
 	}
-	_, err = model.FieldsEx(dao.Dept.Columns().Id).Insert()
+	_, err = gmodel.FieldsEx(dao.Dept.Columns().Id).Insert()
 	return
 }
 
@@ -335,9 +358,9 @@ func (s *sDept) updateDept(ctx context.Context, req *v1.DeptEditReq, principalUs
 	user := Context().Get(ctx).User
 	err = dao.Dept.Ctx(ctx).Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		var terr error
-		model := dao.Dept.Ctx(ctx)
+		gmodel := dao.Dept.Ctx(ctx)
 		if principalUser != nil {
-			model = model.Data(do.Dept{
+			gmodel = gmodel.Data(do.Dept{
 				ParentId:      req.ParentId,
 				Name:          req.Name,
 				Status:        req.Status,
@@ -346,7 +369,7 @@ func (s *sDept) updateDept(ctx context.Context, req *v1.DeptEditReq, principalUs
 				PrincipalName: principalUser.Realname,
 			})
 		} else {
-			model = model.Data(do.Dept{
+			gmodel = gmodel.Data(do.Dept{
 				ParentId:      req.ParentId,
 				Name:          req.Name,
 				Status:        req.Status,
@@ -355,7 +378,7 @@ func (s *sDept) updateDept(ctx context.Context, req *v1.DeptEditReq, principalUs
 				PrincipalName: "",
 			})
 		}
-		_, terr = model.Where(do.Dept{Id: req.Id}).Update()
+		_, terr = gmodel.Where(do.Dept{Id: req.Id}).Update()
 		if terr != nil {
 			return terr
 		}

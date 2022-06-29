@@ -4,6 +4,7 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/os/gtime"
+	"lczx/internal/model"
 	"lczx/internal/model/entity"
 	"lczx/internal/upload"
 )
@@ -68,6 +69,18 @@ type UserPwdEditReq struct {
 
 // UserPwdEditRes 修改用户密码返回参数
 type UserPwdEditRes struct {
+}
+
+// UserClientOptionsReq 获取用户管理客户端选项请求参数
+type UserClientOptionsReq struct {
+	g.Meta `path:"/clientOptions" tags:"RoleClientOptions" method:"get" summary:"You first auth/user/clientOptions api"`
+}
+
+// UserClientOptionsRes 获取用户管理客户端选项返回参数
+type UserClientOptionsRes struct {
+	StatusList   []*model.ClientOption `json:"statusList" dc:"用户状态选项列表"`   // 用户状态选项列表
+	GenderList   []*model.ClientOption `json:"genderList" dc:"性别选项列表"`     // 性别选项列表
+	UserTypeList []*model.ClientOption `json:"userTypeList" dc:"用户类型选项列表"` // 用户类型选项列表
 }
 
 // UserListReq 用户列表请求参数

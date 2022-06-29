@@ -15,6 +15,19 @@ var (
 
 type cUserManager struct{}
 
+// ClientOptions 客户端选项
+func (c *cUserManager) ClientOptions(ctx context.Context, req *v1.UserClientOptionsReq) (res *v1.UserClientOptionsRes, err error) {
+	// 获取客户端选项Map
+	clientOptionMap := service.UserManager().GetClientOptionMap()
+
+	res = &v1.UserClientOptionsRes{
+		StatusList:   clientOptionMap["statusList"],
+		GenderList:   clientOptionMap["genderList"],
+		UserTypeList: clientOptionMap["userTypeList"],
+	}
+	return
+}
+
 // List 用户列表
 func (c *cUserManager) List(ctx context.Context, req *v1.UserListReq) (res *v1.UserListRes, err error) {
 	var total int

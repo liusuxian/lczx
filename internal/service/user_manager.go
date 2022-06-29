@@ -15,13 +15,15 @@ import (
 	"github.com/gogf/gf/v2/util/gutil"
 	v1 "lczx/api/v1"
 	"lczx/internal/dao"
+	"lczx/internal/model"
 	"lczx/internal/model/do"
 	"lczx/internal/model/entity"
 	"lczx/utility/utils"
 )
 
 type sUserManager struct {
-	notCheckAuthUserIds *gset.Set // 无需验证权限的用户ID
+	notCheckAuthUserIds *gset.Set                        // 无需验证权限的用户ID
+	clientOptionMap     map[string][]*model.ClientOption // 客户端选项
 }
 
 var (
@@ -31,6 +33,43 @@ var (
 		notCheckAuthUserIds: gset.NewFrom(notCheckAuthUserIds),
 	}
 )
+
+func init() {
+	insUserManager.clientOptionMap = map[string][]*model.ClientOption{}
+	statusList := []*model.ClientOption{
+		{
+			Name:  "停用",
+			Value: "0",
+		},
+		{
+			Name:  "正常",
+			Value: "1",
+		},
+	}
+	genderList := []*model.ClientOption{
+		{
+			Name:  "男",
+			Value: "1",
+		},
+		{
+			Name:  "女",
+			Value: "2",
+		},
+	}
+	userTypeList := []*model.ClientOption{
+		{
+			Name:  "用户",
+			Value: "0",
+		},
+		{
+			Name:  "管理员",
+			Value: "1",
+		},
+	}
+	insUserManager.clientOptionMap["statusList"] = statusList
+	insUserManager.clientOptionMap["genderList"] = genderList
+	insUserManager.clientOptionMap["userTypeList"] = userTypeList
+}
 
 // UserManager 用户管理服务
 func UserManager() *sUserManager {
@@ -56,29 +95,29 @@ func (s *sUserManager) GetUserList(ctx context.Context, req *v1.UserListReq) (to
 		deptIdsMap.Set(deptId, true)
 		Dept().FindSonIdsByParentId(depts, deptId, deptIdsMap)
 	}
-	model := dao.User.Ctx(ctx)
+	gmodel := dao.User.Ctx(ctx)
 	columns := dao.User.Columns()
 	order := "id ASC"
 	if !deptIdsMap.IsEmpty() {
-		model = model.WhereIn(columns.DeptId, deptIdsMap.Keys())
+		gmodel = gmodel.WhereIn(columns.DeptId, deptIdsMap.Keys())
 	}
 	if req.Passport != "" {
-		model = model.WhereLike(columns.Passport, "%"+req.Passport+"%")
+		gmodel = gmodel.WhereLike(columns.Passport, "%"+req.Passport+"%")
 	}
 	if req.Realname != "" {
-		model = model.WhereLike(columns.Realname, "%"+req.Realname+"%")
+		gmodel = gmodel.WhereLike(columns.Realname, "%"+req.Realname+"%")
 	}
 	if req.Mobile != "" {
-		model = model.WhereLike(columns.Mobile, "%"+req.Mobile+"%")
+		gmodel = gmodel.WhereLike(columns.Mobile, "%"+req.Mobile+"%")
 	}
 	if req.Status != "" {
-		model = model.Where(columns.Status, req.Status)
+		gmodel = gmodel.Where(columns.Status, req.Status)
 	}
 	if req.StartTime.String() != "" {
-		model = model.WhereGTE(columns.CreatedAt, req.StartTime)
+		gmodel = gmodel.WhereGTE(columns.CreatedAt, req.StartTime)
 	}
 	if req.EndTime.String() != "" {
-		model = model.WhereLTE(columns.CreatedAt, req.EndTime)
+		gmodel = gmodel.WhereLTE(columns.CreatedAt, req.EndTime)
 	}
 	if req.SortName != "" {
 		if req.SortOrder != "" {
@@ -87,11 +126,11 @@ func (s *sUserManager) GetUserList(ctx context.Context, req *v1.UserListReq) (to
 			order = req.SortName + " DESC"
 		}
 	}
-	total, err = model.Count()
+	total, err = gmodel.Count()
 	if err != nil {
 		return
 	}
-	err = model.Page(req.CurPage, req.PageSize).Order(order).Scan(&list)
+	err = gmodel.Page(req.CurPage, req.PageSize).Order(order).Scan(&list)
 	return
 }
 
@@ -267,6 +306,11 @@ func (s *sUserManager) DeleteUser(ctx context.Context, ids []uint64) (err error)
 		return nil
 	})
 	return
+}
+
+// GetClientOptionMap 获取客户端选项Map
+func (s *sUserManager) GetClientOptionMap() map[string][]*model.ClientOption {
+	return s.clientOptionMap
 }
 
 // IsPassportAvailable 用户账号是否可用
