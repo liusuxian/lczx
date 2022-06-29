@@ -9,6 +9,7 @@ import (
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gctx"
+	"github.com/gogf/gf/v2/os/gtime"
 	"github.com/gogf/gf/v2/util/gconv"
 	"github.com/gogf/gf/v2/util/grand"
 	"github.com/gogf/gf/v2/util/gutil"
@@ -304,6 +305,7 @@ func (s *sUserManager) GetProfileList(ctx context.Context, userList []*entity.Us
 		}
 		// 处理部门信息
 		dept := Dept().GetDeptById(allDepts, u.DeptId)
+		dept.DeletedAt = &gtime.Time{}
 		var deptInfo *entity.Dept
 		if err = gconv.Struct(gutil.Copy(dept), &deptInfo); err != nil {
 			return
