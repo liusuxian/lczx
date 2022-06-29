@@ -21,7 +21,7 @@ type Menu struct {
 	IsFrame    uint        `json:"isFrame"    description:"是否外链 1是 0否"`        // 是否外链 1是 0否
 	ModuleType string      `json:"moduleType" description:"所属模块"`              // 所属模块
 	Remark     string      `json:"remark"     description:"备注"`                // 备注
-	CreateAt   *gtime.Time `json:"createAt"   description:"创建时间"`              // 创建时间
-	UpdateAt   *gtime.Time `json:"updateAt"   description:"更新时间"`              // 更新时间
+	CreatedAt  *gtime.Time `json:"createdAt"  description:"创建时间"`              // 创建时间
+	UpdatedAt  *gtime.Time `json:"updatedAt"  description:"更新时间"`              // 更新时间
 	DeletedAt  *gtime.Time `json:"deletedAt"  description:"软删除时间"`             // 软删除时间
 }

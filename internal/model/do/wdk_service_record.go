@@ -19,5 +19,5 @@ type WdkServiceRecord struct {
 	XchOriginUrl interface{} // 原始行程涵url
 	XchPdfUrl    interface{} // pdf行程涵url
 	Remark       interface{} // 备注
-	CreateAt     *gtime.Time // 创建时间
+	CreatedAt    *gtime.Time // 创建时间
 }

@@ -11,9 +11,9 @@ import (
 
 // WdkReportCfg is the golang structure of table wdk_report_cfg for DAO operations like Where/Data.
 type WdkReportCfg struct {
-	g.Meta   `orm:"table:wdk_report_cfg, do:true"`
-	Id       interface{} // 报告类型ID
-	Name     interface{} // 报告类型名称
-	CreateAt *gtime.Time // 创建时间
-	UpdateAt *gtime.Time // 更新时间
+	g.Meta    `orm:"table:wdk_report_cfg, do:true"`
+	Id        interface{} // 报告类型ID
+	Name      interface{} // 报告类型名称
+	CreatedAt *gtime.Time // 创建时间
+	UpdatedAt *gtime.Time // 更新时间
 }

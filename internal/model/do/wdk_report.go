@@ -24,6 +24,6 @@ type WdkReport struct {
 	AuditTime   *gtime.Time // 审核时间
 	OriginUrl   interface{} // 原始文件url
 	PdfUrl      interface{} // pdf文件url
-	CreateAt    *gtime.Time // 上传时间
-	UpdateAt    *gtime.Time // 更新时间
+	CreatedAt   *gtime.Time // 上传时间
+	UpdatedAt   *gtime.Time // 更新时间
 }

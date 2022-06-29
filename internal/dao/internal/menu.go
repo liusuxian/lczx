@@ -30,8 +30,8 @@ type MenuColumns struct {
 	IsFrame    string // 是否外链 1是 0否
 	ModuleType string // 所属模块
 	Remark     string // 备注
-	CreateAt   string // 创建时间
-	UpdateAt   string // 更新时间
+	CreatedAt  string // 创建时间
+	UpdatedAt  string // 更新时间
 	DeletedAt  string // 软删除时间
 }
 
@@ -48,8 +48,8 @@ var menuColumns = MenuColumns{
 	IsFrame:    "is_frame",
 	ModuleType: "module_type",
 	Remark:     "remark",
-	CreateAt:   "create_at",
-	UpdateAt:   "update_at",
+	CreatedAt:  "created_at",
+	UpdatedAt:  "updated_at",
 	DeletedAt:  "deleted_at",
 }
 

@@ -21,6 +21,6 @@ type WdkReportAudit struct {
 	Excellence     uint        `json:"excellence"     description:"是否被推荐为优秀报告 0:未被推荐为优秀报告 1:已被推荐为优秀报告"` // 是否被推荐为优秀报告 0:未被推荐为优秀报告 1:已被推荐为优秀报告
 	AuditTime      *gtime.Time `json:"auditTime"      description:"审核时间"`                               // 审核时间
 	AuditOpinion   string      `json:"auditOpinion"   description:"审核意见"`                               // 审核意见
-	CreateAt       *gtime.Time `json:"createAt"       description:"创建时间"`                               // 创建时间
-	UpdateAt       *gtime.Time `json:"updateAt"       description:"更新时间"`                               // 更新时间
+	CreatedAt      *gtime.Time `json:"createdAt"      description:"创建时间"`                               // 创建时间
+	UpdatedAt      *gtime.Time `json:"updatedAt"      description:"更新时间"`                               // 更新时间
 }

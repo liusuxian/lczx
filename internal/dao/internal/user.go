@@ -35,8 +35,8 @@ type UserColumns struct {
 	Remark        string // 备注
 	LastLoginIp   string // 最后登录ip
 	LastLoginTime string // 最后登录时间
-	CreateAt      string // 创建时间
-	UpdateAt      string // 更新时间
+	CreatedAt     string // 创建时间
+	UpdatedAt     string // 更新时间
 	DeletedAt     string // 软删除时间
 }
 
@@ -58,8 +58,8 @@ var userColumns = UserColumns{
 	Remark:        "remark",
 	LastLoginIp:   "last_login_ip",
 	LastLoginTime: "last_login_time",
-	CreateAt:      "create_at",
-	UpdateAt:      "update_at",
+	CreatedAt:     "created_at",
+	UpdatedAt:     "updated_at",
 	DeletedAt:     "deleted_at",
 }
 

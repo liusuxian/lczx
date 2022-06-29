@@ -11,7 +11,7 @@ import (
 	"github.com/gogf/gf/v2/os/gctx"
 	"github.com/gogf/gf/v2/util/gconv"
 	"github.com/gogf/gf/v2/util/grand"
-	"github.com/mohae/deepcopy"
+	"github.com/gogf/gf/v2/util/gutil"
 	v1 "lczx/api/v1"
 	"lczx/internal/dao"
 	"lczx/internal/model/do"
@@ -304,8 +304,8 @@ func (s *sUserManager) GetProfileList(ctx context.Context, userList []*entity.Us
 		}
 		// 处理部门信息
 		dept := Dept().GetDeptById(allDepts, u.DeptId)
-		deptInfo := &entity.Dept{}
-		if err = gconv.Struct(deepcopy.Copy(dept), deptInfo); err != nil {
+		var deptInfo *entity.Dept
+		if err = gconv.Struct(gutil.Copy(dept), &deptInfo); err != nil {
 			return
 		}
 		deptInfo.Name = Dept().GetDeptAllNameById(allDepts, u.DeptId)
