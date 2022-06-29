@@ -11,6 +11,7 @@ import (
 	"github.com/gogf/gf/v2/os/gctx"
 	"github.com/gogf/gf/v2/util/gconv"
 	"github.com/gogf/gf/v2/util/grand"
+	"github.com/mohae/deepcopy"
 	v1 "lczx/api/v1"
 	"lczx/internal/dao"
 	"lczx/internal/model/do"
@@ -289,8 +290,7 @@ func (s *sUserManager) IsMobileAvailable(ctx context.Context, mobile string) (bo
 func (s *sUserManager) GetProfileList(ctx context.Context, userList []*entity.User) (profileInfos []*v1.UserProfileInfo, err error) {
 	// 获取所有部门
 	var allDepts []*entity.Dept
-	allDepts, err = Dept().GetAllDepts(ctx)
-	if err != nil {
+	if allDepts, err = Dept().GetAllDepts(ctx); err != nil {
 		return
 	}
 	// 组装个人中心信息
@@ -304,13 +304,15 @@ func (s *sUserManager) GetProfileList(ctx context.Context, userList []*entity.Us
 		}
 		// 处理部门信息
 		dept := Dept().GetDeptById(allDepts, u.DeptId)
-		deptInfo := Dept().CopyDept(dept)
+		deptInfo := &entity.Dept{}
+		if err = gconv.Struct(deepcopy.Copy(dept), deptInfo); err != nil {
+			return
+		}
 		deptInfo.Name = Dept().GetDeptAllNameById(allDepts, u.DeptId)
 		profileInfos[k].Dept = deptInfo
 		// 处理角色信息
 		var roles []*entity.Role
-		roles, err = Role().GetUserRoles(ctx, u.Id)
-		if err != nil {
+		if roles, err = Role().GetUserRoles(ctx, u.Id); err != nil {
 			return
 		}
 		profileInfos[k].Roles = roles

@@ -286,21 +286,6 @@ func (s *sDept) GetDeptNameListById(deptList []*entity.Dept, id uint64, deptName
 	}
 }
 
-// CopyDept 拷贝部门信息
-func (s *sDept) CopyDept(srcDept *entity.Dept) (dstDept *entity.Dept) {
-	dstDept = new(entity.Dept)
-	dstDept.Id = srcDept.Id
-	dstDept.ParentId = srcDept.ParentId
-	dstDept.Name = srcDept.Name
-	dstDept.Status = srcDept.Status
-	dstDept.CreatedBy = srcDept.CreatedBy
-	dstDept.UpdatedBy = srcDept.UpdatedBy
-	dstDept.CreateAt = srcDept.CreateAt
-	dstDept.UpdateAt = srcDept.UpdateAt
-	dstDept.DeletedAt = srcDept.DeletedAt
-	return
-}
-
 // GetDeptById 通过部门ID获取部门信息
 func (s *sDept) GetDeptById(deptList []*entity.Dept, id uint64) (dept *entity.Dept) {
 	for _, d := range deptList {
