@@ -15,6 +15,18 @@ var (
 
 type cRole struct{}
 
+// ClientOptions 客户端选项
+func (c *cRole) ClientOptions(ctx context.Context, req *v1.RoleClientOptionsReq) (res *v1.RoleClientOptionsRes, err error) {
+	// 获取客户端选项Map
+	clientOptionMap := service.Role().GetClientOptionMap()
+
+	res = &v1.RoleClientOptionsRes{
+		StatusList:    clientOptionMap["statusList"],
+		DataScopeList: clientOptionMap["dataScopeList"],
+	}
+	return
+}
+
 // List 角色列表
 func (c *cRole) List(ctx context.Context, req *v1.RoleListReq) (res *v1.RoleListRes, err error) {
 	var total int

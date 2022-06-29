@@ -11,6 +11,7 @@ import (
 	"github.com/gogf/gf/v2/util/gconv"
 	v1 "lczx/api/v1"
 	"lczx/internal/dao"
+	"lczx/internal/model"
 	"lczx/internal/model/do"
 	"lczx/internal/model/entity"
 	"lczx/utility/logger"
@@ -24,16 +25,10 @@ type timeTask struct {
 	run          func(ctx context.Context) // 调用方法
 }
 
-// 客户端选项
-type clientOption struct {
-	name  string // 选项显示名
-	value string // 选项值
-}
-
 // 定时任务管理信息
 type sCrontab struct {
-	taskList        []*timeTask                // 任务列表
-	clientOptionMap map[string][]*clientOption // 客户端选项
+	taskList        []*timeTask                      // 任务列表
+	clientOptionMap map[string][]*model.ClientOption // 客户端选项
 	mu              *gmutex.Mutex
 }
 
@@ -44,7 +39,7 @@ var (
 func init() {
 	crontabCtx := gctx.New()
 	insCrontab.mu = gmutex.New()
-	insCrontab.clientOptionMap = map[string][]*clientOption{}
+	insCrontab.clientOptionMap = map[string][]*model.ClientOption{}
 	// 注册定时任务
 	checkUserOnlineTask := &timeTask{
 		funcDescName: "检查在线用户",
@@ -69,41 +64,41 @@ func init() {
 		}
 	}
 	// 处理客户端选项
-	groupList := []*clientOption{
+	groupList := []*model.ClientOption{
 		{
-			name:  "默认",
-			value: "default",
+			Name:  "默认",
+			Value: "default",
 		},
 		{
-			name:  "系统",
-			value: "system",
-		},
-	}
-	misfirePolicyList := []*clientOption{
-		{
-			name:  "执行一次",
-			value: "0",
-		},
-		{
-			name:  "重复执行",
-			value: "1",
+			Name:  "系统",
+			Value: "system",
 		},
 	}
-	statusList := []*clientOption{
+	misfirePolicyList := []*model.ClientOption{
 		{
-			name:  "暂停",
-			value: "0",
+			Name:  "执行一次",
+			Value: "0",
 		},
 		{
-			name:  "正常",
-			value: "1",
+			Name:  "重复执行",
+			Value: "1",
 		},
 	}
-	invokeTargetList := make([]*clientOption, 0, len(insCrontab.taskList))
+	statusList := []*model.ClientOption{
+		{
+			Name:  "暂停",
+			Value: "0",
+		},
+		{
+			Name:  "正常",
+			Value: "1",
+		},
+	}
+	invokeTargetList := make([]*model.ClientOption, 0, len(insCrontab.taskList))
 	for _, v := range insCrontab.taskList {
-		invokeTargetList = append(invokeTargetList, &clientOption{
-			name:  v.funcDescName,
-			value: v.invokeTarget,
+		invokeTargetList = append(invokeTargetList, &model.ClientOption{
+			Name:  v.funcDescName,
+			Value: v.invokeTarget,
 		})
 	}
 	insCrontab.clientOptionMap["groupList"] = groupList
@@ -119,17 +114,17 @@ func Crontab() *sCrontab {
 
 // GetCrontabList 获取定时任务列表
 func (s *sCrontab) GetCrontabList(ctx context.Context, req *v1.CrontabListReq) (total int, list []*entity.Crontab, err error) {
-	model := dao.Crontab.Ctx(ctx)
+	gmodel := dao.Crontab.Ctx(ctx)
 	columns := dao.Crontab.Columns()
 	order := "id ASC"
 	if req.Name != "" {
-		model = model.WhereLike(columns.Name, "%"+req.Name+"%")
+		gmodel = gmodel.WhereLike(columns.Name, "%"+req.Name+"%")
 	}
 	if req.Group != "" {
-		model = model.Where(columns.Group, req.Group)
+		gmodel = gmodel.Where(columns.Group, req.Group)
 	}
 	if req.Status != "" {
-		model = model.Where(columns.Status, req.Status)
+		gmodel = gmodel.Where(columns.Status, req.Status)
 	}
 	if req.SortName != "" {
 		if req.SortOrder != "" {
@@ -138,10 +133,10 @@ func (s *sCrontab) GetCrontabList(ctx context.Context, req *v1.CrontabListReq) (
 			order = req.SortName + " DESC"
 		}
 	}
-	if total, err = model.Count(); err != nil {
+	if total, err = gmodel.Count(); err != nil {
 		return
 	}
-	err = model.Page(req.CurPage, req.PageSize).Order(order).Scan(&list)
+	err = gmodel.Page(req.CurPage, req.PageSize).Order(order).Scan(&list)
 	return
 }
 
@@ -323,13 +318,8 @@ func (s *sCrontab) IsInvokeTargetAvailable(ctx context.Context, invokeTarget str
 }
 
 // GetClientOptionMap 获取客户端选项Map
-func (s *sCrontab) GetClientOptionMap() map[string][]*clientOption {
+func (s *sCrontab) GetClientOptionMap() map[string][]*model.ClientOption {
 	return s.clientOptionMap
-}
-
-// GetClientOption 获取客户端选项
-func (s *sCrontab) GetClientOption(op *clientOption) (name, value string) {
-	return op.name, op.value
 }
 
 // AddTask 添加任务

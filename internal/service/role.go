@@ -11,15 +11,56 @@ import (
 	v1 "lczx/api/v1"
 	"lczx/internal/consts"
 	"lczx/internal/dao"
+	"lczx/internal/model"
 	"lczx/internal/model/do"
 	"lczx/internal/model/entity"
 )
 
-type sRole struct{}
+type sRole struct {
+	clientOptionMap map[string][]*model.ClientOption // 客户端选项
+}
 
 var (
 	insRole = sRole{}
 )
+
+func init() {
+	insRole.clientOptionMap = map[string][]*model.ClientOption{}
+	statusList := []*model.ClientOption{
+		{
+			Name:  "停用",
+			Value: "0",
+		},
+		{
+			Name:  "正常",
+			Value: "1",
+		},
+	}
+	dataScopeList := []*model.ClientOption{
+		{
+			Name:  "全部数据权限",
+			Value: "1",
+		},
+		{
+			Name:  "自定义数据权限",
+			Value: "2",
+		},
+		{
+			Name:  "本部门数据权限",
+			Value: "3",
+		},
+		{
+			Name:  "本部门及以下数据权限",
+			Value: "4",
+		},
+		{
+			Name:  "仅本人数据权限",
+			Value: "5",
+		},
+	}
+	insRole.clientOptionMap["statusList"] = statusList
+	insRole.clientOptionMap["dataScopeList"] = dataScopeList
+}
 
 // Role 角色管理服务
 func Role() *sRole {
@@ -28,25 +69,25 @@ func Role() *sRole {
 
 // GetRoleList 获取角色列表
 func (s *sRole) GetRoleList(ctx context.Context, req *v1.RoleListReq) (total int, list []*entity.Role, err error) {
-	model := dao.Role.Ctx(ctx)
+	gmodel := dao.Role.Ctx(ctx)
 	columns := dao.Role.Columns()
 	if req.Name != "" {
-		model = model.WhereLike(columns.Name, "%"+req.Name+"%")
+		gmodel = gmodel.WhereLike(columns.Name, "%"+req.Name+"%")
 	}
 	if req.Status != "" {
-		model = model.Where(columns.Status, req.Status)
+		gmodel = gmodel.Where(columns.Status, req.Status)
 	}
 	if req.StartTime.String() != "" {
-		model = model.WhereGTE(columns.CreatedAt, req.StartTime)
+		gmodel = gmodel.WhereGTE(columns.CreatedAt, req.StartTime)
 	}
 	if req.EndTime.String() != "" {
-		model = model.WhereLTE(columns.CreatedAt, req.EndTime)
+		gmodel = gmodel.WhereLTE(columns.CreatedAt, req.EndTime)
 	}
-	total, err = model.Count()
+	total, err = gmodel.Count()
 	if err != nil {
 		return
 	}
-	err = model.Page(req.CurPage, req.PageSize).OrderAsc(columns.Id).Scan(&list)
+	err = gmodel.Page(req.CurPage, req.PageSize).OrderAsc(columns.Id).Scan(&list)
 	return
 }
 
@@ -260,6 +301,11 @@ func (s *sRole) GetMenuIdsByRoleId(ctx context.Context, id uint64) (menuIds []ui
 		menuIds[k] = gconv.Uint64(v[1])
 	}
 	return
+}
+
+// GetClientOptionMap 获取客户端选项Map
+func (s *sRole) GetClientOptionMap() map[string][]*model.ClientOption {
+	return s.clientOptionMap
 }
 
 // IsRoleNameAvailable 角色名称是否可用

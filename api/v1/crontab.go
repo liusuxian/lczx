@@ -2,6 +2,7 @@ package v1
 
 import (
 	"github.com/gogf/gf/v2/frame/g"
+	"lczx/internal/model"
 	"lczx/internal/model/entity"
 )
 
@@ -12,16 +13,10 @@ type CrontabClientOptionsReq struct {
 
 // CrontabClientOptionsRes 获取定时任务客户端选项返回参数
 type CrontabClientOptionsRes struct {
-	GroupList         []*CrontabClientOption `json:"groupList" dc:"任务组名选项列表"`           // 任务组名选项列表
-	MisfirePolicyList []*CrontabClientOption `json:"misfirePolicyList" dc:"计划执行策略选项列表"` // 计划执行策略选项列表
-	StatusList        []*CrontabClientOption `json:"statusList" dc:"任务状态选项列表"`          // 任务状态选项列表
-	InvokeTargetList  []*CrontabClientOption `json:"invokeTargetList" dc:"调用目标字符串选项列表"` // 调用目标字符串选项列表
-}
-
-// CrontabClientOption 定时任务客户端选项
-type CrontabClientOption struct {
-	Name  string `json:"name" dc:"选项显示名"` // 选项显示名
-	Value string `json:"value" dc:"选项值"`  // 选项值
+	GroupList         []*model.ClientOption `json:"groupList" dc:"任务组名选项列表"`           // 任务组名选项列表
+	MisfirePolicyList []*model.ClientOption `json:"misfirePolicyList" dc:"计划执行策略选项列表"` // 计划执行策略选项列表
+	StatusList        []*model.ClientOption `json:"statusList" dc:"任务状态选项列表"`          // 任务状态选项列表
+	InvokeTargetList  []*model.ClientOption `json:"invokeTargetList" dc:"调用目标字符串选项列表"` // 调用目标字符串选项列表
 }
 
 // CrontabListReq 定时任务列表请求参数

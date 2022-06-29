@@ -19,32 +19,12 @@ type cCrontab struct{}
 func (c *cCrontab) ClientOptions(ctx context.Context, req *v1.CrontabClientOptionsReq) (res *v1.CrontabClientOptionsRes, err error) {
 	// 获取客户端选项Map
 	clientOptionMap := service.Crontab().GetClientOptionMap()
-	groupList := make([]*v1.CrontabClientOption, 0, len(clientOptionMap["groupList"]))
-	for _, v := range clientOptionMap["groupList"] {
-		name, value := service.Crontab().GetClientOption(v)
-		groupList = append(groupList, &v1.CrontabClientOption{Name: name, Value: value})
-	}
-	misfirePolicyList := make([]*v1.CrontabClientOption, 0, len(clientOptionMap["misfirePolicyList"]))
-	for _, v := range clientOptionMap["misfirePolicyList"] {
-		name, value := service.Crontab().GetClientOption(v)
-		misfirePolicyList = append(misfirePolicyList, &v1.CrontabClientOption{Name: name, Value: value})
-	}
-	statusList := make([]*v1.CrontabClientOption, 0, len(clientOptionMap["statusList"]))
-	for _, v := range clientOptionMap["statusList"] {
-		name, value := service.Crontab().GetClientOption(v)
-		statusList = append(statusList, &v1.CrontabClientOption{Name: name, Value: value})
-	}
-	invokeTargetList := make([]*v1.CrontabClientOption, 0, len(clientOptionMap["invokeTargetList"]))
-	for _, v := range clientOptionMap["invokeTargetList"] {
-		name, value := service.Crontab().GetClientOption(v)
-		invokeTargetList = append(invokeTargetList, &v1.CrontabClientOption{Name: name, Value: value})
-	}
 
 	res = &v1.CrontabClientOptionsRes{
-		GroupList:         groupList,
-		MisfirePolicyList: misfirePolicyList,
-		StatusList:        statusList,
-		InvokeTargetList:  invokeTargetList,
+		GroupList:         clientOptionMap["groupList"],
+		MisfirePolicyList: clientOptionMap["misfirePolicyList"],
+		StatusList:        clientOptionMap["statusList"],
+		InvokeTargetList:  clientOptionMap["invokeTargetList"],
 	}
 	return
 }
