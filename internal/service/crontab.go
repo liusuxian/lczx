@@ -282,15 +282,7 @@ func (s *sCrontab) DeleteCrontab(ctx context.Context, ids []uint64) (err error) 
 			return
 		}
 	}
-	if _, err = dao.Crontab.Ctx(ctx).WhereIn(dao.Crontab.Columns().Id, idSet.Slice()).Delete(); err != nil {
-		return
-	}
-	// 停止任务
-	for _, crontab := range crontabList {
-		if err = s.StopTask(ctx, crontab, false); err != nil {
-			return
-		}
-	}
+	_, err = dao.Crontab.Ctx(ctx).WhereIn(dao.Crontab.Columns().Id, idSet.Slice()).Delete()
 	return
 }
 
