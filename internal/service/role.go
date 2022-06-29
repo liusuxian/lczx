@@ -37,10 +37,10 @@ func (s *sRole) GetRoleList(ctx context.Context, req *v1.RoleListReq) (total int
 		model = model.Where(columns.Status, req.Status)
 	}
 	if req.StartTime.String() != "" {
-		model = model.WhereGTE(columns.CreateAt, req.StartTime)
+		model = model.WhereGTE(columns.CreatedAt, req.StartTime)
 	}
 	if req.EndTime.String() != "" {
-		model = model.WhereLTE(columns.CreateAt, req.EndTime)
+		model = model.WhereLTE(columns.CreatedAt, req.EndTime)
 	}
 	total, err = model.Count()
 	if err != nil {

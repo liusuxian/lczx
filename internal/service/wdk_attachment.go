@@ -24,7 +24,7 @@ func WdkAttachment() *sWdkAttachment {
 // GetWdkAttachmentRecord 获取文档库上传附件记录
 func (s *sWdkAttachment) GetWdkAttachmentRecord(ctx context.Context, projectId uint64) (list []*v1.WdkAttachmentInfo, err error) {
 	err = dao.WdkAttachmentRecord.Ctx(ctx).Where(do.WdkAttachmentRecord{ProjectId: projectId}).
-		OrderDesc(dao.WdkAttachmentRecord.Columns().CreateAt).ScanList(&list, "Record")
+		OrderDesc(dao.WdkAttachmentRecord.Columns().CreatedAt).ScanList(&list, "Record")
 	if err != nil {
 		return
 	}

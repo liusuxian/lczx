@@ -74,10 +74,10 @@ func (s *sUserManager) GetUserList(ctx context.Context, req *v1.UserListReq) (to
 		model = model.Where(columns.Status, req.Status)
 	}
 	if req.StartTime.String() != "" {
-		model = model.WhereGTE(columns.CreateAt, req.StartTime)
+		model = model.WhereGTE(columns.CreatedAt, req.StartTime)
 	}
 	if req.EndTime.String() != "" {
-		model = model.WhereLTE(columns.CreateAt, req.EndTime)
+		model = model.WhereLTE(columns.CreatedAt, req.EndTime)
 	}
 	if req.SortName != "" {
 		if req.SortOrder != "" {

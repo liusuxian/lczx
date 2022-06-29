@@ -42,9 +42,9 @@ func (s *sWdkReportAudit) GetWdkReportAuditList(ctx context.Context, req *v1.Wdk
 	if req.Status == 0 || req.Status == 2 {
 		err = model.Page(req.CurPage, req.PageSize).OrderDesc(columns.AuditTime).ScanList(&list, "ReportAudit")
 	} else if req.Rescind == 1 {
-		err = model.Page(req.CurPage, req.PageSize).OrderDesc(columns.UpdateAt).ScanList(&list, "ReportAudit")
+		err = model.Page(req.CurPage, req.PageSize).OrderDesc(columns.UpdatedAt).ScanList(&list, "ReportAudit")
 	} else {
-		err = model.Page(req.CurPage, req.PageSize).OrderAsc(columns.CreateAt).ScanList(&list, "ReportAudit")
+		err = model.Page(req.CurPage, req.PageSize).OrderAsc(columns.CreatedAt).ScanList(&list, "ReportAudit")
 	}
 	if err != nil {
 		return
@@ -158,7 +158,7 @@ func (s *sWdkReportAudit) GetWdkReportUploadAuditList(ctx context.Context, req *
 	if err != nil {
 		return
 	}
-	err = model.Page(req.CurPage, req.PageSize).OrderDesc(columns.CreateAt).ScanList(&list, "Report")
+	err = model.Page(req.CurPage, req.PageSize).OrderDesc(columns.CreatedAt).ScanList(&list, "Report")
 	if err != nil {
 		return
 	}
