@@ -13,16 +13,305 @@ import (
 	"github.com/xuri/excelize/v2"
 	v1 "lczx/api/v1"
 	"lczx/internal/dao"
+	"lczx/internal/model"
 	"lczx/internal/model/do"
 	"lczx/internal/model/entity"
 	"lczx/utility/utils"
 )
 
-type sWdkProject struct{}
+type sWdkProject struct {
+	clientOptionMap map[string][]*model.ClientOption // 客户端选项
+}
 
 var (
 	insWdkProject = sWdkProject{}
 )
+
+func init() {
+	insWdkProject.clientOptionMap = map[string][]*model.ClientOption{}
+	typeList := []*model.ClientOption{
+		{
+			Name:  "蓝绿体系",
+			Value: "0",
+		},
+		{
+			Name:  "非绿",
+			Value: "1",
+		},
+	}
+	originList := []*model.ClientOption{
+		{
+			Name:  "绿中",
+			Value: "0",
+		},
+		{
+			Name:  "分子公司",
+			Value: "1",
+		},
+		{
+			Name:  "合伙人",
+			Value: "2",
+		},
+		{
+			Name:  "老客户",
+			Value: "3",
+		},
+		{
+			Name:  "中交",
+			Value: "4",
+		},
+		{
+			Name:  "蓝城",
+			Value: "5",
+		},
+		{
+			Name:  "自拓",
+			Value: "6",
+		},
+		{
+			Name:  "其他",
+			Value: "7",
+		},
+	}
+	stepList := []*model.ClientOption{
+		{
+			Name:  "未开始",
+			Value: "0",
+		},
+		{
+			Name:  "合同签约",
+			Value: "1",
+		},
+		{
+			Name:  "项目启动会",
+			Value: "2",
+		},
+		{
+			Name:  "服务中-规划设计",
+			Value: "3",
+		},
+		{
+			Name:  "服务中-项目展示区施工",
+			Value: "4",
+		},
+		{
+			Name:  "服务中-主体结构工程",
+			Value: "5",
+		},
+		{
+			Name:  "服务中-主体安装工程",
+			Value: "6",
+		},
+		{
+			Name:  "服务中-装饰装修工程",
+			Value: "7",
+		},
+		{
+			Name:  "服务中-景观市政工程",
+			Value: "8",
+		},
+		{
+			Name:  "服务中-项目交付验收",
+			Value: "9",
+		},
+		{
+			Name:  "合同结束",
+			Value: "30",
+		},
+		{
+			Name:  "复盘",
+			Value: "31",
+		},
+	}
+	uploadStatusList := []*model.ClientOption{
+		{
+			Name:  "异常",
+			Value: "0",
+		},
+		{
+			Name:  "正常",
+			Value: "1",
+		},
+		{
+			Name:  "已完成",
+			Value: "2",
+		},
+	}
+	businessTypeList := []*model.ClientOption{
+		{
+			Name:  "物业",
+			Value: "0",
+		},
+		{
+			Name:  "专项",
+			Value: "1",
+		},
+		{
+			Name:  "全过程",
+			Value: "2",
+		},
+	}
+	businessFormsList := []*model.ClientOption{
+		{
+			Name:  "住宅",
+			Value: "0",
+		},
+		{
+			Name:  "小高层",
+			Value: "1",
+		},
+		{
+			Name:  "高层",
+			Value: "2",
+		},
+		{
+			Name:  "超高层",
+			Value: "3",
+		},
+		{
+			Name:  "公寓",
+			Value: "4",
+		},
+		{
+			Name:  "合院",
+			Value: "5",
+		},
+		{
+			Name:  "叠墅",
+			Value: "6",
+		},
+		{
+			Name:  "排屋",
+			Value: "7",
+		},
+		{
+			Name:  "多层",
+			Value: "8",
+		},
+		{
+			Name:  "会所",
+			Value: "9",
+		},
+		{
+			Name:  "商住",
+			Value: "10",
+		},
+		{
+			Name:  "综合体",
+			Value: "11",
+		},
+		{
+			Name:  "产业园",
+			Value: "12",
+		},
+		{
+			Name:  "酒店",
+			Value: "13",
+		},
+		{
+			Name:  "酒店式公寓",
+			Value: "14",
+		},
+		{
+			Name:  "商业",
+			Value: "15",
+		},
+		{
+			Name:  "普通商业",
+			Value: "16",
+		},
+		{
+			Name:  "公共配套",
+			Value: "17",
+		},
+		{
+			Name:  "办公",
+			Value: "18",
+		},
+		{
+			Name:  "公寓式办公",
+			Value: "19",
+		},
+		{
+			Name:  "厂房",
+			Value: "20",
+		},
+	}
+	contractStatusList := []*model.ClientOption{
+		{
+			Name:  "新签",
+			Value: "0",
+		},
+		{
+			Name:  "续签",
+			Value: "1",
+		},
+		{
+			Name:  "未签",
+			Value: "2",
+		},
+	}
+	deepCultureList := []*model.ClientOption{
+		{
+			Name:  "否",
+			Value: "0",
+		},
+		{
+			Name:  "是",
+			Value: "1",
+		},
+	}
+	statusList := []*model.ClientOption{
+		{
+			Name:  "服务中",
+			Value: "0",
+		},
+		{
+			Name:  "暂停",
+			Value: "1",
+		},
+		{
+			Name:  "提前终止",
+			Value: "2",
+		},
+		{
+			Name:  "跟踪期",
+			Value: "3",
+		},
+		{
+			Name:  "洽谈中",
+			Value: "4",
+		},
+		{
+			Name:  "正常结束",
+			Value: "5",
+		},
+	}
+	signCompanyList := []*model.ClientOption{
+		{
+			Name:  "绿城房地产咨询集团有限公司",
+			Value: "0",
+		},
+		{
+			Name:  "浙江幸福绿城房地产咨询有限公司",
+			Value: "1",
+		},
+		{
+			Name:  "浙江美好绿城房地产咨询有限公司",
+			Value: "2",
+		},
+	}
+	insWdkProject.clientOptionMap["typeList"] = typeList
+	insWdkProject.clientOptionMap["originList"] = originList
+	insWdkProject.clientOptionMap["stepList"] = stepList
+	insWdkProject.clientOptionMap["uploadStatusList"] = uploadStatusList
+	insWdkProject.clientOptionMap["businessTypeList"] = businessTypeList
+	insWdkProject.clientOptionMap["businessFormsList"] = businessFormsList
+	insWdkProject.clientOptionMap["contractStatusList"] = contractStatusList
+	insWdkProject.clientOptionMap["deepCultureList"] = deepCultureList
+	insWdkProject.clientOptionMap["statusList"] = statusList
+	insWdkProject.clientOptionMap["signCompanyList"] = signCompanyList
+}
 
 // WdkProject 文档库项目管理服务
 func WdkProject() *sWdkProject {
@@ -47,50 +336,50 @@ func (s *sWdkProject) GetWdkProjectList(ctx context.Context, req *v1.WdkProjectL
 			return
 		}
 	}
-	model := dao.WdkProject.Ctx(ctx)
+	gmodel := dao.WdkProject.Ctx(ctx)
 	columns := dao.WdkProject.Columns()
 	order := "id DESC"
 	if req.Name != "" {
-		model = model.WhereLike(columns.Name, "%"+req.Name+"%")
+		gmodel = gmodel.WhereLike(columns.Name, "%"+req.Name+"%")
 	}
 	if req.Type != "" {
-		model = model.Where(columns.Type, req.Type)
+		gmodel = gmodel.Where(columns.Type, req.Type)
 	}
 	if req.Origin != "" {
-		model = model.Where(columns.Origin, req.Origin)
+		gmodel = gmodel.Where(columns.Origin, req.Origin)
 	}
 	if req.Step != "" {
-		model = model.Where(columns.Step, req.Step)
+		gmodel = gmodel.Where(columns.Step, req.Step)
 	}
 	if req.FileUploadStatus != "" {
-		model = model.Where(columns.FileUploadStatus, req.FileUploadStatus)
+		gmodel = gmodel.Where(columns.FileUploadStatus, req.FileUploadStatus)
 	}
 	if req.BusinessType != "" {
-		model = model.Where(columns.BusinessType, req.BusinessType)
+		gmodel = gmodel.Where(columns.BusinessType, req.BusinessType)
 	}
 	if !projectIdsMap.IsEmpty() {
-		model = model.WhereIn(columns.Id, projectIdsMap.Keys())
+		gmodel = gmodel.WhereIn(columns.Id, projectIdsMap.Keys())
 	}
 	if req.ContractStatus != "" {
-		model = model.Where(columns.ContractStatus, req.ContractStatus)
+		gmodel = gmodel.Where(columns.ContractStatus, req.ContractStatus)
 	}
 	if req.ContractSum != "" {
-		model = model.WhereLike(columns.ContractSum, "%"+req.ContractSum+"%")
+		gmodel = gmodel.WhereLike(columns.ContractSum, "%"+req.ContractSum+"%")
 	}
 	if req.DeepCulture != "" {
-		model = model.Where(columns.DeepCulture, req.DeepCulture)
+		gmodel = gmodel.Where(columns.DeepCulture, req.DeepCulture)
 	}
 	if req.Status != "" {
-		model = model.Where(columns.Status, req.Status)
+		gmodel = gmodel.Where(columns.Status, req.Status)
 	}
 	if req.EntrustCompany != "" {
-		model = model.WhereLike(columns.EntrustCompany, "%"+req.EntrustCompany+"%")
+		gmodel = gmodel.WhereLike(columns.EntrustCompany, "%"+req.EntrustCompany+"%")
 	}
 	if req.SignCompany != "" {
-		model = model.Where(columns.SignCompany, req.SignCompany)
+		gmodel = gmodel.Where(columns.SignCompany, req.SignCompany)
 	}
 	if req.PrincipalName != "" {
-		model = model.WhereLike(columns.PrincipalName, "%"+req.PrincipalName+"%")
+		gmodel = gmodel.WhereLike(columns.PrincipalName, "%"+req.PrincipalName+"%")
 	}
 	deptIdsMap := gmap.New()
 	if req.DeptId != "" {
@@ -105,18 +394,18 @@ func (s *sWdkProject) GetWdkProjectList(ctx context.Context, req *v1.WdkProjectL
 		Dept().FindSonIdsByParentId(depts, deptId, deptIdsMap)
 	}
 	if !deptIdsMap.IsEmpty() {
-		model = model.WhereIn(columns.DeptId, deptIdsMap.Keys())
+		gmodel = gmodel.WhereIn(columns.DeptId, deptIdsMap.Keys())
 	}
 	if req.Region != "" {
-		model = model.WhereLike(columns.Region, "%"+req.Region+"%")
+		gmodel = gmodel.WhereLike(columns.Region, "%"+req.Region+"%")
 	}
 	if req.StartTime.String() != "" {
 		startTime := req.StartTime.Format("Y-m-d")
-		model = model.WhereGTE(columns.StartTime, startTime)
+		gmodel = gmodel.WhereGTE(columns.StartTime, startTime)
 	}
 	if req.EndTime.String() != "" {
 		endTime := req.EndTime.Format("Y-m-d")
-		model = model.WhereLTE(columns.EndTime, endTime)
+		gmodel = gmodel.WhereLTE(columns.EndTime, endTime)
 	}
 	if req.SortName != "" {
 		if req.SortOrder != "" {
@@ -125,12 +414,10 @@ func (s *sWdkProject) GetWdkProjectList(ctx context.Context, req *v1.WdkProjectL
 			order = req.SortName + " DESC"
 		}
 	}
-	total, err = model.Count()
-	if err != nil {
+	if total, err = gmodel.Count(); err != nil {
 		return
 	}
-	err = model.Page(req.CurPage, req.PageSize).Order(order).ScanList(&list, "ProjectInfo")
-	if err != nil {
+	if err = gmodel.Page(req.CurPage, req.PageSize).Order(order).ScanList(&list, "ProjectInfo"); err != nil {
 		return
 	}
 	err = dao.WdkProjectBusinessforms.Ctx(ctx).Where(dao.WdkProjectBusinessforms.Columns().ProjectId, gdb.ListItemValuesUnique(list, "ProjectInfo", "Id")).
@@ -269,50 +556,50 @@ func (s *sWdkProject) ExportWdkProject(ctx context.Context, req *v1.WdkProjectEx
 			return
 		}
 	}
-	model := dao.WdkProject.Ctx(ctx)
+	gmodel := dao.WdkProject.Ctx(ctx)
 	columns := dao.WdkProject.Columns()
 	order := "id DESC"
 	if req.Name != "" {
-		model = model.WhereLike(columns.Name, "%"+req.Name+"%")
+		gmodel = gmodel.WhereLike(columns.Name, "%"+req.Name+"%")
 	}
 	if req.Type != "" {
-		model = model.Where(columns.Type, req.Type)
+		gmodel = gmodel.Where(columns.Type, req.Type)
 	}
 	if req.Origin != "" {
-		model = model.Where(columns.Origin, req.Origin)
+		gmodel = gmodel.Where(columns.Origin, req.Origin)
 	}
 	if req.Step != "" {
-		model = model.Where(columns.Step, req.Step)
+		gmodel = gmodel.Where(columns.Step, req.Step)
 	}
 	if req.FileUploadStatus != "" {
-		model = model.Where(columns.FileUploadStatus, req.FileUploadStatus)
+		gmodel = gmodel.Where(columns.FileUploadStatus, req.FileUploadStatus)
 	}
 	if req.BusinessType != "" {
-		model = model.Where(columns.BusinessType, req.BusinessType)
+		gmodel = gmodel.Where(columns.BusinessType, req.BusinessType)
 	}
 	if !projectIdsMap.IsEmpty() {
-		model = model.WhereIn(columns.Id, projectIdsMap.Keys())
+		gmodel = gmodel.WhereIn(columns.Id, projectIdsMap.Keys())
 	}
 	if req.ContractStatus != "" {
-		model = model.Where(columns.ContractStatus, req.ContractStatus)
+		gmodel = gmodel.Where(columns.ContractStatus, req.ContractStatus)
 	}
 	if req.ContractSum != "" {
-		model = model.WhereLike(columns.ContractSum, "%"+req.ContractSum+"%")
+		gmodel = gmodel.WhereLike(columns.ContractSum, "%"+req.ContractSum+"%")
 	}
 	if req.DeepCulture != "" {
-		model = model.Where(columns.DeepCulture, req.DeepCulture)
+		gmodel = gmodel.Where(columns.DeepCulture, req.DeepCulture)
 	}
 	if req.Status != "" {
-		model = model.Where(columns.Status, req.Status)
+		gmodel = gmodel.Where(columns.Status, req.Status)
 	}
 	if req.EntrustCompany != "" {
-		model = model.WhereLike(columns.EntrustCompany, "%"+req.EntrustCompany+"%")
+		gmodel = gmodel.WhereLike(columns.EntrustCompany, "%"+req.EntrustCompany+"%")
 	}
 	if req.SignCompany != "" {
-		model = model.Where(columns.SignCompany, req.SignCompany)
+		gmodel = gmodel.Where(columns.SignCompany, req.SignCompany)
 	}
 	if req.PrincipalName != "" {
-		model = model.WhereLike(columns.PrincipalName, "%"+req.PrincipalName+"%")
+		gmodel = gmodel.WhereLike(columns.PrincipalName, "%"+req.PrincipalName+"%")
 	}
 	deptIdsMap := gmap.New()
 	if req.DeptId != "" {
@@ -326,21 +613,21 @@ func (s *sWdkProject) ExportWdkProject(ctx context.Context, req *v1.WdkProjectEx
 		Dept().FindSonIdsByParentId(depts, deptId, deptIdsMap)
 	}
 	if !deptIdsMap.IsEmpty() {
-		model = model.WhereIn(columns.DeptId, deptIdsMap.Keys())
+		gmodel = gmodel.WhereIn(columns.DeptId, deptIdsMap.Keys())
 	}
 	if req.Region != "" {
-		model = model.WhereLike(columns.Region, "%"+req.Region+"%")
+		gmodel = gmodel.WhereLike(columns.Region, "%"+req.Region+"%")
 	}
 	if req.StartTime.String() != "" {
 		startTime := req.StartTime.Format("Y-m-d")
-		model = model.WhereGTE(columns.StartTime, startTime)
+		gmodel = gmodel.WhereGTE(columns.StartTime, startTime)
 	}
 	if req.EndTime.String() != "" {
 		endTime := req.EndTime.Format("Y-m-d")
-		model = model.WhereLTE(columns.EndTime, endTime)
+		gmodel = gmodel.WhereLTE(columns.EndTime, endTime)
 	}
 	var total int
-	if total, err = model.Count(); err != nil {
+	if total, err = gmodel.Count(); err != nil {
 		return
 	}
 	// 循环读取
@@ -352,7 +639,7 @@ func (s *sWdkProject) ExportWdkProject(ctx context.Context, req *v1.WdkProjectEx
 		"合同金额（单位：万元）", "是否深耕", "服务状态", "委托方公司", "签订公司", "负责人", "所属部门", "地区", "开始时间", "结束时间", "备注"})
 	for {
 		var list []*v1.WdkProjectInfo
-		if err = model.Page(curPage, pageSize).Order(order).ScanList(&list, "ProjectInfo"); err != nil {
+		if err = gmodel.Page(curPage, pageSize).Order(order).ScanList(&list, "ProjectInfo"); err != nil {
 			return
 		}
 		if err = dao.WdkProjectBusinessforms.Ctx(ctx).Where(dao.WdkProjectBusinessforms.Columns().ProjectId, gdb.ListItemValuesUnique(list, "ProjectInfo", "Id")).
@@ -396,6 +683,11 @@ func (s *sWdkProject) ExportWdkProject(ctx context.Context, req *v1.WdkProjectEx
 		return
 	}
 	return
+}
+
+// GetClientOptionMap 获取客户端选项Map
+func (s *sWdkProject) GetClientOptionMap() map[string][]*model.ClientOption {
+	return s.clientOptionMap
 }
 
 // IsWdkProjectNameAvailable 文档库项目名称是否可用
