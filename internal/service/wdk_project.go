@@ -791,25 +791,22 @@ func (s *sWdkProject) CheckWdkProjectFileUploadStatus(ctx context.Context) {
 	}
 	// 循环读取
 	wpColumns := dao.WdkProject.Columns()
-	wpbModel := dao.WdkProjectBusinessforms.Ctx(ctx)
-	wpbColumns := dao.WdkProjectBusinessforms.Columns()
 	curPage := 1
 	pageSize := 50
 	for {
-		var list []*v1.WdkProjectInfo
-		if err = wpModel.Page(curPage, pageSize).OrderDesc(wpColumns.Id).ScanList(&list, "ProjectInfo"); err != nil {
+		var list []*entity.WdkProject
+		if err = wpModel.WhereNot(wpColumns.FileUploadStatus, 2).Page(curPage, pageSize).OrderDesc(wpColumns.Id).
+			Scan(&list); err != nil {
 			logger.Error(ctx, "Get WdkProject Info Error: ", err)
-			return
-		}
-		if err = wpbModel.Where(wpbColumns.ProjectId, gdb.ListItemValuesUnique(list, "ProjectInfo", "Id")).
-			ScanList(&list, "Businessforms", "ProjectInfo", "ProjectId:Id"); err != nil {
 			return
 		}
 		if list == nil {
 			return
 		}
 		for _, v := range list {
-			fmt.Println("111111111111111111111111111111111: ", v)
+			lastTime := v.FileUploadLastTime
+			fmt.Println("11111111111111111111111: ", lastTime)
+			fmt.Printf("22222222222222222222222: %v\n", v)
 		}
 		if curPage*pageSize >= total {
 			return
