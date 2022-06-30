@@ -16,6 +16,7 @@ import (
 	"lczx/internal/model"
 	"lczx/internal/model/do"
 	"lczx/internal/model/entity"
+	"lczx/utility/logger"
 	"lczx/utility/utils"
 )
 
@@ -653,18 +654,18 @@ func (s *sWdkProject) ExportWdkProject(ctx context.Context, req *v1.WdkProjectEx
 			excelData = append(excelData, []any{
 				v.ProjectInfo.Id,
 				v.ProjectInfo.Name,
-				s.getWdkProjectType(v.ProjectInfo.Type),
-				s.getWdkProjectOrigin(v.ProjectInfo.Origin),
-				s.getWdkProjectStep(v.ProjectInfo.Step),
-				s.getWdkProjectFileUploadStatus(v.ProjectInfo.FileUploadStatus),
-				s.getWdkProjectBusinessType(v.ProjectInfo.BusinessType),
+				s.getClientOption(v.ProjectInfo.Type, "typeList"),
+				s.getClientOption(v.ProjectInfo.Origin, "originList"),
+				s.getClientOption(v.ProjectInfo.Step, "stepList"),
+				s.getClientOption(v.ProjectInfo.FileUploadStatus, "uploadStatusList"),
+				s.getClientOption(v.ProjectInfo.BusinessType, "businessTypeList"),
 				s.getWdkProjectBusinessforms(v.Businessforms),
-				s.getWdkProjectContractStatus(v.ProjectInfo.ContractStatus),
+				s.getClientOption(v.ProjectInfo.ContractStatus, "contractStatusList"),
 				v.ProjectInfo.ContractSum,
-				s.getWdkProjectDeepCulture(v.ProjectInfo.DeepCulture),
-				s.getWdkProjectStatus(v.ProjectInfo.Status),
+				s.getClientOption(v.ProjectInfo.DeepCulture, "deepCultureList"),
+				s.getClientOption(v.ProjectInfo.Status, "statusList"),
 				v.ProjectInfo.EntrustCompany,
-				s.getWdkProjectSignCompany(v.ProjectInfo.SignCompany),
+				s.getClientOption(v.ProjectInfo.SignCompany, "signCompanyList"),
 				v.ProjectInfo.PrincipalName,
 				v.ProjectInfo.DeptName,
 				v.ProjectInfo.Region,
@@ -779,8 +780,42 @@ func (s *sWdkProject) SetWdkProjectStepByReportStep(ctx context.Context, id uint
 	return
 }
 
+// CheckWdkProjectFileUploadStatus 检查项目文件上传状态
 func (s *sWdkProject) CheckWdkProjectFileUploadStatus(ctx context.Context) {
-	fmt.Println("111111111111111111111111111111111111111111111111", ctx)
+	var total int
+	var err error
+	wpModel := dao.WdkProject.Ctx(ctx)
+	if total, err = wpModel.Count(); err != nil {
+		logger.Error(ctx, "Get WdkProject Count Error: ", err)
+		return
+	}
+	// 循环读取
+	wpColumns := dao.WdkProject.Columns()
+	wpbModel := dao.WdkProjectBusinessforms.Ctx(ctx)
+	wpbColumns := dao.WdkProjectBusinessforms.Columns()
+	curPage := 1
+	pageSize := 50
+	for {
+		var list []*v1.WdkProjectInfo
+		if err = wpModel.Page(curPage, pageSize).OrderDesc(wpColumns.Id).ScanList(&list, "ProjectInfo"); err != nil {
+			logger.Error(ctx, "Get WdkProject Info Error: ", err)
+			return
+		}
+		if err = wpbModel.Where(wpbColumns.ProjectId, gdb.ListItemValuesUnique(list, "ProjectInfo", "Id")).
+			ScanList(&list, "Businessforms", "ProjectInfo", "ProjectId:Id"); err != nil {
+			return
+		}
+		if list == nil {
+			return
+		}
+		for _, v := range list {
+			fmt.Println("111111111111111111111111111111111: ", v)
+		}
+		if curPage*pageSize >= total {
+			return
+		}
+		curPage++
+	}
 }
 
 // saveWdkProject 保存文档库项目数据
@@ -881,103 +916,15 @@ func (s *sWdkProject) updateWdkProject(ctx context.Context, req *v1.WdkProjectEd
 	return nil
 }
 
-// getWdkProjectType 获取项目性质中文名称
-func (s *sWdkProject) getWdkProjectType(ptype uint) (name string) {
-	switch ptype {
-	case 0:
-		name = "蓝绿体系"
-	case 1:
-		name = "非绿"
-	default:
-		name = ""
-	}
-	return
-}
-
-// getWdkProjectOrigin 获取项目来源中文名称
-func (s *sWdkProject) getWdkProjectOrigin(origin uint) (name string) {
-	switch origin {
-	case 0:
-		name = "绿中"
-	case 1:
-		name = "分子公司"
-	case 2:
-		name = "合伙人"
-	case 3:
-		name = "老客户"
-	case 4:
-		name = "中交"
-	case 5:
-		name = "蓝城"
-	case 6:
-		name = "自拓"
-	case 7:
-		name = "其他"
-	default:
-		name = ""
-	}
-	return
-}
-
-// getWdkProjectStep 获取项目阶段中文名称
-func (s *sWdkProject) getWdkProjectStep(step uint) (name string) {
-	switch step {
-	case 0:
-		name = "未开始"
-	case 1:
-		name = "合同签约"
-	case 2:
-		name = "项目启动会"
-	case 3:
-		name = "服务中-规划设计"
-	case 4:
-		name = "服务中-项目展示区施工"
-	case 5:
-		name = "服务中-主体结构工程"
-	case 6:
-		name = "服务中-主体安装工程"
-	case 7:
-		name = "服务中-装饰装修工程"
-	case 8:
-		name = "服务中-景观市政工程"
-	case 9:
-		name = "服务中-项目交付验收"
-	case 30:
-		name = "合同结束"
-	case 31:
-		name = "复盘"
-	default:
-		name = ""
-	}
-	return
-}
-
-// getWdkProjectFileUploadStatus 获取项目文件上传状态中文名称
-func (s *sWdkProject) getWdkProjectFileUploadStatus(fileUploadStatus uint) (name string) {
-	switch fileUploadStatus {
-	case 0:
-		name = "异常"
-	case 1:
-		name = "正常"
-	case 2:
-		name = "已完成"
-	default:
-		name = ""
-	}
-	return
-}
-
-// getWdkProjectBusinessType 获取业务类型中文名称
-func (s *sWdkProject) getWdkProjectBusinessType(businessType uint) (name string) {
-	switch businessType {
-	case 0:
-		name = "物业"
-	case 1:
-		name = "专项"
-	case 2:
-		name = "全过程"
-	default:
-		name = ""
+// getClientOption 通过 value 获取 name
+func (s *sWdkProject) getClientOption(value uint, optionKey string) (name string) {
+	valueStr := gconv.String(value)
+	options := s.GetClientOptionMap()[optionKey]
+	for _, option := range options {
+		if option.Value == valueStr {
+			name = option.Name
+			return
+		}
 	}
 	return
 }
@@ -986,118 +933,10 @@ func (s *sWdkProject) getWdkProjectBusinessType(businessType uint) (name string)
 func (s *sWdkProject) getWdkProjectBusinessforms(businessforms []*entity.WdkProjectBusinessforms) (name string) {
 	nameList := make([]string, 0, len(businessforms))
 	for _, v := range businessforms {
-		switch v.BusinessForms {
-		case 0:
-			nameList = append(nameList, "住宅")
-		case 1:
-			nameList = append(nameList, "小高层")
-		case 2:
-			nameList = append(nameList, "高层")
-		case 3:
-			nameList = append(nameList, "超高层")
-		case 4:
-			nameList = append(nameList, "公寓")
-		case 5:
-			nameList = append(nameList, "合院")
-		case 6:
-			nameList = append(nameList, "叠墅")
-		case 7:
-			nameList = append(nameList, "排屋")
-		case 8:
-			nameList = append(nameList, "多层")
-		case 9:
-			nameList = append(nameList, "会所")
-		case 10:
-			nameList = append(nameList, "商住")
-		case 11:
-			nameList = append(nameList, "综合体")
-		case 12:
-			nameList = append(nameList, "产业园")
-		case 13:
-			nameList = append(nameList, "酒店")
-		case 14:
-			nameList = append(nameList, "酒店式公寓")
-		case 15:
-			nameList = append(nameList, "商业")
-		case 16:
-			nameList = append(nameList, "普通商业")
-		case 17:
-			nameList = append(nameList, "公共配套")
-		case 18:
-			nameList = append(nameList, "办公")
-		case 19:
-			nameList = append(nameList, "公寓式办公")
-		case 20:
-			nameList = append(nameList, "厂房")
-		default:
-			nameList = append(nameList, "")
-		}
+		option := s.getClientOption(v.BusinessForms, "businessFormsList")
+		nameList = append(nameList, option)
 	}
 	name = gstr.Join(nameList, ", ")
-	return
-}
-
-// getWdkProjectContractStatus 获取签约状态中文名称
-func (s *sWdkProject) getWdkProjectContractStatus(contractStatus uint) (name string) {
-	switch contractStatus {
-	case 0:
-		name = "新签"
-	case 1:
-		name = "续签"
-	case 2:
-		name = "未签"
-	default:
-		name = ""
-	}
-	return
-}
-
-// getWdkProjectDeepCulture 获取是否为深耕中文名称
-func (s *sWdkProject) getWdkProjectDeepCulture(deepCulture uint) (name string) {
-	switch deepCulture {
-	case 0:
-		name = "否"
-	case 1:
-		name = "是"
-	default:
-		name = ""
-	}
-	return
-}
-
-// getWdkProjectStatus 获取服务状态中文名称
-func (s *sWdkProject) getWdkProjectStatus(status uint) (name string) {
-	switch status {
-	case 0:
-		name = "服务中"
-	case 1:
-		name = "暂停"
-	case 2:
-		name = "提前终止"
-	case 3:
-		name = "跟踪期"
-	case 4:
-		name = "洽谈中"
-	case 5:
-		name = "正常结束"
-	default:
-		name = ""
-	}
-	return
-}
-
-// getWdkProjectSignCompany 获取我方签订公司中文名称
-func (s *sWdkProject) getWdkProjectSignCompany(signCompany uint) (name string) {
-	switch signCompany {
-	case 0:
-		name = "绿城房地产咨询集团有限公司"
-	case 1:
-		name = "浙江幸福绿城房地产咨询有限公司"
-	case 2:
-		name = "浙江美好绿城房地产咨询有限公司"
-	default:
-		name = ""
-	}
 	return
 }
 

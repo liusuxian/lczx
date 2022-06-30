@@ -56,11 +56,11 @@ func init() {
 	var crontabList []*entity.Crontab
 	var err error
 	if crontabList, err = insCrontab.GetStatusNormalCrontab(crontabCtx); err != nil {
-		logger.Error(crontabCtx, "自动执行状态正常的任务失败：", err)
+		logger.Error(crontabCtx, "Get Status Normal Crontab Error: ", err)
 	}
 	for _, crontab := range crontabList {
 		if err = insCrontab.StartTask(crontabCtx, crontab, false); err != nil {
-			logger.Error(crontabCtx, "启动任务失败：", err)
+			logger.Error(crontabCtx, "Start Task Error: ", err)
 		}
 	}
 	// 处理客户端选项
