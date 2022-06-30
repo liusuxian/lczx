@@ -8,7 +8,7 @@ import (
 
 // DeptClientOptionsReq 获取部门管理客户端选项请求参数
 type DeptClientOptionsReq struct {
-	g.Meta `path:"/clientOptions" tags:"RoleClientOptions" method:"get" summary:"You first auth/dept/clientOptions api"`
+	g.Meta `path:"/clientOptions" tags:"DeptClientOptions" method:"get" summary:"You first auth/dept/clientOptions api"`
 }
 
 // DeptClientOptionsRes 获取部门管理客户端选项返回参数

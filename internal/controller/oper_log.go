@@ -15,6 +15,18 @@ var (
 
 type cOperLog struct{}
 
+// ClientOptions 客户端选项
+func (c *cOperLog) ClientOptions(ctx context.Context, req *v1.OperLogClientOptionsReq) (res *v1.OperLogClientOptionsRes, err error) {
+	// 获取客户端选项Map
+	clientOptionMap := service.OperLog().GetClientOptionMap()
+
+	res = &v1.OperLogClientOptionsRes{
+		StatusList:   clientOptionMap["statusList"],
+		OperTypeList: clientOptionMap["operTypeList"],
+	}
+	return
+}
+
 // List 操作日志列表
 func (c *cOperLog) List(ctx context.Context, req *v1.OperLogListReq) (res *v1.OperLogListRes, err error) {
 	var total int

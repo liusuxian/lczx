@@ -3,8 +3,20 @@ package v1
 import (
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gtime"
+	"lczx/internal/model"
 	"lczx/internal/model/entity"
 )
+
+// OperLogClientOptionsReq 获取操作日志客户端选项请求参数
+type OperLogClientOptionsReq struct {
+	g.Meta `path:"/clientOptions" tags:"OperLogClientOptions" method:"get" summary:"You first monitor/operLog/clientOptions api"`
+}
+
+// OperLogClientOptionsRes 获取操作日志客户端选项返回参数
+type OperLogClientOptionsRes struct {
+	StatusList   []*model.ClientOption `json:"statusList" dc:"操作状态选项列表"`   // 操作状态选项列表
+	OperTypeList []*model.ClientOption `json:"operTypeList" dc:"操作类型选项列表"` // 操作类型选项列表
+}
 
 // OperLogListReq 操作日志列表请求参数
 type OperLogListReq struct {

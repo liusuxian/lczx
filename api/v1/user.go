@@ -73,7 +73,7 @@ type UserPwdEditRes struct {
 
 // UserClientOptionsReq 获取用户管理客户端选项请求参数
 type UserClientOptionsReq struct {
-	g.Meta `path:"/clientOptions" tags:"RoleClientOptions" method:"get" summary:"You first auth/user/clientOptions api"`
+	g.Meta `path:"/clientOptions" tags:"UserClientOptions" method:"get" summary:"You first auth/user/clientOptions api"`
 }
 
 // UserClientOptionsRes 获取用户管理客户端选项返回参数

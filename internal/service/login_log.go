@@ -5,12 +5,14 @@ import (
 	"github.com/gogf/gf/v2/os/grpool"
 	v1 "lczx/api/v1"
 	"lczx/internal/dao"
+	"lczx/internal/model"
 	"lczx/internal/model/entity"
 	"lczx/utility/logger"
 )
 
 type sLoginLog struct {
-	pool *grpool.Pool
+	pool            *grpool.Pool
+	clientOptionMap map[string][]*model.ClientOption // 客户端选项
 }
 
 var (
@@ -18,6 +20,21 @@ var (
 		pool: grpool.New(100),
 	}
 )
+
+func init() {
+	insLoginLog.clientOptionMap = map[string][]*model.ClientOption{}
+	statusList := []*model.ClientOption{
+		{
+			Name:  "失败",
+			Value: "0",
+		},
+		{
+			Name:  "成功",
+			Value: "1",
+		},
+	}
+	insLoginLog.clientOptionMap["statusList"] = statusList
+}
 
 // LoginLog 系统登录日志服务
 func LoginLog() *sLoginLog {
@@ -45,26 +62,26 @@ func (s *sLoginLog) SaveLoginLog(ctx context.Context, data *entity.LoginLog) {
 
 // GetLoginLogList 获取登录日志列表
 func (s *sLoginLog) GetLoginLogList(ctx context.Context, req *v1.LoginLogListReq) (total int, list []*entity.LoginLog, err error) {
-	model := dao.LoginLog.Ctx(ctx)
+	gmodel := dao.LoginLog.Ctx(ctx)
 	columns := dao.LoginLog.Columns()
 	order := "id DESC"
 	if req.Passport != "" {
-		model = model.WhereLike(columns.Passport, "%"+req.Passport+"%")
+		gmodel = gmodel.WhereLike(columns.Passport, "%"+req.Passport+"%")
 	}
 	if req.Ip != "" {
-		model = model.WhereLike(columns.Ip, "%"+req.Ip+"%")
+		gmodel = gmodel.WhereLike(columns.Ip, "%"+req.Ip+"%")
 	}
 	if req.Location != "" {
-		model = model.WhereLike(columns.Location, "%"+req.Location+"%")
+		gmodel = gmodel.WhereLike(columns.Location, "%"+req.Location+"%")
 	}
 	if req.Status != "" {
-		model = model.Where(columns.Status, req.Status)
+		gmodel = gmodel.Where(columns.Status, req.Status)
 	}
 	if req.StartTime.String() != "" {
-		model = model.WhereGTE(columns.Time, req.StartTime)
+		gmodel = gmodel.WhereGTE(columns.Time, req.StartTime)
 	}
 	if req.EndTime.String() != "" {
-		model = model.WhereLTE(columns.Time, req.EndTime)
+		gmodel = gmodel.WhereLTE(columns.Time, req.EndTime)
 	}
 	if req.SortName != "" {
 		if req.SortOrder != "" {
@@ -73,11 +90,10 @@ func (s *sLoginLog) GetLoginLogList(ctx context.Context, req *v1.LoginLogListReq
 			order = req.SortName + " DESC"
 		}
 	}
-	total, err = model.Count()
-	if err != nil {
+	if total, err = gmodel.Count(); err != nil {
 		return
 	}
-	err = model.Page(req.CurPage, req.PageSize).Order(order).Scan(&list)
+	err = gmodel.Page(req.CurPage, req.PageSize).Order(order).Scan(&list)
 	return
 }
 
@@ -91,4 +107,9 @@ func (s *sLoginLog) DeleteLoginLogByIds(ctx context.Context, ids []uint64) (err 
 func (s *sLoginLog) ClearLoginLog(ctx context.Context) (err error) {
 	_, err = dao.LoginLog.DB().Exec(ctx, "truncate "+dao.LoginLog.Table())
 	return
+}
+
+// GetClientOptionMap 获取客户端选项Map
+func (s *sLoginLog) GetClientOptionMap() map[string][]*model.ClientOption {
+	return s.clientOptionMap
 }

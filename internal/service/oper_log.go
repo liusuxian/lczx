@@ -10,13 +10,15 @@ import (
 	"github.com/gogf/gf/v2/util/gconv"
 	v1 "lczx/api/v1"
 	"lczx/internal/dao"
+	"lczx/internal/model"
 	"lczx/internal/model/entity"
 	"lczx/utility/logger"
 	"lczx/utility/utils"
 )
 
 type sOperLog struct {
-	pool *grpool.Pool
+	pool            *grpool.Pool
+	clientOptionMap map[string][]*model.ClientOption // 客户端选项
 }
 
 var (
@@ -24,6 +26,40 @@ var (
 		pool: grpool.New(100),
 	}
 )
+
+func init() {
+	insOperLog.clientOptionMap = map[string][]*model.ClientOption{}
+	statusList := []*model.ClientOption{
+		{
+			Name:  "异常",
+			Value: "0",
+		},
+		{
+			Name:  "正常",
+			Value: "1",
+		},
+	}
+	operTypeList := []*model.ClientOption{
+		{
+			Name:  "读取",
+			Value: "GET",
+		},
+		{
+			Name:  "新增",
+			Value: "POST",
+		},
+		{
+			Name:  "修改",
+			Value: "PUT",
+		},
+		{
+			Name:  "删除",
+			Value: "DELETE",
+		},
+	}
+	insOperLog.clientOptionMap["statusList"] = statusList
+	insOperLog.clientOptionMap["operTypeList"] = operTypeList
+}
 
 // OperLog 操作日志服务
 func OperLog() *sOperLog {
@@ -138,26 +174,26 @@ func (s *sOperLog) SaveOperLog(ctx context.Context, data *entity.OperLog) {
 
 // GetOperLogList 获取操作日志列表
 func (s *sOperLog) GetOperLogList(ctx context.Context, req *v1.OperLogListReq) (total int, list []*entity.OperLog, err error) {
-	model := dao.OperLog.Ctx(ctx)
+	gmodel := dao.OperLog.Ctx(ctx)
 	columns := dao.OperLog.Columns()
 	order := "id DESC"
 	if req.Title != "" {
-		model = model.WhereLike(columns.Title, "%"+req.Title+"%")
+		gmodel = gmodel.WhereLike(columns.Title, "%"+req.Title+"%")
 	}
 	if req.OperName != "" {
-		model = model.WhereLike(columns.OperName, "%"+req.OperName+"%")
+		gmodel = gmodel.WhereLike(columns.OperName, "%"+req.OperName+"%")
 	}
 	if req.ReqMethod != "" {
-		model = model.Where(columns.ReqMethod, req.ReqMethod)
+		gmodel = gmodel.Where(columns.ReqMethod, req.ReqMethod)
 	}
 	if req.Status != "" {
-		model = model.Where(columns.Status, req.Status)
+		gmodel = gmodel.Where(columns.Status, req.Status)
 	}
 	if req.StartTime.String() != "" {
-		model = model.WhereGTE(columns.Time, req.StartTime)
+		gmodel = gmodel.WhereGTE(columns.Time, req.StartTime)
 	}
 	if req.EndTime.String() != "" {
-		model = model.WhereLTE(columns.Time, req.EndTime)
+		gmodel = gmodel.WhereLTE(columns.Time, req.EndTime)
 	}
 	if req.SortName != "" {
 		if req.SortOrder != "" {
@@ -166,11 +202,10 @@ func (s *sOperLog) GetOperLogList(ctx context.Context, req *v1.OperLogListReq) (
 			order = req.SortName + " DESC"
 		}
 	}
-	total, err = model.Count()
-	if err != nil {
+	if total, err = gmodel.Count(); err != nil {
 		return
 	}
-	err = model.Page(req.CurPage, req.PageSize).Order(order).Scan(&list)
+	err = gmodel.Page(req.CurPage, req.PageSize).Order(order).Scan(&list)
 	return
 }
 
@@ -184,4 +219,9 @@ func (s *sOperLog) DeleteOperLogByIds(ctx context.Context, ids []uint64) (err er
 func (s *sOperLog) ClearOperLog(ctx context.Context) (err error) {
 	_, err = dao.OperLog.DB().Exec(ctx, "truncate "+dao.OperLog.Table())
 	return
+}
+
+// GetClientOptionMap 获取客户端选项Map
+func (s *sOperLog) GetClientOptionMap() map[string][]*model.ClientOption {
+	return s.clientOptionMap
 }

@@ -3,8 +3,19 @@ package v1
 import (
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gtime"
+	"lczx/internal/model"
 	"lczx/internal/model/entity"
 )
+
+// LoginLogClientOptionsReq 获取登录日志客户端选项请求参数
+type LoginLogClientOptionsReq struct {
+	g.Meta `path:"/clientOptions" tags:"LoginLogClientOptions" method:"get" summary:"You first monitor/loginLog/clientOptions api"`
+}
+
+// LoginLogClientOptionsRes 获取登录日志客户端选项返回参数
+type LoginLogClientOptionsRes struct {
+	StatusList []*model.ClientOption `json:"statusList" dc:"登录状态选项列表"` // 登录状态选项列表
+}
 
 // LoginLogListReq 登录日志列表请求参数
 type LoginLogListReq struct {

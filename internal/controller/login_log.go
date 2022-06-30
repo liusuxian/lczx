@@ -15,6 +15,17 @@ var (
 
 type cLoginLog struct{}
 
+// ClientOptions 客户端选项
+func (c *cLoginLog) ClientOptions(ctx context.Context, req *v1.LoginLogClientOptionsReq) (res *v1.LoginLogClientOptionsRes, err error) {
+	// 获取客户端选项Map
+	clientOptionMap := service.LoginLog().GetClientOptionMap()
+
+	res = &v1.LoginLogClientOptionsRes{
+		StatusList: clientOptionMap["statusList"],
+	}
+	return
+}
+
 // List 登录日志列表
 func (c *cLoginLog) List(ctx context.Context, req *v1.LoginLogListReq) (res *v1.LoginLogListRes, err error) {
 	var total int
