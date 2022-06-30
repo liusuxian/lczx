@@ -14,6 +14,26 @@ var (
 
 type cWdkProject struct{}
 
+// ClientOptions 客户端选项
+func (c *cWdkProject) ClientOptions(ctx context.Context, req *v1.WdkProjectClientOptionsReq) (res *v1.WdkProjectClientOptionsRes, err error) {
+	// 获取客户端选项Map
+	clientOptionMap := service.WdkProject().GetClientOptionMap()
+
+	res = &v1.WdkProjectClientOptionsRes{
+		TypeList:           clientOptionMap["typeList"],
+		OriginList:         clientOptionMap["originList"],
+		StepList:           clientOptionMap["stepList"],
+		UploadStatusList:   clientOptionMap["uploadStatusList"],
+		BusinessTypeList:   clientOptionMap["businessTypeList"],
+		BusinessFormsList:  clientOptionMap["businessFormsList"],
+		ContractStatusList: clientOptionMap["contractStatusList"],
+		DeepCultureList:    clientOptionMap["deepCultureList"],
+		StatusList:         clientOptionMap["statusList"],
+		SignCompanyList:    clientOptionMap["signCompanyList"],
+	}
+	return
+}
+
 // List 文档库项目列表
 func (c *cWdkProject) List(ctx context.Context, req *v1.WdkProjectListReq) (res *v1.WdkProjectListRes, err error) {
 	var total int

@@ -3,8 +3,28 @@ package v1
 import (
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gtime"
+	"lczx/internal/model"
 	"lczx/internal/model/entity"
 )
+
+// WdkProjectClientOptionsReq 获取文档库项目管理客户端选项请求参数
+type WdkProjectClientOptionsReq struct {
+	g.Meta `path:"/clientOptions" tags:"WdkProjectClientOptions" method:"get" summary:"You first wdk/project/clientOptions api"`
+}
+
+// WdkProjectClientOptionsRes 获取文档库项目管理客户端选项返回参数
+type WdkProjectClientOptionsRes struct {
+	TypeList           []*model.ClientOption `json:"typeList" dc:"项目性质选项列表"`             // 项目性质选项列表
+	OriginList         []*model.ClientOption `json:"originList" dc:"项目来源选项列表"`           // 项目来源选项列表
+	StepList           []*model.ClientOption `json:"stepList" dc:"项目阶段选项列表"`             // 项目阶段选项列表
+	UploadStatusList   []*model.ClientOption `json:"uploadStatusList" dc:"项目上传状态选项列表"`   // 项目上传状态选项列表
+	BusinessTypeList   []*model.ClientOption `json:"businessTypeList" dc:"项目业务类型选项列表"`   // 项目业务类型选项列表
+	BusinessFormsList  []*model.ClientOption `json:"businessFormsList" dc:"项目业态选项列表"`    // 项目业态选项列表
+	ContractStatusList []*model.ClientOption `json:"contractStatusList" dc:"项目签约状态选项列表"` // 项目签约状态选项列表
+	DeepCultureList    []*model.ClientOption `json:"deepCultureList" dc:"项目是否深耕选项列表"`    // 项目是否深耕选项列表
+	StatusList         []*model.ClientOption `json:"statusList" dc:"项目服务状态选项列表"`         // 项目服务状态选项列表
+	SignCompanyList    []*model.ClientOption `json:"signCompanyList" dc:"项目签订公司选项列表"`    // 项目签订公司选项列表
+}
 
 // WdkProjectListReq 文档库项目列表请求参数
 type WdkProjectListReq struct {
