@@ -3,5 +3,5 @@
 gfcli:
   gen:
     dao:
-      - link: "mysql:root:Lsx19890329!@#$%@tcp(127.0.0.1:3306)/lczx"
+      - link: "mysql:root:Lsx19890329!@#$%@tcp(127.0.0.1:3306)/lczx?charset=utf8mb4&parseTime=true&loc=Local"
         jsonCase: "CamelLower"
