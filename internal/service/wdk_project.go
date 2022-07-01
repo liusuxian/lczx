@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"fmt"
 	"github.com/gogf/gf/v2/container/gmap"
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/errors/gerror"
@@ -723,11 +722,12 @@ func (s *sWdkProject) SetWdkProjectFileUploadStatusFinish(ctx context.Context, i
 	// 判断项目上传文件和项目上传报告是否已全部传完
 	if (fileCount + reportCount) >= reportCfgCount+7 {
 		// 已传完
-		_, err = dao.WdkProject.Ctx(ctx).Data(do.WdkProject{FileUploadStatus: 2}).Where(do.WdkProject{Id: id}).Update()
+		_, err = dao.WdkProject.Ctx(ctx).Data(do.WdkProject{FileUploadStatus: 2, FileUploadLastTime: gtime.Now()}).
+			Where(do.WdkProject{Id: id}).Update()
 	} else {
 		// 未传完
-		_, err = dao.WdkProject.Ctx(ctx).Data(do.WdkProject{FileUploadStatus: 1}).Where(do.WdkProject{Id: id}).
-			WhereNot(dao.WdkProject.Columns().FileUploadStatus, 2).Update()
+		_, err = dao.WdkProject.Ctx(ctx).Data(do.WdkProject{FileUploadStatus: 1, FileUploadLastTime: gtime.Now()}).
+			Where(do.WdkProject{Id: id}).WhereNot(dao.WdkProject.Columns().FileUploadStatus, 2).Update()
 	}
 	return
 }
@@ -741,8 +741,8 @@ func (s *sWdkProject) SetWdkProjectFileUploadStatusAbnormal(ctx context.Context,
 
 // SetWdkProjectFileUploadStatusNormal 设置文档库项目文件上传状态为正常
 func (s *sWdkProject) SetWdkProjectFileUploadStatusNormal(ctx context.Context, id uint64) (err error) {
-	_, err = dao.WdkProject.Ctx(ctx).Data(do.WdkProject{FileUploadStatus: 1}).Where(do.WdkProject{Id: id}).
-		WhereNot(dao.WdkProject.Columns().FileUploadStatus, 2).Update()
+	_, err = dao.WdkProject.Ctx(ctx).Data(do.WdkProject{FileUploadStatus: 1, FileUploadLastTime: gtime.Now()}).
+		Where(do.WdkProject{Id: id}).WhereNot(dao.WdkProject.Columns().FileUploadStatus, 2).Update()
 	return
 }
 
@@ -805,8 +805,13 @@ func (s *sWdkProject) CheckWdkProjectFileUploadStatus(ctx context.Context) {
 		}
 		for _, v := range list {
 			lastTime := v.FileUploadLastTime
-			fmt.Println("11111111111111111111111: ", lastTime)
-			fmt.Printf("22222222222222222222222: %v\n", v)
+			now := gtime.Now()
+			if lastTime == nil || !(lastTime.Year() == now.Year() && lastTime.Month() == now.Month()) {
+				// 设置文档库项目文件上传状态为异常
+				if err = s.SetWdkProjectFileUploadStatusAbnormal(ctx, v.Id); err != nil {
+					logger.Error(ctx, "Set WdkProject FileUploadStatus Abnormal Error: ", err)
+				}
+			}
 		}
 		if curPage*pageSize >= total {
 			return

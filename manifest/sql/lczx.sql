@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 30/06/2022 17:37:11
+ Date: 01/07/2022 10:52:55
 */
 
 SET NAMES utf8mb4;
@@ -507,7 +507,17 @@ CREATE TABLE `wdk_project` (
   `updated_at` datetime DEFAULT NULL COMMENT '项目更新时间',
   `deleted_at` datetime DEFAULT NULL COMMENT '项目软删除时间',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `name_index` (`name`) USING BTREE
+  UNIQUE KEY `name_index` (`name`) USING BTREE,
+  KEY `type_index` (`type`) USING BTREE,
+  KEY `origin_index` (`origin`) USING BTREE,
+  KEY `step_index` (`step` DESC) USING BTREE,
+  KEY `file_upload_status_index` (`file_upload_status` DESC) USING BTREE,
+  KEY `business_type_index` (`business_type`) USING BTREE,
+  KEY `contract_status_index` (`contract_status`) USING BTREE,
+  KEY `deep_culture_index` (`deep_culture`) USING BTREE,
+  KEY `status_index` (`status`) USING BTREE,
+  KEY `sign_company_index` (`sign_company`) USING BTREE,
+  KEY `dept_id_index` (`dept_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ----------------------------
