@@ -1,4 +1,4 @@
-package service
+package system_monitor
 
 import (
 	"context"
@@ -8,6 +8,7 @@ import (
 	"lczx/internal/dao"
 	"lczx/internal/model/do"
 	"lczx/internal/model/entity"
+	"lczx/internal/service"
 	"lczx/utility/logger"
 )
 
@@ -15,15 +16,15 @@ type sUserOnline struct {
 	pool *grpool.Pool
 }
 
-var (
-	insUserOnline = sUserOnline{
+func init() {
+	service.RegisterUserOnline(newUserOnline())
+}
+
+// 在线用户服务
+func newUserOnline() *sUserOnline {
+	return &sUserOnline{
 		pool: grpool.New(100),
 	}
-)
-
-// UserOnline 在线用户服务
-func UserOnline() *sUserOnline {
-	return &insUserOnline
 }
 
 // Invoke 异步保存用户在线状态

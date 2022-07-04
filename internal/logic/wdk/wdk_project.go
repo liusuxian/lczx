@@ -1,4 +1,4 @@
-package service
+package wdk
 
 import (
 	"context"
@@ -15,6 +15,7 @@ import (
 	"lczx/internal/model"
 	"lczx/internal/model/do"
 	"lczx/internal/model/entity"
+	"lczx/internal/service"
 	"lczx/utility/logger"
 	"lczx/utility/utils"
 )
@@ -23,11 +24,13 @@ type sWdkProject struct {
 	clientOptionMap map[string][]*model.ClientOption // 客户端选项
 }
 
-var (
-	insWdkProject = sWdkProject{}
-)
-
 func init() {
+	service.RegisterWdkProject(newWdkProject())
+}
+
+// 文档库项目管理服务
+func newWdkProject() *sWdkProject {
+	insWdkProject := &sWdkProject{}
 	insWdkProject.clientOptionMap = map[string][]*model.ClientOption{}
 	typeList := []*model.ClientOption{
 		{
@@ -311,11 +314,8 @@ func init() {
 	insWdkProject.clientOptionMap["deepCultureList"] = deepCultureList
 	insWdkProject.clientOptionMap["statusList"] = statusList
 	insWdkProject.clientOptionMap["signCompanyList"] = signCompanyList
-}
 
-// WdkProject 文档库项目管理服务
-func WdkProject() *sWdkProject {
-	return &insWdkProject
+	return insWdkProject
 }
 
 // GetWdkProjectList 获取文档库项目列表
@@ -385,13 +385,13 @@ func (s *sWdkProject) GetWdkProjectList(ctx context.Context, req *v1.WdkProjectL
 	if req.DeptId != "" {
 		// 获取部门状态为正常的部门列表
 		var depts []*entity.Dept
-		depts, err = Dept().GetStatusEnableDepts(ctx)
+		depts, err = service.Dept().GetStatusEnableDepts(ctx)
 		if err != nil {
 			return
 		}
 		deptId := gconv.Uint64(req.DeptId)
 		deptIdsMap.Set(deptId, true)
-		Dept().FindSonIdsByParentId(depts, deptId, deptIdsMap)
+		service.Dept().FindSonIdsByParentId(depts, deptId, deptIdsMap)
 	}
 	if !deptIdsMap.IsEmpty() {
 		gmodel = gmodel.WhereIn(columns.DeptId, deptIdsMap.Keys())
@@ -445,7 +445,7 @@ func (s *sWdkProject) AddWdkProject(ctx context.Context, req *v1.WdkProjectAddRe
 		}
 		// 检查负责人是否存在
 		var principalUser *entity.User
-		principalUser, terr = User().GetUserById(ctx, req.PrincipalUid)
+		principalUser, terr = service.User().GetUserById(ctx, req.PrincipalUid)
 		if terr != nil {
 			return terr
 		}
@@ -454,7 +454,7 @@ func (s *sWdkProject) AddWdkProject(ctx context.Context, req *v1.WdkProjectAddRe
 		}
 		// 通过部门ID判断部门信息是否存在
 		var dept *entity.Dept
-		dept, terr = Dept().SelectDeptById(ctx, req.DeptId)
+		dept, terr = service.Dept().SelectDeptById(ctx, req.DeptId)
 		if terr != nil {
 			return terr
 		}
@@ -510,7 +510,7 @@ func (s *sWdkProject) EditWdkProject(ctx context.Context, req *v1.WdkProjectEdit
 		}
 		// 检查负责人是否存在
 		var principalUser *entity.User
-		principalUser, terr = User().GetUserById(ctx, req.PrincipalUid)
+		principalUser, terr = service.User().GetUserById(ctx, req.PrincipalUid)
 		if terr != nil {
 			return terr
 		}
@@ -519,7 +519,7 @@ func (s *sWdkProject) EditWdkProject(ctx context.Context, req *v1.WdkProjectEdit
 		}
 		// 通过部门ID判断部门信息是否存在
 		var dept *entity.Dept
-		dept, terr = Dept().SelectDeptById(ctx, req.DeptId)
+		dept, terr = service.Dept().SelectDeptById(ctx, req.DeptId)
 		if terr != nil {
 			return terr
 		}
@@ -605,12 +605,12 @@ func (s *sWdkProject) ExportWdkProject(ctx context.Context, req *v1.WdkProjectEx
 	if req.DeptId != "" {
 		// 获取部门状态为正常的部门列表
 		var depts []*entity.Dept
-		if depts, err = Dept().GetStatusEnableDepts(ctx); err != nil {
+		if depts, err = service.Dept().GetStatusEnableDepts(ctx); err != nil {
 			return
 		}
 		deptId := gconv.Uint64(req.DeptId)
 		deptIdsMap.Set(deptId, true)
-		Dept().FindSonIdsByParentId(depts, deptId, deptIdsMap)
+		service.Dept().FindSonIdsByParentId(depts, deptId, deptIdsMap)
 	}
 	if !deptIdsMap.IsEmpty() {
 		gmodel = gmodel.WhereIn(columns.DeptId, deptIdsMap.Keys())
@@ -703,19 +703,19 @@ func (s *sWdkProject) IsWdkProjectNameAvailable(ctx context.Context, name string
 func (s *sWdkProject) SetWdkProjectFileUploadStatusFinish(ctx context.Context, id uint64) (err error) {
 	// 通过项目ID获取文档库项目上传文件类型数量
 	var fileCount int
-	fileCount, err = WdkFile().GetWdkFileCountByProjectId(ctx, id)
+	fileCount, err = service.WdkFile().GetWdkFileCountByProjectId(ctx, id)
 	if err != nil {
 		return
 	}
 	// 通过项目ID获取文档库项目上传报告类型数量
 	var reportCount int
-	reportCount, err = WdkReport().GetWdkReportCountByProjectId(ctx, id)
+	reportCount, err = service.WdkReport().GetWdkReportCountByProjectId(ctx, id)
 	if err != nil {
 		return
 	}
 	// 获取文档库报告类型配置数量
 	var reportCfgCount int
-	reportCfgCount, err = WdkReportCfg().GetWdkReportCfgCount(ctx)
+	reportCfgCount, err = service.WdkReportCfg().GetWdkReportCfgCount(ctx)
 	if err != nil {
 		return
 	}
@@ -822,7 +822,7 @@ func (s *sWdkProject) CheckWdkProjectFileUploadStatus(ctx context.Context) {
 
 // saveWdkProject 保存文档库项目数据
 func (s *sWdkProject) saveWdkProject(ctx context.Context, req *v1.WdkProjectAddReq, principalUser *entity.User, dept *entity.Dept) (err error) {
-	user := Context().Get(ctx).User
+	user := service.Context().Get(ctx).User
 	var projectId int64
 	projectId, err = dao.WdkProject.Ctx(ctx).Data(do.WdkProject{
 		Name:             req.Name,
@@ -870,7 +870,7 @@ func (s *sWdkProject) saveWdkProject(ctx context.Context, req *v1.WdkProjectAddR
 
 // updateWdkProject 更新文档库项目数据
 func (s *sWdkProject) updateWdkProject(ctx context.Context, req *v1.WdkProjectEditReq, principalUser *entity.User, dept *entity.Dept, wdkProject *v1.WdkProjectInfo) (err error) {
-	user := Context().Get(ctx).User
+	user := service.Context().Get(ctx).User
 	_, err = dao.WdkProject.Ctx(ctx).Data(do.WdkProject{
 		Name:           req.Name,
 		Type:           req.Type,

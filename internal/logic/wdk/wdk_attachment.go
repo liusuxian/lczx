@@ -1,4 +1,4 @@
-package service
+package wdk
 
 import (
 	"context"
@@ -7,18 +7,19 @@ import (
 	v1 "lczx/api/v1"
 	"lczx/internal/dao"
 	"lczx/internal/model/do"
+	"lczx/internal/service"
 	"lczx/internal/upload"
 )
 
 type sWdkAttachment struct{}
 
-var (
-	insWdkAttachment = sWdkAttachment{}
-)
+func init() {
+	service.RegisterWdkAttachment(newWdkAttachment())
+}
 
-// WdkAttachment 文档库上传附件记录管理服务
-func WdkAttachment() *sWdkAttachment {
-	return &insWdkAttachment
+// 文档库上传附件记录管理服务
+func newWdkAttachment() *sWdkAttachment {
+	return &sWdkAttachment{}
 }
 
 // GetWdkAttachmentRecord 获取文档库上传附件记录
@@ -43,7 +44,7 @@ func (s *sWdkAttachment) AddWdkAttachment(ctx context.Context, req *v1.WdkAttach
 			return terr
 		}
 		// 设置文档库项目文件上传状态为正常
-		terr = WdkProject().SetWdkProjectFileUploadStatusNormal(ctx, req.ProjectId)
+		terr = service.WdkProject().SetWdkProjectFileUploadStatusNormal(ctx, req.ProjectId)
 		return terr
 	})
 	return

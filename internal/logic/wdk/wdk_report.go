@@ -1,4 +1,4 @@
-package service
+package wdk
 
 import (
 	"context"
@@ -15,18 +15,19 @@ import (
 	"lczx/internal/model"
 	"lczx/internal/model/do"
 	"lczx/internal/model/entity"
+	"lczx/internal/service"
 	"lczx/internal/upload"
 )
 
 type sWdkReport struct{}
 
-var (
-	insWdkReport = sWdkReport{}
-)
+func init() {
+	service.RegisterWdkReport(newWdkReport())
+}
 
-// WdkReport 文档库上传报告记录管理服务
-func WdkReport() *sWdkReport {
-	return &insWdkReport
+// 文档库上传报告记录管理服务
+func newWdkReport() *sWdkReport {
+	return &sWdkReport{}
 }
 
 // GetWdkReportRecord 获取文档库上传报告记录
@@ -46,7 +47,7 @@ func (s *sWdkReport) AddWdkReport(ctx context.Context, req *v1.WdkReportAddReq, 
 	err = dao.WdkReport.Ctx(ctx).Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		// 检查部门负责人是否存在
 		var terr error
-		user := Context().Get(ctx).User
+		user := service.Context().Get(ctx).User
 		var dept *entity.Dept
 		terr = dao.Dept.Ctx(ctx).Where(do.Dept{Id: user.DeptId}).Scan(&dept)
 		if terr != nil {
@@ -72,7 +73,7 @@ func (s *sWdkReport) AddWdkReport(ctx context.Context, req *v1.WdkReportAddReq, 
 		}
 		// 通过报告类型ID列表获取报告类型配置
 		var reportCfg []*v1.WdkReportCfgInfo
-		reportCfg, terr = WdkReportCfg().GetWdkReportCfgByIds(ctx, gconv.Uint64s(auditTypeInfoMap.Keys()))
+		reportCfg, terr = service.WdkReportCfg().GetWdkReportCfgByIds(ctx, gconv.Uint64s(auditTypeInfoMap.Keys()))
 		if terr != nil {
 			return terr
 		}
@@ -111,13 +112,13 @@ func (s *sWdkReport) AddWdkReport(ctx context.Context, req *v1.WdkReportAddReq, 
 			return terr
 		}
 		// 设置所属文档库项目阶段
-		terr = WdkProject().SetWdkProjectStepByReportStep(ctx, req.ProjectId, req.Step)
+		terr = service.WdkProject().SetWdkProjectStepByReportStep(ctx, req.ProjectId, req.Step)
 		if terr != nil {
 			return terr
 		}
 		if user.IsAdmin == 1 {
 			// 设置文档库项目文件上传状态为已完成
-			terr = WdkProject().SetWdkProjectFileUploadStatusFinish(ctx, req.ProjectId)
+			terr = service.WdkProject().SetWdkProjectFileUploadStatusFinish(ctx, req.ProjectId)
 			if terr != nil {
 				return terr
 			}

@@ -1,4 +1,4 @@
-package service
+package wdk
 
 import (
 	"context"
@@ -8,18 +8,19 @@ import (
 	"lczx/internal/dao"
 	"lczx/internal/model/do"
 	"lczx/internal/model/entity"
+	"lczx/internal/service"
 	"lczx/internal/upload"
 )
 
 type sWdkFile struct{}
 
-var (
-	insWdkFile = sWdkFile{}
-)
+func init() {
+	service.RegisterWdkFile(newWdkFile())
+}
 
-// WdkFile 文档库上传文件记录管理服务
-func WdkFile() *sWdkFile {
-	return &insWdkFile
+// 文档库上传文件记录管理服务
+func newWdkFile() *sWdkFile {
+	return &sWdkFile{}
 }
 
 // GetWdkFileRecord 获取文档库上传文件记录
@@ -43,12 +44,12 @@ func (s *sWdkFile) AddWdkFile(ctx context.Context, req *v1.WdkFileAddReq, fileIn
 			return terr
 		}
 		// 设置所属文档库项目阶段
-		terr = WdkProject().SetWdkProjectStepByFileType(ctx, req.ProjectId, req.Type)
+		terr = service.WdkProject().SetWdkProjectStepByFileType(ctx, req.ProjectId, req.Type)
 		if terr != nil {
 			return terr
 		}
 		// 设置文档库项目文件上传状态为已完成
-		terr = WdkProject().SetWdkProjectFileUploadStatusFinish(ctx, req.ProjectId)
+		terr = service.WdkProject().SetWdkProjectFileUploadStatusFinish(ctx, req.ProjectId)
 		return terr
 	})
 	return
@@ -63,7 +64,7 @@ func (s *sWdkFile) GetWdkFileCountByProjectId(ctx context.Context, projectId uin
 
 // saveWdkFile 保存文档库上传文件数据
 func (s *sWdkFile) saveWdkFile(ctx context.Context, req *v1.WdkFileAddReq, fileInfos []*upload.FileInfo) (err error) {
-	user := Context().Get(ctx).User
+	user := service.Context().Get(ctx).User
 	wdkFileData := g.List{}
 	for _, file := range fileInfos {
 		wdkFileData = append(wdkFileData, g.Map{

@@ -1,4 +1,4 @@
-package service
+package system_monitor
 
 import (
 	"fmt"
@@ -10,6 +10,7 @@ import (
 	"github.com/shirou/gopsutil/load"
 	"github.com/shirou/gopsutil/mem"
 	v1 "lczx/api/v1"
+	"lczx/internal/service"
 	"lczx/utility/utils"
 	"os"
 	"runtime"
@@ -21,15 +22,15 @@ type sServerMonitor struct {
 	startTime *gtime.Time
 }
 
-var (
-	insServerMonitor = sServerMonitor{
+func init() {
+	service.RegisterServerMonitor(newServerMonitor())
+}
+
+// 服务监控服务
+func newServerMonitor() *sServerMonitor {
+	return &sServerMonitor{
 		startTime: gtime.Now(),
 	}
-)
-
-// ServerMonitor 服务监控服务
-func ServerMonitor() *sServerMonitor {
-	return &insServerMonitor
 }
 
 // ServerInfo 服务监控信息

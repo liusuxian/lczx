@@ -1,4 +1,4 @@
-package service
+package system_monitor
 
 import (
 	"context"
@@ -12,6 +12,7 @@ import (
 	"lczx/internal/dao"
 	"lczx/internal/model"
 	"lczx/internal/model/entity"
+	"lczx/internal/service"
 	"lczx/utility/logger"
 	"lczx/utility/utils"
 )
@@ -21,13 +22,15 @@ type sOperLog struct {
 	clientOptionMap map[string][]*model.ClientOption // 客户端选项
 }
 
-var (
-	insOperLog = sOperLog{
+func init() {
+	service.RegisterOperLog(newOperLog())
+}
+
+// 操作日志服务
+func newOperLog() *sOperLog {
+	insOperLog := &sOperLog{
 		pool: grpool.New(100),
 	}
-)
-
-func init() {
 	insOperLog.clientOptionMap = map[string][]*model.ClientOption{}
 	statusList := []*model.ClientOption{
 		{
@@ -59,17 +62,14 @@ func init() {
 	}
 	insOperLog.clientOptionMap["statusList"] = statusList
 	insOperLog.clientOptionMap["operTypeList"] = operTypeList
-}
 
-// OperLog 操作日志服务
-func OperLog() *sOperLog {
-	return &insOperLog
+	return insOperLog
 }
 
 // Invoke 异步保存日志
 func (s *sOperLog) Invoke(req *ghttp.Request) {
 	ctx := req.GetCtx()
-	curUser := Context().Get(ctx).User
+	curUser := service.Context().Get(ctx).User
 	if curUser == nil {
 		return
 	}
@@ -78,7 +78,7 @@ func (s *sOperLog) Invoke(req *ghttp.Request) {
 	// 获取所有菜单
 	var err error
 	var allMenus []*entity.Menu
-	allMenus, err = Menu().GetAllMenus(ctx)
+	allMenus, err = service.Menu().GetAllMenus(ctx)
 	if err != nil {
 		logger.Error(ctx, "Invoke GetAllMenus Error: ", err.Error())
 		return
@@ -109,12 +109,12 @@ func (s *sOperLog) Invoke(req *ghttp.Request) {
 	// 部门名称
 	// 获取部门状态为正常的部门列表
 	var depts []*entity.Dept
-	depts, err = Dept().GetStatusEnableDepts(ctx)
+	depts, err = service.Dept().GetStatusEnableDepts(ctx)
 	if err != nil {
 		logger.Error(ctx, "Invoke GetStatusEnableDepts Error: ", err.Error())
 		return
 	}
-	data.DeptName = Dept().GetDeptAllNameById(depts, curUser.DeptId)
+	data.DeptName = service.Dept().GetDeptAllNameById(depts, curUser.DeptId)
 	// 请求URL
 	rawQuery := url.RawQuery
 	if rawQuery != "" {

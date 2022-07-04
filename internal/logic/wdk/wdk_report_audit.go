@@ -1,4 +1,4 @@
-package service
+package wdk
 
 import (
 	"context"
@@ -9,22 +9,23 @@ import (
 	"lczx/internal/dao"
 	"lczx/internal/model/do"
 	"lczx/internal/model/entity"
+	"lczx/internal/service"
 )
 
 type sWdkReportAudit struct{}
 
-var (
-	insWdkReportAudit = sWdkReportAudit{}
-)
+func init() {
+	service.RegisterWdkReportAudit(newWdkReportAudit())
+}
 
-// WdkReportAudit 文档库报告审核记录管理服务
-func WdkReportAudit() *sWdkReportAudit {
-	return &insWdkReportAudit
+// 文档库报告审核记录管理服务
+func newWdkReportAudit() *sWdkReportAudit {
+	return &sWdkReportAudit{}
 }
 
 // GetWdkReportAuditList 获取文档库报告审核列表
 func (s *sWdkReportAudit) GetWdkReportAuditList(ctx context.Context, req *v1.WdkReportAuditListReq) (total int, list []*v1.WdkReportAuditInfo, err error) {
-	user := Context().Get(ctx).User
+	user := service.Context().Get(ctx).User
 	var model *gdb.Model
 	if req.Rescind == 1 {
 		model = dao.WdkReportAudit.Ctx(ctx).Where(do.WdkReportAudit{AuditUid: user.Id, Rescind: req.Rescind, PreauditStatus: 1})
@@ -74,7 +75,7 @@ func (s *sWdkReportAudit) GetWdkReportAuditList(ctx context.Context, req *v1.Wdk
 
 // HandleWdkReportAudit 处理文档库报告审核
 func (s *sWdkReportAudit) HandleWdkReportAudit(ctx context.Context, req *v1.WdkReportAuditReq) (err error) {
-	user := Context().Get(ctx).User
+	user := service.Context().Get(ctx).User
 	err = dao.WdkReportAudit.Ctx(ctx).Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		// 通过报告ID和用户ID判断文档库报告审核信息是否存在
 		var terr error
@@ -132,14 +133,14 @@ func (s *sWdkReportAudit) HandleWdkReportAudit(ctx context.Context, req *v1.WdkR
 		}
 		if completeStatus != 1 {
 			// 设置文档库报告审核完成状态
-			terr = WdkReport().SetWdkReportAuditCompleteStatus(ctx, wdkReportAudit.Id, completeStatus, excellence, auditTime)
+			terr = service.WdkReport().SetWdkReportAuditCompleteStatus(ctx, wdkReportAudit.Id, completeStatus, excellence, auditTime)
 			if terr != nil {
 				return terr
 			}
 		}
 		if completeStatus == 2 {
 			// 设置文档库项目文件上传状态为已完成
-			terr = WdkProject().SetWdkProjectFileUploadStatusFinish(ctx, wdkReportAudit.ProjectId)
+			terr = service.WdkProject().SetWdkProjectFileUploadStatusFinish(ctx, wdkReportAudit.ProjectId)
 			if terr != nil {
 				return terr
 			}
@@ -151,7 +152,7 @@ func (s *sWdkReportAudit) HandleWdkReportAudit(ctx context.Context, req *v1.WdkR
 
 // GetWdkReportUploadAuditList 获取文档库报告上传审核列表
 func (s *sWdkReportAudit) GetWdkReportUploadAuditList(ctx context.Context, req *v1.WdkReportUploadAuditListReq) (total int, list []*v1.WdkReportUploadAuditInfo, err error) {
-	user := Context().Get(ctx).User
+	user := service.Context().Get(ctx).User
 	model := dao.WdkReport.Ctx(ctx).Where(do.WdkReport{CreateBy: user.Id, Rescind: req.Rescind, AuditStatus: req.Status})
 	columns := dao.WdkReport.Columns()
 	total, err = model.Count()

@@ -1,4 +1,4 @@
-package service
+package system_monitor
 
 import (
 	"context"
@@ -7,6 +7,7 @@ import (
 	"lczx/internal/dao"
 	"lczx/internal/model"
 	"lczx/internal/model/entity"
+	"lczx/internal/service"
 	"lczx/utility/logger"
 )
 
@@ -15,13 +16,15 @@ type sLoginLog struct {
 	clientOptionMap map[string][]*model.ClientOption // 客户端选项
 }
 
-var (
-	insLoginLog = sLoginLog{
+func init() {
+	service.RegisterLoginLog(newLoginLog())
+}
+
+// 系统登录日志服务
+func newLoginLog() *sLoginLog {
+	insLoginLog := &sLoginLog{
 		pool: grpool.New(100),
 	}
-)
-
-func init() {
 	insLoginLog.clientOptionMap = map[string][]*model.ClientOption{}
 	statusList := []*model.ClientOption{
 		{
@@ -34,11 +37,8 @@ func init() {
 		},
 	}
 	insLoginLog.clientOptionMap["statusList"] = statusList
-}
 
-// LoginLog 系统登录日志服务
-func LoginLog() *sLoginLog {
-	return &insLoginLog
+	return insLoginLog
 }
 
 // Invoke 异步保存日志

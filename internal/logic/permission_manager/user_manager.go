@@ -1,4 +1,4 @@
-package service
+package permission_manager
 
 import (
 	"context"
@@ -18,6 +18,7 @@ import (
 	"lczx/internal/model"
 	"lczx/internal/model/do"
 	"lczx/internal/model/entity"
+	"lczx/internal/service"
 	"lczx/utility/utils"
 )
 
@@ -26,15 +27,16 @@ type sUserManager struct {
 	clientOptionMap     map[string][]*model.ClientOption // 客户端选项
 }
 
-var (
-	userManagerCtx      = gctx.New()
-	notCheckAuthUserIds = g.Cfg().MustGet(userManagerCtx, "userManager.notCheckAuthUserIds").Interfaces()
-	insUserManager      = sUserManager{
+func init() {
+	service.RegisterUserManager(newUserManager())
+}
+
+// 用户管理服务
+func newUserManager() *sUserManager {
+	notCheckAuthUserIds := g.Cfg().MustGet(gctx.New(), "userManager.notCheckAuthUserIds").Interfaces()
+	insUserManager := &sUserManager{
 		notCheckAuthUserIds: gset.NewFrom(notCheckAuthUserIds),
 	}
-)
-
-func init() {
 	insUserManager.clientOptionMap = map[string][]*model.ClientOption{}
 	statusList := []*model.ClientOption{
 		{
@@ -69,11 +71,8 @@ func init() {
 	insUserManager.clientOptionMap["statusList"] = statusList
 	insUserManager.clientOptionMap["genderList"] = genderList
 	insUserManager.clientOptionMap["userTypeList"] = userTypeList
-}
 
-// UserManager 用户管理服务
-func UserManager() *sUserManager {
-	return &insUserManager
+	return insUserManager
 }
 
 // NotCheckAuthUserIds 获取无需验证权限的用户ID
@@ -87,13 +86,13 @@ func (s *sUserManager) GetUserList(ctx context.Context, req *v1.UserListReq) (to
 	if req.DeptId != "" {
 		// 获取部门状态为正常的部门列表
 		var depts []*entity.Dept
-		depts, err = Dept().GetStatusEnableDepts(ctx)
+		depts, err = service.Dept().GetStatusEnableDepts(ctx)
 		if err != nil {
 			return
 		}
 		deptId := gconv.Uint64(req.DeptId)
 		deptIdsMap.Set(deptId, true)
-		Dept().FindSonIdsByParentId(depts, deptId, deptIdsMap)
+		service.Dept().FindSonIdsByParentId(depts, deptId, deptIdsMap)
 	}
 	gmodel := dao.User.Ctx(ctx)
 	columns := dao.User.Columns()
@@ -145,7 +144,7 @@ func (s *sUserManager) AddUser(ctx context.Context, req *v1.UserAddReq) (err err
 		// 检查用户账号是否可用
 		var available bool
 		var terr error
-		available, terr = s.IsPassportAvailable(ctx, req.Passport)
+		available, terr = s.isPassportAvailable(ctx, req.Passport)
 		if terr != nil {
 			return terr
 		}
@@ -153,7 +152,7 @@ func (s *sUserManager) AddUser(ctx context.Context, req *v1.UserAddReq) (err err
 			return gerror.Newf(`账号[%s]已存在`, req.Passport)
 		}
 		// 检查用户手机是否可用
-		available, terr = s.IsMobileAvailable(ctx, req.Mobile)
+		available, terr = s.isMobileAvailable(ctx, req.Mobile)
 		if terr != nil {
 			return terr
 		}
@@ -162,7 +161,7 @@ func (s *sUserManager) AddUser(ctx context.Context, req *v1.UserAddReq) (err err
 		}
 		// 通过部门ID判断部门信息是否存在
 		var deptExists bool
-		deptExists, terr = Dept().DeptExistsById(ctx, req.DeptId)
+		deptExists, terr = service.Dept().DeptExistsById(ctx, req.DeptId)
 		if terr != nil {
 			return terr
 		}
@@ -177,7 +176,7 @@ func (s *sUserManager) AddUser(ctx context.Context, req *v1.UserAddReq) (err err
 		}
 		// 通过角色ID列表获取可用角色
 		var enableRoles []*entity.Role
-		enableRoles, terr = Role().GetEnableRolesByIds(ctx, req.RoleIds)
+		enableRoles, terr = service.Role().GetEnableRolesByIds(ctx, req.RoleIds)
 		if terr != nil {
 			return terr
 		}
@@ -195,7 +194,7 @@ func (s *sUserManager) AddUser(ctx context.Context, req *v1.UserAddReq) (err err
 			}
 		}
 		// 添加用户角色信息
-		terr = Role().AddUserRoles(ctx, req.RoleIds, gconv.Uint64(userId))
+		terr = service.Role().AddUserRoles(ctx, req.RoleIds, gconv.Uint64(userId))
 		return terr
 	})
 	return
@@ -208,7 +207,7 @@ func (s *sUserManager) EditUser(ctx context.Context, req *v1.UserEditReq) (err e
 		// 检查用户手机是否可用
 		var user *entity.User
 		var terr error
-		user, terr = User().GetUserById(ctx, req.Id)
+		user, terr = service.User().GetUserById(ctx, req.Id)
 		if terr != nil {
 			return terr
 		}
@@ -217,7 +216,7 @@ func (s *sUserManager) EditUser(ctx context.Context, req *v1.UserEditReq) (err e
 		}
 		if user.Mobile != req.Mobile {
 			var available bool
-			available, terr = s.IsMobileAvailable(ctx, req.Mobile)
+			available, terr = s.isMobileAvailable(ctx, req.Mobile)
 			if terr != nil {
 				return terr
 			}
@@ -227,7 +226,7 @@ func (s *sUserManager) EditUser(ctx context.Context, req *v1.UserEditReq) (err e
 		}
 		// 通过部门ID判断部门信息是否存在
 		var deptExists bool
-		deptExists, terr = Dept().DeptExistsById(ctx, req.DeptId)
+		deptExists, terr = service.Dept().DeptExistsById(ctx, req.DeptId)
 		if terr != nil {
 			return terr
 		}
@@ -241,7 +240,7 @@ func (s *sUserManager) EditUser(ctx context.Context, req *v1.UserEditReq) (err e
 		}
 		// 通过角色ID列表获取可用角色
 		var enableRoles []*entity.Role
-		enableRoles, terr = Role().GetEnableRolesByIds(ctx, req.RoleIds)
+		enableRoles, terr = service.Role().GetEnableRolesByIds(ctx, req.RoleIds)
 		if terr != nil {
 			return terr
 		}
@@ -259,7 +258,7 @@ func (s *sUserManager) EditUser(ctx context.Context, req *v1.UserEditReq) (err e
 			}
 		}
 		// 修改用户角色信息
-		terr = Role().EditUserRoles(ctx, req.RoleIds, req.Id)
+		terr = service.Role().EditUserRoles(ctx, req.RoleIds, req.Id)
 		return terr
 	})
 	return
@@ -293,7 +292,7 @@ func (s *sUserManager) DeleteUser(ctx context.Context, ids []uint64) (err error)
 		}
 		// 删除对应权限
 		var enforcer *casbin.SyncedEnforcer
-		enforcer, terr = Casbin(ctx).GetEnforcer()
+		enforcer, terr = service.Casbin().GetEnforcer(ctx)
 		if terr != nil {
 			return terr
 		}
@@ -313,29 +312,11 @@ func (s *sUserManager) GetClientOptionMap() map[string][]*model.ClientOption {
 	return s.clientOptionMap
 }
 
-// IsPassportAvailable 用户账号是否可用
-func (s *sUserManager) IsPassportAvailable(ctx context.Context, passport string) (bool, error) {
-	count, err := dao.User.Ctx(ctx).Where(do.User{Passport: passport}).Unscoped().Count()
-	if err != nil {
-		return false, err
-	}
-	return count == 0, nil
-}
-
-// IsMobileAvailable 用户手机是否可用
-func (s *sUserManager) IsMobileAvailable(ctx context.Context, mobile string) (bool, error) {
-	count, err := dao.User.Ctx(ctx).Where(do.User{Mobile: mobile}).Unscoped().Count()
-	if err != nil {
-		return false, err
-	}
-	return count == 0, nil
-}
-
 // GetProfileList 获取个人中心信息列表
 func (s *sUserManager) GetProfileList(ctx context.Context, userList []*entity.User) (profileInfos []*v1.UserProfileInfo, err error) {
 	// 获取所有部门
 	var allDepts []*entity.Dept
-	if allDepts, err = Dept().GetAllDepts(ctx); err != nil {
+	if allDepts, err = service.Dept().GetAllDepts(ctx); err != nil {
 		return
 	}
 	// 组装个人中心信息
@@ -348,17 +329,17 @@ func (s *sUserManager) GetProfileList(ctx context.Context, userList []*entity.Us
 			User: u,
 		}
 		// 处理部门信息
-		dept := Dept().GetDeptById(allDepts, u.DeptId)
+		dept := service.Dept().GetDeptById(allDepts, u.DeptId)
 		dept.DeletedAt = &gtime.Time{}
 		var deptInfo *entity.Dept
 		if err = gconv.Struct(gutil.Copy(dept), &deptInfo); err != nil {
 			return
 		}
-		deptInfo.Name = Dept().GetDeptAllNameById(allDepts, u.DeptId)
+		deptInfo.Name = service.Dept().GetDeptAllNameById(allDepts, u.DeptId)
 		profileInfos[k].Dept = deptInfo
 		// 处理角色信息
 		var roles []*entity.Role
-		if roles, err = Role().GetUserRoles(ctx, u.Id); err != nil {
+		if roles, err = service.Role().GetUserRoles(ctx, u.Id); err != nil {
 			return
 		}
 		profileInfos[k].Roles = roles
@@ -373,6 +354,24 @@ func (s *sUserManager) SearchByRealname(ctx context.Context, realname string) (l
 		return
 	}
 	return
+}
+
+// 用户账号是否可用
+func (s *sUserManager) isPassportAvailable(ctx context.Context, passport string) (bool, error) {
+	count, err := dao.User.Ctx(ctx).Where(do.User{Passport: passport}).Unscoped().Count()
+	if err != nil {
+		return false, err
+	}
+	return count == 0, nil
+}
+
+// 用户手机是否可用
+func (s *sUserManager) isMobileAvailable(ctx context.Context, mobile string) (bool, error) {
+	count, err := dao.User.Ctx(ctx).Where(do.User{Mobile: mobile}).Unscoped().Count()
+	if err != nil {
+		return false, err
+	}
+	return count == 0, nil
 }
 
 // saveUser 保存用户数据

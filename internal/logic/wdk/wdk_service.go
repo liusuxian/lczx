@@ -1,4 +1,4 @@
-package service
+package wdk
 
 import (
 	"context"
@@ -7,18 +7,19 @@ import (
 	v1 "lczx/api/v1"
 	"lczx/internal/dao"
 	"lczx/internal/model/do"
+	"lczx/internal/service"
 	"lczx/internal/upload"
 )
 
 type sWdkService struct{}
 
-var (
-	insWdkService = sWdkService{}
-)
+func init() {
+	service.RegisterWdkService(newWdkService())
+}
 
-// WdkService 文档库服务记录管理服务
-func WdkService() *sWdkService {
-	return &insWdkService
+// 文档库服务记录管理服务
+func newWdkService() *sWdkService {
+	return &sWdkService{}
 }
 
 // GetWdkServiceRecord 获取文档库服务记录
@@ -43,7 +44,7 @@ func (s *sWdkService) AddWdkService(ctx context.Context, req *v1.WdkServiceAddRe
 			return terr
 		}
 		// 设置文档库项目文件上传状态为正常
-		terr = WdkProject().SetWdkProjectFileUploadStatusNormal(ctx, req.ProjectId)
+		terr = service.WdkProject().SetWdkProjectFileUploadStatusNormal(ctx, req.ProjectId)
 		return terr
 	})
 	return

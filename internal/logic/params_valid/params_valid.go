@@ -1,4 +1,4 @@
-package service
+package params_valid
 
 import (
 	"context"
@@ -11,17 +11,14 @@ import (
 
 type sParamsValid struct{}
 
-var (
-	insParamsValid = sParamsValid{}
-)
-
 func init() {
-	gvalid.RegisterRule("slice_valid", SliceValid)
+	//service.RegisterParamsValid(newParamsValid())
 }
 
-// ParamsValid 自定义参数校验服务
-func ParamsValid() *sParamsValid {
-	return &insParamsValid
+// 自定义参数校验服务
+func newParamsValid() *sParamsValid {
+	gvalid.RegisterRule("slice_valid", SliceValid)
+	return &sParamsValid{}
 }
 
 // SliceValid 自定义切片数据校验

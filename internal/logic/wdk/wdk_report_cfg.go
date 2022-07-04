@@ -1,4 +1,4 @@
-package service
+package wdk
 
 import (
 	"context"
@@ -11,17 +11,18 @@ import (
 	"lczx/internal/dao"
 	"lczx/internal/model/do"
 	"lczx/internal/model/entity"
+	"lczx/internal/service"
 )
 
 type sWdkReportCfg struct{}
 
-var (
-	insWdkReportCfg = sWdkReportCfg{}
-)
+func init() {
+	service.RegisterWdkReportCfg(newWdkReportCfg())
+}
 
-// WdkReportCfg 文档库报告类型配置管理服务
-func WdkReportCfg() *sWdkReportCfg {
-	return &insWdkReportCfg
+// 文档库报告类型配置管理服务
+func newWdkReportCfg() *sWdkReportCfg {
+	return &sWdkReportCfg{}
 }
 
 // GetWdkReportCfgList 获取文档库报告类型配置列表
