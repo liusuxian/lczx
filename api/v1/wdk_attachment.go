@@ -35,3 +35,13 @@ type WdkAttachmentAddReq struct {
 // WdkAttachmentAddRes 文档库新增上传附件记录返回参数
 type WdkAttachmentAddRes struct {
 }
+
+// WdkAttachmentDeleteReq 文档库删除上传附件请求参数
+type WdkAttachmentDeleteReq struct {
+	g.Meta `path:"/delete" tags:"WdkAttachmentDelete" method:"delete" summary:"You first wdk/attachment/delete api"`
+	Ids    []uint64 `json:"ids" v:"required|slice_valid:uint64#文档库附件上传记录ID列表不能为空" dc:"文档库附件上传记录ID列表"` // 文档库附件上传记录ID列表
+}
+
+// WdkAttachmentDeleteRes 文档库删除上传附件返回参数
+type WdkAttachmentDeleteRes struct {
+}

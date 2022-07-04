@@ -43,6 +43,16 @@ type WdkReportAuditTypeInfo struct {
 	AuditUids []uint64 `json:"auditUids" dc:"文档库报告审核员用户ID列表"` // 文档库报告审核员用户ID列表
 }
 
+// WdkReportDeleteReq 文档库删除报告请求参数
+type WdkReportDeleteReq struct {
+	g.Meta `path:"/delete" tags:"WdkReportDelete" method:"delete" summary:"You first wdk/report/delete api"`
+	Ids    []uint64 `json:"ids" v:"required|slice_valid:uint64#文档库报告ID列表不能为空" dc:"文档库报告ID列表"` // 文档库报告ID列表
+}
+
+// WdkReportDeleteRes 文档库删除报告返回参数
+type WdkReportDeleteRes struct {
+}
+
 // WdkReportExcellenceListReq 文档库优秀报告列表请求参数
 type WdkReportExcellenceListReq struct {
 	g.Meta      `path:"/excellenceList" tags:"WdkReportExcellenceList" method:"get" summary:"You first wdk/report/excellenceList api"`
