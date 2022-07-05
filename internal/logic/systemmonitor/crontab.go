@@ -5,13 +5,11 @@ import (
 	"github.com/gogf/gf/v2/container/gset"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/os/gcron"
-	"github.com/gogf/gf/v2/os/gctx"
 	"github.com/gogf/gf/v2/os/gmutex"
 	"github.com/gogf/gf/v2/text/gstr"
 	"github.com/gogf/gf/v2/util/gconv"
 	v1 "lczx/api/v1"
 	"lczx/internal/dao"
-	_ "lczx/internal/logic/wdk"
 	"lczx/internal/model"
 	"lczx/internal/model/do"
 	"lczx/internal/model/entity"
@@ -40,34 +38,10 @@ func init() {
 
 // 定时任务管理服务
 func newCrontab() *sCrontab {
-	ctx := gctx.New()
 	insCrontab := &sCrontab{
 		mu: gmutex.New(),
 	}
 	insCrontab.clientOptionMap = map[string][]*model.ClientOption{}
-	// 注册定时任务
-	checkUserOnlineTask := &timeTask{
-		funcDescName: "检查在线用户",
-		invokeTarget: "checkUserOnline",
-		run:          service.Auth().CheckUserOnline,
-	}
-	checkWdkProjectFileUploadStatus := &timeTask{
-		funcDescName: "检查项目文件上传状态",
-		invokeTarget: "checkWdkProjectFileUploadStatus",
-		run:          service.WdkProject().CheckWdkProjectFileUploadStatus,
-	}
-	insCrontab.addTask(checkUserOnlineTask).addTask(checkWdkProjectFileUploadStatus)
-	// 自动执行状态正常的任务
-	var crontabList []*entity.Crontab
-	var err error
-	if crontabList, err = insCrontab.GetStatusNormalCrontab(ctx); err != nil {
-		logger.Error(ctx, "Get Status Normal Crontab Error: ", err)
-	}
-	for _, crontab := range crontabList {
-		if err = insCrontab.StartTask(ctx, crontab, false); err != nil {
-			logger.Error(ctx, "Start Task Error: ", err)
-		}
-	}
 	// 处理客户端选项
 	groupList := []*model.ClientOption{
 		{
@@ -270,7 +244,7 @@ func (s *sCrontab) EditCrontab(ctx context.Context, req *v1.CrontabEditReq) (err
 func (s *sCrontab) DeleteCrontab(ctx context.Context, ids []uint64) (err error) {
 	idSet := gset.NewFrom(ids)
 	var crontabList []*entity.Crontab
-	if crontabList, err = s.GetStatusNormalCrontab(ctx); err != nil {
+	if crontabList, err = s.getStatusNormalCrontab(ctx); err != nil {
 		return
 	}
 	for _, crontab := range crontabList {
@@ -283,27 +257,36 @@ func (s *sCrontab) DeleteCrontab(ctx context.Context, ids []uint64) (err error) 
 	return
 }
 
-// GetStatusNormalCrontab 获取状态为正常的任务
-func (s *sCrontab) GetStatusNormalCrontab(ctx context.Context) (list []*entity.Crontab, err error) {
-	err = dao.Crontab.Ctx(ctx).Where(do.Crontab{Status: 1}).Scan(&list)
-	return
-}
-
-// SetCrontabStatusNormal 设置任务状态为正常
-func (s *sCrontab) SetCrontabStatusNormal(ctx context.Context, id uint64) (err error) {
-	_, err = dao.Crontab.Ctx(ctx).Data(do.Crontab{Status: 1}).Where(do.Crontab{Id: id}).Unscoped().Update()
-	return
-}
-
-// SetCrontabStatusPause 设置任务状态为暂停
-func (s *sCrontab) SetCrontabStatusPause(ctx context.Context, id uint64) (err error) {
-	_, err = dao.Crontab.Ctx(ctx).Data(do.Crontab{Status: 0}).Where(do.Crontab{Id: id}).Unscoped().Update()
-	return
-}
-
 // GetClientOptionMap 获取客户端选项Map
 func (s *sCrontab) GetClientOptionMap() map[string][]*model.ClientOption {
 	return s.clientOptionMap
+}
+
+// RegisterAndStartAllTask 注册并启动所有任务
+func (s *sCrontab) RegisterAndStartAllTask(ctx context.Context) {
+	// 注册定时任务
+	checkUserOnlineTask := &timeTask{
+		funcDescName: "检查在线用户",
+		invokeTarget: "checkUserOnline",
+		run:          service.Auth().CheckUserOnline,
+	}
+	checkWdkProjectFileUploadStatus := &timeTask{
+		funcDescName: "检查项目文件上传状态",
+		invokeTarget: "checkWdkProjectFileUploadStatus",
+		run:          service.WdkProject().CheckWdkProjectFileUploadStatus,
+	}
+	s.addTask(checkUserOnlineTask).addTask(checkWdkProjectFileUploadStatus)
+	// 自动执行状态正常的任务
+	var crontabList []*entity.Crontab
+	var err error
+	if crontabList, err = s.getStatusNormalCrontab(ctx); err != nil {
+		logger.Error(ctx, "Get Status Normal Crontab Error: ", err)
+	}
+	for _, crontab := range crontabList {
+		if err = s.StartTask(ctx, crontab, false); err != nil {
+			logger.Error(ctx, "Start Task Error: ", err)
+		}
+	}
 }
 
 // StartTask 启动任务
@@ -335,7 +318,7 @@ func (s *sCrontab) StartTask(ctx context.Context, crontab *entity.Crontab, upSta
 	}
 	gcron.Start(crontab.InvokeTarget)
 	if upStatus {
-		err = s.SetCrontabStatusNormal(ctx, crontab.Id)
+		err = s.setCrontabStatusNormal(ctx, crontab.Id)
 	}
 	return
 }
@@ -354,7 +337,7 @@ func (s *sCrontab) StopTask(ctx context.Context, crontab *entity.Crontab, upStat
 		gcron.Remove(crontab.InvokeTarget)
 	}
 	if upStatus {
-		err = s.SetCrontabStatusPause(ctx, crontab.Id)
+		err = s.setCrontabStatusPause(ctx, crontab.Id)
 	}
 	return
 }
@@ -377,6 +360,24 @@ func (s *sCrontab) RunTask(ctx context.Context, crontab *entity.Crontab) (err er
 	if newCron == nil {
 		return gerror.Newf("启动任务[%s]失败", crontab.Name)
 	}
+	return
+}
+
+// 获取状态为正常的任务
+func (s *sCrontab) getStatusNormalCrontab(ctx context.Context) (list []*entity.Crontab, err error) {
+	err = dao.Crontab.Ctx(ctx).Where(do.Crontab{Status: 1}).Scan(&list)
+	return
+}
+
+// 设置任务状态为正常
+func (s *sCrontab) setCrontabStatusNormal(ctx context.Context, id uint64) (err error) {
+	_, err = dao.Crontab.Ctx(ctx).Data(do.Crontab{Status: 1}).Where(do.Crontab{Id: id}).Unscoped().Update()
+	return
+}
+
+// 设置任务状态为暂停
+func (s *sCrontab) setCrontabStatusPause(ctx context.Context, id uint64) (err error) {
+	_, err = dao.Crontab.Ctx(ctx).Data(do.Crontab{Status: 0}).Where(do.Crontab{Id: id}).Unscoped().Update()
 	return
 }
 

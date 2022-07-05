@@ -17,10 +17,8 @@ type ICrontab interface {
 	GetCrontabById(ctx context.Context, id uint64) (crontab *entity.Crontab, err error)
 	EditCrontab(ctx context.Context, req *v1.CrontabEditReq) (err error)
 	DeleteCrontab(ctx context.Context, ids []uint64) (err error)
-	GetStatusNormalCrontab(ctx context.Context) (list []*entity.Crontab, err error)
-	SetCrontabStatusNormal(ctx context.Context, id uint64) (err error)
-	SetCrontabStatusPause(ctx context.Context, id uint64) (err error)
 	GetClientOptionMap() map[string][]*model.ClientOption
+	RegisterAndStartAllTask(ctx context.Context)
 	StartTask(ctx context.Context, crontab *entity.Crontab, upStatus bool) (err error)
 	StopTask(ctx context.Context, crontab *entity.Crontab, upStatus bool) (err error)
 	RunTask(ctx context.Context, crontab *entity.Crontab) (err error)

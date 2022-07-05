@@ -20,6 +20,8 @@ var (
 			service.Cache().ClearAllCache(ctx)
 			// 注册参数校验规则
 			service.ParamsValid().RegisterRule()
+			// 注册并启动所有任务
+			service.Crontab().RegisterAndStartAllTask(ctx)
 
 			s := g.Server()
 			// 不认证接口
