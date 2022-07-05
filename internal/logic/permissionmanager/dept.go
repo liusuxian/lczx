@@ -212,8 +212,8 @@ func (s *sDept) GetStatusEnableDepts(ctx context.Context) (depts []*entity.Dept,
 func (s *sDept) GetAllDepts(ctx context.Context) (depts []*entity.Dept, err error) {
 	// 从缓存获取
 	deptsCacheVal := service.Cache().GetCache(ctx, consts.DeptKey)
-	if deptsCacheVal != nil {
-		err = gconv.Structs(deptsCacheVal, &depts)
+	if deptsCacheVal != nil && deptsCacheVal.Map()["Result"] != nil {
+		err = gconv.Structs(deptsCacheVal.Map()["Result"], &depts)
 		if err != nil {
 			return
 		}

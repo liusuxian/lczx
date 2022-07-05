@@ -218,8 +218,8 @@ func (s *sMenu) GetMenuTree(menuList []*entity.Menu, parentId uint64) (tree []*v
 func (s *sMenu) GetAllMenus(ctx context.Context) (menus []*entity.Menu, err error) {
 	// 从缓存获取
 	menusCacheVal := service.Cache().GetCache(ctx, consts.MenuKey)
-	if menusCacheVal != nil {
-		err = gconv.Structs(menusCacheVal, &menus)
+	if menusCacheVal != nil && menusCacheVal.Map()["Result"] != nil {
+		err = gconv.Structs(menusCacheVal.Map()["Result"], &menus)
 		if err != nil {
 			return
 		}

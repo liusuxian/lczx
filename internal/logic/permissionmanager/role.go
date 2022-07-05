@@ -263,8 +263,8 @@ func (s *sRole) GetEnableRoles(ctx context.Context) (roles []*entity.Role, err e
 func (s *sRole) GetAllRoles(ctx context.Context) (roles []*entity.Role, err error) {
 	// 从缓存获取
 	rolesCacheVal := service.Cache().GetCache(ctx, consts.RoleKey)
-	if rolesCacheVal != nil {
-		err = gconv.Structs(rolesCacheVal, &roles)
+	if rolesCacheVal != nil && rolesCacheVal.Map()["Result"] != nil {
+		err = gconv.Structs(rolesCacheVal.Map()["Result"], &roles)
 		if err != nil {
 			return
 		}
