@@ -6,6 +6,7 @@ package internal
 
 import (
 	"context"
+
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/frame/g"
 )
@@ -20,7 +21,7 @@ type WdkProjectBusinessformsDao struct {
 // WdkProjectBusinessformsColumns defines and stores column names for table wdk_project_businessforms.
 type WdkProjectBusinessformsColumns struct {
 	ProjectId     string // 文档库项目ID
-	BusinessForms string // 业态 0:住宅 1:小高层 2:高层 3:超高层 4:公寓 5:合院 6:叠墅 7:排屋 8:多层 9:会所 10:商住 11:综合体 12:产业园 13:酒店 14:酒店式公寓 15:商业 16:普通商业 17:公共配套 18:办公 19:厂房
+	BusinessForms string // 业态 0:住宅 1:小高层 2:高层 3:超高层 4:公寓 5:合院 6:叠墅 7:排屋 8:多层 9:会所 10:商住 11:综合体 12:产业园 13:酒店 14:酒店式公寓 15:商业 16:普通商业 17:公共配套 18:办公 19:公寓式办公 20:厂房
 }
 
 //  wdkProjectBusinessformsColumns holds the columns for table wdk_project_businessforms.

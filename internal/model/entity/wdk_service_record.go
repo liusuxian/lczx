@@ -17,5 +17,5 @@ type WdkServiceRecord struct {
 	XchOriginUrl string      `json:"xchOriginUrl" description:"原始行程涵url"`  // 原始行程涵url
 	XchPdfUrl    string      `json:"xchPdfUrl"    description:"pdf行程涵url"` // pdf行程涵url
 	Remark       string      `json:"remark"       description:"备注"`        // 备注
-	CreateAt     *gtime.Time `json:"createAt"     description:"创建时间"`      // 创建时间
+	CreatedAt    *gtime.Time `json:"createdAt"    description:"创建时间"`      // 创建时间
 }

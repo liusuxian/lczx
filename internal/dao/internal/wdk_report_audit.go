@@ -6,6 +6,7 @@ package internal
 
 import (
 	"context"
+
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/frame/g"
 )
@@ -30,8 +31,8 @@ type WdkReportAuditColumns struct {
 	Excellence     string // 是否被推荐为优秀报告 0:未被推荐为优秀报告 1:已被推荐为优秀报告
 	AuditTime      string // 审核时间
 	AuditOpinion   string // 审核意见
-	CreateAt       string // 创建时间
-	UpdateAt       string // 更新时间
+	CreatedAt      string // 创建时间
+	UpdatedAt      string // 更新时间
 }
 
 //  wdkReportAuditColumns holds the columns for table wdk_report_audit.
@@ -47,8 +48,8 @@ var wdkReportAuditColumns = WdkReportAuditColumns{
 	Excellence:     "excellence",
 	AuditTime:      "audit_time",
 	AuditOpinion:   "audit_opinion",
-	CreateAt:       "create_at",
-	UpdateAt:       "update_at",
+	CreatedAt:      "created_at",
+	UpdatedAt:      "updated_at",
 }
 
 // NewWdkReportAuditDao creates and returns a new DAO object for table data access.

@@ -23,7 +23,7 @@ type Menu struct {
 	IsFrame    interface{} // 是否外链 1是 0否
 	ModuleType interface{} // 所属模块
 	Remark     interface{} // 备注
-	CreateAt   *gtime.Time // 创建时间
-	UpdateAt   *gtime.Time // 更新时间
+	CreatedAt  *gtime.Time // 创建时间
+	UpdatedAt  *gtime.Time // 更新时间
 	DeletedAt  *gtime.Time // 软删除时间
 }

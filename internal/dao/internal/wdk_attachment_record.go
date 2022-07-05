@@ -6,6 +6,7 @@ package internal
 
 import (
 	"context"
+
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/frame/g"
 )
@@ -22,7 +23,7 @@ type WdkAttachmentRecordColumns struct {
 	Id        string // 附件上传记录ID
 	ProjectId string // 所属项目ID
 	Remark    string // 备注
-	CreateAt  string // 创建时间
+	CreatedAt string // 创建时间
 }
 
 //  wdkAttachmentRecordColumns holds the columns for table wdk_attachment_record.
@@ -30,7 +31,7 @@ var wdkAttachmentRecordColumns = WdkAttachmentRecordColumns{
 	Id:        "id",
 	ProjectId: "project_id",
 	Remark:    "remark",
-	CreateAt:  "create_at",
+	CreatedAt: "created_at",
 }
 
 // NewWdkAttachmentRecordDao creates and returns a new DAO object for table data access.

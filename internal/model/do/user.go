@@ -28,7 +28,7 @@ type User struct {
 	Remark        interface{} // 备注
 	LastLoginIp   interface{} // 最后登录ip
 	LastLoginTime *gtime.Time // 最后登录时间
-	CreateAt      *gtime.Time // 创建时间
-	UpdateAt      *gtime.Time // 更新时间
+	CreatedAt     *gtime.Time // 创建时间
+	UpdatedAt     *gtime.Time // 更新时间
 	DeletedAt     *gtime.Time // 软删除时间
 }

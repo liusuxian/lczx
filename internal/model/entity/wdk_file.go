@@ -18,6 +18,6 @@ type WdkFile struct {
 	CreateName string      `json:"createName" description:"上传者姓名"`                                                         // 上传者姓名
 	OriginUrl  string      `json:"originUrl"  description:"原始文件url"`                                                       // 原始文件url
 	PdfUrl     string      `json:"pdfUrl"     description:"pdf文件url"`                                                      // pdf文件url
-	CreateAt   *gtime.Time `json:"createAt"   description:"上传时间"`                                                          // 上传时间
-	UpdateAt   *gtime.Time `json:"updateAt"   description:"更新时间"`                                                          // 更新时间
+	CreatedAt  *gtime.Time `json:"createdAt"  description:"上传时间"`                                                          // 上传时间
+	UpdatedAt  *gtime.Time `json:"updatedAt"  description:"更新时间"`                                                          // 更新时间
 }

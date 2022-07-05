@@ -6,6 +6,7 @@ package internal
 
 import (
 	"context"
+
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/frame/g"
 )
@@ -31,8 +32,8 @@ type WdkReportColumns struct {
 	AuditTime   string // 审核时间
 	OriginUrl   string // 原始文件url
 	PdfUrl      string // pdf文件url
-	CreateAt    string // 上传时间
-	UpdateAt    string // 更新时间
+	CreatedAt   string // 上传时间
+	UpdatedAt   string // 更新时间
 }
 
 //  wdkReportColumns holds the columns for table wdk_report.
@@ -49,8 +50,8 @@ var wdkReportColumns = WdkReportColumns{
 	AuditTime:   "audit_time",
 	OriginUrl:   "origin_url",
 	PdfUrl:      "pdf_url",
-	CreateAt:    "create_at",
-	UpdateAt:    "update_at",
+	CreatedAt:   "created_at",
+	UpdatedAt:   "updated_at",
 }
 
 // NewWdkReportDao creates and returns a new DAO object for table data access.

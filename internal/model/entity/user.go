@@ -26,7 +26,7 @@ type User struct {
 	Remark        string      `json:"remark"        description:"备注"`              // 备注
 	LastLoginIp   string      `json:"lastLoginIp"   description:"最后登录ip"`          // 最后登录ip
 	LastLoginTime *gtime.Time `json:"lastLoginTime" description:"最后登录时间"`          // 最后登录时间
-	CreateAt      *gtime.Time `json:"createAt"      description:"创建时间"`            // 创建时间
-	UpdateAt      *gtime.Time `json:"updateAt"      description:"更新时间"`            // 更新时间
+	CreatedAt     *gtime.Time `json:"createdAt"     description:"创建时间"`            // 创建时间
+	UpdatedAt     *gtime.Time `json:"updatedAt"     description:"更新时间"`            // 更新时间
 	DeletedAt     *gtime.Time `json:"deletedAt"     description:"软删除时间"`           // 软删除时间
 }

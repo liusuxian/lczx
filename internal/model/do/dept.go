@@ -20,7 +20,7 @@ type Dept struct {
 	UpdatedBy     interface{} // 修改人
 	PrincipalUid  interface{} // 负责人用户ID
 	PrincipalName interface{} // 负责人姓名
-	CreateAt      *gtime.Time // 创建时间
-	UpdateAt      *gtime.Time // 更新时间
+	CreatedAt     *gtime.Time // 创建时间
+	UpdatedAt     *gtime.Time // 更新时间
 	DeletedAt     *gtime.Time // 软删除时间
 }

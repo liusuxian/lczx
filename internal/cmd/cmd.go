@@ -5,7 +5,6 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/os/gcmd"
-	"github.com/gogf/gf/v2/os/gcron"
 	"lczx/internal/controller"
 	"lczx/internal/service"
 	"lczx/utility/logger"
@@ -19,8 +18,11 @@ var (
 		Func: func(ctx context.Context, parser *gcmd.Parser) (err error) {
 			// 清除所有缓存
 			service.Cache().ClearAllCache(ctx)
-			// 自定义参数校验服务
-			service.ParamsValid()
+			// 注册参数校验规则
+			service.ParamsValid().RegisterRule()
+			// 注册并启动所有任务
+			service.Crontab().RegisterAndStartAllTask(ctx)
+
 			s := g.Server()
 			// 不认证接口
 			s.Group("/", func(group *ghttp.RouterGroup) {
@@ -43,7 +45,7 @@ var (
 				)
 				err = service.Auth().Token().Middleware(ctx, group)
 				if err != nil {
-					logger.Panic(ctx, "Init GfToken Error: ", err.Error())
+					logger.Panic(ctx, "Init GfToken Error: ", err)
 				}
 				// 权限判断
 				group.Middleware(
@@ -100,6 +102,10 @@ var (
 					group.Group("/operLog", func(group *ghttp.RouterGroup) {
 						group.Bind(controller.OperLog)
 					})
+					// 定时任务管理
+					group.Group("/crontab", func(group *ghttp.RouterGroup) {
+						group.Bind(controller.Crontab)
+					})
 				})
 				// 文档库
 				group.Group("/wdk", func(group *ghttp.RouterGroup) {
@@ -133,11 +139,6 @@ var (
 					})
 				})
 			})
-			// 每2小时执行一次检查在线用户
-			_, err = gcron.Add(ctx, "0 0 */2 * * *", service.Auth().CheckUserOnline)
-			if err != nil {
-				return err
-			}
 			// 启动
 			s.Run()
 			return nil

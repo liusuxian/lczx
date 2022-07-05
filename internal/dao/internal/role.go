@@ -6,6 +6,7 @@ package internal
 
 import (
 	"context"
+
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/frame/g"
 )
@@ -24,8 +25,8 @@ type RoleColumns struct {
 	Status    string // 角色状态 0:停用 1:正常
 	DataScope string // 数据范围 1:全部数据权限 2:自定义数据权限 3:本部门数据权限 4:本部门及以下数据权限 5:仅本人数据权限
 	Remark    string // 备注
-	CreateAt  string // 创建时间
-	UpdateAt  string // 更新时间
+	CreatedAt string // 创建时间
+	UpdatedAt string // 更新时间
 }
 
 //  roleColumns holds the columns for table role.
@@ -35,8 +36,8 @@ var roleColumns = RoleColumns{
 	Status:    "status",
 	DataScope: "data_scope",
 	Remark:    "remark",
-	CreateAt:  "create_at",
-	UpdateAt:  "update_at",
+	CreatedAt: "created_at",
+	UpdatedAt: "updated_at",
 }
 
 // NewRoleDao creates and returns a new DAO object for table data access.

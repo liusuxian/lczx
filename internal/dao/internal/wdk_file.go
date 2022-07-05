@@ -6,6 +6,7 @@ package internal
 
 import (
 	"context"
+
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/frame/g"
 )
@@ -27,8 +28,8 @@ type WdkFileColumns struct {
 	CreateName string // 上传者姓名
 	OriginUrl  string // 原始文件url
 	PdfUrl     string // pdf文件url
-	CreateAt   string // 上传时间
-	UpdateAt   string // 更新时间
+	CreatedAt  string // 上传时间
+	UpdatedAt  string // 更新时间
 }
 
 //  wdkFileColumns holds the columns for table wdk_file.
@@ -41,8 +42,8 @@ var wdkFileColumns = WdkFileColumns{
 	CreateName: "create_name",
 	OriginUrl:  "origin_url",
 	PdfUrl:     "pdf_url",
-	CreateAt:   "create_at",
-	UpdateAt:   "update_at",
+	CreatedAt:  "created_at",
+	UpdatedAt:  "updated_at",
 }
 
 // NewWdkFileDao creates and returns a new DAO object for table data access.

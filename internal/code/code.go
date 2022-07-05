@@ -3,12 +3,13 @@ package code
 import "github.com/gogf/gf/v2/errors/gcode"
 
 var (
-	GetCaptchaImgFailed = gcode.New(1000, "获取验证码图片信息失败", "") // 获取验证码图片信息失败
-	CaptchaPutErr       = gcode.New(1001, "验证码输入错误", "")     // 验证码输入错误
-	RequestDataFailed   = gcode.New(1002, "请求数据失败", "")      // 请求数据失败
-	GetAccessAuthFailed = gcode.New(1003, "获取权限失败", "")      // 获取权限失败
-	NotAccessAuth       = gcode.New(1004, "没有访问权限", "")      // 没有访问权限
-	GetFileUrlFailed    = gcode.New(1005, "获取文件url失败", "")   // 获取文件url失败
+	GetCaptchaImgFailed  = gcode.New(1000, "获取验证码图片信息失败", "") // 获取验证码图片信息失败
+	CaptchaPutErr        = gcode.New(1001, "验证码输入错误", "")     // 验证码输入错误
+	GetContextUserFailed = gcode.New(1002, "获取上下文用户信息失败", "") // 获取上下文用户信息失败
+	RequestDataFailed    = gcode.New(1003, "请求数据失败", "")      // 请求数据失败
+	GetAccessAuthFailed  = gcode.New(1004, "获取权限失败", "")      // 获取权限失败
+	NotAccessAuth        = gcode.New(1005, "没有访问权限", "")      // 没有访问权限
+	GetFileUrlFailed     = gcode.New(1006, "获取文件url失败", "")   // 获取文件url失败
 
 	GetUserOnlineListFailed     = gcode.New(1100, "获取在线用户列表失败", "") // 获取在线用户列表失败
 	ForceLogoutUserOnlineFailed = gcode.New(1101, "强退在线用户失败", "")   // 强退在线用户失败
@@ -18,6 +19,14 @@ var (
 	GetOperLogListFailed        = gcode.New(1105, "获取操作日志列表失败", "") // 获取操作日志列表失败
 	DeleteOperLogFailed         = gcode.New(1106, "删除操作日志失败", "")   // 删除操作日志失败
 	ClearOperLogFailed          = gcode.New(1107, "清除操作日志失败", "")   // 清除操作日志失败
+	GetCrontabListFailed        = gcode.New(1108, "获取定时任务列表失败", "") // 获取定时任务列表失败
+	AddCrontabFailed            = gcode.New(1109, "添加定时任务失败", "")   // 添加定时任务失败
+	GetCrontabFailed            = gcode.New(1110, "获取定时任务失败", "")   // 获取定时任务失败
+	EditCrontabFailed           = gcode.New(1111, "修改定时任务失败", "")   // 修改定时任务失败
+	StartCrontabFailed          = gcode.New(1112, "启动定时任务失败", "")   // 启动定时任务失败
+	StopEditCrontabFailed       = gcode.New(1113, "停止定时任务失败", "")   // 停止定时任务失败
+	RunCrontabFailed            = gcode.New(1114, "执行定时任务失败", "")   // 执行定时任务失败
+	DeleteCrontabFailed         = gcode.New(1115, "删除定时任务失败", "")   // 删除定时任务失败
 
 	GetUserFailed          = gcode.New(1200, "获取用户信息失败", "")     // 获取用户信息失败
 	GetUserProfileFailed   = gcode.New(1201, "获取用户个人中心信息失败", "") // 获取用户个人中心信息失败

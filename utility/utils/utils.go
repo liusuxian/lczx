@@ -65,7 +65,7 @@ func GetCityByIp(ctx context.Context, ip string) string {
 	tmp, _ := gcharset.ToUTF8(srcCharset, src)
 	json, err := gjson.DecodeToJson(tmp)
 	if err != nil {
-		logger.Error(ctx, "GetCityByIp Error: ", err.Error())
+		logger.Error(ctx, "GetCityByIp Error: ", err)
 		return ""
 	}
 	if json.Get("code").Int() == 0 {
@@ -106,8 +106,8 @@ func Doexec(cmdStr string) error {
 }
 
 // RedisKey 组装redis key
-func RedisKey(keys ...string) string {
-	return gstr.Join(keys, ":")
+func RedisKey(prefix string, keys ...string) string {
+	return prefix + gstr.Join(keys, ":")
 }
 
 // GetExcelHeadStyle 获取Excel文件表头样式

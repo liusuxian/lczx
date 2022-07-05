@@ -2,8 +2,19 @@ package v1
 
 import (
 	"github.com/gogf/gf/v2/frame/g"
+	"lczx/internal/model"
 	"lczx/internal/model/entity"
 )
+
+// DeptClientOptionsReq 获取部门管理客户端选项请求参数
+type DeptClientOptionsReq struct {
+	g.Meta `path:"/clientOptions" tags:"DeptClientOptions" method:"get" summary:"You first auth/dept/clientOptions api"`
+}
+
+// DeptClientOptionsRes 获取部门管理客户端选项返回参数
+type DeptClientOptionsRes struct {
+	StatusList []*model.ClientOption `json:"statusList" dc:"部门状态选项列表"` // 部门状态选项列表
+}
 
 // DeptListReq 部门树列表请求参数
 type DeptListReq struct {

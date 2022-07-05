@@ -9,6 +9,8 @@ const (
 const (
 	// CachePrefix 缓存前缀
 	CachePrefix = "cache:lczx:"
+	// CacheAccessUrlPrefix 访问授权URL缓存前缀
+	CacheAccessUrlPrefix = "cache:lczx:accessurl:"
 	// DeptKey 缓存部门key
 	DeptKey = CachePrefix + "dept"
 	// MenuKey 缓存菜单key

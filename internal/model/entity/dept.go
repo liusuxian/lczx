@@ -18,7 +18,7 @@ type Dept struct {
 	UpdatedBy     uint64      `json:"updatedBy"     description:"修改人"`            // 修改人
 	PrincipalUid  uint64      `json:"principalUid"  description:"负责人用户ID"`        // 负责人用户ID
 	PrincipalName string      `json:"principalName" description:"负责人姓名"`          // 负责人姓名
-	CreateAt      *gtime.Time `json:"createAt"      description:"创建时间"`           // 创建时间
-	UpdateAt      *gtime.Time `json:"updateAt"      description:"更新时间"`           // 更新时间
+	CreatedAt     *gtime.Time `json:"createdAt"     description:"创建时间"`           // 创建时间
+	UpdatedAt     *gtime.Time `json:"updatedAt"     description:"更新时间"`           // 更新时间
 	DeletedAt     *gtime.Time `json:"deletedAt"     description:"软删除时间"`          // 软删除时间
 }

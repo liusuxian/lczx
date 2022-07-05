@@ -3,8 +3,20 @@ package v1
 import (
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gtime"
+	"lczx/internal/model"
 	"lczx/internal/model/entity"
 )
+
+// RoleClientOptionsReq 获取角色管理客户端选项请求参数
+type RoleClientOptionsReq struct {
+	g.Meta `path:"/clientOptions" tags:"RoleClientOptions" method:"get" summary:"You first auth/role/clientOptions api"`
+}
+
+// RoleClientOptionsRes 获取角色管理客户端选项返回参数
+type RoleClientOptionsRes struct {
+	StatusList    []*model.ClientOption `json:"statusList" dc:"角色状态选项列表"`      // 角色状态选项列表
+	DataScopeList []*model.ClientOption `json:"dataScopeList" dc:"数据权限范围选项列表"` // 数据权限范围选项列表
+}
 
 // RoleListReq 获取角色列表请求参数
 type RoleListReq struct {

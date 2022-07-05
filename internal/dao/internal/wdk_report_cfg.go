@@ -6,6 +6,7 @@ package internal
 
 import (
 	"context"
+
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/frame/g"
 )
@@ -19,18 +20,18 @@ type WdkReportCfgDao struct {
 
 // WdkReportCfgColumns defines and stores column names for table wdk_report_cfg.
 type WdkReportCfgColumns struct {
-	Id       string // 报告类型ID
-	Name     string // 报告类型名称
-	CreateAt string // 创建时间
-	UpdateAt string // 更新时间
+	Id        string // 报告类型ID
+	Name      string // 报告类型名称
+	CreatedAt string // 创建时间
+	UpdatedAt string // 更新时间
 }
 
 //  wdkReportCfgColumns holds the columns for table wdk_report_cfg.
 var wdkReportCfgColumns = WdkReportCfgColumns{
-	Id:       "id",
-	Name:     "name",
-	CreateAt: "create_at",
-	UpdateAt: "update_at",
+	Id:        "id",
+	Name:      "name",
+	CreatedAt: "created_at",
+	UpdatedAt: "updated_at",
 }
 
 // NewWdkReportCfgDao creates and returns a new DAO object for table data access.

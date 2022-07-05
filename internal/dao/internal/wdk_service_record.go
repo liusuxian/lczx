@@ -6,6 +6,7 @@ package internal
 
 import (
 	"context"
+
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/frame/g"
 )
@@ -26,7 +27,7 @@ type WdkServiceRecordColumns struct {
 	XchOriginUrl string // 原始行程涵url
 	XchPdfUrl    string // pdf行程涵url
 	Remark       string // 备注
-	CreateAt     string // 创建时间
+	CreatedAt    string // 创建时间
 }
 
 //  wdkServiceRecordColumns holds the columns for table wdk_service_record.
@@ -38,7 +39,7 @@ var wdkServiceRecordColumns = WdkServiceRecordColumns{
 	XchOriginUrl: "xch_origin_url",
 	XchPdfUrl:    "xch_pdf_url",
 	Remark:       "remark",
-	CreateAt:     "create_at",
+	CreatedAt:    "created_at",
 }
 
 // NewWdkServiceRecordDao creates and returns a new DAO object for table data access.

@@ -23,6 +23,6 @@ type WdkReportAudit struct {
 	Excellence     interface{} // 是否被推荐为优秀报告 0:未被推荐为优秀报告 1:已被推荐为优秀报告
 	AuditTime      *gtime.Time // 审核时间
 	AuditOpinion   interface{} // 审核意见
-	CreateAt       *gtime.Time // 创建时间
-	UpdateAt       *gtime.Time // 更新时间
+	CreatedAt      *gtime.Time // 创建时间
+	UpdatedAt      *gtime.Time // 更新时间
 }

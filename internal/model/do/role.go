@@ -17,6 +17,6 @@ type Role struct {
 	Status    interface{} // 角色状态 0:停用 1:正常
 	DataScope interface{} // 数据范围 1:全部数据权限 2:自定义数据权限 3:本部门数据权限 4:本部门及以下数据权限 5:仅本人数据权限
 	Remark    interface{} // 备注
-	CreateAt  *gtime.Time // 创建时间
-	UpdateAt  *gtime.Time // 更新时间
+	CreatedAt *gtime.Time // 创建时间
+	UpdatedAt *gtime.Time // 更新时间
 }

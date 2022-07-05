@@ -15,5 +15,5 @@ type WdkAttachmentRecord struct {
 	Id        interface{} // 附件上传记录ID
 	ProjectId interface{} // 所属项目ID
 	Remark    interface{} // 备注
-	CreateAt  *gtime.Time // 创建时间
+	CreatedAt *gtime.Time // 创建时间
 }
