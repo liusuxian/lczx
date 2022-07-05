@@ -69,14 +69,15 @@ func newOperLog() *sOperLog {
 // Invoke 异步保存日志
 func (s *sOperLog) Invoke(req *ghttp.Request) {
 	ctx := req.GetCtx()
-	curUser := service.Context().Get(ctx).User
-	if curUser == nil {
+	var curUser *model.ContextUser
+	var err error
+	curUser, err = service.Context().GetUser(ctx)
+	if err != nil {
 		return
 	}
 	// 请求地址
 	url := req.Request.URL
 	// 获取所有菜单
-	var err error
 	var allMenus []*entity.Menu
 	allMenus, err = service.Menu().GetAllMenus(ctx)
 	if err != nil {

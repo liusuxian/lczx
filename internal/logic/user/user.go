@@ -7,6 +7,7 @@ import (
 	"github.com/gogf/gf/v2/util/grand"
 	v1 "lczx/api/v1"
 	"lczx/internal/dao"
+	"lczx/internal/model"
 	"lczx/internal/model/do"
 	"lczx/internal/model/entity"
 	"lczx/internal/service"
@@ -62,7 +63,11 @@ func (s *sUser) UpdateUserLogin(ctx context.Context, id uint64, ip string) {
 // GetProfile 获取个人中心信息
 func (s *sUser) GetProfile(ctx context.Context) (profileInfo *v1.UserProfileInfo, err error) {
 	// 用户信息
-	curUser := service.Context().Get(ctx).User
+	var curUser *model.ContextUser
+	curUser, err = service.Context().GetUser(ctx)
+	if err != nil {
+		return
+	}
 	var userInfo *entity.User
 	userInfo, err = s.GetUserById(ctx, curUser.Id)
 	if err != nil {
@@ -104,14 +109,22 @@ func (s *sUser) GetProfile(ctx context.Context) (profileInfo *v1.UserProfileInfo
 
 // SetAvatar 设置用户头像
 func (s *sUser) SetAvatar(ctx context.Context, avatarUrl string) (err error) {
-	user := service.Context().Get(ctx).User
+	var user *model.ContextUser
+	user, err = service.Context().GetUser(ctx)
+	if err != nil {
+		return
+	}
 	_, err = dao.User.Ctx(ctx).Data(do.User{Avatar: avatarUrl}).Where(do.User{Id: user.Id}).Update()
 	return
 }
 
 // EditProfile 编辑个人中心信息
 func (s *sUser) EditProfile(ctx context.Context, req *v1.UserProfileEditReq) (err error) {
-	user := service.Context().Get(ctx).User
+	var user *model.ContextUser
+	user, err = service.Context().GetUser(ctx)
+	if err != nil {
+		return
+	}
 	_, err = dao.User.Ctx(ctx).Data(do.User{
 		Nickname: req.Nickname,
 		Mobile:   req.Mobile,
@@ -122,7 +135,11 @@ func (s *sUser) EditProfile(ctx context.Context, req *v1.UserProfileEditReq) (er
 
 // EditPwd 修改用户密码
 func (s *sUser) EditPwd(ctx context.Context, oldPassword, newPassword string) (err error) {
-	curUser := service.Context().Get(ctx).User
+	var curUser *model.ContextUser
+	curUser, err = service.Context().GetUser(ctx)
+	if err != nil {
+		return
+	}
 	var userInfo *entity.User
 	userInfo, err = s.GetUserById(ctx, curUser.Id)
 	if err != nil {

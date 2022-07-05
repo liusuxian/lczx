@@ -328,7 +328,11 @@ func (s *sDept) isDeptNameAvailable(ctx context.Context, name string, parentId u
 
 // saveDept 保存部门数据
 func (s *sDept) saveDept(ctx context.Context, req *v1.DeptAddReq, principalUser *entity.User) (err error) {
-	user := service.Context().Get(ctx).User
+	var user *model.ContextUser
+	user, err = service.Context().GetUser(ctx)
+	if err != nil {
+		return
+	}
 	gmodel := dao.Dept.Ctx(ctx).Cache(gdb.CacheOption{Duration: -1, Name: consts.DeptKey, Force: false})
 	if principalUser != nil {
 		gmodel = gmodel.Data(do.Dept{
@@ -355,7 +359,11 @@ func (s *sDept) saveDept(ctx context.Context, req *v1.DeptAddReq, principalUser 
 
 // updateDept 更新部门数据
 func (s *sDept) updateDept(ctx context.Context, req *v1.DeptEditReq, principalUser *entity.User, ids []any) (err error) {
-	user := service.Context().Get(ctx).User
+	var user *model.ContextUser
+	user, err = service.Context().GetUser(ctx)
+	if err != nil {
+		return
+	}
 	err = dao.Dept.Ctx(ctx).Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		var terr error
 		gmodel := dao.Dept.Ctx(ctx)

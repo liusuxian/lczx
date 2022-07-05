@@ -6,6 +6,7 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 	v1 "lczx/api/v1"
 	"lczx/internal/dao"
+	"lczx/internal/model"
 	"lczx/internal/model/do"
 	"lczx/internal/model/entity"
 	"lczx/internal/service"
@@ -64,7 +65,11 @@ func (s *sWdkFile) GetWdkFileCountByProjectId(ctx context.Context, projectId uin
 
 // saveWdkFile 保存文档库上传文件数据
 func (s *sWdkFile) saveWdkFile(ctx context.Context, req *v1.WdkFileAddReq, fileInfos []*upload.FileInfo) (err error) {
-	user := service.Context().Get(ctx).User
+	var user *model.ContextUser
+	user, err = service.Context().GetUser(ctx)
+	if err != nil {
+		return
+	}
 	wdkFileData := g.List{}
 	for _, file := range fileInfos {
 		wdkFileData = append(wdkFileData, g.Map{

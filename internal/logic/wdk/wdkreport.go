@@ -47,7 +47,11 @@ func (s *sWdkReport) AddWdkReport(ctx context.Context, req *v1.WdkReportAddReq, 
 	err = dao.WdkReport.Ctx(ctx).Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		// 检查部门负责人是否存在
 		var terr error
-		user := service.Context().Get(ctx).User
+		var user *model.ContextUser
+		user, terr = service.Context().GetUser(ctx)
+		if terr != nil {
+			return terr
+		}
 		var dept *entity.Dept
 		terr = dao.Dept.Ctx(ctx).Where(do.Dept{Id: user.DeptId}).Scan(&dept)
 		if terr != nil {

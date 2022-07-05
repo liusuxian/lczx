@@ -7,6 +7,7 @@ import (
 	"github.com/gogf/gf/v2/os/gtime"
 	v1 "lczx/api/v1"
 	"lczx/internal/dao"
+	"lczx/internal/model"
 	"lczx/internal/model/do"
 	"lczx/internal/model/entity"
 	"lczx/internal/service"
@@ -25,27 +26,31 @@ func newWdkReportAudit() *sWdkReportAudit {
 
 // GetWdkReportAuditList 获取文档库报告审核列表
 func (s *sWdkReportAudit) GetWdkReportAuditList(ctx context.Context, req *v1.WdkReportAuditListReq) (total int, list []*v1.WdkReportAuditInfo, err error) {
-	user := service.Context().Get(ctx).User
-	var model *gdb.Model
+	var user *model.ContextUser
+	user, err = service.Context().GetUser(ctx)
+	if err != nil {
+		return
+	}
+	var gmodel *gdb.Model
 	if req.Rescind == 1 {
-		model = dao.WdkReportAudit.Ctx(ctx).Where(do.WdkReportAudit{AuditUid: user.Id, Rescind: req.Rescind, PreauditStatus: 1})
+		gmodel = dao.WdkReportAudit.Ctx(ctx).Where(do.WdkReportAudit{AuditUid: user.Id, Rescind: req.Rescind, PreauditStatus: 1})
 	} else if req.Status == 1 {
-		model = dao.WdkReportAudit.Ctx(ctx).Where(do.WdkReportAudit{AuditUid: user.Id, Rescind: 0, PreauditStatus: 1, Status: req.Status})
+		gmodel = dao.WdkReportAudit.Ctx(ctx).Where(do.WdkReportAudit{AuditUid: user.Id, Rescind: 0, PreauditStatus: 1, Status: req.Status})
 	} else {
-		model = dao.WdkReportAudit.Ctx(ctx).Where(do.WdkReportAudit{AuditUid: user.Id, PreauditStatus: 1, Status: req.Status})
+		gmodel = dao.WdkReportAudit.Ctx(ctx).Where(do.WdkReportAudit{AuditUid: user.Id, PreauditStatus: 1, Status: req.Status})
 	}
 	columns := dao.WdkReportAudit.Columns()
-	total, err = model.Count()
+	total, err = gmodel.Count()
 	if err != nil {
 		return
 	}
 	// 排序
 	if req.Status == 0 || req.Status == 2 {
-		err = model.Page(req.CurPage, req.PageSize).OrderDesc(columns.AuditTime).ScanList(&list, "ReportAudit")
+		err = gmodel.Page(req.CurPage, req.PageSize).OrderDesc(columns.AuditTime).ScanList(&list, "ReportAudit")
 	} else if req.Rescind == 1 {
-		err = model.Page(req.CurPage, req.PageSize).OrderDesc(columns.UpdatedAt).ScanList(&list, "ReportAudit")
+		err = gmodel.Page(req.CurPage, req.PageSize).OrderDesc(columns.UpdatedAt).ScanList(&list, "ReportAudit")
 	} else {
-		err = model.Page(req.CurPage, req.PageSize).OrderAsc(columns.CreatedAt).ScanList(&list, "ReportAudit")
+		err = gmodel.Page(req.CurPage, req.PageSize).OrderAsc(columns.CreatedAt).ScanList(&list, "ReportAudit")
 	}
 	if err != nil {
 		return
@@ -75,7 +80,11 @@ func (s *sWdkReportAudit) GetWdkReportAuditList(ctx context.Context, req *v1.Wdk
 
 // HandleWdkReportAudit 处理文档库报告审核
 func (s *sWdkReportAudit) HandleWdkReportAudit(ctx context.Context, req *v1.WdkReportAuditReq) (err error) {
-	user := service.Context().Get(ctx).User
+	var user *model.ContextUser
+	user, err = service.Context().GetUser(ctx)
+	if err != nil {
+		return
+	}
 	err = dao.WdkReportAudit.Ctx(ctx).Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		// 通过报告ID和用户ID判断文档库报告审核信息是否存在
 		var terr error
@@ -152,14 +161,18 @@ func (s *sWdkReportAudit) HandleWdkReportAudit(ctx context.Context, req *v1.WdkR
 
 // GetWdkReportUploadAuditList 获取文档库报告上传审核列表
 func (s *sWdkReportAudit) GetWdkReportUploadAuditList(ctx context.Context, req *v1.WdkReportUploadAuditListReq) (total int, list []*v1.WdkReportUploadAuditInfo, err error) {
-	user := service.Context().Get(ctx).User
-	model := dao.WdkReport.Ctx(ctx).Where(do.WdkReport{CreateBy: user.Id, Rescind: req.Rescind, AuditStatus: req.Status})
-	columns := dao.WdkReport.Columns()
-	total, err = model.Count()
+	var user *model.ContextUser
+	user, err = service.Context().GetUser(ctx)
 	if err != nil {
 		return
 	}
-	err = model.Page(req.CurPage, req.PageSize).OrderDesc(columns.CreatedAt).ScanList(&list, "Report")
+	gmodel := dao.WdkReport.Ctx(ctx).Where(do.WdkReport{CreateBy: user.Id, Rescind: req.Rescind, AuditStatus: req.Status})
+	columns := dao.WdkReport.Columns()
+	total, err = gmodel.Count()
+	if err != nil {
+		return
+	}
+	err = gmodel.Page(req.CurPage, req.PageSize).OrderDesc(columns.CreatedAt).ScanList(&list, "Report")
 	if err != nil {
 		return
 	}
@@ -245,24 +258,24 @@ func (s *sWdkReportAudit) GetWdkReportExcellence(auditList []*entity.WdkReportAu
 
 // SetWdkReportAuditStatus 设置文档库报告审核状态
 func (s *sWdkReportAudit) SetWdkReportAuditStatus(ctx context.Context, wdkReportAudit *entity.WdkReportAudit, req *v1.WdkReportAuditReq, auditTime *gtime.Time) (err error) {
-	model := dao.WdkReportAudit.Ctx(ctx).Data(do.WdkReportAudit{
+	gmodel := dao.WdkReportAudit.Ctx(ctx).Data(do.WdkReportAudit{
 		Status:       req.AuditStatus,
 		Excellence:   req.Excellence,
 		AuditTime:    auditTime,
 		AuditOpinion: req.AuditOpinion,
 	})
 	if req.AuditStatus == 2 {
-		model = model.Where(do.WdkReportAudit{
+		gmodel = gmodel.Where(do.WdkReportAudit{
 			Id:       wdkReportAudit.Id,
 			AuditUid: wdkReportAudit.AuditUid,
 		})
 	} else {
-		model = model.Where(do.WdkReportAudit{
+		gmodel = gmodel.Where(do.WdkReportAudit{
 			Id:          wdkReportAudit.Id,
 			AuditUid:    wdkReportAudit.AuditUid,
 			AuditorType: wdkReportAudit.AuditorType,
 		})
 	}
-	_, err = model.Update()
+	_, err = gmodel.Update()
 	return
 }

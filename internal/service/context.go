@@ -14,9 +14,11 @@ import (
 
 type IContext interface {
 	Init(req *ghttp.Request, customCtx *model.Context)
-	Get(ctx context.Context) *model.Context
-	SetUser(ctx context.Context, ctxUser *model.ContextUser)
-	SetData(ctx context.Context, data g.Map)
+	Get(ctx context.Context) (localCtx *model.Context, err error)
+	GetUser(ctx context.Context) (user *model.ContextUser, err error)
+	GetSession(ctx context.Context) (session *ghttp.Session, err error)
+	SetUser(ctx context.Context, ctxUser *model.ContextUser) (err error)
+	SetData(ctx context.Context, data g.Map) (err error)
 }
 
 var localContext IContext

@@ -43,18 +43,20 @@ func (s *sMiddleware) Ctx(req *ghttp.Request) {
 	user := &entity.User{}
 	respData := service.Auth().Token().GetTokenData(req)
 	if respData.Success() {
-		err := gconv.Struct(respData.Get("data"), user)
-		if err != nil {
+		var err error
+		if err = gconv.Struct(respData.Get("data"), user); err != nil {
 			logger.Error(ctx, "Ctx GetUserData Error: ", err)
 		}
 		if user != nil {
-			service.Context().SetUser(ctx, &model.ContextUser{
+			if err = service.Context().SetUser(ctx, &model.ContextUser{
 				Id:       user.Id,
 				Passport: user.Passport,
 				Realname: user.Realname,
 				DeptId:   user.DeptId,
 				IsAdmin:  user.IsAdmin,
-			})
+			}); err != nil {
+				logger.Error(ctx, "Ctx SetUser Error: ", err)
+			}
 		}
 	}
 	// 执行下一步请求逻辑
@@ -110,7 +112,12 @@ func (s *sMiddleware) HandlerResponse(req *ghttp.Request) {
 // Auth 权限判断处理中间件
 func (s *sMiddleware) Auth(req *ghttp.Request) {
 	ctx := req.GetCtx()
-	user := service.Context().Get(ctx).User
+	var user *model.ContextUser
+	var err error
+	user, err = service.Context().GetUser(ctx)
+	if err != nil {
+		response.RespJsonExitByGcode(req, code.GetContextUserFailed)
+	}
 	accessParams := req.Get("accessParams").Strings()
 	accessParamsStr := ""
 	if len(accessParams) > 0 && accessParams[0] != "undefined" {
@@ -132,7 +139,6 @@ func (s *sMiddleware) Auth(req *ghttp.Request) {
 	}
 	url := gstr.TrimLeft(req.Request.URL.Path, "/") + accessParamsStr
 	// 获取地址对应的菜单ID
-	var err error
 	var menuList []*entity.Menu
 	menuList, err = service.Menu().GetAllMenus(ctx)
 	if err != nil {
@@ -213,7 +219,11 @@ func (s *sMiddleware) CheckProjectUpload(ctx context.Context, req *ghttp.Request
 		response.RespJsonExit(req, code.GetDeptFailed.Code(), code.GetDeptFailed.Message()+": "+err.Error())
 	}
 	// 判断权限
-	user := service.Context().Get(ctx).User
+	var user *model.ContextUser
+	user, err = service.Context().GetUser(ctx)
+	if err != nil {
+		response.RespJsonExitByGcode(req, code.GetContextUserFailed)
+	}
 	if !(user.IsAdmin == 1 || user.DeptId == wdkProject.DeptId || (dept != nil && dept.Id == user.DeptId)) {
 		response.RespJsonExitByGcode(req, code.NotAccessAuth)
 	}

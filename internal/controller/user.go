@@ -6,6 +6,7 @@ import (
 	"github.com/gogf/gf/v2/util/gconv"
 	v1 "lczx/api/v1"
 	"lczx/internal/code"
+	"lczx/internal/model"
 	"lczx/internal/model/entity"
 	"lczx/internal/service"
 	"lczx/internal/upload"
@@ -20,7 +21,12 @@ type cUser struct{}
 // Info 获取用户信息
 func (c *cUser) Info(ctx context.Context, req *v1.UserInfoReq) (res *v1.UserInfoRes, err error) {
 	// 用户信息
-	user := service.Context().Get(ctx).User
+	var user *model.ContextUser
+	user, err = service.Context().GetUser(ctx)
+	if err != nil {
+		err = gerror.WrapCode(code.GetUserFailed, err)
+		return
+	}
 	var userInfo *entity.User
 	userInfo, err = service.User().GetUserById(ctx, user.Id)
 	if err != nil {

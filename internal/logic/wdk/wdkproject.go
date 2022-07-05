@@ -822,7 +822,11 @@ func (s *sWdkProject) CheckWdkProjectFileUploadStatus(ctx context.Context) {
 
 // saveWdkProject 保存文档库项目数据
 func (s *sWdkProject) saveWdkProject(ctx context.Context, req *v1.WdkProjectAddReq, principalUser *entity.User, dept *entity.Dept) (err error) {
-	user := service.Context().Get(ctx).User
+	var user *model.ContextUser
+	user, err = service.Context().GetUser(ctx)
+	if err != nil {
+		return
+	}
 	var projectId int64
 	projectId, err = dao.WdkProject.Ctx(ctx).Data(do.WdkProject{
 		Name:             req.Name,
@@ -870,7 +874,11 @@ func (s *sWdkProject) saveWdkProject(ctx context.Context, req *v1.WdkProjectAddR
 
 // updateWdkProject 更新文档库项目数据
 func (s *sWdkProject) updateWdkProject(ctx context.Context, req *v1.WdkProjectEditReq, principalUser *entity.User, dept *entity.Dept, wdkProject *v1.WdkProjectInfo) (err error) {
-	user := service.Context().Get(ctx).User
+	var user *model.ContextUser
+	user, err = service.Context().GetUser(ctx)
+	if err != nil {
+		return
+	}
 	_, err = dao.WdkProject.Ctx(ctx).Data(do.WdkProject{
 		Name:           req.Name,
 		Type:           req.Type,

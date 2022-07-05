@@ -134,7 +134,11 @@ func (s *sCrontab) AddCrontab(ctx context.Context, req *v1.CrontabAddReq) (err e
 		return gerror.Newf(`调用方法[%s]已存在`, req.InvokeTarget)
 	}
 	// 新增数据
-	user := service.Context().Get(ctx).User
+	var user *model.ContextUser
+	user, err = service.Context().GetUser(ctx)
+	if err != nil {
+		return
+	}
 	var id int64
 	id, err = dao.Crontab.Ctx(ctx).Data(do.Crontab{
 		Name:           req.Name,
@@ -203,7 +207,11 @@ func (s *sCrontab) EditCrontab(ctx context.Context, req *v1.CrontabEditReq) (err
 		}
 	}
 	// 更新数据
-	user := service.Context().Get(ctx).User
+	var user *model.ContextUser
+	user, err = service.Context().GetUser(ctx)
+	if err != nil {
+		return
+	}
 	_, err = dao.Crontab.Ctx(ctx).Data(do.Crontab{
 		Name:           req.Name,
 		Group:          req.Group,

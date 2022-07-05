@@ -2,6 +2,8 @@ package context
 
 import (
 	"context"
+	"github.com/gogf/gf/v2/errors/gerror"
+	"github.com/gogf/gf/v2/util/gconv"
 	"lczx/internal/consts"
 	"lczx/internal/model"
 	"lczx/internal/service"
@@ -26,24 +28,65 @@ func (s *sContext) Init(req *ghttp.Request, customCtx *model.Context) {
 	req.SetCtxVar(consts.ContextKey, customCtx)
 }
 
-// Get 获得上下文变量，如果没有设置，那么返回nil
-func (s *sContext) Get(ctx context.Context) *model.Context {
+// Get 获得上下文变量
+func (s *sContext) Get(ctx context.Context) (localCtx *model.Context, err error) {
 	value := ctx.Value(consts.ContextKey)
 	if value == nil {
-		return nil
+		err = gerror.New("上下文信息不存在")
+		return
 	}
-	if localCtx, ok := value.(*model.Context); ok {
-		return localCtx
-	}
-	return nil
+	err = gconv.Scan(value, &localCtx)
+	return
 }
 
-// SetUser 将上下文信息设置到上下文请求中，注意是完整覆盖
-func (s *sContext) SetUser(ctx context.Context, ctxUser *model.ContextUser) {
-	s.Get(ctx).User = ctxUser
+// GetUser 获取上下文用户信息
+func (s *sContext) GetUser(ctx context.Context) (user *model.ContextUser, err error) {
+	var localCtx *model.Context
+	localCtx, err = s.Get(ctx)
+	if err != nil {
+		return
+	}
+	user = localCtx.User
+	if user == nil {
+		err = gerror.New("上下文用户信息不存在")
+		return
+	}
+	return
 }
 
-// SetData 将上下文信息设置到上下文请求中，注意是完整覆盖
-func (s *sContext) SetData(ctx context.Context, data g.Map) {
-	s.Get(ctx).Data = data
+// GetSession 获取当前Session管理对象
+func (s *sContext) GetSession(ctx context.Context) (session *ghttp.Session, err error) {
+	var localCtx *model.Context
+	localCtx, err = s.Get(ctx)
+	if err != nil {
+		return
+	}
+	session = localCtx.Session
+	if session == nil {
+		err = gerror.New("当前Session管理对象不存在")
+		return
+	}
+	return
+}
+
+// SetUser 将上下文用户信息设置到上下文请求中，注意是完整覆盖
+func (s *sContext) SetUser(ctx context.Context, ctxUser *model.ContextUser) (err error) {
+	var localCtx *model.Context
+	localCtx, err = s.Get(ctx)
+	if err != nil {
+		return
+	}
+	localCtx.User = ctxUser
+	return
+}
+
+// SetData 将自定KV变量设置到上下文请求中，注意是完整覆盖
+func (s *sContext) SetData(ctx context.Context, data g.Map) (err error) {
+	var localCtx *model.Context
+	localCtx, err = s.Get(ctx)
+	if err != nil {
+		return
+	}
+	localCtx.Data = data
+	return
 }
