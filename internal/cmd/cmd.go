@@ -6,7 +6,8 @@ import (
 	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/os/gcmd"
 	"lczx/internal/controller"
-	"lczx/internal/logic/middleware"
+	"lczx/internal/service"
+	"lczx/utility/logger"
 )
 
 var (
@@ -15,13 +16,17 @@ var (
 		Usage: "main",
 		Brief: "start http server",
 		Func: func(ctx context.Context, parser *gcmd.Parser) (err error) {
+			// 清除所有缓存
+			service.Cache().ClearAllCache(ctx)
+			// 自定义参数校验服务
+			// service.ParamsValid()
 			s := g.Server()
 			// 不认证接口
 			s.Group("/", func(group *ghttp.RouterGroup) {
 				group.Middleware(
-					middleware.Middleware().Ctx,
-					middleware.Middleware().CORS,
-					middleware.Middleware().HandlerResponse,
+					service.Middleware().Ctx,
+					service.Middleware().CORS,
+					service.Middleware().HandlerResponse,
 				)
 				// 验证码
 				group.Group("/captcha", func(group *ghttp.RouterGroup) {
@@ -31,20 +36,20 @@ var (
 			// 认证接口
 			s.Group("/", func(group *ghttp.RouterGroup) {
 				group.Middleware(
-					middleware.Middleware().Ctx,
-					middleware.Middleware().CORS,
-					middleware.Middleware().HandlerResponse,
+					service.Middleware().Ctx,
+					service.Middleware().CORS,
+					service.Middleware().HandlerResponse,
 				)
-				//err = service.Auth().Token().Middleware(ctx, group)
-				//if err != nil {
-				//	logger.Panic(ctx, "Init GfToken Error: ", err.Error())
-				//}
+				err = service.Auth().Token().Middleware(ctx, group)
+				if err != nil {
+					logger.Panic(ctx, "Init GfToken Error: ", err.Error())
+				}
 				// 权限判断
 				group.Middleware(
-					middleware.Middleware().Auth,
+					service.Middleware().Auth,
 				)
 				// 后台操作日志记录
-				//group.Hook("/*", ghttp.HookAfterOutput, service.OperLog().Invoke)
+				group.Hook("/*", ghttp.HookAfterOutput, service.OperLog().Invoke)
 				// 用户相关
 				group.Group("/user", func(group *ghttp.RouterGroup) {
 					group.Bind(controller.User)
@@ -131,10 +136,6 @@ var (
 					})
 				})
 			})
-			// 清除所有缓存
-			// service.Cache().ClearAllCache(ctx)
-			// 自定义参数校验服务
-			// service.ParamsValid()
 			// 启动
 			s.Run()
 			return nil

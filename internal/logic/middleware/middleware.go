@@ -22,13 +22,13 @@ import (
 
 type sMiddleware struct{}
 
-var (
-	insMiddleware = sMiddleware{}
-)
+func init() {
+	service.RegisterMiddleware(newMiddleware())
+}
 
-// Middleware 中间件服务
-func Middleware() *sMiddleware {
-	return &insMiddleware
+// 中间件服务
+func newMiddleware() *sMiddleware {
+	return &sMiddleware{}
 }
 
 // Ctx 自定义上下文对象

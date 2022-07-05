@@ -11,6 +11,7 @@ import (
 	"github.com/gogf/gf/v2/util/gconv"
 	v1 "lczx/api/v1"
 	"lczx/internal/dao"
+	_ "lczx/internal/logic/wdk"
 	"lczx/internal/model"
 	"lczx/internal/model/do"
 	"lczx/internal/model/entity"
