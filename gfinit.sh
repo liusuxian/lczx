@@ -17,9 +17,3 @@ gf gen service
 
 # 优化生成文件的imports
 goimports -w ./internal/service
-
-# 可将任意文件打包后随着可执行文件一同发布，就是发布只需要一个运行文件就可以
-echo -e "\n" | gf pack manifest/config ./internal/packed/packed.go -n packed
-
-# 启用GF热编译
-gf run main.go
