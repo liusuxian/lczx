@@ -7,12 +7,14 @@ package service
 import (
 	"context"
 	"time"
+
+	"github.com/gogf/gf/v2/container/gvar"
 )
 
 type ICache interface {
 	ClearAllCache(ctx context.Context)
 	ClearCache(ctx context.Context, keys ...any) (err error)
-	GetCache(ctx context.Context, cacheKey any, mapKey ...string) any
+	GetCache(ctx context.Context, cacheKey any) (cacheVal *gvar.Var)
 	SetCache(ctx context.Context, key, value any, duration time.Duration) (err error)
 }
 

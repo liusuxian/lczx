@@ -1,4 +1,4 @@
-package system_monitor
+package systemmonitor
 
 import (
 	"context"
@@ -80,7 +80,7 @@ func (s *sOperLog) Invoke(req *ghttp.Request) {
 	var allMenus []*entity.Menu
 	allMenus, err = service.Menu().GetAllMenus(ctx)
 	if err != nil {
-		logger.Error(ctx, "Invoke GetAllMenus Error: ", err.Error())
+		logger.Error(ctx, "Invoke GetAllMenus Error: ", err)
 		return
 	}
 	// 获取地址对应的菜单ID
@@ -111,7 +111,7 @@ func (s *sOperLog) Invoke(req *ghttp.Request) {
 	var depts []*entity.Dept
 	depts, err = service.Dept().GetStatusEnableDepts(ctx)
 	if err != nil {
-		logger.Error(ctx, "Invoke GetStatusEnableDepts Error: ", err.Error())
+		logger.Error(ctx, "Invoke GetStatusEnableDepts Error: ", err)
 		return
 	}
 	data.DeptName = service.Dept().GetDeptAllNameById(depts, curUser.DeptId)
@@ -160,7 +160,7 @@ func (s *sOperLog) Invoke(req *ghttp.Request) {
 		s.SaveOperLog(ctx, data)
 	})
 	if err != nil {
-		logger.Error(ctx, "OperLog Pool Add Error: ", err.Error())
+		logger.Error(ctx, "OperLog Pool Add Error: ", err)
 	}
 }
 
@@ -168,7 +168,7 @@ func (s *sOperLog) Invoke(req *ghttp.Request) {
 func (s *sOperLog) SaveOperLog(ctx context.Context, data *entity.OperLog) {
 	_, err := dao.OperLog.Ctx(ctx).FieldsEx(dao.OperLog.Columns().Id).Insert(data)
 	if err != nil {
-		logger.Error(ctx, "SaveOperLog Error: ", err.Error())
+		logger.Error(ctx, "SaveOperLog Error: ", err)
 	}
 }
 

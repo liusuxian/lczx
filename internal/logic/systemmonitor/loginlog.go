@@ -1,4 +1,4 @@
-package system_monitor
+package systemmonitor
 
 import (
 	"context"
@@ -48,7 +48,7 @@ func (s *sLoginLog) Invoke(ctx context.Context, data *entity.LoginLog) {
 		s.SaveLoginLog(ctx, data)
 	})
 	if err != nil {
-		logger.Error(ctx, "LoginLog Pool Add Error: ", err.Error())
+		logger.Error(ctx, "LoginLog Pool Add Error: ", err)
 	}
 }
 
@@ -56,7 +56,7 @@ func (s *sLoginLog) Invoke(ctx context.Context, data *entity.LoginLog) {
 func (s *sLoginLog) SaveLoginLog(ctx context.Context, data *entity.LoginLog) {
 	_, err := dao.LoginLog.Ctx(ctx).FieldsEx(dao.LoginLog.Columns().Id).Insert(data)
 	if err != nil {
-		logger.Error(ctx, "SaveLoginLog Error: ", err.Error())
+		logger.Error(ctx, "SaveLoginLog Error: ", err)
 	}
 }
 

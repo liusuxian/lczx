@@ -76,7 +76,7 @@ func (s *sAuth) CheckUserOnline(ctx context.Context) {
 		var list []*entity.UserOnline
 		var err error
 		if total, list, err = service.UserOnline().GetOnlineList(ctx, req, true); err != nil {
-			logger.Error(ctx, "CheckUserOnline GetOnlineList Error: ", err.Error())
+			logger.Error(ctx, "CheckUserOnline GetOnlineList Error: ", err)
 			break
 		}
 		if list == nil {
@@ -108,12 +108,12 @@ func (s *sAuth) getUuidUserKeyByToken(ctx context.Context, token string) (uuid, 
 // 判断用户是否在线
 func (s *sAuth) userIsOnline(ctx context.Context, token string) bool {
 	uuid, userKey := s.getUuidUserKeyByToken(ctx, token)
-	cacheKey := s.token.CacheKey + userKey
+	cacheKey := utils.RedisKey(s.token.CacheKey, userKey)
 	switch s.token.CacheMode {
 	case gtoken.CacheModeCache:
 		userCacheValue, err := gcache.Get(ctx, cacheKey)
 		if err != nil {
-			logger.Error(ctx, "GetCache gcache Error: ", err.Error())
+			logger.Error(ctx, "GetCache gcache Error: ", err)
 			return false
 		}
 		if userCacheValue == nil {
@@ -121,11 +121,14 @@ func (s *sAuth) userIsOnline(ctx context.Context, token string) bool {
 		}
 		return true
 	case gtoken.CacheModeRedis:
-		userCacheVal := service.Cache().GetCache(ctx, cacheKey, "uuid")
+		userCacheVal := service.Cache().GetCache(ctx, cacheKey)
 		if userCacheVal == nil {
 			return false
 		}
-		if uuid != gconv.String(userCacheVal) {
+		if userCacheVal.Map()["uuid"] == nil {
+			return false
+		}
+		if uuid != gconv.String(userCacheVal.Map()["uuid"]) {
 			return false
 		}
 		return true
@@ -222,7 +225,7 @@ func (s *sAuth) loginAfter(req *ghttp.Request, respData gtoken.Resp) {
 		var user *entity.User
 		err := req.GetParam("user").Struct(&user)
 		if err != nil {
-			logger.Error(ctx, "GetParam User Error: ", err.Error())
+			logger.Error(ctx, "GetParam User Error: ", err)
 		}
 		// 获取 User-Agent
 		userAgent := req.Header.Get("User-Agent")
@@ -268,7 +271,7 @@ func (s *sAuth) logoutBefore(req *ghttp.Request) bool {
 
 	err := service.Session().RemoveUser(ctx)
 	if err != nil {
-		logger.Error(ctx, "Session RemoveUser Error: ", err.Error())
+		logger.Error(ctx, "Session RemoveUser Error: ", err)
 	}
 	return true
 }

@@ -1,4 +1,4 @@
-package system_monitor
+package systemmonitor
 
 import (
 	"context"
@@ -34,7 +34,7 @@ func (s *sUserOnline) Invoke(ctx context.Context, data *entity.UserOnline) {
 		s.SaveUserOnline(ctx, data)
 	})
 	if err != nil {
-		logger.Error(ctx, "UserOnline Pool Add Error: ", err.Error())
+		logger.Error(ctx, "UserOnline Pool Add Error: ", err)
 	}
 }
 
@@ -47,19 +47,19 @@ func (s *sUserOnline) SaveUserOnline(ctx context.Context, data *entity.UserOnlin
 	columns := dao.UserOnline.Columns()
 	err = model.Fields(columns.Id).Where(do.UserOnline{Token: data.Token}).Scan(&info)
 	if err != nil {
-		logger.Error(ctx, "SaveUserOnline Error: ", err.Error())
+		logger.Error(ctx, "SaveUserOnline Error: ", err)
 	}
 	if info != nil {
 		// 已存在则更新
 		_, err = model.Where(do.UserOnline{Id: info.Id}).FieldsEx(columns.Id).Update(data)
 		if err != nil {
-			logger.Error(ctx, "SaveUserOnline Update Error: ", err.Error())
+			logger.Error(ctx, "SaveUserOnline Update Error: ", err)
 		}
 	} else {
 		// 不存在则新增
 		_, err = model.FieldsEx(columns.Id).Insert(data)
 		if err != nil {
-			logger.Error(ctx, "SaveUserOnline Insert Error: ", err.Error())
+			logger.Error(ctx, "SaveUserOnline Insert Error: ", err)
 		}
 	}
 }
@@ -68,7 +68,7 @@ func (s *sUserOnline) SaveUserOnline(ctx context.Context, data *entity.UserOnlin
 func (s *sUserOnline) DeleteOnlineByToken(ctx context.Context, token string) {
 	_, err := dao.UserOnline.Ctx(ctx).Delete(do.UserOnline{Token: token})
 	if err != nil {
-		logger.Error(ctx, "DeleteOnlineByToken Error: ", err.Error())
+		logger.Error(ctx, "DeleteOnlineByToken Error: ", err)
 	}
 }
 

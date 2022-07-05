@@ -18,8 +18,9 @@ var (
 		Func: func(ctx context.Context, parser *gcmd.Parser) (err error) {
 			// 清除所有缓存
 			service.Cache().ClearAllCache(ctx)
-			// 自定义参数校验服务
-			// service.ParamsValid()
+			// 注册参数校验规则
+			service.ParamsValid().RegisterRule()
+
 			s := g.Server()
 			// 不认证接口
 			s.Group("/", func(group *ghttp.RouterGroup) {
@@ -42,7 +43,7 @@ var (
 				)
 				err = service.Auth().Token().Middleware(ctx, group)
 				if err != nil {
-					logger.Panic(ctx, "Init GfToken Error: ", err.Error())
+					logger.Panic(ctx, "Init GfToken Error: ", err)
 				}
 				// 权限判断
 				group.Middleware(

@@ -11,10 +11,10 @@ import (
 	_ "lczx/internal/logic/casbin"
 	_ "lczx/internal/logic/context"
 	_ "lczx/internal/logic/middleware"
-	_ "lczx/internal/logic/params_valid"
-	_ "lczx/internal/logic/permission_manager"
+	_ "lczx/internal/logic/paramsvalid"
+	_ "lczx/internal/logic/permissionmanager"
 	_ "lczx/internal/logic/session"
-	_ "lczx/internal/logic/system_monitor"
+	_ "lczx/internal/logic/systemmonitor"
 	_ "lczx/internal/logic/user"
 	_ "lczx/internal/logic/wdk"
 )

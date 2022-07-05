@@ -55,7 +55,7 @@ func (s *sUser) UpdateUserLogin(ctx context.Context, id uint64, ip string) {
 		LastLoginTime: gtime.Now(),
 	}).Where(do.User{Id: id}).Update()
 	if err != nil {
-		logger.Error(ctx, "UpdateUserLogin Error: ", err.Error())
+		logger.Error(ctx, "UpdateUserLogin Error: ", err)
 	}
 }
 

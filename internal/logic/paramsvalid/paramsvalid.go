@@ -1,4 +1,4 @@
-package params_valid
+package paramsvalid
 
 import (
 	"context"
@@ -6,19 +6,24 @@ import (
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/text/gstr"
 	"github.com/gogf/gf/v2/util/gvalid"
+	"lczx/internal/service"
 	"strconv"
 )
 
 type sParamsValid struct{}
 
 func init() {
-	//service.RegisterParamsValid(newParamsValid())
+	service.RegisterParamsValid(newParamsValid())
 }
 
 // 自定义参数校验服务
 func newParamsValid() *sParamsValid {
-	gvalid.RegisterRule("slice_valid", SliceValid)
 	return &sParamsValid{}
+}
+
+// RegisterRule 注册参数校验规则
+func (s *sParamsValid) RegisterRule() {
+	gvalid.RegisterRule("slice_valid", SliceValid)
 }
 
 // SliceValid 自定义切片数据校验

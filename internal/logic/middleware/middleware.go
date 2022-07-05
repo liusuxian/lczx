@@ -45,7 +45,7 @@ func (s *sMiddleware) Ctx(req *ghttp.Request) {
 	if respData.Success() {
 		err := gconv.Struct(respData.Get("data"), user)
 		if err != nil {
-			logger.Error(ctx, "Ctx GetUserData Error: ", err.Error())
+			logger.Error(ctx, "Ctx GetUserData Error: ", err)
 		}
 		if user != nil {
 			service.Context().SetUser(ctx, &model.ContextUser{
