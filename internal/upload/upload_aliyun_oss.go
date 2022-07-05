@@ -12,6 +12,7 @@ import (
 	"github.com/gogf/gf/v2/util/gconv"
 	"github.com/gogf/gf/v2/util/grand"
 	"io"
+	"lczx/internal/consts"
 	"lczx/utility/crypto"
 	"lczx/utility/utils"
 	"strconv"
@@ -262,7 +263,8 @@ func (u FileUploadOSSAdapter) uploadAction(file *ghttp.UploadFile, fType string,
 
 func (u FileUploadOSSAdapter) getAccessUrl(filePath string) (fileUrl string, err error) {
 	// 从缓存获取url
-	cacheKey := "cache:lczx:accessUrl:" + filePath
+	strList := gstr.Split(filePath, "/")
+	cacheKey := utils.RedisKey(consts.CacheAccessUrlPrefix, strList[len(strList)-1])
 	var cacheVal *gvar.Var
 	cacheVal, err = g.DB().GetCache().Get(ctx, cacheKey)
 	if err != nil {
