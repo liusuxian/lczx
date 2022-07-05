@@ -2,6 +2,8 @@ package session
 
 import (
 	"context"
+	"github.com/gogf/gf/v2/errors/gerror"
+	"github.com/gogf/gf/v2/net/ghttp"
 	"lczx/internal/consts"
 	"lczx/internal/model/entity"
 	"lczx/internal/service"
@@ -19,28 +21,39 @@ func newSession() *sSession {
 }
 
 // SetUser 设置用户信息到session中
-func (s *sSession) SetUser(ctx context.Context, user *entity.User) error {
-	return service.Context().Get(ctx).Session.Set(consts.SessionKey, user)
+func (s *sSession) SetUser(ctx context.Context, user *entity.User) (err error) {
+	var session *ghttp.Session
+	session, err = service.Context().GetSession(ctx)
+	if err != nil {
+		return
+	}
+	err = session.Set(consts.SessionKey, user)
+	return
 }
 
-// GetUser 从session中检索并返回用户，如果用户没有登录，则返回nil
-func (s *sSession) GetUser(ctx context.Context) *entity.User {
-	customCtx := service.Context().Get(ctx)
-	if customCtx != nil {
-		if v := customCtx.Session.MustGet(consts.SessionKey); !v.IsNil() {
-			var user *entity.User
-			_ = v.Struct(&user)
-			return user
-		}
+// GetUser 从session中检索并返回用户
+func (s *sSession) GetUser(ctx context.Context) (user *entity.User, err error) {
+	var session *ghttp.Session
+	session, err = service.Context().GetSession(ctx)
+	if err != nil {
+		return
 	}
-	return nil
+	sessionVal := session.MustGet(consts.SessionKey)
+	if sessionVal.IsNil() {
+		err = gerror.New("从session中获取用户信息失败")
+		return
+	}
+	err = sessionVal.Struct(&user)
+	return
 }
 
 // RemoveUser 从session中移除用户信息
-func (s *sSession) RemoveUser(ctx context.Context) error {
-	customCtx := service.Context().Get(ctx)
-	if customCtx != nil {
-		return customCtx.Session.Remove(consts.SessionKey)
+func (s *sSession) RemoveUser(ctx context.Context) (err error) {
+	var session *ghttp.Session
+	session, err = service.Context().GetSession(ctx)
+	if err != nil {
+		return
 	}
-	return nil
+	err = session.Remove(consts.SessionKey)
+	return
 }

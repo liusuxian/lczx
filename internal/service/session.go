@@ -10,9 +10,9 @@ import (
 )
 
 type ISession interface {
-	SetUser(ctx context.Context, user *entity.User) error
-	GetUser(ctx context.Context) *entity.User
-	RemoveUser(ctx context.Context) error
+	SetUser(ctx context.Context, user *entity.User) (err error)
+	GetUser(ctx context.Context) (user *entity.User, err error)
+	RemoveUser(ctx context.Context) (err error)
 }
 
 var localSession ISession
