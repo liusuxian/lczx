@@ -7,7 +7,6 @@ package service
 import (
 	"context"
 	v1 "lczx/api/v1"
-	_ "lczx/internal/logic/wdk"
 	"lczx/internal/model/entity"
 )
 

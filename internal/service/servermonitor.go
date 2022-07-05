@@ -6,7 +6,6 @@ package service
 
 import (
 	v1 "lczx/api/v1"
-	_ "lczx/internal/logic/wdk"
 )
 
 type IServerMonitor interface {

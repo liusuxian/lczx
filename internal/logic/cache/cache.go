@@ -2,7 +2,6 @@ package cache
 
 import (
 	"context"
-	"fmt"
 	"github.com/gogf/gf/v2/container/gvar"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gcache"
@@ -34,8 +33,6 @@ func (s *sCache) ClearAllCache(ctx context.Context) {
 	if err != nil {
 		logger.Error(ctx, "ClearAllCache Error: ", err)
 	}
-	fmt.Println("111111111111111111111111111: ", utils.RedisKey("GToken:lczx:", "*"))
-	fmt.Println("222222222222222222222222222: ", utils.RedisKey(consts.CacheAccessUrlPrefix, "*"))
 	s.scanClearCache(ctx, utils.RedisKey("GToken:lczx:", "*"))
 	s.scanClearCache(ctx, utils.RedisKey(consts.CacheAccessUrlPrefix, "*"))
 }
