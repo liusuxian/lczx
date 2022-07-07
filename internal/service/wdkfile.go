@@ -7,13 +7,13 @@ package service
 import (
 	"context"
 	v1 "lczx/api/v1"
+	"lczx/internal/model"
 	"lczx/internal/model/entity"
-	"lczx/internal/upload"
 )
 
 type IWdkFile interface {
 	GetWdkFileRecord(ctx context.Context, projectId uint64) (list []*entity.WdkFile, err error)
-	AddWdkFile(ctx context.Context, req *v1.WdkFileAddReq, fileInfos []*upload.FileInfo) (err error)
+	AddWdkFile(ctx context.Context, req *v1.WdkFileAddReq, fileInfos []*model.UploadFileInfo) (err error)
 	GetWdkFileCountByProjectId(ctx context.Context, projectId uint64) (count int, err error)
 }
 

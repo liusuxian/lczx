@@ -9,7 +9,6 @@ import (
 	"lczx/internal/model"
 	"lczx/internal/model/entity"
 	"lczx/internal/service"
-	"lczx/internal/upload"
 )
 
 var (
@@ -34,7 +33,7 @@ func (c *cUser) Info(ctx context.Context, req *v1.UserInfoReq) (res *v1.UserInfo
 		return
 	}
 	// 获取头像访问url
-	userInfo.Avatar, err = upload.Upload.GetAccessUrl(userInfo.Avatar)
+	userInfo.Avatar, err = service.AliyunOSS().GetAccessUrl(ctx, userInfo.Avatar)
 	if err != nil {
 		err = gerror.WrapCode(code.GetUserFailed, err)
 		return
@@ -98,8 +97,8 @@ func (c *cUser) Profile(ctx context.Context, req *v1.UserProfileReq) (res *v1.Us
 // UploadAvatar 上传用户头像
 func (c *cUser) UploadAvatar(ctx context.Context, req *v1.UserUploadAvatarReq) (res *v1.UserUploadAvatarRes, err error) {
 	// 上传头像
-	var fileInfo *upload.FileInfo
-	fileInfo, err = upload.Upload.UploadImg(req.AvatarFile, "user/avatar")
+	var fileInfo *model.UploadFileInfo
+	fileInfo, err = service.AliyunOSS().UploadImg(req.AvatarFile, "user/avatar")
 	if err != nil {
 		err = gerror.WrapCode(code.SetUserAvatarFailed, err)
 		return
@@ -111,7 +110,7 @@ func (c *cUser) UploadAvatar(ctx context.Context, req *v1.UserUploadAvatarReq) (
 		return
 	}
 	// 获取头像访问url
-	fileInfo.OriginFileUrl, err = upload.Upload.GetAccessUrl(fileInfo.OriginFileUrl)
+	fileInfo.OriginFileUrl, err = service.AliyunOSS().GetAccessUrl(ctx, fileInfo.OriginFileUrl)
 	if err != nil {
 		err = gerror.WrapCode(code.SetUserAvatarFailed, err)
 		return

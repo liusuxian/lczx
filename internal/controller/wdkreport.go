@@ -5,8 +5,8 @@ import (
 	"github.com/gogf/gf/v2/errors/gerror"
 	v1 "lczx/api/v1"
 	"lczx/internal/code"
+	"lczx/internal/model"
 	"lczx/internal/service"
-	"lczx/internal/upload"
 )
 
 var (
@@ -31,8 +31,8 @@ func (c *cWdkReport) Record(ctx context.Context, req *v1.WdkReportRecordReq) (re
 // Add 新增文档库上传报告记录
 func (c *cWdkReport) Add(ctx context.Context, req *v1.WdkReportAddReq) (res *v1.WdkReportAddRes, err error) {
 	// 上传报告
-	var report *upload.FileInfo
-	report, err = upload.Upload.UploadFile(req.UploadReport, "wdk/report")
+	var report *model.UploadFileInfo
+	report, err = service.AliyunOSS().UploadFile(req.UploadReport, "wdk/report")
 	if err != nil {
 		err = gerror.WrapCode(code.AddWdkReportRecordFailed, err)
 		return

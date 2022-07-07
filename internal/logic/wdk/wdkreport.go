@@ -16,7 +16,6 @@ import (
 	"lczx/internal/model/do"
 	"lczx/internal/model/entity"
 	"lczx/internal/service"
-	"lczx/internal/upload"
 )
 
 type sWdkReport struct{}
@@ -43,7 +42,7 @@ func (s *sWdkReport) GetWdkReportRecord(ctx context.Context, projectId uint64) (
 }
 
 // AddWdkReport 新增文档库上传报告记录
-func (s *sWdkReport) AddWdkReport(ctx context.Context, req *v1.WdkReportAddReq, report *upload.FileInfo) (err error) {
+func (s *sWdkReport) AddWdkReport(ctx context.Context, req *v1.WdkReportAddReq, report *model.UploadFileInfo) (err error) {
 	err = dao.WdkReport.Ctx(ctx).Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		// 检查部门负责人是否存在
 		var terr error
@@ -208,7 +207,7 @@ func (s *sWdkReport) SetWdkReportAuditCompleteStatus(ctx context.Context, id uin
 }
 
 // saveWdkReport 保存文档库上传报告记录
-func (s *sWdkReport) saveWdkReport(ctx context.Context, user *model.ContextUser, req *v1.WdkReportAddReq, reportTypeInfo []*v1.WdkReportCfgInfo, report *upload.FileInfo) (reportId int64, err error) {
+func (s *sWdkReport) saveWdkReport(ctx context.Context, user *model.ContextUser, req *v1.WdkReportAddReq, reportTypeInfo []*v1.WdkReportCfgInfo, report *model.UploadFileInfo) (reportId int64, err error) {
 	if user.IsAdmin == 1 {
 		// 管理员不需要走审核流程
 		reportId, err = dao.WdkReport.Ctx(ctx).Data(do.WdkReport{

@@ -6,7 +6,6 @@ import (
 	"github.com/gogf/gf/v2/os/gtime"
 	"lczx/internal/model"
 	"lczx/internal/model/entity"
-	"lczx/internal/upload"
 )
 
 // UserInfoReq 获取用户信息请求参数
@@ -45,7 +44,7 @@ type UserUploadAvatarReq struct {
 }
 
 type UserUploadAvatarRes struct {
-	FileInfo *upload.FileInfo `json:"fileInfo" dc:"文件信息"` // 文件信息
+	FileInfo *model.UploadFileInfo `json:"fileInfo" dc:"文件信息"` // 文件信息
 }
 
 // UserProfileEditReq 编辑个人中心信息请求参数

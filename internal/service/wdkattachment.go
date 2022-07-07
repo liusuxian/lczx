@@ -7,12 +7,12 @@ package service
 import (
 	"context"
 	v1 "lczx/api/v1"
-	"lczx/internal/upload"
+	"lczx/internal/model"
 )
 
 type IWdkAttachment interface {
 	GetWdkAttachmentRecord(ctx context.Context, projectId uint64) (list []*v1.WdkAttachmentInfo, err error)
-	AddWdkAttachment(ctx context.Context, req *v1.WdkAttachmentAddReq, Attachments []*upload.FileInfo) (err error)
+	AddWdkAttachment(ctx context.Context, req *v1.WdkAttachmentAddReq, Attachments []*model.UploadFileInfo) (err error)
 }
 
 var localWdkAttachment IWdkAttachment

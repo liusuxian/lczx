@@ -6,9 +6,9 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 	v1 "lczx/api/v1"
 	"lczx/internal/dao"
+	"lczx/internal/model"
 	"lczx/internal/model/do"
 	"lczx/internal/service"
-	"lczx/internal/upload"
 )
 
 type sWdkAttachment struct{}
@@ -35,7 +35,7 @@ func (s *sWdkAttachment) GetWdkAttachmentRecord(ctx context.Context, projectId u
 }
 
 // AddWdkAttachment 新增文档库上传附件记录
-func (s *sWdkAttachment) AddWdkAttachment(ctx context.Context, req *v1.WdkAttachmentAddReq, Attachments []*upload.FileInfo) (err error) {
+func (s *sWdkAttachment) AddWdkAttachment(ctx context.Context, req *v1.WdkAttachmentAddReq, Attachments []*model.UploadFileInfo) (err error) {
 	err = dao.WdkAttachmentRecord.Ctx(ctx).Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		// 保存文档库上传附件记录数据
 		var terr error
@@ -51,7 +51,7 @@ func (s *sWdkAttachment) AddWdkAttachment(ctx context.Context, req *v1.WdkAttach
 }
 
 // saveWdkAttachmentRecord 保存文档库上传附件记录数据
-func (s *sWdkAttachment) saveWdkAttachmentRecord(ctx context.Context, req *v1.WdkAttachmentAddReq, Attachments []*upload.FileInfo) (err error) {
+func (s *sWdkAttachment) saveWdkAttachmentRecord(ctx context.Context, req *v1.WdkAttachmentAddReq, Attachments []*model.UploadFileInfo) (err error) {
 	var recordId int64
 	recordId, err = dao.WdkAttachmentRecord.Ctx(ctx).Data(do.WdkAttachmentRecord{
 		ProjectId: req.ProjectId,
