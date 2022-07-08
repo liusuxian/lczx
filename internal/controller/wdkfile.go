@@ -6,9 +6,9 @@ import (
 	"github.com/gogf/gf/v2/net/ghttp"
 	v1 "lczx/api/v1"
 	"lczx/internal/code"
+	"lczx/internal/model"
 	"lczx/internal/model/entity"
 	"lczx/internal/service"
-	"lczx/internal/upload"
 )
 
 var (
@@ -39,8 +39,8 @@ func (c *cWdkFile) Add(ctx context.Context, req *v1.WdkFileAddReq) (res *v1.WdkF
 	} else {
 		uploadFiles = []*ghttp.UploadFile{req.UploadFile}
 	}
-	var fileInfos []*upload.FileInfo
-	fileInfos, err = upload.Upload.UploadFiles(uploadFiles, "wdk/file")
+	var fileInfos []*model.UploadFileInfo
+	fileInfos, err = service.AliyunOSS().UploadFiles(uploadFiles, "wdk/file")
 	if err != nil {
 		err = gerror.WrapCode(code.AddWdkFileRecordFailed, err)
 		return

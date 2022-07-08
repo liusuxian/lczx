@@ -11,7 +11,6 @@ import (
 	"lczx/internal/model/do"
 	"lczx/internal/model/entity"
 	"lczx/internal/service"
-	"lczx/internal/upload"
 	"lczx/utility/logger"
 	"lczx/utility/utils"
 )
@@ -78,7 +77,7 @@ func (s *sUser) GetProfile(ctx context.Context) (profileInfo *v1.UserProfileInfo
 		return
 	}
 	// 获取头像访问url
-	userInfo.Avatar, err = upload.Upload.GetAccessUrl(userInfo.Avatar)
+	userInfo.Avatar, err = service.AliyunOSS().GetAccessUrl(ctx, userInfo.Avatar)
 	if err != nil {
 		return
 	}

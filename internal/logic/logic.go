@@ -5,6 +5,7 @@
 package logic
 
 import (
+	_ "lczx/internal/logic/aliyunoss"
 	_ "lczx/internal/logic/auth"
 	_ "lczx/internal/logic/cache"
 	_ "lczx/internal/logic/captcha"

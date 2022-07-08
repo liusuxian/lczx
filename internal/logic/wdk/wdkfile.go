@@ -10,7 +10,6 @@ import (
 	"lczx/internal/model/do"
 	"lczx/internal/model/entity"
 	"lczx/internal/service"
-	"lczx/internal/upload"
 )
 
 type sWdkFile struct{}
@@ -31,7 +30,7 @@ func (s *sWdkFile) GetWdkFileRecord(ctx context.Context, projectId uint64) (list
 }
 
 // AddWdkFile 新增文档库上传文件记录
-func (s *sWdkFile) AddWdkFile(ctx context.Context, req *v1.WdkFileAddReq, fileInfos []*upload.FileInfo) (err error) {
+func (s *sWdkFile) AddWdkFile(ctx context.Context, req *v1.WdkFileAddReq, fileInfos []*model.UploadFileInfo) (err error) {
 	err = dao.WdkFile.Ctx(ctx).Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		// 删除旧文件
 		var terr error
@@ -64,7 +63,7 @@ func (s *sWdkFile) GetWdkFileCountByProjectId(ctx context.Context, projectId uin
 }
 
 // saveWdkFile 保存文档库上传文件数据
-func (s *sWdkFile) saveWdkFile(ctx context.Context, req *v1.WdkFileAddReq, fileInfos []*upload.FileInfo) (err error) {
+func (s *sWdkFile) saveWdkFile(ctx context.Context, req *v1.WdkFileAddReq, fileInfos []*model.UploadFileInfo) (err error) {
 	var user *model.ContextUser
 	user, err = service.Context().GetUser(ctx)
 	if err != nil {

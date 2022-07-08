@@ -6,9 +6,9 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 	v1 "lczx/api/v1"
 	"lczx/internal/dao"
+	"lczx/internal/model"
 	"lczx/internal/model/do"
 	"lczx/internal/service"
-	"lczx/internal/upload"
 )
 
 type sWdkAttachment struct{}
@@ -35,7 +35,7 @@ func (s *sWdkAttachment) GetWdkAttachmentRecord(ctx context.Context, projectId u
 }
 
 // AddWdkAttachment 新增文档库上传附件记录
-func (s *sWdkAttachment) AddWdkAttachment(ctx context.Context, req *v1.WdkAttachmentAddReq, Attachments []*upload.FileInfo) (err error) {
+func (s *sWdkAttachment) AddWdkAttachment(ctx context.Context, req *v1.WdkAttachmentAddReq, Attachments []*model.UploadFileInfo) (err error) {
 	err = dao.WdkAttachmentRecord.Ctx(ctx).Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		// 保存文档库上传附件记录数据
 		var terr error
@@ -50,8 +50,24 @@ func (s *sWdkAttachment) AddWdkAttachment(ctx context.Context, req *v1.WdkAttach
 	return
 }
 
+// DeleteWdkAttachment 删除文档库上传附件记录
+func (s *sWdkAttachment) DeleteWdkAttachment(ctx context.Context, ids []uint64) (err error) {
+	err = dao.WdkAttachmentRecord.Ctx(ctx).Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
+		// 删除文档库上传附件记录
+		var terr error
+		_, terr = dao.WdkAttachmentRecord.Ctx(ctx).WhereIn(dao.WdkAttachmentRecord.Columns().Id, ids).Delete()
+		if terr != nil {
+			return terr
+		}
+		// 删除文档库上传附件
+		_, terr = dao.WdkAttachmentFile.Ctx(ctx).WhereIn(dao.WdkAttachmentFile.Columns().Id, ids).Delete()
+		return terr
+	})
+	return
+}
+
 // saveWdkAttachmentRecord 保存文档库上传附件记录数据
-func (s *sWdkAttachment) saveWdkAttachmentRecord(ctx context.Context, req *v1.WdkAttachmentAddReq, Attachments []*upload.FileInfo) (err error) {
+func (s *sWdkAttachment) saveWdkAttachmentRecord(ctx context.Context, req *v1.WdkAttachmentAddReq, Attachments []*model.UploadFileInfo) (err error) {
 	var recordId int64
 	recordId, err = dao.WdkAttachmentRecord.Ctx(ctx).Data(do.WdkAttachmentRecord{
 		ProjectId: req.ProjectId,
