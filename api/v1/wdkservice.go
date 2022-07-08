@@ -41,8 +41,9 @@ type WdkServiceAddRes struct {
 
 // WdkServiceDeleteReq 文档库删除服务记录请求参数
 type WdkServiceDeleteReq struct {
-	g.Meta `path:"/delete" tags:"WdkServiceDelete" method:"delete" summary:"You first wdk/service/delete api"`
-	Ids    []uint64 `json:"ids" v:"required|slice_valid:uint64#文档库服务记录ID列表不能为空" dc:"文档库服务记录ID列表"` // 文档库服务记录ID列表
+	g.Meta    `path:"/delete" tags:"WdkServiceDelete" method:"delete" summary:"You first wdk/service/delete api"`
+	Ids       []uint64 `json:"ids" v:"required|slice_valid:uint64#文档库服务记录ID列表不能为空" dc:"文档库服务记录ID列表"`         // 文档库服务记录ID列表
+	ProjectId uint64   `json:"projectId" v:"required|regex:^[1-9]\\d*$#所属项目ID不能为空|所属项目ID必须为正整数" dc:"所属项目ID"` // 所属项目ID
 }
 
 // WdkServiceDeleteRes 文档库删除服务记录返回参数

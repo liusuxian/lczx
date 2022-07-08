@@ -50,6 +50,22 @@ func (s *sWdkService) AddWdkService(ctx context.Context, req *v1.WdkServiceAddRe
 	return
 }
 
+// DeleteWdkService 删除文档库服务记录
+func (s *sWdkService) DeleteWdkService(ctx context.Context, ids []uint64, projectId uint64) (err error) {
+	err = dao.WdkServiceRecord.Ctx(ctx).Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
+		// 删除文档库服务记录
+		var terr error
+		_, terr = dao.WdkServiceRecord.Ctx(ctx).WhereIn(dao.WdkServiceRecord.Columns().Id, ids).Delete()
+		if terr != nil {
+			return terr
+		}
+		// 删除文档库服务照片
+		_, terr = dao.WdkServicePhoto.Ctx(ctx).WhereIn(dao.WdkServicePhoto.Columns().Id, ids).Delete()
+		return terr
+	})
+	return
+}
+
 // saveWdkServiceRecord 保存文档库服务记录
 func (s *sWdkService) saveWdkServiceRecord(ctx context.Context, req *v1.WdkServiceAddReq, xchFile *model.UploadFileInfo, photos []*model.UploadFileInfo) (err error) {
 	var recordId int64

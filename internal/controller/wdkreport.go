@@ -47,6 +47,17 @@ func (c *cWdkReport) Add(ctx context.Context, req *v1.WdkReportAddReq) (res *v1.
 	return
 }
 
+// Delete 删除文档库上传报告记录
+func (c *cWdkReport) Delete(ctx context.Context, req *v1.WdkReportDeleteReq) (res *v1.WdkReportDeleteRes, err error) {
+	err = service.WdkReport().DeleteWdkReport(ctx, req.Ids, req.ProjectId)
+	if err != nil {
+		err = gerror.WrapCode(code.DeleteWdkReportRecordFailed, err)
+		return
+	}
+
+	return
+}
+
 // ExcellenceList 文档库优秀报告列表
 func (c *cWdkReport) ExcellenceList(ctx context.Context, req *v1.WdkReportExcellenceListReq) (res *v1.WdkReportExcellenceListRes, err error) {
 	var total int

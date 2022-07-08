@@ -131,6 +131,23 @@ func (s *sWdkReport) AddWdkReport(ctx context.Context, req *v1.WdkReportAddReq, 
 	return
 }
 
+// DeleteWdkReport 删除文档库上传报告记录
+func (s *sWdkReport) DeleteWdkReport(ctx context.Context, ids []uint64, projectId uint64) (err error) {
+	err = dao.WdkReport.Ctx(ctx).Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
+		// 删除文档库上传报告记录
+		var terr error
+		_, terr = dao.WdkReport.Ctx(ctx).WhereIn(dao.WdkReport.Columns().Id, ids).
+			WhereIn(dao.WdkReport.Columns().AuditStatus, []uint{2, 3}).Delete()
+		if terr != nil {
+			return terr
+		}
+		// 删除文档库上传报告类型
+		_, terr = dao.WdkReportType.Ctx(ctx).WhereIn(dao.WdkReportType.Columns().Id, ids).Delete()
+		return terr
+	})
+	return
+}
+
 // GetWdkReportExcellenceList 获取文档库优秀报告列表
 func (s *sWdkReport) GetWdkReportExcellenceList(ctx context.Context, req *v1.WdkReportExcellenceListReq) (total int, list []*v1.WdkReportInfo, err error) {
 	var reportIds []uint64

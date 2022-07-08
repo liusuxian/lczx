@@ -13,6 +13,7 @@ import (
 type IWdkService interface {
 	GetWdkServiceRecord(ctx context.Context, projectId uint64) (list []*v1.WdkServiceInfo, err error)
 	AddWdkService(ctx context.Context, req *v1.WdkServiceAddReq, xchFile *model.UploadFileInfo, photos []*model.UploadFileInfo) (err error)
+	DeleteWdkService(ctx context.Context, ids []uint64, projectId uint64) (err error)
 }
 
 var localWdkService IWdkService
