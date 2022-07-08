@@ -45,9 +45,8 @@ type WdkReportAuditTypeInfo struct {
 
 // WdkReportDeleteReq 文档库删除报告请求参数
 type WdkReportDeleteReq struct {
-	g.Meta    `path:"/delete" tags:"WdkReportDelete" method:"delete" summary:"You first wdk/report/delete api"`
-	Ids       []uint64 `json:"ids" v:"required|slice_valid:uint64#文档库报告ID列表不能为空" dc:"文档库报告ID列表"`             // 文档库报告ID列表
-	ProjectId uint64   `json:"projectId" v:"required|regex:^[1-9]\\d*$#所属项目ID不能为空|所属项目ID必须为正整数" dc:"所属项目ID"` // 所属项目ID
+	g.Meta `path:"/delete" tags:"WdkReportDelete" method:"delete" summary:"You first wdk/report/delete api"`
+	Ids    []uint64 `json:"ids" v:"required|slice_valid:uint64#文档库报告ID列表不能为空" dc:"文档库报告ID列表"` // 文档库报告ID列表
 }
 
 // WdkReportDeleteRes 文档库删除报告返回参数

@@ -13,7 +13,7 @@ import (
 type IWdkAttachment interface {
 	GetWdkAttachmentRecord(ctx context.Context, projectId uint64) (list []*v1.WdkAttachmentInfo, err error)
 	AddWdkAttachment(ctx context.Context, req *v1.WdkAttachmentAddReq, Attachments []*model.UploadFileInfo) (err error)
-	DeleteWdkAttachment(ctx context.Context, ids []uint64, projectId uint64) (err error)
+	DeleteWdkAttachment(ctx context.Context, ids []uint64) (err error)
 }
 
 var localWdkAttachment IWdkAttachment

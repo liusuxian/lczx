@@ -51,7 +51,7 @@ func (s *sWdkService) AddWdkService(ctx context.Context, req *v1.WdkServiceAddRe
 }
 
 // DeleteWdkService 删除文档库服务记录
-func (s *sWdkService) DeleteWdkService(ctx context.Context, ids []uint64, projectId uint64) (err error) {
+func (s *sWdkService) DeleteWdkService(ctx context.Context, ids []uint64) (err error) {
 	err = dao.WdkServiceRecord.Ctx(ctx).Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		// 删除文档库服务记录
 		var terr error

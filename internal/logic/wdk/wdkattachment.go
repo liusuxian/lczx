@@ -51,7 +51,7 @@ func (s *sWdkAttachment) AddWdkAttachment(ctx context.Context, req *v1.WdkAttach
 }
 
 // DeleteWdkAttachment 删除文档库上传附件记录
-func (s *sWdkAttachment) DeleteWdkAttachment(ctx context.Context, ids []uint64, projectId uint64) (err error) {
+func (s *sWdkAttachment) DeleteWdkAttachment(ctx context.Context, ids []uint64) (err error) {
 	err = dao.WdkAttachmentRecord.Ctx(ctx).Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		// 删除文档库上传附件记录
 		var terr error

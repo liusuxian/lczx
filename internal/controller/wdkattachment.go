@@ -56,7 +56,7 @@ func (c *cWdkAttachment) Add(ctx context.Context, req *v1.WdkAttachmentAddReq) (
 
 // Delete 删除文档库上传附件记录
 func (c *cWdkAttachment) Delete(ctx context.Context, req *v1.WdkAttachmentDeleteReq) (res *v1.WdkAttachmentDeleteRes, err error) {
-	err = service.WdkAttachment().DeleteWdkAttachment(ctx, req.Ids, req.ProjectId)
+	err = service.WdkAttachment().DeleteWdkAttachment(ctx, req.Ids)
 	if err != nil {
 		err = gerror.WrapCode(code.DeleteWdkAttachmentRecordFailed, err)
 		return

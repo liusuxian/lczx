@@ -49,7 +49,7 @@ func (c *cWdkReport) Add(ctx context.Context, req *v1.WdkReportAddReq) (res *v1.
 
 // Delete 删除文档库上传报告记录
 func (c *cWdkReport) Delete(ctx context.Context, req *v1.WdkReportDeleteReq) (res *v1.WdkReportDeleteRes, err error) {
-	err = service.WdkReport().DeleteWdkReport(ctx, req.Ids, req.ProjectId)
+	err = service.WdkReport().DeleteWdkReport(ctx, req.Ids)
 	if err != nil {
 		err = gerror.WrapCode(code.DeleteWdkReportRecordFailed, err)
 		return

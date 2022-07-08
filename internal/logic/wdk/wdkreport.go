@@ -132,7 +132,7 @@ func (s *sWdkReport) AddWdkReport(ctx context.Context, req *v1.WdkReportAddReq, 
 }
 
 // DeleteWdkReport 删除文档库上传报告记录
-func (s *sWdkReport) DeleteWdkReport(ctx context.Context, ids []uint64, projectId uint64) (err error) {
+func (s *sWdkReport) DeleteWdkReport(ctx context.Context, ids []uint64) (err error) {
 	err = dao.WdkReport.Ctx(ctx).Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		// 删除文档库上传报告记录
 		var terr error
