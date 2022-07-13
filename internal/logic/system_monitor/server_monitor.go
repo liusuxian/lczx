@@ -1,4 +1,4 @@
-package systemmonitor
+package system_monitor
 
 import (
 	"fmt"

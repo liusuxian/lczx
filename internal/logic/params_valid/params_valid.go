@@ -1,4 +1,4 @@
-package paramsvalid
+package params_valid
 
 import (
 	"context"

@@ -1,4 +1,4 @@
-package aliyunoss
+package aliyun_oss
 
 import (
 	"github.com/gogf/gf/v2/frame/g"
