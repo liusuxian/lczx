@@ -1,4 +1,4 @@
-package systemmonitor
+package system_monitor
 
 import (
 	"context"
@@ -73,17 +73,9 @@ func newCrontab() *sCrontab {
 			Value: "1",
 		},
 	}
-	invokeTargetList := make([]*model.ClientOption, 0, len(insCrontab.taskList))
-	for _, v := range insCrontab.taskList {
-		invokeTargetList = append(invokeTargetList, &model.ClientOption{
-			Name:  v.funcDescName,
-			Value: v.invokeTarget,
-		})
-	}
 	insCrontab.clientOptionMap["groupList"] = groupList
 	insCrontab.clientOptionMap["misfirePolicyList"] = misfirePolicyList
 	insCrontab.clientOptionMap["statusList"] = statusList
-	insCrontab.clientOptionMap["invokeTargetList"] = invokeTargetList
 
 	return insCrontab
 }
@@ -284,6 +276,14 @@ func (s *sCrontab) RegisterAndStartAllTask(ctx context.Context) {
 		run:          service.WdkProject().CheckWdkProjectFileUploadStatus,
 	}
 	s.addTask(checkUserOnlineTask).addTask(checkWdkProjectFileUploadStatus)
+	invokeTargetList := make([]*model.ClientOption, 0, len(s.taskList))
+	for _, v := range s.taskList {
+		invokeTargetList = append(invokeTargetList, &model.ClientOption{
+			Name:  v.funcDescName,
+			Value: v.invokeTarget,
+		})
+	}
+	s.clientOptionMap["invokeTargetList"] = invokeTargetList
 	// 自动执行状态正常的任务
 	var crontabList []*entity.Crontab
 	var err error

@@ -4,10 +4,10 @@ go 1.18
 
 require (
 	github.com/aliyun/aliyun-oss-go-sdk v2.2.4+incompatible
-	github.com/casbin/casbin/v2 v2.50.1
+	github.com/casbin/casbin/v2 v2.50.2
 	github.com/goflyfox/gtoken v1.5.7
-	github.com/gogf/gf/contrib/drivers/mysql/v2 v2.1.1
-	github.com/gogf/gf/v2 v2.1.1
+	github.com/gogf/gf/contrib/drivers/mysql/v2 v2.1.2
+	github.com/gogf/gf/v2 v2.1.2
 	github.com/mojocn/base64Captcha v1.3.5
 	github.com/mssola/user_agent v0.5.3
 	github.com/shirou/gopsutil v3.21.11+incompatible

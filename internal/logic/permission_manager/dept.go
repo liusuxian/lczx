@@ -1,4 +1,4 @@
-package permissionmanager
+package permission_manager
 
 import (
 	"context"
