@@ -142,5 +142,5 @@ aliyunoss:
     bucket: "lczx-sys"                                                  # bucket名称
     endpointAccelerate: "https://oss-accelerate.aliyuncs.com"           # 传输加速节点
     endpointAccess: "oss-cn-hangzhou.aliyuncs.com"                      # 外网访问节点
-    accessKeyID: [ 104,240,38,24,122,201,0,46,175,142,199,123,59,140,131,121,243,138,191,132,142,132,3,117,112,65,91,13,132,157,69,252 ]    # accessKeyID 已加密处理
+    accessKeyID: [ 104,240,38,24,122,201,0,46,175,142,199,123,59,140,131,121,243,138,191,132,142,132,3,117,112,65,91,13,132,157,69,252 ]          # accessKeyID 已加密处理
     accessKeySecret: [ 143,119,161,48,165,193,162,93,52,44,32,102,215,16,10,117,189,215,212,76,110,166,153,105,233,149,180,130,239,97,233,248 ]   # accessKeySecret 已加密处理
