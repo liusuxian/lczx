@@ -127,7 +127,7 @@ casbin:
 
 # 阿里云OSS配置
 aliyunoss:
-  env: 0                                                                # 环境 0：开发环境 1：正式环境
+  env: 1                                                                # 环境 0：开发环境 1：正式环境
   upload: # 上传配置
     imgList: [ "jpg", "jpeg", "png", "gif" ]                            # 允许上传的图片类型
     fileList: [ "doc", "docx", "xls", "xlsx", "ppt", "pptx", "pdf" ]    # 允许上传的文件类型
