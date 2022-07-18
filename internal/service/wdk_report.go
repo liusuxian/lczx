@@ -16,7 +16,8 @@ type IWdkReport interface {
 	GetWdkReportRecord(ctx context.Context, projectId uint64) (list []*v1.WdkReportInfo, err error)
 	AddWdkReport(ctx context.Context, req *v1.WdkReportAddReq, report *model.UploadFileInfo) (err error)
 	DeleteWdkReport(ctx context.Context, ids []uint64) (err error)
-	GetWdkReportExcellenceList(ctx context.Context, req *v1.WdkReportExcellenceListReq) (total int, list []*v1.WdkReportInfo, err error)
+	GetClientOptionMap() map[string][]*model.ClientOption
+	GetWdkReportList(ctx context.Context, req *v1.WdkReportListReq) (total int, list []*v1.WdkReportInfo, err error)
 	GetWdkReportCountByProjectId(ctx context.Context, projectId uint64) (count int, err error)
 	SetWdkReportExcellence(ctx context.Context, id uint64, excellence uint) (err error)
 	SetWdkReportAuditCompleteStatus(ctx context.Context, id uint64, status, excellence uint, auditTime *gtime.Time) (err error)

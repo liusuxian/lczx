@@ -18,7 +18,9 @@ import (
 	"lczx/internal/service"
 )
 
-type sWdkReport struct{}
+type sWdkReport struct {
+	clientOptionMap map[string][]*model.ClientOption // 客户端选项
+}
 
 func init() {
 	service.RegisterWdkReport(newWdkReport())
@@ -26,7 +28,25 @@ func init() {
 
 // 文档库上传报告记录管理服务
 func newWdkReport() *sWdkReport {
-	return &sWdkReport{}
+	insWdkReport := &sWdkReport{}
+	insWdkReport.clientOptionMap = map[string][]*model.ClientOption{}
+	excellenceStatusList := []*model.ClientOption{
+		{
+			Name:  "普通报告",
+			Value: "0",
+		},
+		{
+			Name:  "推荐报告",
+			Value: "1",
+		},
+		{
+			Name:  "优秀报告",
+			Value: "2",
+		},
+	}
+	insWdkReport.clientOptionMap["excellenceStatusList"] = excellenceStatusList
+
+	return insWdkReport
 }
 
 // GetWdkReportRecord 获取文档库上传报告记录
@@ -148,13 +168,18 @@ func (s *sWdkReport) DeleteWdkReport(ctx context.Context, ids []uint64) (err err
 	return
 }
 
-// GetWdkReportExcellenceList 获取文档库优秀报告列表
-func (s *sWdkReport) GetWdkReportExcellenceList(ctx context.Context, req *v1.WdkReportExcellenceListReq) (total int, list []*v1.WdkReportInfo, err error) {
+// GetClientOptionMap 获取客户端选项Map
+func (s *sWdkReport) GetClientOptionMap() map[string][]*model.ClientOption {
+	return s.clientOptionMap
+}
+
+// GetWdkReportList 获取文档库报告列表
+func (s *sWdkReport) GetWdkReportList(ctx context.Context, req *v1.WdkReportListReq) (total int, list []*v1.WdkReportInfo, err error) {
 	var reportIds []uint64
 	if req.TypeId != "" {
 		var array []*gvar.Var
-		array, err = dao.WdkReportType.Ctx(ctx).Fields(dao.WdkReportType.Columns().Id).Where(do.WdkReportType{TypeId: req.TypeId}).Array()
-		if err != nil {
+		if array, err = dao.WdkReportType.Ctx(ctx).Fields(dao.WdkReportType.Columns().Id).Where(do.WdkReportType{TypeId: req.TypeId}).
+			Array(); err != nil {
 			return
 		}
 		reportIds = make([]uint64, 0, len(array))
@@ -162,23 +187,32 @@ func (s *sWdkReport) GetWdkReportExcellenceList(ctx context.Context, req *v1.Wdk
 			reportIds = append(reportIds, v.Uint64())
 		}
 	}
-	reportModel := dao.WdkReport.Ctx(ctx).Where(do.WdkReport{Excellence: req.Excellence, AuditStatus: 2})
 	columns := dao.WdkReport.Columns()
+	gmodel := dao.WdkReport.Ctx(ctx).WhereIn(columns.AuditStatus, []uint{2, 3})
+	order := "excellence DESC"
 	if len(reportIds) != 0 {
-		reportModel = reportModel.WhereIn(columns.Id, reportIds)
+		gmodel = gmodel.WhereIn(columns.Id, reportIds)
+	}
+	if req.Excellence != "" {
+		gmodel = gmodel.Where(columns.Excellence, req.Excellence)
 	}
 	if req.ReportName != "" {
-		reportModel = reportModel.WhereLike(columns.Name, "%"+req.ReportName+"%")
+		gmodel = gmodel.WhereLike(columns.Name, "%"+req.ReportName+"%")
 	}
 	if req.ProjectName != "" {
-		reportModel = reportModel.WhereLike(columns.ProjectName, "%"+req.ProjectName+"%")
+		gmodel = gmodel.WhereLike(columns.ProjectName, "%"+req.ProjectName+"%")
 	}
-	total, err = reportModel.Count()
-	if err != nil {
+	if req.SortName != "" {
+		if req.SortOrder != "" {
+			order = req.SortName + " " + req.SortOrder
+		} else {
+			order = req.SortName + " DESC"
+		}
+	}
+	if total, err = gmodel.Count(); err != nil {
 		return
 	}
-	err = reportModel.Page(req.CurPage, req.PageSize).OrderDesc(columns.AuditTime).ScanList(&list, "Report")
-	if err != nil {
+	if err = gmodel.Page(req.CurPage, req.PageSize).Order(order).ScanList(&list, "Report"); err != nil {
 		return
 	}
 	err = dao.WdkReportType.Ctx(ctx).Where(dao.WdkReportType.Columns().Id, gdb.ListItemValuesUnique(list, "Report", "Id")).
