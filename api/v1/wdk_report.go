@@ -3,6 +3,7 @@ package v1
 import (
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
+	"lczx/internal/model"
 	"lczx/internal/model/entity"
 )
 
@@ -53,19 +54,31 @@ type WdkReportDeleteReq struct {
 type WdkReportDeleteRes struct {
 }
 
-// WdkReportExcellenceListReq 文档库优秀报告列表请求参数
-type WdkReportExcellenceListReq struct {
-	g.Meta      `path:"/excellenceList" tags:"WdkReportExcellenceList" method:"get" summary:"You first wdk/report/excellenceList api"`
-	Excellence  uint   `json:"excellence" v:"required|in:1,2#是否是优秀报告不能为空|是否是优秀报告只能是1,2" dc:"是否是优秀报告 1:被推荐为优秀报告 2:已被评选为优秀报告"` // 是否是优秀报告 1:被推荐为优秀报告 2:已被评选为优秀报告
-	TypeId      string `json:"typeId" v:"regex:^[1-9]\\d*$#报告类型ID必须为正整数" dc:"报告类型ID"`                                        // 报告类型ID
-	ReportName  string `json:"reportName" dc:"报告名称"`                                                                         // 报告名称
-	ProjectName string `json:"projectName" dc:"所属项目名称"`                                                                      // 所属项目名称
-	CurPage     int    `json:"curPage" v:"required|regex:^[1-9]\\d*$#当前页码不能为空|当前页码必须为正整数" dc:"当前页码"`                         // 当前页码
-	PageSize    int    `json:"pageSize" v:"required|regex:^[1-9]\\d*$#每页数量不能为空|每页数量必须为正整数" dc:"每页数量"`                        // 每页数量
+// WdkReportClientOptionsReq 获取文档库报告管理客户端选项请求参数
+type WdkReportClientOptionsReq struct {
+	g.Meta `path:"/clientOptions" tags:"WdkReportClientOptions" method:"get" summary:"You first wdk/report/clientOptions api"`
 }
 
-// WdkReportExcellenceListRes 文档库优秀报告列表返回参数
-type WdkReportExcellenceListRes struct {
+// WdkReportClientOptionsRes 获取文档库报告管理客户端选项返回参数
+type WdkReportClientOptionsRes struct {
+	ExcellenceStatusList []*model.ClientOption `json:"excellenceStatusList" dc:"是否是优秀报告选项列表"` // 是否是优秀报告选项列表
+}
+
+// WdkReportListReq 文档库报告列表请求参数
+type WdkReportListReq struct {
+	g.Meta      `path:"/list" tags:"WdkReportList" method:"get" summary:"You first wdk/report/list api"`
+	Excellence  string `json:"excellence" v:"in:0,1,2#是否是优秀报告只能是0,1,2" dc:"是否是优秀报告 0:未被评选为优秀报告 1:被推荐为优秀报告 2:已被评选为优秀报告"` // 是否是优秀报告 0:未被评选为优秀报告 1:被推荐为优秀报告 2:已被评选为优秀报告
+	TypeId      string `json:"typeId" v:"regex:^[1-9]\\d*$#报告类型ID必须为正整数" dc:"报告类型ID"`                                   // 报告类型ID
+	ReportName  string `json:"reportName" dc:"报告名称"`                                                                    // 报告名称
+	ProjectName string `json:"projectName" dc:"所属项目名称"`                                                                 // 所属项目名称
+	SortName    string `json:"sortName" v:"regex:^[a-zA-Z]\\w*$#排序字段以字母开头，只能包含字母、数字和下划线" dc:"排序字段"`                     // 排序字段
+	SortOrder   string `json:"sortOrder" v:"regex:^[a-zA-Z]\\w*$#排序方式以字母开头，只能包含字母、数字和下划线" dc:"排序方式"`                    // 排序方式
+	CurPage     int    `json:"curPage" v:"required|regex:^[1-9]\\d*$#当前页码不能为空|当前页码必须为正整数" dc:"当前页码"`                    // 当前页码
+	PageSize    int    `json:"pageSize" v:"required|regex:^[1-9]\\d*$#每页数量不能为空|每页数量必须为正整数" dc:"每页数量"`                   // 每页数量
+}
+
+// WdkReportListRes 文档库报告列表返回参数
+type WdkReportListRes struct {
 	CurPage int              `json:"curPage" dc:"当前页码"`     // 当前页码
 	Total   int              `json:"total" dc:"数据总量"`       // 数据总量
 	List    []*WdkReportInfo `json:"list" dc:"文档库上传报告信息列表"` // 文档库上传报告信息列表
