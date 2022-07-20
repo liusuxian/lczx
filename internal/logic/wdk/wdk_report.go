@@ -189,7 +189,7 @@ func (s *sWdkReport) GetWdkReportList(ctx context.Context, req *v1.WdkReportList
 	}
 	columns := dao.WdkReport.Columns()
 	gmodel := dao.WdkReport.Ctx(ctx).WhereIn(columns.AuditStatus, []uint{2, 3})
-	order := "excellence DESC"
+	order := "excellence DESC, created_at DESC"
 	if len(reportIds) != 0 {
 		gmodel = gmodel.WhereIn(columns.Id, reportIds)
 	}
