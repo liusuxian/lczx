@@ -16,7 +16,7 @@ type IWdkProject interface {
 	GetWdkProjectById(ctx context.Context, id uint64) (wdkProject *v1.WdkProjectInfo, err error)
 	EditWdkProject(ctx context.Context, req *v1.WdkProjectEditReq) (err error)
 	DeleteWdkProject(ctx context.Context, ids []uint64) (err error)
-	ExportWdkProject(ctx context.Context, req *v1.WdkProjectExportReq) (fileInfo *v1.WdkProjectExportFile, err error)
+	ExportWdkProject(ctx context.Context, req *v1.WdkProjectExportReq) (filePath string, err error)
 	GetClientOptionMap() map[string][]*model.ClientOption
 	IsWdkProjectNameAvailable(ctx context.Context, name string) (bool, error)
 	SetWdkProjectFileUploadStatusFinish(ctx context.Context, id uint64) (err error)
