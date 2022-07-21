@@ -27,7 +27,7 @@ func (s *sAliyunOSS) Download(ctx context.Context, filePath string) (body io.Rea
 	}
 	// 连接OSS
 	var client *oss.Client
-	client, err = oss.New(s.endpointAccelerate, gstr.TrimAll(string(accessKeyID)), gstr.TrimAll(string(accessKeySecret)))
+	client, err = oss.New(s.endpointDownload, gstr.TrimAll(string(accessKeyID)), gstr.TrimAll(string(accessKeySecret)))
 	if err != nil {
 		return
 	}
@@ -37,13 +37,8 @@ func (s *sAliyunOSS) Download(ctx context.Context, filePath string) (body io.Rea
 	if err != nil {
 		return
 	}
-	// 使用签名URL将OSS文件下载到流
-	var signedURL string
-	signedURL, err = bucket.SignURL(filePath, oss.HTTPGet, 60)
-	if err != nil {
-		return
-	}
-	body, err = bucket.GetObjectWithURL(signedURL)
+	// 下载文件
+	body, err = bucket.GetObject(filePath)
 	if err != nil {
 		return
 	}

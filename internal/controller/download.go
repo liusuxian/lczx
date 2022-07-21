@@ -16,8 +16,8 @@ var (
 
 type cDownload struct{}
 
-// WdkReportFile 下载文档库报告文件
-func (c *cDownload) WdkReportFile(ctx context.Context, req *v1.DownloadWdkReportFileReq) (res *v1.DownloadWdkReportFileRes, err error) {
+// File 下载文件
+func (c *cDownload) File(ctx context.Context, req *v1.DownloadFileReq) (res *v1.DownloadFileRes, err error) {
 	var body io.ReadCloser
 	body, err = service.AliyunOSS().Download(ctx, req.FilePath)
 	if err != nil {

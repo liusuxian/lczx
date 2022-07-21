@@ -236,7 +236,7 @@ func (s *sAliyunOSS) uploadAction(file *ghttp.UploadFile, fType string, dirPath 
 	}
 	// 连接OSS
 	var client *oss.Client
-	client, err = oss.New(s.endpointAccelerate, gstr.TrimAll(string(accessKeyID)), gstr.TrimAll(string(accessKeySecret)))
+	client, err = oss.New(s.endpointUpload, gstr.TrimAll(string(accessKeyID)), gstr.TrimAll(string(accessKeySecret)))
 	if err != nil {
 		return
 	}
