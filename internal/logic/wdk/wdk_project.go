@@ -1003,7 +1003,7 @@ func (s *sWdkProject) createWdkProjectExcel(data [][]any) (filePath string, err 
 		return
 	}
 	// 保存
-	fileName := gtime.Datetime() + "项目信息导出表.xlsx"
+	fileName := gtime.Now().Format("YmdHis") + "项目信息导出表.xlsx"
 	filePath = "cache/excel/" + fileName
 	err = f.SaveAs(filePath)
 	return
