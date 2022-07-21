@@ -339,6 +339,9 @@ func (s *sWdkProject) GetWdkProjectList(ctx context.Context, req *v1.WdkProjectL
 	gmodel := dao.WdkProject.Ctx(ctx)
 	columns := dao.WdkProject.Columns()
 	order := "id DESC"
+	if req.Id > 0 {
+		gmodel = gmodel.Where(columns.Id, req.Id)
+	}
 	if req.Name != "" {
 		gmodel = gmodel.WhereLike(columns.Name, "%"+req.Name+"%")
 	}
@@ -559,6 +562,9 @@ func (s *sWdkProject) ExportWdkProject(ctx context.Context, req *v1.WdkProjectEx
 	gmodel := dao.WdkProject.Ctx(ctx)
 	columns := dao.WdkProject.Columns()
 	order := "id DESC"
+	if req.Id > 0 {
+		gmodel = gmodel.Where(columns.Id, req.Id)
+	}
 	if req.Name != "" {
 		gmodel = gmodel.WhereLike(columns.Name, "%"+req.Name+"%")
 	}
