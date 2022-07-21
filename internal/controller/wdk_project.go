@@ -109,9 +109,7 @@ func (c *cWdkProject) Export(ctx context.Context, req *v1.WdkProjectExportReq) (
 		return
 	}
 
-	request := g.RequestFromCtx(ctx)
-	request.Response.Header().Set("Access-Control-Expose-Headers", "content-disposition")
-	request.Response.ServeFileDownload(filePath)
+	g.RequestFromCtx(ctx).Response.ServeFileDownload(filePath)
 	if gfile.Exists(filePath) {
 		_ = gfile.Remove(filePath)
 	}

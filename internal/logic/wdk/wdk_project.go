@@ -685,7 +685,7 @@ func (s *sWdkProject) ExportWdkProject(ctx context.Context, req *v1.WdkProjectEx
 		curPage++
 	}
 	// 创建文档库项目信息Excel表
-	filePath, err = s.createWdkProjectExcel(excelData)
+	filePath, err = s.createWdkProjectExcel(ctx, excelData)
 	return
 }
 
@@ -955,7 +955,7 @@ func (s *sWdkProject) getWdkProjectBusinessforms(businessforms []*entity.WdkProj
 }
 
 // createWdkProjectExcel 创建文档库项目信息Excel表
-func (s *sWdkProject) createWdkProjectExcel(data [][]any) (filePath string, err error) {
+func (s *sWdkProject) createWdkProjectExcel(ctx context.Context, data [][]any) (filePath string, err error) {
 	f := excelize.NewFile()
 	sheetName := "项目信息"
 	f.SetSheetName("Sheet1", sheetName)
@@ -1005,6 +1005,11 @@ func (s *sWdkProject) createWdkProjectExcel(data [][]any) (filePath string, err 
 	// 保存
 	fileName := gtime.Now().Format("YmdHis") + "项目信息导出表.xlsx"
 	filePath = "cache/excel/" + fileName
-	err = f.SaveAs(filePath)
+	if err = f.SaveAs(filePath); err != nil {
+		return
+	}
+	// 设置响应头
+	request := g.RequestFromCtx(ctx)
+	request.Response.Header().Set("Access-Control-Expose-Headers", "content-disposition")
 	return
 }

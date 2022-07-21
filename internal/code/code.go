@@ -10,6 +10,7 @@ var (
 	GetAccessAuthFailed  = gcode.New(1004, "获取权限失败", "")      // 获取权限失败
 	NotAccessAuth        = gcode.New(1005, "没有访问权限", "")      // 没有访问权限
 	GetFileUrlFailed     = gcode.New(1006, "获取文件url失败", "")   // 获取文件url失败
+	DownloadFileFailed   = gcode.New(1007, "文件下载失败", "")      // 文件下载失败
 
 	GetUserOnlineListFailed     = gcode.New(1100, "获取在线用户列表失败", "") // 获取在线用户列表失败
 	ForceLogoutUserOnlineFailed = gcode.New(1101, "强退在线用户失败", "")   // 强退在线用户失败
