@@ -97,3 +97,16 @@ func (c *cWdkReport) ChooseExcellence(ctx context.Context, req *v1.WdkReportChoo
 
 	return
 }
+
+// ReportDownload 文档库报告文件下载
+func (c *cWdkReport) ReportDownload(ctx context.Context, req *v1.WdkReportDownloadReq) (res *v1.WdkReportDownloadRes, err error) {
+	var fileUrl string
+	fileUrl, err = service.AliyunOSS().AuthorizationDownload(req.FilePath)
+	if err != nil {
+		err = gerror.WrapCode(code.WdkReportDownloadFileFailed, err)
+		return
+	}
+
+	res = &v1.WdkReportDownloadRes{FileUrl: fileUrl}
+	return
+}

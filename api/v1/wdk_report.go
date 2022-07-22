@@ -94,3 +94,14 @@ type WdkReportChooseExcellenceReq struct {
 // WdkReportChooseExcellenceRes 文档库报告评选优秀报告返回参数
 type WdkReportChooseExcellenceRes struct {
 }
+
+// WdkReportDownloadReq 文档库报告文件下载请求参数
+type WdkReportDownloadReq struct {
+	g.Meta   `path:"/download" tags:"WdkReportDownload" method:"get" summary:"You first wdk/report/download api"`
+	FilePath string `json:"filePath" v:"required#报告文件路径不能为空" dc:"报告文件路径"` // 报告文件路径
+}
+
+// WdkReportDownloadRes 文档库报告文件下载返回参数
+type WdkReportDownloadRes struct {
+	FileUrl string `json:"fileUrl" dc:"报告文件url地址"` // 报告文件url地址
+}

@@ -10,7 +10,6 @@ var (
 	GetAccessAuthFailed  = gcode.New(1004, "获取权限失败", "")      // 获取权限失败
 	NotAccessAuth        = gcode.New(1005, "没有访问权限", "")      // 没有访问权限
 	GetFileUrlFailed     = gcode.New(1006, "获取文件url失败", "")   // 获取文件url失败
-	DownloadFileFailed   = gcode.New(1007, "文件下载失败", "")      // 文件下载失败
 
 	GetUserOnlineListFailed     = gcode.New(1100, "获取在线用户列表失败", "") // 获取在线用户列表失败
 	ForceLogoutUserOnlineFailed = gcode.New(1101, "强退在线用户失败", "")   // 强退在线用户失败
@@ -97,7 +96,8 @@ var (
 	GetWdkReportUploadAuditListFailed = gcode.New(1812, "获取文档库报告上传审核列表失败", "") // 获取文档库报告上传审核列表失败
 	GetWdkReportListFailed            = gcode.New(1813, "获取文档库报告列表失败", "")     // 获取文档库报告列表失败
 	WdkReportChooseExcellenceFailed   = gcode.New(1814, "文档库报告评选优秀报告失败", "")   // 文档库报告评选优秀报告失败
-	HandleWdkReportAuditFailed        = gcode.New(1815, "文档库报告审核失败", "")       // 文档库报告审核失败
-	HandleWdkReportRescindAuditFailed = gcode.New(1816, "文档库报告撤销审核失败", "")     // 文档库报告撤销审核失败
-	GetWdkReportAuditProcessFailed    = gcode.New(1817, "获取文档库报告审核流程失败", "")   // 获取文档库报告审核流程失败
+	WdkReportDownloadFileFailed       = gcode.New(1815, "文档库报告文件下载失败", "")     // 文档库报告文件下载失败
+	HandleWdkReportAuditFailed        = gcode.New(1816, "文档库报告审核失败", "")       // 文档库报告审核失败
+	HandleWdkReportRescindAuditFailed = gcode.New(1817, "文档库报告撤销审核失败", "")     // 文档库报告撤销审核失败
+	GetWdkReportAuditProcessFailed    = gcode.New(1818, "获取文档库报告审核流程失败", "")   // 获取文档库报告审核流程失败
 )
