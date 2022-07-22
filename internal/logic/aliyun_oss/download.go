@@ -33,6 +33,6 @@ func (s *sAliyunOSS) AuthorizationDownload(filePath string) (fileUrl string, err
 		return
 	}
 	// 授权访问
-	fileUrl, err = bucket.SignURL(filePath, oss.HTTPGet, 1)
+	fileUrl, err = bucket.SignURL(filePath, oss.HTTPGet, 60)
 	return
 }
