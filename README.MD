@@ -12,6 +12,15 @@ Project Makefile Commands:
 ```
 gf gen dao -c -v
 ```
+### CentOS 8 上下载并安装Go
+```
+1、wget https://dl.google.com/go/go1.18.4.linux-amd64.tar.gz
+2、sudo tar -C /usr/local -xf go1.18.4.linux-amd64.tar.gz
+3、vim ~/.bash_profile
+4、export PATH=$PATH:/usr/local/go/bin
+5、source ~/.bash_profile
+6、go env -w GOPROXY="https://goproxy.cn,direct"
+```
 ### fork gtoken
 ```
 1、修改代码后，修改go.mod文件中的包名为自己的包名
