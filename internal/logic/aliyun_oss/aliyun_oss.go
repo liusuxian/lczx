@@ -19,6 +19,7 @@ type sAliyunOSS struct {
 
 // 上传配置
 type uploadCfg struct {
+	env      int      // 环境
 	imgList  []string // 允许上传的图片类型
 	fileList []string // 允许上传的文件类型
 	maxSize  int64    // 最大文件上传大小(MB)
@@ -36,14 +37,14 @@ func init() {
 func newAliyunOSS() *sAliyunOSS {
 	ctx := gctx.New()
 	upCfg = &uploadCfg{
+		env:      g.Cfg().MustGet(ctx, "aliyunoss.env", 0).Int(),
 		imgList:  g.Cfg().MustGet(ctx, "aliyunoss.upload.imgList", []string{}).Strings(),
 		fileList: g.Cfg().MustGet(ctx, "aliyunoss.upload.fileList", []string{}).Strings(),
 		maxSize:  g.Cfg().MustGet(ctx, "aliyunoss.upload.maxSize", 5120).Int64(),
 	}
 
 	var oss *sAliyunOSS
-	env := g.Cfg().MustGet(ctx, "aliyunoss.env", 0).Int()
-	if env == 0 {
+	if upCfg.env == 0 {
 		// 开发环境
 		oss = &sAliyunOSS{
 			bucket:             g.Cfg().MustGet(ctx, "aliyunoss.dev.bucket").String(),
@@ -53,7 +54,7 @@ func newAliyunOSS() *sAliyunOSS {
 			accessKeyID:        g.Cfg().MustGet(ctx, "aliyunoss.dev.accessKeyID").Bytes(),
 			accessKeySecret:    g.Cfg().MustGet(ctx, "aliyunoss.dev.accessKeySecret").Bytes(),
 		}
-	} else if env == 1 {
+	} else if upCfg.env == 1 {
 		// 正式环境
 		oss = &sAliyunOSS{
 			bucket:             g.Cfg().MustGet(ctx, "aliyunoss.prod.bucket").String(),
