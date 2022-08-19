@@ -1,0 +1,46 @@
+FROM ubuntu
+
+###############################################################################
+#                                INSTALLATION
+###############################################################################
+# 设置固定的项目路径
+ENV WORKDIR /lczx
+ENV TZ=Asia/Shanghai
+
+# 安装软件、创建 cache 目录以及子目录
+RUN apt-get update &&  \
+    apt-get install language-pack-zh-han* &&  \
+    locale-gen zh_CN.UTF-8 &&  \
+    echo "export LC_ALL=zh_CN.UTF-8">> /etc/profile &&  \
+    source /etc/profile &&  \
+    apt-get install wget &&  \
+    apt-get install java &&  \
+    apt-get install deltarpm &&  \
+    apt-get install ImageMagick &&  \
+    export DISPLAY=:0.0 &&  \
+    wget https://mirrors.cloud.tencent.com/libreoffice/libreoffice/stable/7.4.0/rpm/x86_64/LibreOffice_7.4.0_Linux_x86-64_rpm.tar.gz &&  \
+    tar -zxvf LibreOffice_7.4.0_Linux_x86-64_rpm.tar.gz &&  \
+    rpm -Uivh LibreOffice_7.4.0.3_Linux_x86-64_rpm/RPMS/*.rpm --nodeps &&  \
+    rm -rf LibreOffice_7.4.0* &&  \
+    RUN mkdir -p $WORKDIR/cache/convert/ &&  \
+    mkdir -p $WORKDIR/cache/download/ &&  \
+    mkdir -p $WORKDIR/cache/local/ &&  \
+    mkdir -p $WORKDIR/cache/pdf/ &&  \
+    mkdir -p $WORKDIR/cache/excel/
+
+# 添加应用可执行文件，并设置执行权限
+ADD ./temp/linux_amd64/main $WORKDIR/main
+RUN chmod +x $WORKDIR/main
+
+# 添加I18N多语言文件、静态文件、配置文件、模板文件
+ADD manifest/config $WORKDIR/config
+
+###############################################################################
+#                                   START
+###############################################################################
+WORKDIR $WORKDIR
+CMD ./main
+
+# ------------------------------------本地打包镜像---------------------
+# gf docker main.go -t lczx:1.0
+# docker run -d -p 8000:8000 <imageID>

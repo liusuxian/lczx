@@ -65,7 +65,8 @@ sudo systemctl restart docker
 开机启动: sudo systemctl enable docker
 查看docker概要信息: docker info
 查看docker帮助文档: docker --help
-docker创建镜像: docker build -t <name>:<tag> <Dockerfile文件所在目录>
+docker创建镜像: docker build -t <name>:<tag> .
+docker指定Dockerfile文件创建镜像: docker build -f <Dockerfile文件> -t <name>:<tag> .
 启动docker容器: docker run -d -p <hostPort>:<containerPort> <imageID>
 进入docker容器: docker exec -it <containerName>/<containerID> /bin/sh
 查看当前所有镜像: docker images
