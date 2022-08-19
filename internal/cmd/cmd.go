@@ -57,10 +57,6 @@ var (
 				group.Group("/user", func(group *ghttp.RouterGroup) {
 					group.Bind(controller.User)
 				})
-				// 文件下载
-				group.Group("/download", func(group *ghttp.RouterGroup) {
-					group.Bind(controller.Download)
-				})
 				// 文件Url
 				group.Group("/fileUrl", func(group *ghttp.RouterGroup) {
 					group.Bind(controller.FileUrl)

@@ -12,6 +12,7 @@ import (
 )
 
 type IAliyunOSS interface {
+	AuthorizationDownload(filePath string) (fileUrl string, err error)
 	UploadImg(file *ghttp.UploadFile, dirPath string) (fileInfo *model.UploadFileInfo, err error)
 	UploadFile(file *ghttp.UploadFile, dirPath string) (fileInfo *model.UploadFileInfo, err error)
 	UploadImgs(files []*ghttp.UploadFile, dirPath string) (fileInfos []*model.UploadFileInfo, err error)

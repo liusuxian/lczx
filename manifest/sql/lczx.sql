@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 01/07/2022 10:52:55
+ Date: 11/08/2022 16:32:23
 */
 
 SET NAMES utf8mb4;
@@ -100,6 +100,7 @@ INSERT INTO `casbin_rule` (`p_type`, `v0`, `v1`, `v2`, `v3`, `v4`, `v5`) VALUES 
 INSERT INTO `casbin_rule` (`p_type`, `v0`, `v1`, `v2`, `v3`, `v4`, `v5`) VALUES ('p', '1', '63', 'All', '', '', '');
 INSERT INTO `casbin_rule` (`p_type`, `v0`, `v1`, `v2`, `v3`, `v4`, `v5`) VALUES ('p', '1', '64', 'All', '', '', '');
 INSERT INTO `casbin_rule` (`p_type`, `v0`, `v1`, `v2`, `v3`, `v4`, `v5`) VALUES ('p', '1', '65', 'All', '', '', '');
+INSERT INTO `casbin_rule` (`p_type`, `v0`, `v1`, `v2`, `v3`, `v4`, `v5`) VALUES ('p', '1', '66', 'All', '', '', '');
 INSERT INTO `casbin_rule` (`p_type`, `v0`, `v1`, `v2`, `v3`, `v4`, `v5`) VALUES ('g', '1', '1', '', '', '', '');
 INSERT INTO `casbin_rule` (`p_type`, `v0`, `v1`, `v2`, `v3`, `v4`, `v5`) VALUES ('g', '2', '1', '', '', '', '');
 COMMIT;
@@ -178,8 +179,8 @@ CREATE TABLE `login_log` (
   `passport` varchar(18) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '登录账号',
   `ip` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '登录IP地址',
   `location` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '登录地点',
-  `browser` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '浏览器类型',
-  `os` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '操作系统',
+  `browser` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '浏览器类型',
+  `os` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '操作系统',
   `status` tinyint unsigned DEFAULT NULL COMMENT '登录状态 0:失败 1:成功',
   `msg` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '提示消息',
   `time` datetime DEFAULT NULL COMMENT '登录时间',
@@ -215,7 +216,7 @@ CREATE TABLE `menu` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `rule_index` (`rule`),
   KEY `parent_id_index` (`parent_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=66 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=67 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ----------------------------
 -- Records of menu
@@ -284,8 +285,9 @@ INSERT INTO `menu` (`id`, `parent_id`, `rule`, `name`, `condition`, `menu_type`,
 INSERT INTO `menu` (`id`, `parent_id`, `rule`, `name`, `condition`, `menu_type`, `status`, `jump_path`, `is_frame`, `module_type`, `remark`, `created_at`, `updated_at`, `deleted_at`) VALUES (61, 60, 'wdk/reportAudit/rescindAudit', '报告撤销审核', NULL, 2, 1, NULL, 0, 'sys_admin', NULL, '2022-05-22 19:09:32', '2022-05-22 19:09:32', NULL);
 INSERT INTO `menu` (`id`, `parent_id`, `rule`, `name`, `condition`, `menu_type`, `status`, `jump_path`, `is_frame`, `module_type`, `remark`, `created_at`, `updated_at`, `deleted_at`) VALUES (62, 39, 'wdk/reportAudit/list', '报告审核管理', NULL, 1, 1, NULL, 0, 'sys_admin', NULL, '2022-05-23 01:31:59', '2022-05-23 01:31:59', NULL);
 INSERT INTO `menu` (`id`, `parent_id`, `rule`, `name`, `condition`, `menu_type`, `status`, `jump_path`, `is_frame`, `module_type`, `remark`, `created_at`, `updated_at`, `deleted_at`) VALUES (63, 62, 'wdk/reportAudit/audit', '报告审核', NULL, 2, 1, NULL, 0, 'sys_admin', NULL, '2022-05-23 10:53:10', '2022-05-23 10:53:10', NULL);
-INSERT INTO `menu` (`id`, `parent_id`, `rule`, `name`, `condition`, `menu_type`, `status`, `jump_path`, `is_frame`, `module_type`, `remark`, `created_at`, `updated_at`, `deleted_at`) VALUES (64, 39, 'wdk/report/excellenceList', '优秀报告管理', NULL, 1, 1, NULL, 0, 'sys_admin', NULL, '2022-05-23 11:04:20', '2022-05-23 11:04:20', NULL);
+INSERT INTO `menu` (`id`, `parent_id`, `rule`, `name`, `condition`, `menu_type`, `status`, `jump_path`, `is_frame`, `module_type`, `remark`, `created_at`, `updated_at`, `deleted_at`) VALUES (64, 39, 'wdk/report/list', '报告管理', NULL, 1, 1, NULL, 0, 'sys_admin', NULL, '2022-05-23 11:04:20', '2022-05-23 11:04:20', NULL);
 INSERT INTO `menu` (`id`, `parent_id`, `rule`, `name`, `condition`, `menu_type`, `status`, `jump_path`, `is_frame`, `module_type`, `remark`, `created_at`, `updated_at`, `deleted_at`) VALUES (65, 64, 'wdk/report/chooseExcellence', '评选优秀报告', NULL, 2, 1, NULL, 0, 'sys_admin', NULL, '2022-05-23 11:06:13', '2022-05-23 11:06:13', NULL);
+INSERT INTO `menu` (`id`, `parent_id`, `rule`, `name`, `condition`, `menu_type`, `status`, `jump_path`, `is_frame`, `module_type`, `remark`, `created_at`, `updated_at`, `deleted_at`) VALUES (66, 64, 'wdk/report/download', '下载报告文件', NULL, 2, 1, NULL, 0, 'sys_admin', NULL, '2022-08-11 16:24:04', '2022-08-11 16:24:04', NULL);
 COMMIT;
 
 -- ----------------------------
@@ -567,7 +569,8 @@ CREATE TABLE `wdk_report` (
   `pdf_url` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT 'pdf文件url',
   `created_at` datetime DEFAULT NULL COMMENT '上传时间',
   `updated_at` datetime DEFAULT NULL COMMENT '更新时间',
-  PRIMARY KEY (`id`,`project_id`)
+  PRIMARY KEY (`id`,`project_id`),
+  KEY `excellence_index` (`excellence` DESC) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ----------------------------

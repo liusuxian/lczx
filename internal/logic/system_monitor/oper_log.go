@@ -93,12 +93,14 @@ func (s *sOperLog) Invoke(req *ghttp.Request) {
 			break
 		}
 	}
+	if menu == nil {
+		// 只记录存在数据库中的规则
+		return
+	}
 	// 组装数据
 	data := &entity.OperLog{}
-	if menu != nil {
-		// 模块标题
-		data.Title = menu.Name
-	}
+	// 模块标题
+	data.Title = menu.Name
 	// 方法名称
 	data.Method = url.Path
 	// 请求方式

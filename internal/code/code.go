@@ -94,9 +94,10 @@ var (
 	DeleteWdkReportRecordFailed       = gcode.New(1810, "删除文档库上传报告记录失败", "")   // 删除文档库上传报告记录失败
 	GetWdkReportAuditListFailed       = gcode.New(1811, "获取文档库报告审核记录列表失败", "") // 获取文档库报告审核记录列表失败
 	GetWdkReportUploadAuditListFailed = gcode.New(1812, "获取文档库报告上传审核列表失败", "") // 获取文档库报告上传审核列表失败
-	GetWdkReportExcellenceListFailed  = gcode.New(1813, "获取文档库优秀报告列表失败", "")   // 获取文档库优秀报告列表失败
+	GetWdkReportListFailed            = gcode.New(1813, "获取文档库报告列表失败", "")     // 获取文档库报告列表失败
 	WdkReportChooseExcellenceFailed   = gcode.New(1814, "文档库报告评选优秀报告失败", "")   // 文档库报告评选优秀报告失败
-	HandleWdkReportAuditFailed        = gcode.New(1815, "文档库报告审核失败", "")       // 文档库报告审核失败
-	HandleWdkReportRescindAuditFailed = gcode.New(1816, "文档库报告撤销审核失败", "")     // 文档库报告撤销审核失败
-	GetWdkReportAuditProcessFailed    = gcode.New(1817, "获取文档库报告审核流程失败", "")   // 获取文档库报告审核流程失败
+	WdkReportDownloadFileFailed       = gcode.New(1815, "文档库报告文件下载失败", "")     // 文档库报告文件下载失败
+	HandleWdkReportAuditFailed        = gcode.New(1816, "文档库报告审核失败", "")       // 文档库报告审核失败
+	HandleWdkReportRescindAuditFailed = gcode.New(1817, "文档库报告撤销审核失败", "")     // 文档库报告撤销审核失败
+	GetWdkReportAuditProcessFailed    = gcode.New(1818, "获取文档库报告审核流程失败", "")   // 获取文档库报告审核流程失败
 )

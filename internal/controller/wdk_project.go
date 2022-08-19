@@ -3,6 +3,8 @@ package controller
 import (
 	"context"
 	"github.com/gogf/gf/v2/errors/gerror"
+	"github.com/gogf/gf/v2/frame/g"
+	"github.com/gogf/gf/v2/os/gfile"
 	v1 "lczx/api/v1"
 	"lczx/internal/code"
 	"lczx/internal/service"
@@ -100,13 +102,16 @@ func (c *cWdkProject) Delete(ctx context.Context, req *v1.WdkProjectDeleteReq) (
 
 // Export 文档库项目信息导出
 func (c *cWdkProject) Export(ctx context.Context, req *v1.WdkProjectExportReq) (res *v1.WdkProjectExportRes, err error) {
-	var fileInfo *v1.WdkProjectExportFile
-	fileInfo, err = service.WdkProject().ExportWdkProject(ctx, req)
+	var filePath string
+	filePath, err = service.WdkProject().ExportWdkProject(ctx, req)
 	if err != nil {
 		err = gerror.WrapCode(code.ExportWdkProjectFailed, err)
 		return
 	}
 
-	res = &v1.WdkProjectExportRes{FileInfo: fileInfo}
+	g.RequestFromCtx(ctx).Response.ServeFileDownload(filePath)
+	if gfile.Exists(filePath) {
+		_ = gfile.Remove(filePath)
+	}
 	return
 }

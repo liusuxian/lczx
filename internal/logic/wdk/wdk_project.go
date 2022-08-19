@@ -339,6 +339,9 @@ func (s *sWdkProject) GetWdkProjectList(ctx context.Context, req *v1.WdkProjectL
 	gmodel := dao.WdkProject.Ctx(ctx)
 	columns := dao.WdkProject.Columns()
 	order := "id DESC"
+	if req.Id > 0 {
+		gmodel = gmodel.Where(columns.Id, req.Id)
+	}
 	if req.Name != "" {
 		gmodel = gmodel.WhereLike(columns.Name, "%"+req.Name+"%")
 	}
@@ -540,7 +543,7 @@ func (s *sWdkProject) DeleteWdkProject(ctx context.Context, ids []uint64) (err e
 }
 
 // ExportWdkProject 导出文档库项目信息
-func (s *sWdkProject) ExportWdkProject(ctx context.Context, req *v1.WdkProjectExportReq) (fileInfo *v1.WdkProjectExportFile, err error) {
+func (s *sWdkProject) ExportWdkProject(ctx context.Context, req *v1.WdkProjectExportReq) (filePath string, err error) {
 	// 处理业态
 	projectIdsMap := gmap.New()
 	if len(req.BusinessForms) != 0 {
@@ -559,6 +562,9 @@ func (s *sWdkProject) ExportWdkProject(ctx context.Context, req *v1.WdkProjectEx
 	gmodel := dao.WdkProject.Ctx(ctx)
 	columns := dao.WdkProject.Columns()
 	order := "id DESC"
+	if req.Id > 0 {
+		gmodel = gmodel.Where(columns.Id, req.Id)
+	}
 	if req.Name != "" {
 		gmodel = gmodel.WhereLike(columns.Name, "%"+req.Name+"%")
 	}
@@ -679,9 +685,7 @@ func (s *sWdkProject) ExportWdkProject(ctx context.Context, req *v1.WdkProjectEx
 		curPage++
 	}
 	// 创建文档库项目信息Excel表
-	if fileInfo, err = s.createWdkProjectExcel(excelData); err != nil {
-		return
-	}
+	filePath, err = s.createWdkProjectExcel(ctx, excelData)
 	return
 }
 
@@ -951,7 +955,7 @@ func (s *sWdkProject) getWdkProjectBusinessforms(businessforms []*entity.WdkProj
 }
 
 // createWdkProjectExcel 创建文档库项目信息Excel表
-func (s *sWdkProject) createWdkProjectExcel(data [][]any) (fileInfo *v1.WdkProjectExportFile, err error) {
+func (s *sWdkProject) createWdkProjectExcel(ctx context.Context, data [][]any) (filePath string, err error) {
 	f := excelize.NewFile()
 	sheetName := "项目信息"
 	f.SetSheetName("Sheet1", sheetName)
@@ -999,15 +1003,13 @@ func (s *sWdkProject) createWdkProjectExcel(data [][]any) (fileInfo *v1.WdkProje
 		return
 	}
 	// 保存
-	fileName := gtime.Datetime() + "项目信息导出表.xlsx"
-	filePath := "cache/excel/" + fileName
+	fileName := gtime.Now().Format("YmdHis") + "项目信息导出表.xlsx"
+	filePath = "cache/excel/" + fileName
 	if err = f.SaveAs(filePath); err != nil {
 		return
 	}
-	// 返回文件信息
-	fileInfo = &v1.WdkProjectExportFile{
-		FileName: fileName,
-		FilePath: filePath,
-	}
+	// 设置响应头
+	request := g.RequestFromCtx(ctx)
+	request.Response.Header().Set("Access-Control-Expose-Headers", "content-disposition")
 	return
 }

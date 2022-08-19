@@ -29,6 +29,7 @@ type WdkProjectClientOptionsRes struct {
 // WdkProjectListReq 文档库项目列表请求参数
 type WdkProjectListReq struct {
 	g.Meta           `path:"/list" tags:"WdkProjectList" method:"get" summary:"You first wdk/project/list api"`
+	Id               uint64      `json:"id" v:"regex:^[1-9]\\d*$#文档库项目ID必须为正整数" dc:"文档库项目ID"`                                                                                                                                                           // 文档库项目ID
 	Name             string      `json:"name" v:"max-length:100#项目名称长度不能超过100" dc:"项目名称"`                                                                                                                                                               // 项目名称
 	Type             string      `json:"type" v:"in:0,1#项目性质只能是0,1" dc:"项目性质 0:蓝绿体系 1:非绿"`                                                                                                                                                              // 项目性质 0:蓝绿体系 1:非绿
 	Origin           string      `json:"origin" v:"in:0,1,2,3,4,5,6,7#项目来源只能是0,1,2,3,4,5,6,7" dc:"项目来源 0:绿中 1:分子公司 2:合伙人 3:老客户 4:中交 5:蓝城 6:自拓 7:其他"`                                                                                                    // 项目来源 0:绿中 1:分子公司 2:合伙人 3:老客户 4:中交 5:蓝城 6:自拓 7:其他
@@ -143,6 +144,7 @@ type WdkProjectDeleteRes struct {
 // WdkProjectExportReq 文档库项目信息导出请求参数
 type WdkProjectExportReq struct {
 	g.Meta           `path:"/export" tags:"WdkProjectExport" method:"get" summary:"You first wdk/project/export api"`
+	Id               uint64      `json:"id" v:"regex:^[1-9]\\d*$#文档库项目ID必须为正整数" dc:"文档库项目ID"`                                                                                                                                                           // 文档库项目ID
 	Name             string      `json:"name" v:"max-length:100#项目名称长度不能超过100" dc:"项目名称"`                                                                                                                                                               // 项目名称
 	Type             string      `json:"type" v:"in:0,1#项目性质只能是0,1" dc:"项目性质 0:蓝绿体系 1:非绿"`                                                                                                                                                              // 项目性质 0:蓝绿体系 1:非绿
 	Origin           string      `json:"origin" v:"in:0,1,2,3,4,5,6,7#项目来源只能是0,1,2,3,4,5,6,7" dc:"项目来源 0:绿中 1:分子公司 2:合伙人 3:老客户 4:中交 5:蓝城 6:自拓 7:其他"`                                                                                                    // 项目来源 0:绿中 1:分子公司 2:合伙人 3:老客户 4:中交 5:蓝城 6:自拓 7:其他
@@ -165,11 +167,4 @@ type WdkProjectExportReq struct {
 
 // WdkProjectExportRes 文档库项目信息导出返回参数
 type WdkProjectExportRes struct {
-	FileInfo *WdkProjectExportFile `json:"fileInfo" dc:"导出的文件信息"` // 导出的文件信息
-}
-
-// WdkProjectExportFile 文档库项目信息导出的文件信息
-type WdkProjectExportFile struct {
-	FileName string `json:"fileName" dc:"文件名"`       // 文件名
-	FilePath string `json:"filePath" dc:"文件在服务器的路径"` // 文件在服务器的路径
 }

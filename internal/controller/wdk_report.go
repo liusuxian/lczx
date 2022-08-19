@@ -58,17 +58,28 @@ func (c *cWdkReport) Delete(ctx context.Context, req *v1.WdkReportDeleteReq) (re
 	return
 }
 
-// ExcellenceList 文档库优秀报告列表
-func (c *cWdkReport) ExcellenceList(ctx context.Context, req *v1.WdkReportExcellenceListReq) (res *v1.WdkReportExcellenceListRes, err error) {
+// ClientOptions 客户端选项
+func (c *cWdkReport) ClientOptions(ctx context.Context, req *v1.WdkReportClientOptionsReq) (res *v1.WdkReportClientOptionsRes, err error) {
+	// 获取客户端选项Map
+	clientOptionMap := service.WdkReport().GetClientOptionMap()
+
+	res = &v1.WdkReportClientOptionsRes{
+		ExcellenceStatusList: clientOptionMap["excellenceStatusList"],
+	}
+	return
+}
+
+// List 文档库报告列表
+func (c *cWdkReport) List(ctx context.Context, req *v1.WdkReportListReq) (res *v1.WdkReportListRes, err error) {
 	var total int
 	var list []*v1.WdkReportInfo
-	total, list, err = service.WdkReport().GetWdkReportExcellenceList(ctx, req)
+	total, list, err = service.WdkReport().GetWdkReportList(ctx, req)
 	if err != nil {
-		err = gerror.WrapCode(code.GetWdkReportExcellenceListFailed, err)
+		err = gerror.WrapCode(code.GetWdkReportListFailed, err)
 		return
 	}
 
-	res = &v1.WdkReportExcellenceListRes{
+	res = &v1.WdkReportListRes{
 		CurPage: req.CurPage,
 		Total:   total,
 		List:    list,
@@ -84,5 +95,18 @@ func (c *cWdkReport) ChooseExcellence(ctx context.Context, req *v1.WdkReportChoo
 		return
 	}
 
+	return
+}
+
+// ReportDownload 文档库报告文件下载
+func (c *cWdkReport) ReportDownload(ctx context.Context, req *v1.WdkReportDownloadReq) (res *v1.WdkReportDownloadRes, err error) {
+	var fileUrl string
+	fileUrl, err = service.AliyunOSS().AuthorizationDownload(req.FilePath)
+	if err != nil {
+		err = gerror.WrapCode(code.WdkReportDownloadFileFailed, err)
+		return
+	}
+
+	res = &v1.WdkReportDownloadRes{FileUrl: fileUrl}
 	return
 }
