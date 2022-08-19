@@ -12,20 +12,77 @@ Project Makefile Commands:
 ```
 gf gen dao -c -v
 ```
-### CentOS 8 上下载并安装Go
+### Linux 上下载并安装Go
 ```
-1、wget https://dl.google.com/go/go1.18.4.linux-amd64.tar.gz
-2、sudo tar -C /usr/local -xf go1.18.4.linux-amd64.tar.gz
+1、wget https://dl.google.com/go/go1.19.linux-amd64.tar.gz
+2、sudo tar -C /usr/local -xf go1.19.linux-amd64.tar.gz
 3、vim ~/.bash_profile
 4、export PATH=$PATH:/usr/local/go/bin
 5、source ~/.bash_profile
 6、go env -w GOPROXY="https://goproxy.cn,direct"
 ```
-### fork gtoken
+### fork 第三方源码
 ```
 1、修改代码后，修改go.mod文件中的包名为自己的包名
 2、go mod tidy
 3、提交代码
-4、git tag v1.6.0
+4、git tag v*.*.*
 5、git push --tags
+```
+### CentOS 上安装Docker
+```
+1、卸载旧版本（如果有需要的话）
+卸载安装包: sudo yum remove docker-ce docker-ce-cli containerd.io
+删除资源: sudo rm -rf /var/lib/docker /var/lib/containerd /run/docker /etc/docker /usr/libexec/docker
+2、CentOS下如果安装了Podman，需要先卸载Podman
+yum erase podman buildah
+3、安装Docker
+curl -sSL https://get.daocloud.io/docker | sh
+4、Docker只能被root用户使用，可以使用下面的命令取消权限限制
+sudo gpasswd -a <你的用户名> docker
+5、重启Docker服务后，关闭当前的命令行，重新打开新的命令行就可以了
+sudo service docker restart
+6、Docker官方的镜像库比较慢，在进行镜像操作之前，需要将镜像源设置为国内的站点
+新建文件/etc/docker/daemon.json，输入如下内容
+{
+    "registry-mirrors" : [
+        "https://registry.docker-cn.com",
+        "https://docker.mirrors.ustc.edu.cn",
+        "http://hub-mirror.c.163.com",
+        "https://cr.console.aliyun.com/"
+    ]
+}
+然后重启docker的服务: sudo systemctl restart docker
+```
+### docker 常用命令总结
+```
+从镜像库中查找镜像: docker search (最好选择官方OFFICIAL的镜像，这样的镜像最稳定一些)
+下载新的镜像: docker pull 镜像名称:版本号
+启动docker: sudo systemctl start docker
+停止docker: sudo systemctl stop docker
+重启docker: sudo systemctl restart docker
+查看docker状态: sudo systemctl status docker
+开机启动: sudo systemctl enable docker
+查看docker概要信息: docker info
+查看docker帮助文档: docker --help
+docker创建镜像: docker build -t <name>:<tag> <Dockerfile文件所在目录>
+启动docker容器: docker run -d -p <hostPort>:<containerPort> <imageID>
+进入docker容器: docker exec -it <containerName>/<containerID> /bin/sh
+查看当前所有镜像: docker images
+删除镜像，通过镜像的id来指定删除谁: docker rmi <imageID>
+删除镜像id为<None>的镜像: docker rmi $(docker images | grep "^<none>" | awk "{print $3}")
+删除全部镜像: docker rmi $(docker images -q)
+查看所有容器: docker ps
+查看所有容器，包括关闭的: docker ps -a
+停止容器: docker stop <containerID>
+启动容器: docker start <containerID>
+重启容器: docker restart <containerID>
+停止所有的容器: docker stop $(docker ps -a -q)
+删除容器，通过容器的id来指定删除谁: docker rm <containerID>
+删除所有的容器: docker rm $(docker ps -a -q)
+获取容器的日志: docker logs -f <containerName>/<containerID>
+文件从容器中拷贝到宿主机中: docker cp <containerID>:SRC_PATH DEST_PATH
+文件从宿主机中拷贝到容器中: docker cp SRC_PATH <containerID>:DEST_PATH
+查看容器中运行的进程信息: docker top <containerName>/<containerID>
+列出指定的容器的端口映射: docker port <containerName>/<containerID>
 ```
