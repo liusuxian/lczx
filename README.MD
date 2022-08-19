@@ -36,14 +36,9 @@ gf gen dao -c -v
 删除资源: sudo rm -rf /var/lib/docker /var/lib/containerd /run/docker /etc/docker /usr/libexec/docker
 2、CentOS下如果安装了Podman，需要先卸载Podman
 yum erase podman buildah
-3、安装Docker
-curl -sSL https://get.daocloud.io/docker | sh
-4、Docker只能被root用户使用，可以使用下面的命令取消权限限制
-sudo gpasswd -a <你的用户名> docker
-5、重启Docker服务后，关闭当前的命令行，重新打开新的命令行就可以了
-sudo service docker restart
-6、Docker官方的镜像库比较慢，在进行镜像操作之前，需要将镜像源设置为国内的站点
-新建文件/etc/docker/daemon.json，输入如下内容
+3、Docker官方的镜像库比较慢，将镜像源设置为国内的站点
+新建docker文件夹: mkdir /etc/docker
+新建daemon.json文件: vim /etc/docker/daemon.json，输入如下内容
 {
     "registry-mirrors" : [
         "https://registry.docker-cn.com",
@@ -52,7 +47,12 @@ sudo service docker restart
         "https://cr.console.aliyun.com/"
     ]
 }
-然后重启docker的服务: sudo systemctl restart docker
+4、安装Docker
+curl -sSL https://get.daocloud.io/docker | sh
+5、Docker只能被root用户使用，可以使用下面的命令取消权限限制
+sudo gpasswd -a <你的用户名> docker
+6、重启Docker服务后，关闭当前的命令行，重新打开新的命令行就可以了
+sudo systemctl restart docker
 ```
 ### docker 常用命令总结
 ```
