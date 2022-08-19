@@ -56,7 +56,7 @@ sudo systemctl restart docker
 ```
 ### docker 常用命令总结
 ```
-从镜像库中查找镜像: docker search (最好选择官方OFFICIAL的镜像，这样的镜像最稳定一些)
+从镜像库中查找镜像: docker search 镜像名称 (最好选择官方OFFICIAL的镜像，这样的镜像最稳定一些)
 下载新的镜像: docker pull 镜像名称:版本号
 启动docker: sudo systemctl start docker
 停止docker: sudo systemctl stop docker
