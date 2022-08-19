@@ -42,5 +42,5 @@ WORKDIR $WORKDIR
 CMD ./main
 
 # ------------------------------------本地打包镜像---------------------
-# gf docker main.go -t lczx:1.0
+# gf docker main.go -f ./manifest/docker/DockerfileTest1 -t lczx:1.0
 # docker run -d -p 8000:8000 <imageID>
