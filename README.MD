@@ -15,8 +15,8 @@ gf gen dao -c -v
 ### Linux 上下载并安装Go
 ```
 1、rm -rf /root/go /root/.config/go /usr/local/go（删除旧版本，如果有需要的话）
-2、wget https://dl.google.com/go/go1.19.linux-amd64.tar.gz
-3、sudo tar -C /usr/local -xf go1.19.linux-amd64.tar.gz
+2、wget https://dl.google.com/go/go1.19.2.linux-amd64.tar.gz
+3、sudo tar -C /usr/local -xf go1.19.2.linux-amd64.tar.gz
 4、vim ~/.bash_profile
 5、export PATH=$PATH:/usr/local/go/bin
 6、source ~/.bash_profile
